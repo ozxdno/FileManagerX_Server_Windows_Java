@@ -5,6 +5,7 @@ public class DataBaseInfo implements Tools.IPublic{
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	private long index;
+	private BasicEnums.DataBaseType type;
 	private MachineInfo machineInfo;
 	private String url;
 	private String dbName;
@@ -15,6 +16,10 @@ public class DataBaseInfo implements Tools.IPublic{
 
 	public boolean setIndex(long index) {
 		this.index = index;
+		return true;
+	}
+	public boolean setType(BasicEnums.DataBaseType type) {
+		this.type = type;
 		return true;
 	}
 	public boolean setMachineInfo(MachineInfo machineInfo) {
@@ -58,6 +63,9 @@ public class DataBaseInfo implements Tools.IPublic{
 	public long getIndex() {
 		return this.index;
 	}
+	public BasicEnums.DataBaseType getType() {
+		return this.type;
+	}
 	public MachineInfo getMachineInfo() {
 		return this.machineInfo;
 	}
@@ -84,6 +92,8 @@ public class DataBaseInfo implements Tools.IPublic{
 		setUrl(url);
 	}
 	private void initThis() {
+		this.index = -1;
+		this.type = BasicEnums.DataBaseType.Memory;
 		this.machineInfo = new MachineInfo();
 		this.url = "";
 		this.dbName = "";
@@ -102,6 +112,7 @@ public class DataBaseInfo implements Tools.IPublic{
 	public String output() {
 		Config c = new Config(this.machineInfo.output());
 		c.setField("DataBaseInfo");
+		c.addToTop(this.type.ordinal());;
 		c.addToTop(this.index);
 		c.addToBottom(url);
 		c.addToBottom(dbName);
@@ -112,6 +123,8 @@ public class DataBaseInfo implements Tools.IPublic{
 	public boolean input(String in) {
 		Config c = new Config(in);
 		this.index = c.fetchFirstLong();
+		if(!c.getIsOK()) { return false; }
+		this.type = BasicEnums.DataBaseType.values()[c.fetchFirstInt()];
 		if(!c.getIsOK()) { return false; }
 		this.password = c.fetchLastString();
 		if(!c.getIsOK()) { return false; }
