@@ -28,6 +28,10 @@ public class ServerConnection extends Thread implements IServerConnection{
 	
 	private long lastReceiveTime;
 	
+	private byte[] receiveBuffer;
+	private byte[] sendBuffer;
+	private int bufferSize;
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean setServerMachineInfo(BasicModels.MachineInfo serverMachineInfo) {
@@ -109,6 +113,15 @@ public class ServerConnection extends Thread implements IServerConnection{
 		this.lastReceiveTime = Tools.Time.getTicks();
 		return true;
 	}
+	public boolean setBufferSize(int bufferSize) {
+		if(bufferSize < 0) {
+			return false;
+		}
+		this.bufferSize = bufferSize;
+		this.receiveBuffer = new byte[bufferSize];
+		this.sendBuffer = new byte[bufferSize];
+		return true;
+	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -165,6 +178,10 @@ public class ServerConnection extends Thread implements IServerConnection{
 		return this.lastReceiveTime;
 	}
 	
+	public int getBufferSize() {
+		return this.bufferSize;
+	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public ServerConnection() {
@@ -182,6 +199,13 @@ public class ServerConnection extends Thread implements IServerConnection{
 		
 		this.receiveCommand = "";
 		this.replyCommand = "";
+		this.isCommandConnector = true;
+		
+		this.receiveFile = null;
+		this.sendFile = null;
+		this.totalBytes = 0;
+		this.finishedBytes = 0;
+		this.isFileConnector = false;
 		
 		this.socket = null;
 		this.abort = false;
@@ -189,7 +213,8 @@ public class ServerConnection extends Thread implements IServerConnection{
 		this.busy = false;
 		
 		this.setLastReceiveTime();
-		this.setName("TCP Connection");
+		this.setName("TCP Server Connection");
+		this.setBufferSize(1024);
 	}
 	public void run() {
 		abort = false;
@@ -198,6 +223,7 @@ public class ServerConnection extends Thread implements IServerConnection{
 			running = false;
 			return;
 		}
+		
 		BufferedReader br = null;
 		PrintWriter pw = null;
 		try {
@@ -207,14 +233,40 @@ public class ServerConnection extends Thread implements IServerConnection{
 			return;
 		}
 		
-		while(!abort && !socket.isClosed() && receiveCommand != null) {
+		DataInputStream dis = null;
+		FileOutputStream fos = null;
+		try {
+			dis = new DataInputStream(socket.getInputStream());
+		} catch(Exception e) {
+			return;
+		}
+		
+		while(!abort && !socket.isClosed()) {
 			try {
-				receiveCommand = br.readLine();
-				lastReceiveTime = Tools.Time.getTicks();
-				//cmd.setCommand(accept);
-				//send = cmd.deal();
-				pw.println(receiveCommand);
-                pw.flush();
+				if(this.isCommandConnector) {
+					receiveCommand = br.readLine();
+					if(receiveCommand == null) {
+						break;
+					}
+					lastReceiveTime = Tools.Time.getTicks();
+					//cmd.setCommand(accept);
+					//send = cmd.deal();
+					pw.println(receiveCommand);
+	                pw.flush();
+				}
+				if(this.isFileConnector) {
+					if(fos == null) {
+						fos = new FileOutputStream(new File(receiveFile.getLocalUrl()));
+						this.finishedBytes = 0;
+					}
+					int length = dis.read(receiveBuffer, 0, receiveBuffer.length);
+					if(length > 0) {
+						fos.write(receiveBuffer, 0, length);
+						fos.flush();
+						this.finishedBytes += length;
+					}
+				}
+				
 			}catch(Exception e) {
 				;
 			}

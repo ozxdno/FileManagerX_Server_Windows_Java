@@ -116,7 +116,7 @@ public class DataBaseInfo implements Tools.IPublic{
 	private void initThis() {
 		this.index = -1;
 		this.depotIndex = -1;
-		this.type = BasicEnums.DataBaseType.Memory;
+		this.type = BasicEnums.DataBaseType.TXT;
 		this.machineInfo = new MachineInfo();
 		this.url = "";
 		this.dbName = "";

@@ -48,6 +48,9 @@ public class BaseFile implements Tools.IPublic {
 	public int getMachinePort() {
 		return Tools.Url.getPort(url);
 	}
+	public String getLocalUrl() {
+		return Tools.Url.getLocalUrl(url);
+	}
 	public String getDriver() {
 		return Tools.Url.getDriver(url);
 	}
@@ -162,7 +165,8 @@ public class BaseFile implements Tools.IPublic {
 		setNextIndex();
 	}
 	public BaseFile(String url) {
-		
+		initThis();
+		this.setUrl(url);
 	}
 	public BaseFile(File localFile) {
 		
@@ -192,7 +196,7 @@ public class BaseFile implements Tools.IPublic {
 	}
 	@Override
 	public String toString() {
-		if(url == null || url.length() == 0 || index < 0) {
+		if(url == null || url.length() == 0) {
 			return "Undefined";
 		}
 		return this.getName();

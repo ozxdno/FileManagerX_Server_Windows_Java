@@ -86,6 +86,19 @@ public class Url {
 		
 		return -1;
 	}
+	public final static java.lang.String getLocalUrl(java.lang.String url) {
+		if(url == null || url.length() == 0) {
+			return "";
+		}
+		if(Url.isPortFirstItem(url) || Url.isIpFirstItem(url)) {
+			int idx0 = url.indexOf('\\');
+			if(idx0 < 0) {
+				return "";
+			}
+			url = url.substring(idx0 + 1);
+		}
+		return url;
+	}
 	public final static java.lang.String getDriver(java.lang.String url) {
 		if(url == null || url.length() == 0) {
 			return "";
@@ -281,6 +294,22 @@ public class Url {
 		}
 		
 		return p + "\\" + sourUrl;
+	}
+	public final static java.lang.String setLocalUrl(java.lang.String sourUrl, java.lang.String localUrl) {
+		if(sourUrl == null || sourUrl.length() == 0) {
+			return localUrl;
+		}
+		java.lang.String machineUrl = "";
+		if(Url.isPortFirstItem(sourUrl) || Url.isIpFirstItem(sourUrl)) {
+			int idx = sourUrl.indexOf('\\');
+			if(idx < 0) {
+				return sourUrl + "\\" + localUrl;
+			}
+			machineUrl = sourUrl.substring(0 , idx+1);
+			sourUrl = sourUrl.substring(idx+1);
+		}
+		
+		return machineUrl + "\\" + localUrl;
 	}
 	public final static java.lang.String setDriver(java.lang.String sourUrl, java.lang.String driver) {
 		if(sourUrl == null || sourUrl.length() == 0) {
