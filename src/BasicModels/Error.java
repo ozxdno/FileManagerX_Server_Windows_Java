@@ -105,19 +105,19 @@ public class Error implements Tools.IPublic {
 		c.addToBottom(detail);
 		return c.output();
 	}
-	public boolean input(String in) {
+	public String input(String in) {
 		BasicModels.Config c = new BasicModels.Config(in);
 		type = BasicEnums.ErrorType.values()[c.fetchFirstInt()];
-		if(!c.getIsOK()) { return false; }
+		if(!c.getIsOK()) { return null; }
 		time = c.fetchFirstLong();
-		if(!c.getIsOK()) { return false; }
+		if(!c.getIsOK()) { return null; }
 		level = BasicEnums.ErrorLevel.values()[c.fetchFirstInt()];
-		if(!c.getIsOK()) { return false; }
+		if(!c.getIsOK()) { return null; }
 		tip = c.fetchFirstString();
-		if(!c.getIsOK()) { return false; }
+		if(!c.getIsOK()) { return null; }
 		detail = c.fetchFirstString();
-		if(!c.getIsOK()) { return false; }
-		return true;
+		if(!c.getIsOK()) { return null; }
+		return c.output();
 	}
 	public void copyReference(Object o) {
 		Error e = (Error)o;

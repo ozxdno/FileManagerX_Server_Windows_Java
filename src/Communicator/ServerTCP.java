@@ -57,12 +57,8 @@ public class ServerTCP implements Tools.IPublic, IServerScanner{
 		c.setField("ServerTCP");
 		return c.output();
 	}
-	public boolean input(String in) {
-		BasicModels.Config c = new BasicModels.Config(in);
-		BasicModels.MachineInfo m = new BasicModels.MachineInfo();
-		if(!m.input(c.output())) { return false; }
-		this.serverMachineInfo = m;
-		return true;
+	public String input(String in) {
+		return this.serverMachineInfo.input(in);
 	}
 	public void copyReference(Object o) {
 		ServerTCP s = (ServerTCP)o;

@@ -190,35 +190,35 @@ public class User implements Tools.IPublic {
 		c.addToBottom(money);
 		return c.output();
 	}
-	public boolean input(String in) {
+	public String input(String in) {
 		BasicModels.Config c = new BasicModels.Config(in);
 		index = c.fetchFirstLong();
-		if(!c.getIsOK()) { return false; }
+		if(!c.getIsOK()) { return null; }
 		loginName = c.fetchFirstString();
-		if(!c.getIsOK()) { return false; }
+		if(!c.getIsOK()) { return null; }
 		nickName = c.fetchFirstString();
-		if(!c.getIsOK()) { return false; }
+		if(!c.getIsOK()) { return null; }
 		password = c.fetchFirstString();
-		if(!c.getIsOK()) { return false; }
+		if(!c.getIsOK()) { return null; }
 		email = c.fetchFirstString();
-		if(!c.getIsOK()) { return false; }
+		if(!c.getIsOK()) { return null; }
 		phone = c.fetchFirstString();
-		if(!c.getIsOK()) { return false; }
+		if(!c.getIsOK()) { return null; }
 		state = BasicEnums.UserState.values()[c.fetchFirstInt()];
-		if(!c.getIsOK()) { return false; }
+		if(!c.getIsOK()) { return null; }
 		priority = BasicEnums.UserPriority.values()[c.fetchFirstInt()];
-		if(!c.getIsOK()) { return false; }
+		if(!c.getIsOK()) { return null; }
 		level = BasicEnums.UserLevel.values()[c.fetchFirstInt()];
-		if(!c.getIsOK()) { return false; }
+		if(!c.getIsOK()) { return null; }
 		experience = c.fetchFirstLong();
-		if(!c.getIsOK()) { return false; }
+		if(!c.getIsOK()) { return null; }
 		photoUrl = c.fetchFirstString();
-		if(!c.getIsOK()) { return false; }
+		if(!c.getIsOK()) { return null; }
 		coins = c.fetchFirstLong();
-		if(!c.getIsOK()) { return false; }
+		if(!c.getIsOK()) { return null; }
 		money = c.fetchFirstDouble();
-		if(!c.getIsOK()) { return false; }
-		return true;
+		if(!c.getIsOK()) { return null; }
+		return c.output();
 	}
 	public void copyReference(Object o) {
 		User u = (User)o;

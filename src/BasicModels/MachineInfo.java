@@ -100,17 +100,17 @@ public class MachineInfo implements Tools.IPublic {
 		c.addToBottom(port);
 		return c.output();
 	}
-	public boolean input(String in) {
+	public String input(String in) {
 		Config c = new Config(in);
 		this.index = c.fetchFirstLong();
-		if(!c.getIsOK()) { return false; }
+		if(!c.getIsOK()) { return null; }
 		this.name = c.fetchFirstString();
-		if(!c.getIsOK()) { return false; }
+		if(!c.getIsOK()) { return null; }
 		this.ip = c.fetchFirstString();
-		if(!c.getIsOK()) { return false; }
+		if(!c.getIsOK()) { return null; }
 		this.port = c.fetchFirstInt();
-		if(!c.getIsOK()) { return false; }
-		return true;
+		if(!c.getIsOK()) { return null; }
+		return c.output();
 	}
 	public void copyReference(Object o) {
 		MachineInfo m = (MachineInfo)o;

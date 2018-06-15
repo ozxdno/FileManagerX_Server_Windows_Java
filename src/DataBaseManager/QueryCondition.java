@@ -120,23 +120,23 @@ public class QueryCondition implements Tools.IPublic {
 		c.addToBottom(this.equalDBound);
 		return c.output();
 	}
-	public boolean input(String in) {
+	public String input(String in) {
 		BasicModels.Config c = new BasicModels.Config(in);
 		this.itemName = c.fetchFirstString();
-		if(!c.getIsOK()) { return false; }
+		if(!c.getIsOK()) { return null; }
 		this.uBound = c.fetchFirstString();
-		if(!c.getIsOK()) { return false; }
+		if(!c.getIsOK()) { return null; }
 		this.dBound = c.fetchFirstString();
-		if(!c.getIsOK()) { return false; }
+		if(!c.getIsOK()) { return null; }
 		this.equal = c.fetchFirstString();
-		if(!c.getIsOK()) { return false; }
+		if(!c.getIsOK()) { return null; }
 		this.relationToNext = Relation.values()[c.fetchFirstInt()];
-		if(!c.getIsOK()) { return false; }
+		if(!c.getIsOK()) { return null; }
 		this.equalUBound = c.fetchFirstBoolean();
-		if(!c.getIsOK()) { return false; }
+		if(!c.getIsOK()) { return null; }
 		this.equalDBound = c.fetchFirstBoolean();
-		if(!c.getIsOK()) { return false; }
-		return true;
+		if(!c.getIsOK()) { return null; }
+		return c.output();
 	}
 	public void copyReference(Object o) {
 		QueryCondition q = (QueryCondition)o;

@@ -64,12 +64,11 @@ public class Invitation implements Tools.IPublic {
 		c.addToTop(code);;
 		return c.output();
 	}
-	public boolean input(String in) {
+	public String input(String in) {
 		BasicModels.Config c = new BasicModels.Config(in);
 		code = c.fetchFirstString();
-		if(!c.getIsOK()) { return false; }
-		if(!user.input(c.output())) { return false; }
-		return true;
+		if(!c.getIsOK()) { return null; }
+		return user.input(c.output());
 	}
 	public void copyReference(Object o) {
 		Invitation i = (Invitation)o;

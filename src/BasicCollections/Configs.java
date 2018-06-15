@@ -71,19 +71,19 @@ public class Configs implements Tools.IPublic {
 		}
 		return res;
 	}
-	public boolean input(String in) {
+	public String input(String in) {
 		initThis();
 		String[] items = Tools.String.split(in, '\n');
-		boolean ok = true;
+		String res = "";
 		for(int i=0; i<items.length; i++) {
 			BasicModels.Config c = new BasicModels.Config();
-			ok = c.input(items[i]);
-			if(!ok) {
-				return ok;
+			res = c.input(items[i]);
+			if(res == null) {
+				return res;
 			}
 			configs.add(c);
 		}
-		return ok;
+		return res;
 	}
 	public void copyReference(Object o) {
 		Configs c = (Configs)o;

@@ -209,24 +209,25 @@ public class BaseFile implements Tools.IPublic {
 		c.addToBottom(this.tags);
 		return c.output();
 	}
-	public boolean input(String in) {
+	public String input(String in) {
 		Config c = new Config( in );
 		this.index = c.fetchFirstLong();
-		if(!c.getIsOK()) { return false; }
+		if(!c.getIsOK()) { return null; }
 		this.url = c.fetchFirstString();
-		if(!c.getIsOK()) { return false; }
+		if(!c.getIsOK()) { return null; }
 		this.type = BasicEnums.FileType.values()[c.fetchFirstInt()];
-		if(!c.getIsOK()) { return false; }
+		if(!c.getIsOK()) { return null; }
 		this.state = BasicEnums.FileState.values()[c.fetchFirstInt()];
-		if(!c.getIsOK()) { return false; }
+		if(!c.getIsOK()) { return null; }
 		this.modify = c.fetchFirstLong();
-		if(!c.getIsOK()) { return false; }
+		if(!c.getIsOK()) { return null; }
 		this.length = c.fetchFirstLong();
-		if(!c.getIsOK()) { return false; }
+		if(!c.getIsOK()) { return null; }
 		this.score = c.fetchFirstInt();
-		if(!c.getIsOK()) { return false; }
-		this.tags = c.getValue();
-		return true;
+		if(!c.getIsOK()) { return null; }
+		this.tags = c.fetchFirstString();
+		if(!c.getIsOK()) { return null; }
+		return c.output();
 	}
 	public void copyReference(Object o) {
 		BaseFile model = (BaseFile)o;

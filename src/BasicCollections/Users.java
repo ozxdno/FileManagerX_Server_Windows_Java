@@ -62,19 +62,19 @@ public class Users implements Tools.IPublic {
 		}
 		return res;
 	}
-	public boolean input(String in) {
+	public String input(String in) {
 		initThis();
 		String[] items = Tools.String.split(in, '\n');
-		boolean ok = true;
+		String res = "";
 		for(int i=0; i<items.length; i++) {
 			BasicModels.User o = new BasicModels.User();
-			ok = o.input(items[i]);
-			if(!ok) {
-				return ok;
+			res = o.input(items[i]);
+			if(res == null) {
+				return null;
 			}
 			content.add(o);
 		}
-		return ok;
+		return "";
 	}
 	public void copyReference(Object o) {
 		Users m = (Users)o;

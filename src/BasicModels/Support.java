@@ -97,19 +97,19 @@ public class Support implements Tools.IPublic {
 		c.addToBottom(isSupport);
 		return c.output();
 	}
-	public boolean input(String in) {
+	public String input(String in) {
 		BasicModels.Config c = new BasicModels.Config(in);
 		extension = c.fetchFirstString();
-		if(!c.getIsOK()) { return false; }
+		if(!c.getIsOK()) { return null; }
 		type = BasicEnums.FileType.values()[c.fetchFirstInt()];
-		if(!c.getIsOK()) { return false; }
+		if(!c.getIsOK()) { return null; }
 		show = c.fetchFirstString();
-		if(!c.getIsOK()) { return false; }
+		if(!c.getIsOK()) { return null; }
 		hide = c.fetchFirstString();
-		if(!c.getIsOK()) { return false; }
+		if(!c.getIsOK()) { return null; }
 		isSupport = c.fetchFirstBoolean();
-		if(!c.getIsOK()) { return false; }
-		return true;
+		if(!c.getIsOK()) { return null; }
+		return c.output();
 	}
 	public void copyReference(Object o) {
 		Support s = (Support)o;

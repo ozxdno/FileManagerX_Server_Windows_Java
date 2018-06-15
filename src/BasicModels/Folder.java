@@ -90,7 +90,7 @@ public class Folder extends BaseFile implements Tools.IPublic {
 		return super.output();
 	}
 	@Override
-	public boolean input(String in) {
+	public String input(String in) {
 		return super.input(in);
 	}
 	@Override

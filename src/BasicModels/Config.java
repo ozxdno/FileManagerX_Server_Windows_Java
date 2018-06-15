@@ -132,9 +132,12 @@ public class Config implements Tools.IPublic {
 	public String output() {
 		return field + " = " + value;
 	}
-	public boolean input(String in) {
+	public String input(String in) {
+		if(in == null) {
+			return null;
+		}
 		this.setLine(in);
-		return true;
+		return "";
 	}
 	public void copyReference(Object o) {
 		Config c = (Config)o;
@@ -331,6 +334,13 @@ public class Config implements Tools.IPublic {
 		ok = true;
 		setValue( value );
 	}
+	public void addToTop(BasicModels.Config c) {
+		ok = true;
+		if(c == null || c.value.length() == 0) {
+			return;
+		}
+		this.setValue(c.value + "|" + value);
+	}
 	public void addToBottom(String item) {
 		if(item == null) {
 			ok = false;
@@ -359,6 +369,13 @@ public class Config implements Tools.IPublic {
 		value = value.length() == 0 ? String.valueOf(item) : value + "|" + String.valueOf(item);
 		ok = true;
 		setValue( value );
+	}
+	public void addToBottom(Config c) {
+		ok = true;
+		if(c == null || c.value.length() == 0) {
+			return;
+		}
+		this.setValue(value + "|" + c.value);
 	}
 	
 	public boolean fetchFirstBoolean() {
@@ -421,6 +438,23 @@ public class Config implements Tools.IPublic {
 			return res;
 		}
 	}
+	public Config fetchFirstConfig(int amount) {
+		ok = true;
+		if(amount > this.items.length) {
+			ok = false;
+			amount = this.items.length;
+		}
+		if(amount < 0) {
+			ok = false;
+			amount =  0;
+		}
+		String c1 = Tools.String.link(items, "|", 0, amount-1);
+		String c2 = Tools.String.link(items, "|", amount, items.length-1);
+		this.setValue(c2);
+		Config c = new Config();
+		c.setValue(c1);
+		return c;
+	}
 	public boolean fetchLastBoolean() {
 		boolean res = false;
 		try {
@@ -480,6 +514,23 @@ public class Config implements Tools.IPublic {
 			ok = false;
 			return res;
 		}
+	}
+	public Config fetchLastConfig(int amount) {
+		ok = true;
+		if(amount > this.items.length) {
+			ok = false;
+			amount = this.items.length;
+		}
+		if(amount < 0) {
+			ok = false;
+			amount =  0;
+		}
+		String c1 = Tools.String.link(items, "|", 0, items.length - amount - 1);
+		String c2 = Tools.String.link(items, "|", items.length - amount, items.length-1);
+		this.setValue(c1);
+		Config c = new Config();
+		c.setValue(c2);
+		return c;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

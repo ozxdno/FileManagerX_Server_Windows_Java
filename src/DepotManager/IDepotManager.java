@@ -3,11 +3,6 @@ package DepotManager;
 public interface IDepotManager {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public boolean receiveFile();
-	public boolean sendFile();
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public boolean renameFile(String sourName, String destName);
 	public boolean renameFileWithoutExtension(String sourName, String destName);
@@ -32,4 +27,6 @@ public interface IDepotManager {
 	public boolean deleteDirectory(long index);
 	public boolean moveDirectory(long index, String destUrl);
 	public boolean copyDirectory(long index, String destUrl);
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

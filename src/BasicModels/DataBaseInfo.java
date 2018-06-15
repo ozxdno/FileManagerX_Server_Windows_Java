@@ -5,17 +5,26 @@ public class DataBaseInfo implements Tools.IPublic{
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	private long index;
+	private long depotIndex;
 	private BasicEnums.DataBaseType type;
 	private MachineInfo machineInfo;
-	private String url;
+	private String url; // db 文件的本地路径（不包含IP/Port）
 	private String dbName;
 	private String loginName;
 	private String password;
+	private BasicModels.DepotInfo depotInfo;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean setIndex(long index) {
 		this.index = index;
+		return true;
+	}
+	public boolean setIndex() {
+		return true;
+	}
+	public boolean setDepotIndex(long depotIndex) {
+		this.depotIndex = depotIndex;
 		return true;
 	}
 	public boolean setType(BasicEnums.DataBaseType type) {
@@ -57,11 +66,21 @@ public class DataBaseInfo implements Tools.IPublic{
 		this.password = password;
 		return true;
 	}
+	public boolean setDepotInfo(BasicModels.DepotInfo depotInfo) {
+		if(depotInfo == null) {
+			return false;
+		}
+		this.depotInfo = depotInfo;
+		return true;
+	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public long getIndex() {
 		return this.index;
+	}
+	public long getDepotIndex() {
+		return this.depotIndex;
 	}
 	public BasicEnums.DataBaseType getType() {
 		return this.type;
@@ -81,6 +100,9 @@ public class DataBaseInfo implements Tools.IPublic{
 	public String getPassword() {
 		return this.password;
 	}
+	public DepotInfo getDepotInfo() {
+		return this.depotInfo;
+	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -93,12 +115,14 @@ public class DataBaseInfo implements Tools.IPublic{
 	}
 	private void initThis() {
 		this.index = -1;
+		this.depotIndex = -1;
 		this.type = BasicEnums.DataBaseType.Memory;
 		this.machineInfo = new MachineInfo();
 		this.url = "";
 		this.dbName = "";
 		this.loginName = "";
 		this.password = "";
+		this.depotInfo = new DepotInfo();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -107,36 +131,46 @@ public class DataBaseInfo implements Tools.IPublic{
 		initThis();
 	}
 	public String toString() {
-		return dbName;
+		String name = this.dbName;
+		if(name == null || name.length() == 0) {
+			name = "No Name";
+		}
+		String url = this.machineInfo.getUrl() + "\\" + this.url;
+		return "[" + name + "]: " + url;
 	}
 	public String output() {
-		Config c = new Config(this.machineInfo.output());
-		c.setField("DataBaseInfo");
-		c.addToTop(this.type.ordinal());;
-		c.addToTop(this.index);
+		Config c = new Config("DataBaseInfo = ");
+		c.addToBottom(index);
+		c.addToBottom(depotIndex);
+		c.addToBottom(this.type.ordinal());
+		c.addToBottom(new Config(this.machineInfo.output()));
 		c.addToBottom(url);
 		c.addToBottom(dbName);
 		c.addToBottom(loginName);
 		c.addToBottom(password);
 		return c.output();
 	}
-	public boolean input(String in) {
+	public String input(String in) {
 		Config c = new Config(in);
 		this.index = c.fetchFirstLong();
-		if(!c.getIsOK()) { return false; }
+		if(!c.getIsOK()) { return null; }
+		this.depotIndex = c.fetchFirstLong();
+		if(!c.getIsOK()) { return null; }
 		this.type = BasicEnums.DataBaseType.values()[c.fetchFirstInt()];
-		if(!c.getIsOK()) { return false; }
-		this.password = c.fetchLastString();
-		if(!c.getIsOK()) { return false; }
-		this.loginName = c.fetchLastString();
-		if(!c.getIsOK()) { return false; }
-		this.dbName = c.fetchLastString();
-		if(!c.getIsOK()) { return false; }
-		this.url = c.fetchLastString();
-		if(!c.getIsOK()) { return false; }
-		this.machineInfo.input(c.output());
-		if(!c.getIsOK()) { return false; }
-		return false;
+		if(!c.getIsOK()) { return null; }
+		in = this.machineInfo.input(c.output());
+		if(in == null) { return null; }
+		c.setValue(in);
+		this.url = c.fetchFirstString();
+		if(!c.getIsOK()) { return null; }
+		this.dbName = c.fetchFirstString();
+		if(!c.getIsOK()) { return null; }
+		this.loginName = c.fetchFirstString();
+		if(!c.getIsOK()) { return null; }
+		this.password = c.fetchFirstString();
+		if(!c.getIsOK()) { return null; }
+		
+		return c.output();
 	}
 	public void copyReference(Object o) {
 		DataBaseInfo d = (DataBaseInfo)o;
@@ -153,6 +187,12 @@ public class DataBaseInfo implements Tools.IPublic{
 		this.dbName = new String(d.dbName);
 		this.loginName = new String(d.loginName);
 		this.password = new String(d.password);
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public boolean isLocal() {
+		return this.machineInfo.isLocal();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
