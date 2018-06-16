@@ -121,6 +121,9 @@ public class RemoteSQLManager implements IDBManager {
 		return false;
 	}
 	
+	public boolean updataConfigurations() {
+		return true;
+	}
 	public boolean updataFolder(BasicModels.Folder folder) {
 		return false;
 	}

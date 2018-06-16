@@ -144,6 +144,20 @@ public class LocalSQLManager implements IDBManager{
 		return false;
 	}
 	
+	public boolean updataConfigurations() {
+		String exp = "UPDATA Configurations SET " + 
+			"Next_FileIndex = " + String.valueOf(Globals.Configurations.Next_FileIndex) + ", " +
+			"Next_MachineIndex = " + String.valueOf(Globals.Configurations.Next_MachineIndex) + ", " +
+			"Next_UserIndex = " + String.valueOf(Globals.Configurations.Next_UserIndex) + ", " +
+			"Next_DepotIndex = " + String.valueOf(Globals.Configurations.Next_DepotIndex) + ", " +
+			"Next_DataBaseIndex = " + String.valueOf(Globals.Configurations.Next_DataBaseIndex) + ";";
+		try {
+			statement.executeUpdate(exp);
+			return true;
+		}  catch(Exception e) {
+			return false;
+		}
+	}
 	public boolean updataFolder(BasicModels.Folder folder) {
 		
 		return false;

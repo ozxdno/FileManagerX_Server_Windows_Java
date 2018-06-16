@@ -1,7 +1,5 @@
 package Processes;
 
-import java.util.*;
-
 public class InitializeProcess extends Thread implements IProcess {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -204,11 +202,9 @@ public class InitializeProcess extends Thread implements IProcess {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean initialize(Object infos) {
-		@SuppressWarnings("unchecked")
-		ArrayList<Object> os = (ArrayList<Object>)infos;
-		
-		this.setThisMachineInfo((BasicModels.MachineInfo)os.get(0));
-		this.setConfigurations((BasicModels.DataBaseInfo)os.get(1));
+		Object[] os = (Object[])infos;
+		this.setThisMachineInfo((BasicModels.MachineInfo)os[0]);
+		this.setConfigurations((BasicModels.DataBaseInfo)os[1]);
 		
 		return true;
 	}

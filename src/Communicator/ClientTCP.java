@@ -1,59 +1,38 @@
 package Communicator;
 
+import java.util.*;
+
 public class ClientTCP implements IClientLinker{
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	private BasicModels.MachineInfo serverMachineInfo;
-	private BasicModels.MachineInfo clientMachineInfo;
-	private BasicModels.User user;
-	private ClientConnection connection;
-	
+	private List<ClientConnection> connections;
+	private long permitIdle;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public boolean setServerMachineInfo(BasicModels.MachineInfo serverMachineInfo) {
-		if(serverMachineInfo == null) {
+	public boolean setConnections(List<ClientConnection> connections) {
+		if(connections == null) {
 			return false;
 		}
-		this.serverMachineInfo = serverMachineInfo;
+		this.connections = connections;
 		return true;
 	}
-	public boolean setClientMachineInfo(BasicModels.MachineInfo clientMachineInfo) {
-		if(clientMachineInfo == null) {
-			return false;
+	public boolean setPermitIdle(long permitIdle) {
+		if(permitIdle > 0) {
+			this.permitIdle = permitIdle;
+			return true;
 		}
-		this.clientMachineInfo = clientMachineInfo;
-		return true;
-	}
-	public boolean setUser(BasicModels.User user) {
-		if(user == null) {
-			return false;
-		}
-		this.user = user;
-		return true;
-	}
-	public boolean setConnection(ClientConnection connection) {
-		if(connection == null) {
-			return false;
-		}
-		this.connection = connection;
-		return true;
+		return false;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public BasicModels.MachineInfo getServerMachineInfo() {
-		return this.serverMachineInfo;
+	public List<ClientConnection> getConnections() {
+		return this.connections;
 	}
-	public BasicModels.MachineInfo getClientMachineInfo() {
-		return this.clientMachineInfo;
-	}
-	public BasicModels.User getUser() {
-		return this.user;
-	}
-	public ClientConnection getConnection() {
-		return this.connection;
+	public long getPermitIdle() {
+		return this.permitIdle;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -61,58 +40,95 @@ public class ClientTCP implements IClientLinker{
 	public ClientTCP() {
 		initThis();
 	}
-	public ClientTCP(BasicModels.MachineInfo serverMachineInfo, BasicModels.MachineInfo clientMachineInfo) {
-		initThis();
-		this.setServerMachineInfo(serverMachineInfo);
-		this.setClientMachineInfo(clientMachineInfo);
-	}
 	private void initThis() {
-		serverMachineInfo = null;
-		clientMachineInfo = null;
-		user = null;
+		if(this.connections == null) {
+			this.connections = new ArrayList<ClientConnection>();
+		}
+		this.connections.clear();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	public boolean isRunning() {
-		if(this.connection == null) {
+
+	public boolean add(ClientConnection connection) {
+		if(connection == null) {
 			return false;
 		}
-		return this.connection.isRunning();
-	}
-	
-	public boolean initialize(Object infos) {
-		BasicModels.MachineInfo[] ms = (BasicModels.MachineInfo[])infos;
-		if(ms.length != 2) {
-			return false;
-		}
-		
-		this.setServerMachineInfo(ms[0]);
-		this.setClientMachineInfo(ms[1]);
+		this.connections.add(connection);
 		return true;
 	}
-	
-	public boolean connect() {
-		disconnect();
-		try {
-			java.net.InetAddress ip = java.net.InetAddress.getByName(this.serverMachineInfo.getIp());
-			int port = this.serverMachineInfo.getPort();
-			java.net.Socket s = new java.net.Socket(ip,port);
-			this.connection = new ClientConnection();
-			this.connection.setServerMachineInfo(serverMachineInfo);
-			this.connection.setClientMachineInfo(clientMachineInfo);
-			this.connection.setSocket(s);
-			this.connection.start();
-			return true;
-		} catch(Exception e) {
-			return false;
+	public void removeIdleConnections() {
+		for(int i=this.connections.size() - 1; i>=0; i--) {
+			if(!this.connections.get(i).isRunning()) {
+				this.connections.get(i).disconnect();
+				this.connections.remove(i);
+				continue;
+			}
+			long ticks1 = Tools.Time.getTicks();
+			long ticks2 = this.connections.get(i).getLastReceiveTime();
+			long passed = ticks1 - ticks2;
+			if(passed > this.permitIdle) {
+				this.connections.get(i).disconnect();
+				this.connections.remove(i);
+			}
 		}
 	}
-	public void disconnect() {
-		if(this.connection == null) {
+	public void removeAllConnections() {
+		for(int i=this.connections.size()-1; i>=0; i--) {
+			this.connections.get(i).disconnect();
+			this.connections.remove(i);
+		}
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public int indexOf(String serverIp) {
+		for(int i=0; i<this.connections.size(); i++) {
+			if(this.connections.get(i).getServerMachineInfo().getIp().equals(serverIp)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+	public ClientConnection search(String serverIp) {
+		int idx = this.indexOf(serverIp);
+		if(idx < 0) {
+			return null;
+		}
+		return this.connections.get(idx);
+	}
+	public void remove(String serverIp) {
+		int idx = this.indexOf(serverIp);
+		if(idx < 0) {
 			return;
 		}
-		this.connection.disconnect();
+		
+		this.connections.get(idx).disconnect();
+		this.connections.remove(idx);
+	}
+	
+	public int indexOf(long userIndex) {
+		for(int i=0; i<this.connections.size(); i++) {
+			if(this.connections.get(i).getUser().getIndex() == userIndex) {
+				return i;
+			}
+		}
+		return -1;
+	}
+	public ClientConnection search(long userIndex) {
+		int idx = this.indexOf(userIndex);
+		if(idx < 0) {
+			return null;
+		}
+		return this.connections.get(idx);
+	}
+	public void remove(long userIndex) {
+		int idx = this.indexOf(userIndex);
+		if(idx < 0) {
+			return;
+		}
+		
+		this.connections.get(idx).disconnect();
+		this.connections.remove(idx);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

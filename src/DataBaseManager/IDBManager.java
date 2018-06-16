@@ -17,5 +17,6 @@ public interface IDBManager {
 	
 	public boolean updataFolders(BasicCollections.Folders folders);
 	
+	public boolean updataConfigurations();
 	public boolean updataFolder(BasicModels.Folder folder);
 }

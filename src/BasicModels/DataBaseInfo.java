@@ -8,7 +8,7 @@ public class DataBaseInfo implements Tools.IPublic{
 	private long depotIndex;
 	private BasicEnums.DataBaseType type;
 	private MachineInfo machineInfo;
-	private String url; // db 文件的本地路径（不包含IP/Port）
+	private String url; // 对 TXT型数据库有效
 	private String dbName;
 	private String loginName;
 	private String password;

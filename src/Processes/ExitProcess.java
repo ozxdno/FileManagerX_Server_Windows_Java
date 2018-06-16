@@ -41,6 +41,23 @@ public class ExitProcess extends Thread implements IProcess{
 	}
 	public void run() {
 		
+		this.finished = false;
+		this.running = true;
+		this.abort = false;
+		this.stop = false;
+		
+		// step1: disconnect all server connections and disconnect server
+		//Globals.Datas.Server.
+		
+		// step2: disconnect all client connections
+		Globals.Datas.Client.removeAllConnections();
+		
+		// step3: save config to database
+		Globals.Datas.DBManager.updataConfigurations();
+		Globals.Datas.DBManager.disconnect();
+		
+		this.finished = true;
+		this.running = false;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

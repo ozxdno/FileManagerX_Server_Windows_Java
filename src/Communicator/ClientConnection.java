@@ -26,6 +26,8 @@ public class ClientConnection extends Thread implements IClientConnection{
 	private boolean running;
 	private boolean busy;
 	
+	private long lastReceiveTime;
+	
 	private byte[] receiveBuffer;
 	private byte[] sendBuffer;
 	private int bufferSize;
@@ -100,6 +102,18 @@ public class ClientConnection extends Thread implements IClientConnection{
 		return true;
 	}
 	
+	public boolean setLastReceiveTime(long lastReceiveTime) {
+		if(lastReceiveTime < 0) {
+			return false;
+		}
+		this.lastReceiveTime = lastReceiveTime;
+		return true;
+	}
+	public boolean setLastReceiveTime() {
+		this.lastReceiveTime = Tools.Time.getTicks();
+		return true;
+	}
+	
 	public boolean setBufferSize(int bufferSize) {
 		if(bufferSize < 0) {
 			return false;
@@ -157,6 +171,10 @@ public class ClientConnection extends Thread implements IClientConnection{
 	}
 	public boolean isBusy() {
 		return this.busy;
+	}
+	
+	public long getLastReceiveTime() {
+		return this.lastReceiveTime;
 	}
 	
 	public int getBufferSize() {
@@ -239,6 +257,19 @@ public class ClientConnection extends Thread implements IClientConnection{
 	}
 	public boolean sendFile(String url) {
 		return true;
+	}
+	
+	public boolean connect() {
+		disconnect();
+		try {
+			java.net.InetAddress ip = java.net.InetAddress.getByName(this.serverMachineInfo.getIp());
+			int port = this.serverMachineInfo.getPort();
+			this.socket = new java.net.Socket(ip,port);
+			this.start();
+			return true;
+		} catch(Exception e) {
+			return false;
+		}
 	}
 	
 	public void disconnect() {

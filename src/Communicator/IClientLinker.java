@@ -1,12 +1,24 @@
 package Communicator;
 
+import java.util.List;
+
 public interface IClientLinker {
 
-	public boolean isRunning();
+	public boolean setConnections(List<ClientConnection> connections);
+	public boolean setPermitIdle(long permitIdle);
 	
-	public boolean initialize(Object infos);
-	public boolean connect();
-	public void disconnect();
+	public List<ClientConnection> getConnections();
+	public long getPermitIdle();
 	
-	public IClientConnection getConnection();
+	public boolean add(ClientConnection connection);
+	public void removeIdleConnections();
+	public void removeAllConnections();
+	
+	public int indexOf(String serverIp);
+	public ClientConnection search(String serverIp);
+	public void remove(String serverIp);
+	
+	public int indexOf(long userIndex);
+	public ClientConnection search(long userIndex);
+	public void remove(long userIndex);
 }

@@ -4,6 +4,8 @@ public class Datas {
 
 	public final static BasicCollections.Errors Errors = new BasicCollections.Errors();
 	
+	public final static DataBaseManager.IDBManager DBManager = new DataBaseManager.DBManager();
+	
 	public final static Communicator.IServerScanner Server = new Communicator.ServerTCP();
 	public final static Communicator.IClientLinker Client = new Communicator.ClientTCP();
 	

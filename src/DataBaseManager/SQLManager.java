@@ -84,6 +84,9 @@ public class SQLManager implements IDBManager{
 		return this.manager.updataFolders(folders);
 	}
 	
+	public boolean updataConfigurations() {
+		return this.manager.updataConfigurations();
+	}
 	public boolean updataFolder(BasicModels.Folder folder) {
 		return this.manager.updataFolder(folder);
 	}
