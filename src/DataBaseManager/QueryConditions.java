@@ -46,10 +46,14 @@ public class QueryConditions implements Tools.IPublic {
 		if(content == null || content.size() == 0) {
 			return "Empty";
 		}
-		String res = content.get(0).toString();
+		String res = "";
 		for(QueryCondition m : content) {
-			res += ", " + m.toString();
+			res += m.toString() + ", ";
 		}
+		if(res.length() > 0) {
+			res = res.substring(0, res.length()-3);
+		}
+		
 		return res;
 	}
 	public String output() {

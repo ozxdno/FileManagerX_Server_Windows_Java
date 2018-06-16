@@ -490,7 +490,7 @@ public class Url {
 	}
 	
 	public final static boolean isIp(java.lang.String ip) {
-		java.lang.String format = "([0-9]{1,3}.){4}";
+		java.lang.String format = "([0-9]{1,3}.){3}[0-9]{1,3}";
 		return ip.matches(format);
 	}
 	public final static boolean isIpFirstItem(java.lang.String url) {

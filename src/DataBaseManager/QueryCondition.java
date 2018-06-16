@@ -8,6 +8,7 @@ public class QueryCondition implements Tools.IPublic {
 	private String uBound;
 	private String dBound;
 	private String equal;
+	private String like;
 	private Relation relationToNext;
 	private boolean equalUBound;
 	private boolean equalDBound;
@@ -33,6 +34,10 @@ public class QueryCondition implements Tools.IPublic {
 		this.equal = equal;
 		return true;
 	}
+	public boolean setLike(String like) {
+		this.like = like;
+		return true;
+	}
 	public boolean setRelationToNext(Relation r) {
 		this.relationToNext = r;
 		return true;
@@ -52,8 +57,17 @@ public class QueryCondition implements Tools.IPublic {
 	public String getEqual() {
 		return this.equal;
 	}
+	public String getLike() {
+		return this.like;
+	}
 	public Relation getRelationToNext() {
 		return this.relationToNext;
+	}
+	public boolean getEqualUBound() {
+		return this.equalUBound;
+	}
+	public boolean getEqualDBound() {
+		return this.equalDBound;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,6 +79,8 @@ public class QueryCondition implements Tools.IPublic {
 		this.itemName = "";
 		this.uBound = null;
 		this.dBound = null;
+		this.equal = null;
+		this.like = null;
 		this.relationToNext = Relation.OR;
 		this.equalUBound = true;
 		this.equalDBound = true;
@@ -78,10 +94,12 @@ public class QueryCondition implements Tools.IPublic {
 	public String toString() {
 		String r = "";
 		if(this.relationToNext == Relation.AND) r = " [&] ";
-		if(this.relationToNext == Relation.NOT) r = " [!] ";
-		if(this.relationToNext == Relation.OR ) r = " [|] ";
+		if(this.relationToNext == Relation.OR) r = " [|] ";
 		
 		String sign = "";
+		if(this.like != null) {
+			return this.itemName + " LIKE " + this.like + r;
+		}
 		if(this.equal != null) {
 			return this.itemName + " == " + this.equal + r;
 		}
@@ -115,6 +133,7 @@ public class QueryCondition implements Tools.IPublic {
 		c.addToBottom(this.uBound);
 		c.addToBottom(this.dBound);
 		c.addToBottom(this.equal);
+		c.addToBottom(this.like);
 		c.addToBottom(this.relationToNext.ordinal());
 		c.addToBottom(this.equalUBound);
 		c.addToBottom(this.equalDBound);
@@ -130,6 +149,8 @@ public class QueryCondition implements Tools.IPublic {
 		if(!c.getIsOK()) { return null; }
 		this.equal = c.fetchFirstString();
 		if(!c.getIsOK()) { return null; }
+		this.like = c.fetchFirstString();
+		if(!c.getIsOK()) { return null; }
 		this.relationToNext = Relation.values()[c.fetchFirstInt()];
 		if(!c.getIsOK()) { return null; }
 		this.equalUBound = c.fetchFirstBoolean();
@@ -144,6 +165,7 @@ public class QueryCondition implements Tools.IPublic {
 		this.uBound = q.uBound;
 		this.dBound = q.dBound;
 		this.equal = q.equal;
+		this.like = q.like;
 		this.relationToNext = q.relationToNext;
 		this.equalUBound = q.equalUBound;
 		this.equalDBound = q.equalDBound;
@@ -154,6 +176,7 @@ public class QueryCondition implements Tools.IPublic {
 		this.uBound = new String(q.uBound);
 		this.dBound = new String(q.dBound);
 		this.equal = new String(q.equal);
+		this.like = new String(q.like);
 		this.relationToNext = q.relationToNext;
 		this.equalUBound = q.equalUBound;
 		this.equalDBound = q.equalDBound;

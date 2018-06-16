@@ -29,7 +29,14 @@ public class MachineInfo implements Tools.IPublic {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public boolean setNextIndex() {
+	public boolean setIndex(long index) {
+		if(index < 0) {
+			return false;
+		}
+		this.index = index;
+		return true;
+	}
+	public boolean setIndex() {
 		this.index = Globals.Configurations.Next_MachineIndex + 1;
 		Globals.Configurations.Next_MachineIndex = index;
 		return true;
@@ -46,7 +53,7 @@ public class MachineInfo implements Tools.IPublic {
 		return false;
 	}
 	public boolean setPort(int port) {
-		if(100 <= port && port < 65536) {
+		if(0 <= port && port < 65536) {
 			this.port = port;
 			return true;
 		}
@@ -62,6 +69,17 @@ public class MachineInfo implements Tools.IPublic {
 		initThis();
 		setIp(Tools.Url.getIp(url));
 		setPort(Tools.Url.getPort(url));
+	}
+	public MachineInfo(int port) {
+		initThis();
+		try {
+			java.net.InetAddress adr = java.net.InetAddress.getLocalHost();
+			this.ip = adr.getHostAddress().toString();
+			this.name = adr.getHostName().toString();
+			this.setPort(port);
+		} catch(Exception e) {
+			;
+		}
 	}
 	public MachineInfo(String ip, int port) {
 		initThis();
@@ -130,7 +148,7 @@ public class MachineInfo implements Tools.IPublic {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public boolean isLocal() {
-		return ip.equals(Globals.Configurations.LocalMachineIP) && port == Globals.Configurations.LocalMachinePort;
+		return ip.equals(Globals.Configurations.ThisMachine.getIp());
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

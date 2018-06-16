@@ -41,7 +41,6 @@ public class LocalDepotManager implements IDepotManager{
 		try {
 			String url = this.file.getLocalUrl();
 			java.io.File sour = new java.io.File(url);
-			boolean ex = sour.exists();
 			url = Tools.Url.setName(url, name);
 			java.io.File dest = new java.io.File(url);
 			return sour.renameTo(dest);
@@ -82,11 +81,28 @@ public class LocalDepotManager implements IDepotManager{
 		
 	}
 	public boolean copyFile(String destUrl) {
+		return this.copyFileCore(this.file.getLocalUrl(), Tools.Url.getLocalUrl(destUrl));
+	}
+	
+	public boolean renameDirectory(String name) {
+		return renameFile(name);
+	}
+	public boolean deleteDirectory() {
+		return this.deleteDirectoryCore(file.getLocalUrl());
+	}
+	public boolean moveDirectory(String destUrl) {
+		return moveFile(destUrl);
+	}
+	public boolean copyDirectory(String destUrl) {
+		return this.copyDirectoryCore(file.getLocalUrl(), Tools.Url.getLocalUrl(destUrl));
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	private boolean copyFileCore(String sourLocalUrl, String destLocalUrl) {
 		try {
-			String url = this.file.getLocalUrl();
-			java.io.File sour = new java.io.File(url);
-			url = Tools.Url.getLocalUrl(destUrl);
-			java.io.File dest = new java.io.File(url);
+			java.io.File sour = new java.io.File(sourLocalUrl);
+			java.io.File dest = new java.io.File(destLocalUrl);
 			
 			java.io.FileInputStream is = new java.io.FileInputStream(sour);
 			java.io.FileOutputStream os = new java.io.FileOutputStream(dest);
@@ -94,6 +110,7 @@ public class LocalDepotManager implements IDepotManager{
 	        int n=0;
 	        while((n=is.read(b))!=-1){
 	            os.write(b, 0, n);
+	            os.flush();
 	        }
 	        
 	        is.close();
@@ -104,17 +121,48 @@ public class LocalDepotManager implements IDepotManager{
 		}
 	}
 	
-	public boolean renameDirectory(String name) {
-		return renameFile(name);
+	private boolean deleteDirectoryCore(String localUrl) {
+		try {
+			boolean ok = true;
+			java.io.File sour = new java.io.File(localUrl);
+			java.io.File[] subfiles = sour.listFiles();
+			for(java.io.File f : subfiles) {
+				if(f.isFile()) {
+					ok &= f.delete();
+				}
+				if(f.isDirectory()) {
+					ok &= deleteDirectoryCore(f.getAbsolutePath());
+				}
+			}
+			sour.delete();
+			return ok;
+		} catch(Exception e) {
+			return false;
+		}
 	}
-	public boolean deleteDirectory() {
-		return deleteFile();
-	}
-	public boolean moveDirectory(String destUrl) {
-		return moveFile(destUrl);
-	}
-	public boolean copyDirectory(String destUrl) {
-		return false;
+	private boolean copyDirectoryCore(String sourLocalUrl, String destLocalUrl) {
+		try {
+			boolean ok = true;
+			java.io.File sour = new java.io.File(sourLocalUrl);
+			java.io.File dest = new java.io.File(destLocalUrl);
+			
+			if(!dest.exists()) {
+				ok &= dest.mkdirs();
+			}
+			
+			java.io.File[] subfiles = sour.listFiles();
+			for(java.io.File f : subfiles) {
+				if(f.isFile()) {
+					ok &= this.copyFileCore(f.getAbsolutePath(), destLocalUrl+"\\"+f.getName());
+				}
+				if(f.isDirectory()) {
+					ok &= this.copyDirectoryCore(f.getAbsolutePath(), destLocalUrl+"\\"+f.getName());
+				}
+			}
+			return ok;
+		} catch(Exception e) {
+			return false;
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

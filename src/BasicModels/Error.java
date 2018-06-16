@@ -7,6 +7,7 @@ public class Error implements Tools.IPublic {
 	private BasicEnums.ErrorType type;
 	private long time;
 	private BasicEnums.ErrorLevel level;
+	private String reason;
 	private String tip;
 	private String detail;
 	
@@ -29,6 +30,9 @@ public class Error implements Tools.IPublic {
 	}
 	public BasicEnums.ErrorLevel getLevel() {
 		return level;
+	}
+	public String getReason() {
+		return reason;
 	}
 	public String getTip() {
 		return tip;
@@ -53,6 +57,13 @@ public class Error implements Tools.IPublic {
 	}
 	public boolean setLevel(BasicEnums.ErrorLevel level) {
 		this.level = level;
+		return true;
+	}
+	public boolean setReason(String reason) {
+		if(reason == null) {
+			return false;
+		}
+		this.reason = reason;
 		return true;
 	}
 	public boolean setTip(String tip) {
@@ -81,9 +92,10 @@ public class Error implements Tools.IPublic {
 		this.setTime();
 	}
 	private void initThis() {
-		type = BasicEnums.ErrorType.Normal;
-		time = 0;
+		type = BasicEnums.ErrorType.NORMAL;
+		time = Tools.Time.getTicks();
 		level = BasicEnums.ErrorLevel.Normal;
+		reason = "";
 		tip = "";
 		detail = "";
 	}
@@ -94,13 +106,14 @@ public class Error implements Tools.IPublic {
 		initThis();
 	}
 	public String toString() {
-		return "[" + this.getLongTime() + "] " + type.toString() + ": " + tip;
+		return "[" + this.getLongTime() + "] " + type.toString() + ": " + reason;
 	}
 	public String output() {
 		BasicModels.Config c = new BasicModels.Config("Error = ");
 		c.addToBottom(type.ordinal());
 		c.addToBottom(time);
 		c.addToBottom(level.ordinal());
+		c.addToBottom(reason);
 		c.addToBottom(tip);
 		c.addToBottom(detail);
 		return c.output();
@@ -113,6 +126,8 @@ public class Error implements Tools.IPublic {
 		if(!c.getIsOK()) { return null; }
 		level = BasicEnums.ErrorLevel.values()[c.fetchFirstInt()];
 		if(!c.getIsOK()) { return null; }
+		reason = c.fetchFirstString();
+		if(!c.getIsOK()) { return null; }
 		tip = c.fetchFirstString();
 		if(!c.getIsOK()) { return null; }
 		detail = c.fetchFirstString();
@@ -124,6 +139,7 @@ public class Error implements Tools.IPublic {
 		type = e.type;
 		time = e.time;
 		level = e.level;
+		reason = e.reason;
 		tip = e.tip;
 		detail = e.detail;
 	}
@@ -132,6 +148,7 @@ public class Error implements Tools.IPublic {
 		type = e.type;
 		time = e.time;
 		level = e.level;
+		reason = new String(e.reason);
 		tip = new String(e.tip);
 		detail = new String(e.detail);
 	}

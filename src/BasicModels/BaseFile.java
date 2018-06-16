@@ -94,6 +94,11 @@ public class BaseFile implements Tools.IPublic {
 		this.index = index;
 		return true;
 	}
+	public boolean setIndex() {
+		this.index = Globals.Configurations.Next_FileIndex + 1;
+		Globals.Configurations.Next_FileIndex = this.index;
+		return true;
+	}
 	public boolean setLeft(BaseFile left) {
 		this.left = left;
 		return true;
@@ -108,10 +113,6 @@ public class BaseFile implements Tools.IPublic {
 	}
 	public boolean setSon(BaseFile son) {
 		this.son = son;
-		return true;
-	}
-	public boolean setNextIndex() {
-		
 		return true;
 	}
 	public boolean setUrl(String url) {
@@ -162,7 +163,6 @@ public class BaseFile implements Tools.IPublic {
 	
 	public BaseFile() {
 		initThis();
-		setNextIndex();
 	}
 	public BaseFile(String url) {
 		initThis();
@@ -197,9 +197,9 @@ public class BaseFile implements Tools.IPublic {
 	@Override
 	public String toString() {
 		if(url == null || url.length() == 0) {
-			return "Undefined";
+			return "[Undefined]";
 		}
-		return this.getName();
+		return this.url;
 	}
 	public String output() {
 		Config c = new Config( "BaseFile = " );

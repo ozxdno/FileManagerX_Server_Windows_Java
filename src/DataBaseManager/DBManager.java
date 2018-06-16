@@ -1,6 +1,6 @@
 package DataBaseManager;
 
-public class SQLManager implements IDBManager{
+public class DBManager implements IDBManager{
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -36,10 +36,10 @@ public class SQLManager implements IDBManager{
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public SQLManager() {
+	public DBManager() {
 		initThis();
 	}
-	public SQLManager(BasicModels.DataBaseInfo dbInfo) {
+	public DBManager(BasicModels.DataBaseInfo dbInfo) {
 		initThis();
 		this.setDBInfo(dbInfo);
 	}
@@ -53,13 +53,11 @@ public class SQLManager implements IDBManager{
 	public boolean initialize(Object infos) {
 		this.setDBInfo((BasicModels.DataBaseInfo)infos);
 		
-		if(this.dbInfo.isLocal()) {
-			this.manager = new LocalSQLManager();
-			this.manager.initialize(dbInfo);
-		} else {
-			this.manager = new RemoteSQLManager();
+		if(this.dbInfo.getType() == BasicEnums.DataBaseType.SQL) {
+			this.manager = new SQLManager();
 			this.manager.initialize(dbInfo);
 		}
+		
 		return true;
 	}
 	public boolean connect() {

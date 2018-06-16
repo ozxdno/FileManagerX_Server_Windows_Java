@@ -18,6 +18,8 @@ public class DepotInfo implements Tools.IPublic {
 		return true;
 	}
 	public boolean setIndex() {
+		this.index = Globals.Configurations.Next_DepotIndex + 1;
+		Globals.Configurations.Next_DepotIndex = this.index;
 		return true;
 	}
 	public boolean setDBIndex(long dbIndex) {
@@ -87,10 +89,7 @@ public class DepotInfo implements Tools.IPublic {
 		}
 		this.machineInfo.clear();
 		url = "";
-		if(this.dbInfo == null) {
-			this.dbInfo = new DataBaseInfo();
-		}
-		this.dbInfo.clear();
+		this.dbInfo = null;
 		name = "";
 	}
 	

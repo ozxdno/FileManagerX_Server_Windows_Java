@@ -21,6 +21,8 @@ public class DataBaseInfo implements Tools.IPublic{
 		return true;
 	}
 	public boolean setIndex() {
+		this.index = Globals.Configurations.Next_DataBaseIndex + 1;
+		Globals.Configurations.Next_DataBaseIndex = this.index;
 		return true;
 	}
 	public boolean setDepotIndex(long depotIndex) {
@@ -122,7 +124,7 @@ public class DataBaseInfo implements Tools.IPublic{
 		this.dbName = "";
 		this.loginName = "";
 		this.password = "";
-		this.depotInfo = new DepotInfo();
+		this.depotInfo = null;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -192,7 +194,7 @@ public class DataBaseInfo implements Tools.IPublic{
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean isLocal() {
-		return this.machineInfo.isLocal();
+		return this.machineInfo.getIp().equals(Globals.Configurations.DBConfigrations.getMachineInfo().getIp());
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

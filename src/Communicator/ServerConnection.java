@@ -11,15 +11,15 @@ public class ServerConnection extends Thread implements IServerConnection{
 	private BasicModels.MachineInfo clientMachineInfo;
 	private BasicModels.User user;
 	
-	public String receiveCommand;
-	public String replyCommand;
-	public boolean isCommandConnector;
+	private String receiveCommand;
+	private String replyCommand;
+	private boolean isCommandConnector;
 	
-	public BasicModels.BaseFile receiveFile;
-	public BasicModels.BaseFile sendFile;
-	public long totalBytes;
-	public long finishedBytes;
-	public boolean isFileConnector;
+	private BasicModels.BaseFile receiveFile;
+	private BasicModels.BaseFile sendFile;
+	private long totalBytes;
+	private long finishedBytes;
+	private boolean isFileConnector;
 	
 	private Socket socket;
 	private boolean abort;
@@ -70,6 +70,10 @@ public class ServerConnection extends Thread implements IServerConnection{
 		this.replyCommand = replyCommand;
 		return true;
 	}
+	public boolean setIsCommandConnector(boolean isCommandConnector) {
+		this.isCommandConnector = isCommandConnector;
+		return true;
+	}
 	
 	public boolean setReceiveFile(BasicModels.BaseFile f) {
 		if(f == null) {
@@ -83,6 +87,10 @@ public class ServerConnection extends Thread implements IServerConnection{
 			return false;
 		}
 		this.sendFile = f;
+		return true;
+	}
+	public boolean setIsFileConnector(boolean isFileConnector) {
+		this.isFileConnector = isFileConnector;
 		return true;
 	}
 
@@ -201,8 +209,8 @@ public class ServerConnection extends Thread implements IServerConnection{
 		this.replyCommand = "";
 		this.isCommandConnector = true;
 		
-		this.receiveFile = null;
-		this.sendFile = null;
+		this.receiveFile = new BasicModels.BaseFile();
+		this.sendFile = new BasicModels.BaseFile();
 		this.totalBytes = 0;
 		this.finishedBytes = 0;
 		this.isFileConnector = false;
@@ -241,6 +249,14 @@ public class ServerConnection extends Thread implements IServerConnection{
 			return;
 		}
 		
+		DataOutputStream dos = null;
+		FileInputStream fis = null;
+		try {
+			dos = new DataOutputStream(socket.getOutputStream()); 
+		} catch(Exception e) {
+			return;
+		}
+		
 		while(!abort && !socket.isClosed()) {
 			try {
 				if(this.isCommandConnector) {
@@ -249,50 +265,66 @@ public class ServerConnection extends Thread implements IServerConnection{
 						break;
 					}
 					lastReceiveTime = Tools.Time.getTicks();
-					//cmd.setCommand(accept);
-					//send = cmd.deal();
-					pw.println(receiveCommand);
-	                pw.flush();
-				}
-				if(this.isFileConnector) {
-					if(fos == null) {
+					
+					this.replyCommand = receiveCommand;
+					BasicModels.Config c = new BasicModels.Config(receiveCommand);
+					if(c.getField().equals("SendFile")) {
+						this.sendFile.clear();
+						this.isFileConnector = true;
+						this.receiveFile = new BasicModels.BaseFile(c.getValue());
+						this.replyCommand = "Set As File Receiver";
+						
 						fos = new FileOutputStream(new File(receiveFile.getLocalUrl()));
 						this.finishedBytes = 0;
 					}
-					int length = dis.read(receiveBuffer, 0, receiveBuffer.length);
-					if(length > 0) {
-						fos.write(receiveBuffer, 0, length);
-						fos.flush();
-						this.finishedBytes += length;
+					if(c.getField().equals("ReceiveFile")) {
+						this.receiveFile.clear();
+						this.isFileConnector = true;
+						this.sendFile =  new BasicModels.BaseFile(c.getValue());
+						this.replyCommand = "Set As File Sender";
+						
+						fis = new FileInputStream(new File(sendFile.getLocalUrl()));
+						this.finishedBytes = 0;
+					}
+					
+					pw.println(replyCommand);
+	                pw.flush();
+				}
+				if(this.isFileConnector) {
+					if(this.sendFile.getUrl().length() == 0) {
+						int length = dis.read(receiveBuffer, 0, receiveBuffer.length);
+						if(length > 0) {
+							fos.write(receiveBuffer, 0, length);
+							fos.flush();
+							this.finishedBytes += length;
+						}
+						if(length <= this.bufferSize) {
+							fos.close();
+							this.isCommandConnector = true;
+						}
+					}
+					if(this.receiveFile.getUrl().length() == 0) {
+						int length = fis.read(sendBuffer, 0, sendBuffer.length);
+						if (length > 0) {
+			                dos.write(sendBuffer, 0, length);  
+			                dos.flush();
+			                this.finishedBytes += length;
+			            }
+						if(length <= this.bufferSize) {
+							fis.close();
+							this.isCommandConnector = true;
+						}
 					}
 				}
 				
 			}catch(Exception e) {
-				;
+				break;
 			}
 		}
 		running = false;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	public boolean writeCommand(String cmd) {
-		if(this.busy) {
-			return false;
-		}
-		this.replyCommand = cmd;
-		return true;
-	}
-	public String readCommand() {
-		return this.receiveCommand;
-	}
-	
-	public boolean receiveFile(String url) {
-		return true;
-	}
-	public boolean sendFile(String url) {
-		return true;
-	}
 	
 	public void disconnect() {
 		try {

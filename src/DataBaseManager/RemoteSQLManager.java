@@ -109,6 +109,9 @@ public class RemoteSQLManager implements IDBManager {
 		return null;
 	}
 	
+	public boolean QueryConfigurations() {
+		return true;
+	}
 	public BasicModels.Folder QueryFolder(Object conditions) {
 		QueryConditions qc = (QueryConditions)conditions;
 		return null;

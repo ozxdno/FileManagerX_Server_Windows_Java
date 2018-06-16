@@ -63,7 +63,9 @@ public class User implements Tools.IPublic {
 		this.index = index;
 		return true;
 	}
-	public boolean setNextIndex() {
+	public boolean setIndex() {
+		this.index = Globals.Configurations.Next_UserIndex + 1;
+		Globals.Configurations.Next_UserIndex = this.index;
 		return true;
 	}
 	public boolean setLoginName(String loginName) {

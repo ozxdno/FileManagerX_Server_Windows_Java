@@ -12,6 +12,7 @@ public interface IDBManager {
 	
 	public BasicCollections.Folders QueryFolders(Object conditions);
 	
+	public boolean QueryConfigurations();
 	public BasicModels.Folder QueryFolder(Object conditions);
 	
 	public boolean updataFolders(BasicCollections.Folders folders);

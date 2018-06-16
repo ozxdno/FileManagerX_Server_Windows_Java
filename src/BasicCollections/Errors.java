@@ -47,8 +47,8 @@ public class Errors implements Tools.IPublic {
 			return "Empty";
 		}
 		String res = content.get(0).toString();
-		for(BasicModels.Error m : content) {
-			res += ", " + m.toString();
+		for(int i=1; i<content.size(); i++) {
+			res += ", " + content.get(i).toString();
 		}
 		return res;
 	}
