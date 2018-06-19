@@ -2,7 +2,7 @@ package DataBaseManager;
 
 import java.sql.*;
 
-public class LocalSQLManager implements IDBManager{
+public class SQLManager implements Interfaces.IDBManager{
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -43,10 +43,10 @@ public class LocalSQLManager implements IDBManager{
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public LocalSQLManager() {
+	public SQLManager() {
 		initThis();
 	}
-	public LocalSQLManager(BasicModels.DataBaseInfo dbInfo) {
+	public SQLManager(BasicModels.DataBaseInfo dbInfo) {
 		initThis();
 		this.setDBInfo(dbInfo);
 	}
@@ -102,6 +102,327 @@ public class LocalSQLManager implements IDBManager{
 		this.isConnected = false;
 	}
 	
+	public boolean create() {
+		if(!this.createTable_Folders()) {
+			return false;
+		}
+		if(!this.createTable_Files()) {
+			return false;
+		}
+		return true;
+	}
+	public boolean createTable(String tableName, String[] columns, String[] types) {
+		if(tableName == null || columns == null || types == null) {
+			return false;
+		}
+		if(tableName.length() == 0) {
+			return false;
+		}
+		if(columns.length == 0 || types.length == 0 || columns.length != types.length) {
+			return false;
+		}
+		
+		boolean exist = false;
+		try {
+			ResultSet set = this.connection.getMetaData().getTables(null, null, tableName, null);
+			exist = set.next();
+		} catch(Exception e) {
+			;
+		}
+		if(exist) {
+			return true;
+		}
+		
+		try {
+			String exp = "CREATE TABLE " + tableName + " (";
+			for(int i=0; i<columns.length; i++) {
+				exp += columns[i] + " " + types[i] + " NOT NULL ,";
+			}
+			exp = exp.substring(0, exp.length()-2);
+			exp += ");";
+			return statement.executeUpdate(exp) == 0;
+		} catch(Exception e) {
+			return false;
+		}
+	}
+	public boolean createTable_Configurations() {
+		String tableName = "Configurations";
+		String[] columns = new String[] {
+				"Next_FileIndex",
+				"Next_MachineIndex",
+				"Next_UserIndex",
+				"Next_DepotIndex",
+				"Next_DataBaseIndex",
+				"This_Machine",
+				"This_User"
+		};
+		String[] types = new String[] {
+				"BIGINT",
+				"BIGINT",
+				"BIGINT",
+				"BIGINT",
+				"BIGINT",
+				"BIGINT",
+				"BIGINT"
+		};
+		return this.createTable(tableName, columns, types);
+	}
+	public boolean createTable_Files() {
+		String tableName = "Files";
+		String[] columns = new String[] {
+				"Index",
+				"MachineIndex",
+				"DepotIndex",
+				"DataBaseIndex",
+				"FatherIndex",
+				"SonIndex",
+				"URL",
+				"Type",
+				"State",
+				"Modify",
+				"Length",
+				"Score",
+				"Tags"
+		};
+		String[] types = new String[] {
+				"BIGINT",
+				"BIGINT",
+				"BIGINT",
+				"BIGINT",
+				"BIGINT",
+				"BIGINT",
+				"VARCHAR(1024)",
+				"INT",
+				"INT",
+				"BIGINT",
+				"BIGINT",
+				"BIGINT",
+				"VARCHAR(1024)"
+		};
+		return this.createTable(tableName, columns, types);
+	}
+	public boolean createTable_Folders() {
+		String tableName = "Files";
+		String[] columns = new String[] {
+				"Index",
+				"MachineIndex",
+				"DepotIndex",
+				"DataBaseIndex",
+				"FatherIndex",
+				"SonIndex",
+				"URL",
+				"Type",
+				"State",
+				"Modify",
+				"Length",
+				"Score",
+				"Tags"
+		};
+		String[] types = new String[] {
+				"BIGINT",
+				"BIGINT",
+				"BIGINT",
+				"BIGINT",
+				"BIGINT",
+				"BIGINT",
+				"VARCHAR(1024)",
+				"INT",
+				"INT",
+				"BIGINT",
+				"BIGINT",
+				"BIGINT",
+				"VARCHAR(1024)"
+		};
+		return this.createTable(tableName, columns, types);
+	}
+	public boolean createTable_MachineInfo() {
+		String tableName = "MachineInfo";
+		String[] columns = new String[] {
+				"Index",
+				"MachineIndex",
+				"DepotIndex",
+				"DataBaseIndex",
+				"URL",
+				"Type",
+				"State",
+				"Modify",
+				"Length",
+				"Score",
+				"Tags"
+		};
+		String[] types = new String[] {
+				"BIGINT",
+				"BIGINT",
+				"BIGINT",
+				"BIGINT",
+				"VARCHAR(1024)",
+				"INT",
+				"INT",
+				"BIGINT",
+				"BIGINT",
+				"BIGINT",
+				"VARCHAR(1024)"
+		};
+		return this.createTable(tableName, columns, types);
+	}
+	public boolean createTable_DepotInfo() {
+		String tableName = "DepotInfo";
+		String[] columns = new String[] {
+				"Index",
+				"MachineIndex",
+				"DataBaseIndex",
+				"Name",
+				"URL"
+		};
+		String[] types = new String[] {
+				"BIGINT",
+				"BIGINT",
+				"BIGINT",
+				"VARCHAR(1024)",
+				"VARCHAR(1024)"
+		};
+		return this.createTable(tableName, columns, types);
+	}
+	public boolean createTable_DataBaseInfo() {
+		String tableName = "DataBaseInfo";
+		String[] columns = new String[] {
+				"Index",
+				"MachineIndex",
+				"DepotIndex",
+				"DBName",
+				"URL",
+				"Type",
+				"Password"
+		};
+		String[] types = new String[] {
+				"BIGINT",
+				"BIGINT",
+				"BIGINT",
+				"VARCHAR(1024)",
+				"VARCHAR(1024)",
+				"INT",
+				"VARCHAR(1024)"
+		};
+		return this.createTable(tableName, columns, types);
+	}
+	public boolean createTable_Supports() {
+		String tableName = "Supports";
+		String[] columns = new String[] {
+				"Extension",
+				"Type",
+				"Show",
+				"Hide",
+				"IsSupport"
+		};
+		String[] types = new String[] {
+				"VARCHAR(1024)",
+				"INT",
+				"VARCHAR(1024)",
+				"VARCHAR(1024)",
+				"INT"
+		};
+		return this.createTable(tableName, columns, types);
+	}
+	public boolean createTable_Users() {
+		String tableName = "Users";
+		String[] columns = new String[] {
+				"Index",
+				"LoginName",
+				"NickName",
+				"Password",
+				"Email",
+				"Phone",
+				"State",
+				"Priority",
+				"Level",
+				"Experience",
+				"PhotoURL",
+				"Coins",
+				"Money"
+		};
+		String[] types = new String[] {
+				"BIGINT",
+				"VARCHAR(1024)",
+				"VARCHAR(1024)",
+				"VARCHAR(1024)",
+				"VARCHAR(1024)",
+				"VARCHAR(1024)",
+				"INT",
+				"INT",
+				"INT",
+				"BIGINT",
+				"VARCHAR(1024)",
+				"BIGINT",
+				"DOUBLE"
+		};
+		return this.createTable(tableName, columns, types);
+	}
+	public boolean createTable_Invitations() {
+		String tableName = "Invitations";
+		String[] columns = new String[] {
+				"Code",
+				"Priority",
+				"Level",
+				"Experience",
+				"Coins",
+				"Money"
+		};
+		String[] types = new String[] {
+				"VARCHAR(1024)",
+				"INT",
+				"INT",
+				"BIGINT",
+				"BIGINT",
+				"DOUBLE"
+		};
+		return this.createTable(tableName, columns, types);
+	}
+	
+	public boolean delete() {
+		if(!this.deleteTable_Folders()) {
+			return false;
+		}
+		if(!this.deleteTable_Files()) {
+			return false;
+		}
+		return true;
+	}
+	public boolean deleteTable(String tableName) {
+		String exp = "DROP TABLE " + tableName;
+		try {
+			return statement.execute(exp);
+		} catch(Exception e) {
+			return false;
+		}
+	}
+	public boolean deleteTable_Configurations() {
+		return this.deleteTable("Configurations");
+	}
+	public boolean deleteTable_Files() {
+		return this.deleteTable("Files");
+	}
+	public boolean deleteTable_Folders() {
+		return this.deleteTable("Folders");
+	}
+	public boolean deleteTable_MachineInfo() {
+		return this.deleteTable("MachineInfo");
+	}
+	public boolean deleteTable_DepotInfo() {
+		return this.deleteTable("DepotInfo");
+	}
+	public boolean deleteTable_DataBaseInfo() {
+		return this.deleteTable("DataBaseInfo");
+	}
+	public boolean deleteTable_Supports() {
+		return this.deleteTable("Supports");
+	}
+	public boolean deleteTable_Users() {
+		return this.deleteTable("Users");
+	}
+	public boolean deleteTable_Invitations() {
+		return this.deleteTable("Invitations");
+	}
+	
 	public BasicCollections.Folders QueryFolders(Object conditions) {
 		return null;
 	}
@@ -139,6 +460,12 @@ public class LocalSQLManager implements IDBManager{
 			return null;
 		}
 	}
+	public BasicModels.Invitation QueryInvitation(Object conditions) {
+		return null;
+	}
+	public BasicModels.User QueryUser(Object conditions) {
+		return null;
+	}
 	
 	public boolean updataFolders(BasicCollections.Folders folders) {
 		return false;
@@ -161,6 +488,9 @@ public class LocalSQLManager implements IDBManager{
 	public boolean updataFolder(BasicModels.Folder folder) {
 		
 		return false;
+	}
+	public boolean updataUser(BasicModels.User user) {
+		return true;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -239,10 +569,6 @@ public class LocalSQLManager implements IDBManager{
 			(qEnd.getEqualUBound() ? " <= " : " = ") + 
 			 qEnd.getUBound();
 		return c;
-	}
-	
-	private BasicModels.Folder readFolderFromSet(ResultSet set) {
-		return null;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
