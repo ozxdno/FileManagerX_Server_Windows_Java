@@ -3,7 +3,10 @@ package Communicator;
 import java.net.*;
 import java.util.*;
 
-public class ServerTCP implements Tools.IPublic, IServerScanner{
+import Interfaces.IServerConnection;
+import Interfaces.IServerScanner;
+
+public class ServerTCP implements Interfaces.IPublic, IServerScanner{
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -45,7 +48,7 @@ public class ServerTCP implements Tools.IPublic, IServerScanner{
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public void clear() {
-		//initThis();
+		initThis();
 	}
 	public String toString() {
 		return "Server: " + this.serverMachineInfo.getName() + " " + 

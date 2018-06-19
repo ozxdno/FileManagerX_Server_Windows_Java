@@ -2,7 +2,7 @@ package BasicModels;
 
 import java.io.*;
 
-public class BaseFile implements Tools.IPublic {
+public class BaseFile implements Interfaces.IPublic {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -271,7 +271,11 @@ public class BaseFile implements Tools.IPublic {
 		return this;
 	}
 	public boolean exists() {
-		return true;
+		if(!this.isLocal()) {
+			return false;
+		}
+		File f = new File(this.getLocalUrl());
+		return f.exists();
 	}
 	public boolean isLocal() {
 		MachineInfo m = new MachineInfo(this.getMachineUrl());

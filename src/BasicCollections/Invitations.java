@@ -2,7 +2,7 @@ package BasicCollections;
 
 import java.util.*;
 
-public class Invitations implements Tools.IPublic {
+public class Invitations implements Interfaces.IPublic {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	

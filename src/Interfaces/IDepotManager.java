@@ -1,4 +1,4 @@
-package DepotManager;
+package Interfaces;
 
 public interface IDepotManager {
 	

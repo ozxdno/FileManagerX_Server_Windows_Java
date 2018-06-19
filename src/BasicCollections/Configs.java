@@ -2,7 +2,7 @@ package BasicCollections;
 
 import java.util.*;
 
-public class Configs implements Tools.IPublic {
+public class Configs implements Interfaces.IPublic {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	

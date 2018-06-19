@@ -2,7 +2,7 @@ package BasicCollections;
 
 import java.util.*;
 
-public class DataBaseInfos implements Tools.IPublic {
+public class DataBaseInfos implements Interfaces.IPublic {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	

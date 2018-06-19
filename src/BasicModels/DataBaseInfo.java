@@ -1,6 +1,6 @@
 package BasicModels;
 
-public class DataBaseInfo implements Tools.IPublic{
+public class DataBaseInfo implements Interfaces.IPublic{
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -8,7 +8,7 @@ public class DataBaseInfo implements Tools.IPublic{
 	private long depotIndex;
 	private BasicEnums.DataBaseType type;
 	private MachineInfo machineInfo;
-	private String url; // 对 TXT型数据库有效
+	private String url; // 对 TXT型数据库有效, Local Url
 	private String dbName;
 	private String loginName;
 	private String password;
@@ -194,7 +194,7 @@ public class DataBaseInfo implements Tools.IPublic{
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean isLocal() {
-		return this.machineInfo.getIp().equals(Globals.Configurations.DBConfigrations.getMachineInfo().getIp());
+		return this.depotInfo.getMachineInfo().isLocal();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

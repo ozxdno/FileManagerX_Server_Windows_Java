@@ -1,4 +1,4 @@
-package DepotChecker;
+package Interfaces;
 
 public interface IDepotChecker {
 

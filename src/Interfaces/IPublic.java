@@ -1,4 +1,4 @@
-package Tools;
+package Interfaces;
 
 public interface IPublic {
 

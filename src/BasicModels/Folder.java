@@ -2,7 +2,7 @@ package BasicModels;
 
 import java.io.*;
 
-public class Folder extends BaseFile implements Tools.IPublic {
+public class Folder extends BaseFile implements Interfaces.IPublic {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	

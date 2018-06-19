@@ -2,7 +2,7 @@ package DataBaseManager;
 
 import java.util.*;
 
-public class QueryConditions implements Tools.IPublic {
+public class QueryConditions implements Interfaces.IPublic {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	

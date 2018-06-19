@@ -1,6 +1,6 @@
 package BasicModels;
 
-public class MachineInfo implements Tools.IPublic {
+public class MachineInfo implements Interfaces.IPublic {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -148,7 +148,13 @@ public class MachineInfo implements Tools.IPublic {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public boolean isLocal() {
-		return ip.equals(Globals.Configurations.ThisMachine.getIp());
+		try {
+			java.net.InetAddress adr = java.net.InetAddress.getLocalHost();
+			String ip = adr.toString();
+			return ip.equals(this.ip);
+		}catch(Exception e) {
+			return false;
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

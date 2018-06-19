@@ -2,7 +2,7 @@ package BasicCollections;
 
 import java.util.*;
 
-public class Supports implements Tools.IPublic {
+public class Supports implements Interfaces.IPublic {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	

@@ -2,7 +2,7 @@ package BasicCollections;
 
 import java.util.*;
 
-public class Errors implements Tools.IPublic {
+public class Errors implements Interfaces.IPublic {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	

@@ -106,7 +106,7 @@ public class InitializeProcess extends Thread implements IProcess {
 			this.running = false;
 			return;
 		}
-		DataBaseManager.IDBManager dbmanager = new DataBaseManager.DBManager();
+		Interfaces.IDBManager dbmanager = new DataBaseManager.DBManager();
 		operateOK = dbmanager.initialize(configurations);
 		if(!operateOK) {
 			BasicModels.Error e = new BasicModels.Error();
@@ -164,7 +164,7 @@ public class InitializeProcess extends Thread implements IProcess {
 			this.running = false;
 			return;
 		}
-		Communicator.IServerScanner server = new Communicator.ServerTCP();
+		Interfaces.IServerScanner server = new Communicator.ServerTCP();
 		operateOK = server.initialize(thisMachine);
 		if(!operateOK) {
 			BasicModels.Error e = new BasicModels.Error();

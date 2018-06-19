@@ -3,23 +3,24 @@ package Communicator;
 import java.io.*;
 import java.net.*;
 
-public class ClientConnection extends Thread implements IClientConnection{
+public class ClientConnection extends Thread implements Interfaces.IClientConnection{
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	private BasicModels.MachineInfo serverMachineInfo;
 	private BasicModels.MachineInfo clientMachineInfo;
 	private BasicModels.User user;
+	private Interfaces.IExcuteClientCommand excutor;
 	
-	public String receiveCommand;
-	public String replyCommand;
-	public boolean isCommandConnector;
+	private String receiveCommand;
+	private String sendCommand;
+	private boolean isCommandConnector;
 	
-	public BasicModels.BaseFile receiveFile;
-	public BasicModels.BaseFile sendFile;
-	public long totalBytes;
-	public long finishedBytes;
-	public boolean isFileConnector;
+	private BasicModels.BaseFile receiveFile;
+	private BasicModels.BaseFile sendFile;
+	private long totalBytes;
+	private long finishedBytes;
+	private boolean isFileConnector;
 	
 	private Socket socket;
 	private boolean abort;
@@ -55,6 +56,13 @@ public class ClientConnection extends Thread implements IClientConnection{
 		this.user = user;
 		return true;
 	}
+	public boolean setExcutor(Interfaces.IExcuteClientCommand excutor) {
+		if(excutor == null) {
+			return false;
+		}
+		this.excutor = excutor;
+		return true;
+	}
 	
 	public boolean setReceiveCommand(String receiveCommand) {
 		if(receiveCommand == null) {
@@ -63,11 +71,16 @@ public class ClientConnection extends Thread implements IClientConnection{
 		this.receiveCommand = receiveCommand;
 		return true;
 	}
-	public boolean setReplyCommand(String replyCommand) {
-		if(replyCommand == null) {
+	public boolean setSendCommand(String sendCommand) {
+		if(sendCommand == null) {
 			return false;
 		}
-		this.replyCommand = replyCommand;
+		this.sendCommand = sendCommand;
+		return true;
+	}
+	public boolean setIsCommandConnector(boolean isCommandConnector) {
+		this.isCommandConnector = isCommandConnector;
+		this.isFileConnector = !this.isCommandConnector;
 		return true;
 	}
 	
@@ -75,6 +88,7 @@ public class ClientConnection extends Thread implements IClientConnection{
 		if(f == null) {
 			return false;
 		}
+		this.sendFile.clear();
 		this.receiveFile = f;
 		return true;
 	}
@@ -82,7 +96,13 @@ public class ClientConnection extends Thread implements IClientConnection{
 		if(f == null) {
 			return false;
 		}
+		this.receiveFile.clear();
 		this.sendFile = f;
+		return true;
+	}
+	public boolean setIsFileConnector(boolean isFileConnector) {
+		this.isFileConnector = isFileConnector;
+		this.isCommandConnector = !this.isFileConnector;
 		return true;
 	}
 
@@ -92,6 +112,16 @@ public class ClientConnection extends Thread implements IClientConnection{
 		}
 		this.socket = socket;
 		return true;
+	}
+	public boolean setSocket() {
+		try {
+			InetAddress ip = InetAddress.getByName(this.serverMachineInfo.getIp());
+			int port = this.serverMachineInfo.getPort();
+			this.socket = new Socket(ip,port);
+			return true;
+		} catch(Exception e) {
+			return false;
+		}
 	}
 	public boolean setAbort(boolean abort) {
 		this.abort = abort;
@@ -133,12 +163,15 @@ public class ClientConnection extends Thread implements IClientConnection{
 	public BasicModels.User getUser() {
 		return this.user;
 	}
+	public Interfaces.IExcuteClientCommand getExcutor() {
+		return this.excutor;
+	}
 	
 	public String getReceiveCommand() {
 		return this.receiveCommand;
 	}
-	public String getReplyCommand() {
-		return this.replyCommand;
+	public String getSendCommand() {
+		return this.sendCommand;
 	}
 	public boolean isCommandConnector() {
 		return this.isCommandConnector;
@@ -198,9 +231,17 @@ public class ClientConnection extends Thread implements IClientConnection{
 		serverMachineInfo = null;
 		clientMachineInfo = null;
 		user = null;
+		excutor = new ExcuteClientCommand(this);
 		
 		this.receiveCommand = "";
-		this.replyCommand = "";
+		this.sendCommand = "";
+		this.isCommandConnector = true;
+		
+		this.receiveFile = new BasicModels.BaseFile();
+		this.sendFile = new BasicModels.BaseFile();
+		this.totalBytes = 0;
+		this.finishedBytes = 0;
+		this.isFileConnector = false;
 		
 		this.socket = null;
 		this.abort = false;
@@ -208,6 +249,7 @@ public class ClientConnection extends Thread implements IClientConnection{
 		this.busy = false;
 		
 		this.setName("TCP Client Connection");
+		this.setLastReceiveTime();
 		
 		this.bufferSize = 1024;
 		this.receiveBuffer = new byte[this.bufferSize];
@@ -221,19 +263,80 @@ public class ClientConnection extends Thread implements IClientConnection{
 			return;
 		}
 		
-		while(!abort && !socket.isClosed() && receiveCommand != null) {
+		BufferedReader br = null;
+		PrintWriter pw = null;
+		try {
+			br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			pw = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+		}catch(Exception e) {
+			return;
+		}
+		
+		DataInputStream dis = null;
+		FileOutputStream fos = null;
+		try {
+			dis = new DataInputStream(socket.getInputStream());
+		} catch(Exception e) {
+			return;
+		}
+		
+		DataOutputStream dos = null;
+		FileInputStream fis = null;
+		try {
+			dos = new DataOutputStream(socket.getOutputStream()); 
+		} catch(Exception e) {
+			return;
+		}
+		
+		while(!abort && !socket.isClosed()) {
 			try {
-				DataOutputStream sendstream = new DataOutputStream(socket.getOutputStream());
-	            String sendstr = "test";
-	            byte[] sendbyte = sendstr.getBytes();
-	            sendstream.write(sendbyte);
-
-	            DataInputStream recestream =  new DataInputStream(socket.getInputStream());
-	            recestream.read(this.receiveBuffer);
-	            String recestr = new String(this.receiveBuffer);
-	            sendstr = recestr;
+				if(this.isCommandConnector) {
+					if(this.sendCommand == null || this.sendCommand.length() == 0) {
+						continue;
+					}
+					this.sendCommand += '\n';
+					pw.println(this.sendCommand);
+					pw.flush();
+					this.receiveCommand = br.readLine();
+					this.excutor.excute(this.receiveCommand);
+				}
+				if(this.isFileConnector) {
+					if(this.sendFile.getUrl().length() == 0) { // received one file
+						if(fos == null) {
+							fos = new FileOutputStream(new File(receiveFile.getLocalUrl()));
+						}
+						int length = dis.read(receiveBuffer, 0, receiveBuffer.length);
+						if(length > 0) {
+							fos.write(receiveBuffer, 0, length);
+							fos.flush();
+							this.finishedBytes += length;
+						}
+						if(length <= this.bufferSize) {
+							fos.close();
+							fos = null;
+							this.setIsCommandConnector(true);
+						}
+					}
+					if(this.receiveFile.getUrl().length() == 0) { // want to send a file
+						if(fis == null) {
+							fis = new FileInputStream(new File(sendFile.getLocalUrl()));
+						}
+						int length = fis.read(sendBuffer, 0, sendBuffer.length);
+						if (length > 0) {
+			                dos.write(sendBuffer, 0, length);  
+			                dos.flush();
+			                this.finishedBytes += length;
+			            }
+						if(length <= this.bufferSize) {
+							fis.close();
+							fis = null;
+							this.setIsCommandConnector(true);
+						}
+					}
+				}
+				
 			}catch(Exception e) {
-				;
+				break;
 			}
 		}
 		running = false;
@@ -241,24 +344,6 @@ public class ClientConnection extends Thread implements IClientConnection{
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public boolean writeCommand(String cmd) {
-		if(this.busy) {
-			return false;
-		}
-		this.replyCommand = cmd;
-		return true;
-	}
-	public String readCommand() {
-		return this.receiveCommand;
-	}
-	
-	public boolean receiveFile(String url) {
-		return true;
-	}
-	public boolean sendFile(String url) {
-		return true;
-	}
-	
 	public boolean connect() {
 		disconnect();
 		try {

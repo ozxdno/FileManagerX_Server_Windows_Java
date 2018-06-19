@@ -2,7 +2,7 @@ package BasicCollections;
 
 import java.util.*;
 
-public class Folders implements Tools.IPublic {
+public class Folders implements Interfaces.IPublic {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	

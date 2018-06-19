@@ -1,5 +1,7 @@
 package DepotChecker;
 
+import Interfaces.IDepotChecker;
+
 public class DepotChecker implements IDepotChecker{
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -41,14 +43,7 @@ public class DepotChecker implements IDepotChecker{
 
 	public boolean initialize(Object infos) {
 		this.depotInfo = (BasicModels.DepotInfo)infos;
-		if(this.depotInfo.isLocal()) {
-			this.checker = new LocalDepotChecker();
-			this.checker.initialize(infos);
-		}
-		else {
-			this.checker = new RemoteDepotChecker();
-			this.checker.initialize(infos);
-		}
+
 		return true;
 	}
 	

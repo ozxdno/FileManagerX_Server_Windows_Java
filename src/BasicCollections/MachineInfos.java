@@ -2,7 +2,7 @@ package BasicCollections;
 
 import java.util.*;
 
-public class MachineInfos implements Tools.IPublic {
+public class MachineInfos implements Interfaces.IPublic {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	

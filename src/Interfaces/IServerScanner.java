@@ -1,4 +1,4 @@
-package Communicator;
+package Interfaces;
 
 public interface IServerScanner {
 	

@@ -1,7 +1,7 @@
 package BasicModels;
 
 
-public class Config implements Tools.IPublic {
+public class Config implements Interfaces.IPublic {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -161,6 +161,9 @@ public class Config implements Tools.IPublic {
 	
 	public void clear() {
 		initThis();
+	}
+	public boolean isEmpty() {
+		return this.field.length() == 0 && this.value.length() == 0;
 	}
 	
 	public boolean getBoolean() {

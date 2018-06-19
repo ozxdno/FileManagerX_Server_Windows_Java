@@ -2,16 +2,18 @@ package Communicator;
 
 import java.util.*;
 
+import Interfaces.IClientLinker;
+
 public class ClientTCP implements IClientLinker{
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	private List<ClientConnection> connections;
+	private List<Interfaces.IClientConnection> connections;
 	private long permitIdle;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public boolean setConnections(List<ClientConnection> connections) {
+	public boolean setConnections(List<Interfaces.IClientConnection> connections) {
 		if(connections == null) {
 			return false;
 		}
@@ -28,7 +30,7 @@ public class ClientTCP implements IClientLinker{
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public List<ClientConnection> getConnections() {
+	public List<Interfaces.IClientConnection> getConnections() {
 		return this.connections;
 	}
 	public long getPermitIdle() {
@@ -42,14 +44,15 @@ public class ClientTCP implements IClientLinker{
 	}
 	private void initThis() {
 		if(this.connections == null) {
-			this.connections = new ArrayList<ClientConnection>();
+			this.connections = new ArrayList<Interfaces.IClientConnection>();
 		}
 		this.connections.clear();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public boolean add(ClientConnection connection) {
+	public boolean add(Interfaces.IClientConnection connection) {
+		this.removeIdleConnections();
 		if(connection == null) {
 			return false;
 		}
@@ -89,7 +92,7 @@ public class ClientTCP implements IClientLinker{
 		}
 		return -1;
 	}
-	public ClientConnection search(String serverIp) {
+	public Interfaces.IClientConnection search(String serverIp) {
 		int idx = this.indexOf(serverIp);
 		if(idx < 0) {
 			return null;
@@ -114,7 +117,7 @@ public class ClientTCP implements IClientLinker{
 		}
 		return -1;
 	}
-	public ClientConnection search(long userIndex) {
+	public Interfaces.IClientConnection search(long userIndex) {
 		int idx = this.indexOf(userIndex);
 		if(idx < 0) {
 			return null;
