@@ -7,10 +7,10 @@ public class BaseFile implements Interfaces.IPublic {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	private long index;
-	private BaseFile left;
-	private BaseFile right;
-	private Folder father;
-	private BaseFile son;
+	private long father;
+	private long machine;
+	private long depot;
+	private long database;
 	private String url;
 	private BasicEnums.FileType type;
 	private BasicEnums.FileState state;
@@ -24,32 +24,26 @@ public class BaseFile implements Interfaces.IPublic {
 	public long getIndex() {
 		return index;
 	}
-	public BaseFile getLeft() {
-		return left;
-	}
-	public BaseFile getRight() {
-		return right;
-	}
-	public Folder getFather() {
+	public long getFather() {
 		return father;
 	}
-	public BaseFile getSon() {
-		return son;
+	public long getMachine() {
+		return machine;
+	}
+	public long getDepot() {
+		return depot;
+	}
+	public long getDataBase() {
+		return database;
 	}
 	public String getUrl() {
 		return url;
-	}
-	public String getMachineUrl() {
-		return Tools.Url.getMachineUrl(url);
 	}
 	public String getMachineIp() {
 		return Tools.Url.getIp(url);
 	}
 	public int getMachinePort() {
 		return Tools.Url.getPort(url);
-	}
-	public String getLocalUrl() {
-		return Tools.Url.getLocalUrl(url);
 	}
 	public String getDriver() {
 		return Tools.Url.getDriver(url);
@@ -88,9 +82,6 @@ public class BaseFile implements Interfaces.IPublic {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public boolean setIndex(long index) {
-		if(index < 0) {
-			return false;
-		}
 		this.index = index;
 		return true;
 	}
@@ -99,20 +90,20 @@ public class BaseFile implements Interfaces.IPublic {
 		Globals.Configurations.Next_FileIndex = this.index;
 		return true;
 	}
-	public boolean setLeft(BaseFile left) {
-		this.left = left;
-		return true;
-	}
-	public boolean setRight(BaseFile right) {
-		this.right = right;
-		return true;
-	}
-	public boolean setFather(Folder father) {
+	public boolean setFather(long father) {
 		this.father = father;
 		return true;
 	}
-	public boolean setSon(BaseFile son) {
-		this.son = son;
+	public boolean setMachine(long machine) {
+		this.machine = machine;
+		return true;
+	}
+	public boolean setDepot(long depot) {
+		this.depot = depot;
+		return true;
+	}
+	public boolean setDataBase(long database) {
+		this.database = database;
 		return true;
 	}
 	public boolean setUrl(String url) {
@@ -165,26 +156,39 @@ public class BaseFile implements Interfaces.IPublic {
 		initThis();
 	}
 	public BaseFile(String url) {
-		initThis();
-		this.setUrl(url);
+		initThis(new File(url));
 	}
 	public BaseFile(File localFile) {
-		
-	}
-	public BaseFile(MachineInfo machine, File file) {
-		
+		initThis(localFile);
 	}
 	private void initThis() {
 		index = -1;
-		left = null;
-		right = null;
-		father = null;
-		son = null;
+		father = -1;
+		machine = -1;
+		depot = -1;
+		database = -1;
 		url = "";
 		type = BasicEnums.FileType.Unsupport;
 		state = BasicEnums.FileState.NotExistInRemote;
 		modify = -1;
 		length = 0;
+		score = 0;
+		tags = "";
+	}
+	private void initThis(File localFile) {
+		index = -1;
+		father = -1;
+		machine = -1;
+		depot = -1;
+		database = -1;
+		url = localFile.getAbsolutePath();
+		type = localFile.isDirectory() ? BasicEnums.FileType.Folder : 
+			(Globals.Datas.Supports.search(this.getExtension()) == null ? 
+					BasicEnums.FileType.Unsupport :
+					Globals.Datas.Supports.search(this.getExtension()).getType());
+		state = BasicEnums.FileState.NotExistInRemote;
+		modify = localFile.lastModified();
+		length = localFile.isDirectory() ? 0 : localFile.length();
 		score = 0;
 		tags = "";
 	}
@@ -204,9 +208,13 @@ public class BaseFile implements Interfaces.IPublic {
 	public String output() {
 		Config c = new Config( "BaseFile = " );
 		c.addToBottom(this.index);
+		c.addToBottom(this.father);
+		c.addToBottom(this.machine);
+		c.addToBottom(this.depot);
+		c.addToBottom(this.database);
 		c.addToBottom(this.url);
-		c.addToBottom(this.type.ordinal());
-		c.addToBottom(this.state.ordinal());
+		c.addToBottom(this.type.toString());
+		c.addToBottom(this.state.toString());
 		c.addToBottom(this.modify);
 		c.addToBottom(this.length);
 		c.addToBottom(this.score);
@@ -217,11 +225,19 @@ public class BaseFile implements Interfaces.IPublic {
 		Config c = new Config( in );
 		this.index = c.fetchFirstLong();
 		if(!c.getIsOK()) { return null; }
+		this.father = c.fetchFirstLong();
+		if(!c.getIsOK()) { return null; }
+		this.machine = c.fetchFirstLong();
+		if(!c.getIsOK()) { return null; }
+		this.depot = c.fetchFirstLong();
+		if(!c.getIsOK()) { return null; }
+		this.database = c.fetchFirstLong();
+		if(!c.getIsOK()) { return null; }
 		this.url = c.fetchFirstString();
 		if(!c.getIsOK()) { return null; }
-		this.type = BasicEnums.FileType.values()[c.fetchFirstInt()];
+		this.type = BasicEnums.FileType.valueOf(c.fetchFirstString());
 		if(!c.getIsOK()) { return null; }
-		this.state = BasicEnums.FileState.values()[c.fetchFirstInt()];
+		this.state = BasicEnums.FileState.valueOf(c.fetchFirstString());
 		if(!c.getIsOK()) { return null; }
 		this.modify = c.fetchFirstLong();
 		if(!c.getIsOK()) { return null; }
@@ -230,16 +246,13 @@ public class BaseFile implements Interfaces.IPublic {
 		this.score = c.fetchFirstInt();
 		if(!c.getIsOK()) { return null; }
 		this.tags = c.fetchFirstString();
-		if(!c.getIsOK()) { return null; }
+		//if(!c.getIsOK()) { return null; }
 		return c.output();
 	}
 	public void copyReference(Object o) {
 		BaseFile model = (BaseFile)o;
 		this.index = model.index;
-		this.left = model.left;
-		this.right = model.right;
 		this.father = model.father;
-		this.son = model.son;
 		this.url = model.url;
 		this.type = model.type;
 		this.state = model.state;
@@ -250,10 +263,7 @@ public class BaseFile implements Interfaces.IPublic {
 	public void copyValue(Object o) {
 		BaseFile model = (BaseFile)o;
 		this.index = model.index;
-		this.left = model.left;
-		this.right = model.right;
 		this.father = model.father;
-		this.son = model.son;
 		this.url = new String(model.url);
 		this.type = model.type;
 		this.state = model.state;
@@ -271,15 +281,11 @@ public class BaseFile implements Interfaces.IPublic {
 		return this;
 	}
 	public boolean exists() {
-		if(!this.isLocal()) {
-			return false;
-		}
-		File f = new File(this.getLocalUrl());
+		File f = new File(url);
 		return f.exists();
 	}
 	public boolean isLocal() {
-		MachineInfo m = new MachineInfo(this.getMachineUrl());
-		return m.isLocal();
+		return this.machine == Globals.Configurations.This_MachineIndex;
 	}
 	public boolean register() {
 		return true;

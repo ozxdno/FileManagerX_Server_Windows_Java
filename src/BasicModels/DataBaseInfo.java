@@ -6,12 +6,11 @@ public class DataBaseInfo implements Interfaces.IPublic{
 	
 	private long index;
 	private long depotIndex;
+	private String name;
 	private BasicEnums.DataBaseType type;
 	private MachineInfo machineInfo;
-	private String url; // 对 TXT型数据库有效, Local Url
-	private String dbName;
-	private String loginName;
-	private String password;
+	private String url; // TXT DataBase: Local url
+						// SQL DataBase: ip:port\loginname\password\databasename
 	private BasicModels.DepotInfo depotInfo;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -27,6 +26,20 @@ public class DataBaseInfo implements Interfaces.IPublic{
 	}
 	public boolean setDepotIndex(long depotIndex) {
 		this.depotIndex = depotIndex;
+		return true;
+	}
+	public boolean setDepotIndex() {
+		if(this.depotInfo == null) {
+			return false;
+		}
+		this.depotIndex = this.depotInfo.getIndex();
+		return true;
+	}
+	public boolean setName(String name) {
+		if(name == null) {
+			return false;
+		}
+		this.name = name;
 		return true;
 	}
 	public boolean setType(BasicEnums.DataBaseType type) {
@@ -47,33 +60,12 @@ public class DataBaseInfo implements Interfaces.IPublic{
 		this.url = url;
 		return true;
 	}
-	public boolean setDBName(String dbName) {
-		if(dbName == null) {
-			return false;
-		}
-		this.dbName = dbName;
-		return true;
-	}
-	public boolean setLoginName(String loginName) {
-		if(loginName == null) {
-			return false;
-		}
-		this.loginName = loginName;
-		return true;
-	}
-	public boolean setPassword(String password) {
-		if(password == null) {
-			return false;
-		}
-		this.password = password;
-		return true;
-	}
 	public boolean setDepotInfo(BasicModels.DepotInfo depotInfo) {
 		if(depotInfo == null) {
 			return false;
 		}
 		this.depotInfo = depotInfo;
-		return true;
+		return false;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -84,6 +76,9 @@ public class DataBaseInfo implements Interfaces.IPublic{
 	public long getDepotIndex() {
 		return this.depotIndex;
 	}
+	public String getName() {
+		return this.name;
+	}
 	public BasicEnums.DataBaseType getType() {
 		return this.type;
 	}
@@ -93,16 +88,7 @@ public class DataBaseInfo implements Interfaces.IPublic{
 	public String getUrl() {
 		return this.url;
 	}
-	public String getDBName() {
-		return this.dbName;
-	}
-	public String getLoginName() {
-		return this.loginName;
-	}
-	public String getPassword() {
-		return this.password;
-	}
-	public DepotInfo getDepotInfo() {
+	public BasicModels.DepotInfo getDepotInfo() {
 		return this.depotInfo;
 	}
 	
@@ -121,9 +107,7 @@ public class DataBaseInfo implements Interfaces.IPublic{
 		this.type = BasicEnums.DataBaseType.TXT;
 		this.machineInfo = new MachineInfo();
 		this.url = "";
-		this.dbName = "";
-		this.loginName = "";
-		this.password = "";
+		this.name = "";
 		this.depotInfo = null;
 	}
 	
@@ -133,23 +117,20 @@ public class DataBaseInfo implements Interfaces.IPublic{
 		initThis();
 	}
 	public String toString() {
-		String name = this.dbName;
+		String name = this.name;
 		if(name == null || name.length() == 0) {
 			name = "No Name";
 		}
-		String url = this.machineInfo.getUrl() + "\\" + this.url;
-		return "[" + name + "]: " + url;
+		return "[" + name + "] " + this.url;
 	}
 	public String output() {
 		Config c = new Config("DataBaseInfo = ");
 		c.addToBottom(index);
 		c.addToBottom(depotIndex);
-		c.addToBottom(this.type.ordinal());
+		c.addToBottom(this.name);
+		c.addToBottom(this.type.toString());
 		c.addToBottom(new Config(this.machineInfo.output()));
 		c.addToBottom(url);
-		c.addToBottom(dbName);
-		c.addToBottom(loginName);
-		c.addToBottom(password);
 		return c.output();
 	}
 	public String input(String in) {
@@ -158,18 +139,14 @@ public class DataBaseInfo implements Interfaces.IPublic{
 		if(!c.getIsOK()) { return null; }
 		this.depotIndex = c.fetchFirstLong();
 		if(!c.getIsOK()) { return null; }
-		this.type = BasicEnums.DataBaseType.values()[c.fetchFirstInt()];
+		this.name = c.fetchFirstString();
+		if(!c.getIsOK()) { return null; }
+		this.type = BasicEnums.DataBaseType.valueOf(c.fetchFirstString());
 		if(!c.getIsOK()) { return null; }
 		in = this.machineInfo.input(c.output());
 		if(in == null) { return null; }
 		c.setValue(in);
 		this.url = c.fetchFirstString();
-		if(!c.getIsOK()) { return null; }
-		this.dbName = c.fetchFirstString();
-		if(!c.getIsOK()) { return null; }
-		this.loginName = c.fetchFirstString();
-		if(!c.getIsOK()) { return null; }
-		this.password = c.fetchFirstString();
 		if(!c.getIsOK()) { return null; }
 		
 		return c.output();
@@ -178,23 +155,25 @@ public class DataBaseInfo implements Interfaces.IPublic{
 		DataBaseInfo d = (DataBaseInfo)o;
 		this.machineInfo = d.machineInfo;
 		this.url = d.url;
-		this.dbName = d.dbName;
-		this.loginName = d.loginName;
-		this.password = d.password;
+		this.name = d.name;
 	}
 	public void copyValue(Object o) {
 		DataBaseInfo d = (DataBaseInfo)o;
 		this.machineInfo.copyValue(d.machineInfo);
 		this.url = new String(d.url);
-		this.dbName = new String(d.dbName);
-		this.loginName = new String(d.loginName);
-		this.password = new String(d.password);
+		this.name = new String(d.name);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean isLocal() {
 		return this.depotInfo.getMachineInfo().isLocal();
+	}
+	
+	public Interfaces.IDBManager getManager() {
+		Interfaces.IDBManager m = new DataBaseManager.DBManager();
+		m.initialize(this);
+		return m;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -9,6 +9,8 @@ public class Folder extends BaseFile implements Interfaces.IPublic {
 	private BasicCollections.Folders subfolders;
 	private BasicCollections.BaseFiles subfiles;
 	
+	private static BasicCollections.BaseFiles allSubs = new BasicCollections.BaseFiles();
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public boolean setSubFolders(BasicCollections.Folders subfolders) {
@@ -34,6 +36,46 @@ public class Folder extends BaseFile implements Interfaces.IPublic {
 	public BasicCollections.BaseFiles getSubfiles() {
 		return this.subfiles;
 	}
+	public long getLength() {
+		super.setLength(0);
+		for(Folder i : this.subfolders.getContent()) {
+			super.setLength(super.getLength() + i.getLength());
+		}
+		for(BaseFile i : this.subfiles.getContent()) {
+			super.setLength(super.getLength() + i.getLength());
+		}
+		return super.getLength();
+	}
+	public int getAmount_Subfolders() {
+		return this.subfolders.size();
+	}
+	public int getAmount_Subfiles() {
+		return this.subfiles.size();
+	}
+	public int getAmount_Subs() {
+		return this.getAmount_Subfolders() + this.getAmount_Subfiles();
+	}
+	public int getAllAmount_Subfolders() {
+		int amount = 0;
+		for(Folder i : this.subfolders.getContent()) {
+			amount += i.getAllAmount_Subfolders();
+		}
+		return amount + this.subfolders.size();
+	}
+	public int getAllAmount_Subfiles() {
+		int amount = 0;
+		for(Folder i : this.subfolders.getContent()) {
+			amount += i.getAllAmount_Subfiles();
+		}
+		return amount + this.subfiles.size();
+	}
+	public int getAllAmount_Subs() {
+		int amount = 0;
+		for(Folder i : this.subfolders.getContent()) {
+			amount += i.getAllAmount_Subfiles();
+		}
+		return amount + this.subfolders.size() + this.subfiles.size();
+	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -41,13 +83,12 @@ public class Folder extends BaseFile implements Interfaces.IPublic {
 		initThis();
 	}
 	public Folder(String url) {
-		
+		super(url);
+		initThis();
 	}
 	public Folder(File localFile) {
-		
-	}
-	public Folder(MachineInfo m, File f) {
-		
+		super(localFile);
+		initThis();
 	}
 	private void initThis() {
 		if(this.subfolders == null) {
@@ -68,14 +109,14 @@ public class Folder extends BaseFile implements Interfaces.IPublic {
 	}
 	@Override
 	public String toString() {
-		String subfolders = "Subfolders: None";
+		String subfolders = "Subfolders: Empty";
 		if(this.subfolders.size() != 0) {
 			subfolders = "Subfolders: " + this.subfolders.getContent().get(0).getName();
 			for(int i=1; i<this.subfolders.size(); i++) {
 				subfolders += ", " + this.subfolders.getContent().get(i).getName();
 			}
 		}
-		String subfiles = "Subfiles: None";
+		String subfiles = "Subfiles: Empty";
 		if(this.subfiles.size() != 0) {
 			subfiles = "Subfiles: " + this.subfiles.getContent().get(0).getName();
 			for(int i=1; i<this.subfiles.size(); i++) {
@@ -109,6 +150,52 @@ public class Folder extends BaseFile implements Interfaces.IPublic {
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public boolean load() {
+		java.io.File folder = new java.io.File(this.getUrl());
+		if(!folder.exists()) {
+			return false;
+		}
+		
+		java.io.File[] subs = folder.listFiles();
+		for(java.io.File i : subs) {
+			if(i.isDirectory()) {
+				Folder f = new Folder(i);
+				f.setIndex();
+				f.setFather(this.getIndex());
+				f.setMachine(this.getMachine());
+				f.setDepot(this.getDepot());
+				f.setDataBase(this.getDataBase());
+				f.load();
+				this.subfolders.add(f);
+			}
+			if(i.isFile()) {
+				BaseFile f = new BaseFile(i);
+				f.setIndex();
+				f.setFather(this.getIndex());
+				f.setMachine(this.getMachine());
+				f.setDepot(this.getDepot());
+				f.setDataBase(this.getDataBase());
+				f = f.toSpecific();
+				this.subfiles.add(f);
+			}
+		}
+		
+		return true;
+	}
+	public BasicCollections.BaseFiles getAllSubs(String rootFolder) {
+		if(this.getUrl().equals(rootFolder)) {
+			Folder.allSubs.clear();
+		}
+		for(Folder i : this.subfolders.getContent()) {
+			Folder.allSubs.add(i);
+			i.getAllSubs(rootFolder);
+		}
+		for(BaseFile i : this.subfiles.getContent()) {
+			Folder.allSubs.add(i);
+		}
+		return Folder.allSubs;
+	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

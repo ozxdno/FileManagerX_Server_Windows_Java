@@ -1,9 +1,7 @@
 package FileModels;
 
-import java.io.File;
+import java.io.*;
 import java.util.*;
-
-import BasicModels.MachineInfo;
 
 public class Text extends BasicModels.BaseFile implements Interfaces.IPublic {
 
@@ -40,10 +38,6 @@ public class Text extends BasicModels.BaseFile implements Interfaces.IPublic {
 		super(localFile);
 		initThis();
 	}
-	public Text(MachineInfo m, File f) {
-		super(m,f);
-		initThis();
-	}
 	private void initThis() {
 		if(content == null) {
 			content = new ArrayList<String>();
@@ -64,13 +58,43 @@ public class Text extends BasicModels.BaseFile implements Interfaces.IPublic {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 	
 	public boolean load(boolean removeEmptyLine) {
-		return true;
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(new File(super.getUrl())));
+			String line = br.readLine();
+			while(line != null) {
+				if(line.length() == 0 && removeEmptyLine) {
+					line = br.readLine();
+					continue;
+				}
+				this.content.add(line);
+				line = br.readLine();
+			}
+			try {
+				br.close();
+			} catch(Exception e) {
+				;
+			}
+			return true;
+		} catch(Exception e) {
+			return false;
+		}
 	}
 	public boolean save() {
-		return this.saveAs(this.getLocalUrl());
+		return this.saveAs(this.getUrl());
 	}
 	public boolean saveAs(String localUrl) {
-		return true;
+		try {
+			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(localUrl), false));
+			for(String i : this.content) {
+				bw.write(i);
+				bw.newLine();
+				bw.flush();
+			}
+			bw.close();
+			return true;
+		} catch(Exception e) {
+			return false;
+		}
 	}
 	public BasicCollections.Configs toConfigs() {
 		BasicCollections.Configs c = new BasicCollections.Configs();

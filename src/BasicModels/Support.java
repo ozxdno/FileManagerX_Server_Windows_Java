@@ -25,8 +25,14 @@ public class Support implements Interfaces.IPublic {
 	public String getHideExtension() {
 		return hide;
 	}
-	public boolean getIsSupport() {
+	public boolean IsSupport() {
 		return this.isSupport;
+	}
+	public boolean isShowExtension() {
+		return this.extension.equals(this.show);
+	}
+	public boolean isHideExtension() {
+		return this.extension.equals(hide);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -91,7 +97,7 @@ public class Support implements Interfaces.IPublic {
 	public String output() {
 		BasicModels.Config c = new BasicModels.Config("Support = ");
 		c.addToBottom(extension);
-		c.addToBottom(type.ordinal());
+		c.addToBottom(type.toString());
 		c.addToBottom(show);
 		c.addToBottom(hide);
 		c.addToBottom(isSupport);
@@ -101,7 +107,7 @@ public class Support implements Interfaces.IPublic {
 		BasicModels.Config c = new BasicModels.Config(in);
 		extension = c.fetchFirstString();
 		if(!c.getIsOK()) { return null; }
-		type = BasicEnums.FileType.values()[c.fetchFirstInt()];
+		type = BasicEnums.FileType.valueOf(c.fetchFirstString());
 		if(!c.getIsOK()) { return null; }
 		show = c.fetchFirstString();
 		if(!c.getIsOK()) { return null; }

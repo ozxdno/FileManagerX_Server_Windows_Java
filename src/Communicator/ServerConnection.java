@@ -108,6 +108,10 @@ public class ServerConnection extends Thread implements IServerConnection{
 		this.isCommandConnector = !this.isFileConnector;
 		return true;
 	}
+	public boolean setTotalBytes(long totalBytes) {
+		this.totalBytes = totalBytes;
+		return true;
+	}
 
 	public boolean setSocket(Socket socket) {
 		if(socket == null) {
@@ -290,11 +294,15 @@ public class ServerConnection extends Thread implements IServerConnection{
 					replyCommand = excutor.excute(receiveCommand);
 					pw.println(replyCommand);
 	                pw.flush();
+	                
+	                if(excutor.getCloseServer()) {
+	                	break;
+	                }
 				}
 				if(this.isFileConnector) {
 					if(this.sendFile.getUrl().length() == 0) { // input receive file
 						if(fos == null) {
-							fos = new FileOutputStream(new File(receiveFile.getLocalUrl()));
+							fos = new FileOutputStream(new File(receiveFile.getUrl()));
 						}
 						int length = dis.read(receiveBuffer, 0, receiveBuffer.length);
 						if(length > 0) {
@@ -302,7 +310,7 @@ public class ServerConnection extends Thread implements IServerConnection{
 							fos.flush();
 							this.finishedBytes += length;
 						}
-						if(length <= this.bufferSize) {
+						if(length < this.bufferSize) {
 							fos.close();
 							fos = null;
 							this.setIsCommandConnector(true);
@@ -310,7 +318,7 @@ public class ServerConnection extends Thread implements IServerConnection{
 					}
 					if(this.receiveFile.getUrl().length() == 0) { // output send file
 						if(fis == null) {
-							fis = new FileInputStream(new File(sendFile.getLocalUrl()));
+							fis = new FileInputStream(new File(sendFile.getUrl()));
 						}
 						int length = fis.read(sendBuffer, 0, sendBuffer.length);
 						if (length > 0) {
@@ -318,7 +326,7 @@ public class ServerConnection extends Thread implements IServerConnection{
 			                dos.flush();
 			                this.finishedBytes += length;
 			            }
-						if(length <= this.bufferSize) {
+						if(length < this.bufferSize) {
 							fis.close();
 							fis = null;
 							this.setIsCommandConnector(true);
@@ -331,6 +339,10 @@ public class ServerConnection extends Thread implements IServerConnection{
 			}
 		}
 		running = false;
+		
+		if(excutor.getCloseServer()) {
+			Globals.Datas.Server.disconnect();
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

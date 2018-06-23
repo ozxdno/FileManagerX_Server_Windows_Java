@@ -7,9 +7,11 @@ public class DepotInfo implements Interfaces.IPublic {
 	private long index;
 	private long dbIndex;
 	private BasicModels.MachineInfo machineInfo;
-	private String url; // 不包含IP/Port信息
+	private String url; // TXT: files exist at
+						// SQL: files exist at
 	private BasicModels.DataBaseInfo dbInfo;
 	private String name;
+	private BasicEnums.DepotState state;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -24,6 +26,13 @@ public class DepotInfo implements Interfaces.IPublic {
 	}
 	public boolean setDBIndex(long dbIndex) {
 		this.dbIndex = dbIndex;
+		return true;
+	}
+	public boolean setDBIndex() {
+		if(this.dbInfo == null) {
+			return false;
+		}
+		this.dbIndex = this.dbInfo.getIndex();
 		return true;
 	}
 	public boolean setMachineInfo(MachineInfo machineInfo) {
@@ -54,6 +63,13 @@ public class DepotInfo implements Interfaces.IPublic {
 		this.name = name;
 		return true;
 	}
+	public boolean setState(BasicEnums.DepotState state) {
+		if(state == null) {
+			return false;
+		}
+		this.state = state;
+		return true;
+	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -75,6 +91,9 @@ public class DepotInfo implements Interfaces.IPublic {
 	public String getName() {
 		return this.name;
 	}
+	public BasicEnums.DepotState getState() {
+		return this.state;
+	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -91,6 +110,7 @@ public class DepotInfo implements Interfaces.IPublic {
 		url = "";
 		this.dbInfo = null;
 		name = "";
+		state = BasicEnums.DepotState.Running;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -103,8 +123,7 @@ public class DepotInfo implements Interfaces.IPublic {
 		if(name.length() == 0) {
 			name = "No Name";
 		}
-		String mUrl = this.machineInfo.getUrl();
-		return "[" + name + "]: " + mUrl + "\\" + url;
+		return "[" + name + "] " + url;
 	}
 	public String output() {
 		Config c = new Config("DataBaseInfo = ");
@@ -113,6 +132,7 @@ public class DepotInfo implements Interfaces.IPublic {
 		c.addToBottom(url);
 		c.addToBottom(this.dbIndex);
 		c.addToBottom(name);
+		c.addToBottom(state.toString());
 		return c.output();
 	}
 	public String input(String in) {
@@ -128,6 +148,8 @@ public class DepotInfo implements Interfaces.IPublic {
 		if(!c.getIsOK()) { return null; }
 		this.name = c.fetchFirstString();
 		if(!c.getIsOK()) { return null; }
+		this.state = BasicEnums.DepotState.valueOf(c.fetchFirstString());
+		if(!c.getIsOK()) { return null; }
 		return c.output();
 	}
 	public void copyReference(Object o) {
@@ -138,6 +160,7 @@ public class DepotInfo implements Interfaces.IPublic {
 		this.dbIndex = d.dbIndex;
 		this.dbInfo = d.dbInfo;
 		this.name = d.name;
+		this.state = d.state;
 	}
 	public void copyValue(Object o) {
 		DepotInfo d = (DepotInfo)o;
@@ -147,6 +170,7 @@ public class DepotInfo implements Interfaces.IPublic {
 		this.dbIndex = d.dbIndex;
 		this.dbInfo = d.dbInfo;
 		this.name = new String(d.name);
+		this.state = d.state;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

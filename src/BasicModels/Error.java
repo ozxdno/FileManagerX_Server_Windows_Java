@@ -109,10 +109,11 @@ public class Error implements Interfaces.IPublic {
 		return "[" + this.getLongTime() + "] " + type.toString() + ": " + reason;
 	}
 	public String output() {
-		BasicModels.Config c = new BasicModels.Config("Error = ");
-		c.addToBottom(type.ordinal());
+		BasicModels.Config c = new BasicModels.Config();
+		c.setField(this.getShortTime_Second());
+		c.addToBottom(type.toString());
 		c.addToBottom(time);
-		c.addToBottom(level.ordinal());
+		c.addToBottom(level.toString());
 		c.addToBottom(reason);
 		c.addToBottom(tip);
 		c.addToBottom(detail);
@@ -120,11 +121,11 @@ public class Error implements Interfaces.IPublic {
 	}
 	public String input(String in) {
 		BasicModels.Config c = new BasicModels.Config(in);
-		type = BasicEnums.ErrorType.values()[c.fetchFirstInt()];
+		type = BasicEnums.ErrorType.valueOf(c.fetchFirstString());
 		if(!c.getIsOK()) { return null; }
 		time = c.fetchFirstLong();
 		if(!c.getIsOK()) { return null; }
-		level = BasicEnums.ErrorLevel.values()[c.fetchFirstInt()];
+		level = BasicEnums.ErrorLevel.valueOf(c.fetchFirstString());
 		if(!c.getIsOK()) { return null; }
 		reason = c.fetchFirstString();
 		if(!c.getIsOK()) { return null; }

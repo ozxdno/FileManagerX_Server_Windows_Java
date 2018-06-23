@@ -1,6 +1,7 @@
 package BasicEnums;
 
 public enum FileState {
+	Updating,
 	NotExistInRemote,
 	NotExistInLocal,
 	Downloading,

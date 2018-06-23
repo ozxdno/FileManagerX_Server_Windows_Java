@@ -46,14 +46,10 @@ public class QueryConditions implements Interfaces.IPublic {
 		if(content == null || content.size() == 0) {
 			return "Empty";
 		}
-		String res = "";
-		for(QueryCondition m : content) {
-			res += m.toString() + ", ";
+		String res = content.get(0).toString();
+		for(int i=1; i<content.size(); i++) {
+			res += ", " + content.get(i).toString();
 		}
-		if(res.length() > 0) {
-			res = res.substring(0, res.length()-3);
-		}
-		
 		return res;
 	}
 	public String output() {
@@ -61,8 +57,8 @@ public class QueryConditions implements Interfaces.IPublic {
 			return "";
 		}
 		String res = content.get(0).output();
-		for(QueryCondition m : content) {
-			res += "\n" + m.output();
+		for(int i=1; i<this.content.size(); i++) {
+			res += "\n" + this.content.get(i).output();
 		}
 		return res;
 	}

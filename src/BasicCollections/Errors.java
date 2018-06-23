@@ -1,5 +1,6 @@
 package BasicCollections;
 
+import java.io.*;
 import java.util.*;
 
 public class Errors implements Interfaces.IPublic {
@@ -57,8 +58,8 @@ public class Errors implements Interfaces.IPublic {
 			return "";
 		}
 		String res = content.get(0).output();
-		for(BasicModels.Error m : content) {
-			res += "\n" + m.output();
+		for(int i=1; i<content.size(); i++) {
+			res += "\n" + content.get(i).output();
 		}
 		return res;
 	}
@@ -261,6 +262,29 @@ public class Errors implements Interfaces.IPublic {
 		for(int i=idxs.length-1; i>=0; i--) {
 			content.remove(idxs[i]);
 		}
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public boolean save() {
+		for(BasicModels.Error e : this.content) {
+			String url = Tools.Directories.getExePath() + "\\log\\" + e.getShortTime_Date() + ".log";
+			java.io.File log = new java.io.File(url);
+			try {
+				if(!log.exists()) {
+					log.createNewFile();
+				}
+				BufferedWriter bw = new BufferedWriter(new FileWriter(log, true));
+				bw.write(e.output());
+				bw.newLine();
+				bw.flush();
+				bw.close();
+				
+			} catch(Exception exception) {
+				continue;
+			}
+		}
+		return true;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

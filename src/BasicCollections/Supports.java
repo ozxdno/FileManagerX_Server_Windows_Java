@@ -47,8 +47,8 @@ public class Supports implements Interfaces.IPublic {
 			return "Empty";
 		}
 		String res = content.get(0).toString();
-		for(BasicModels.Support m : content) {
-			res += ", " + m.toString();
+		for(int i=1; i<content.size(); i++) {
+			res += ", " + content.get(i).toString();
 		}
 		return res;
 	}
@@ -57,8 +57,8 @@ public class Supports implements Interfaces.IPublic {
 			return "";
 		}
 		String res = content.get(0).output();
-		for(BasicModels.Support m : content) {
-			res += "\n" + m.output();
+		for(int i=1; i<content.size(); i++) {
+			res += "\n" + content.get(i).output();
 		}
 		return res;
 	}
@@ -193,6 +193,15 @@ public class Supports implements Interfaces.IPublic {
 		if(index >= 0) {
 			content.remove(index);
 		}
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public boolean isShowExtension(String extension) {
+		return this.indexOfShowExtension(extension) >= 0;
+	}
+	public boolean isHideExtension(String extension) {
+		return this.indexOfHideExtension(extension) >= 0;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

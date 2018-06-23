@@ -5,13 +5,9 @@ public class QueryCondition implements Interfaces.IPublic {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	private String itemName;
-	private String uBound;
-	private String dBound;
-	private String equal;
-	private String like;
-	private Relation relationToNext;
-	private boolean equalUBound;
-	private boolean equalDBound;
+	private Sign sign;
+	private String value;
+	private Relation relation;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -22,24 +18,23 @@ public class QueryCondition implements Interfaces.IPublic {
 		this.itemName = itemName;
 		return true;
 	}
-	public boolean setUBound(String uBound) {
-		this.uBound = uBound;
+	
+	public boolean setSign(Sign sign) {
+		if(sign == null) {
+			return false;
+		}
+		this.sign = sign;
 		return true;
 	}
-	public boolean setDBound(String dBound) {
-		this.dBound = dBound;
+	public boolean setValue(String value) {
+		if(value == null) {
+			return false;
+		}
+		this.value = value;
 		return true;
 	}
-	public boolean setEqual(String equal) {
-		this.equal = equal;
-		return true;
-	}
-	public boolean setLike(String like) {
-		this.like = like;
-		return true;
-	}
-	public boolean setRelationToNext(Relation r) {
-		this.relationToNext = r;
+	public boolean setRelation(Relation r) {
+		this.relation = r;
 		return true;
 	}
 	
@@ -48,26 +43,14 @@ public class QueryCondition implements Interfaces.IPublic {
 	public String getItemName() {
 		return this.itemName;
 	}
-	public String getUBound() {
-		return this.uBound;
+	public Sign getSign() {
+		return this.sign;
 	}
-	public String getDBound() {
-		return this.dBound;
+	public String getValue() {
+		return this.value;
 	}
-	public String getEqual() {
-		return this.equal;
-	}
-	public String getLike() {
-		return this.like;
-	}
-	public Relation getRelationToNext() {
-		return this.relationToNext;
-	}
-	public boolean getEqualUBound() {
-		return this.equalUBound;
-	}
-	public boolean getEqualDBound() {
-		return this.equalDBound;
+	public Relation getRelation() {
+		return this.relation;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -77,13 +60,9 @@ public class QueryCondition implements Interfaces.IPublic {
 	}
 	private void initThis() {
 		this.itemName = "";
-		this.uBound = null;
-		this.dBound = null;
-		this.equal = null;
-		this.like = null;
-		this.relationToNext = Relation.OR;
-		this.equalUBound = true;
-		this.equalDBound = true;
+		this.sign = Sign.EQUAL;
+		this.value = "";
+		this.relation = Relation.AND;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -92,94 +71,44 @@ public class QueryCondition implements Interfaces.IPublic {
 		initThis();
 	}
 	public String toString() {
-		String r = "";
-		if(this.relationToNext == Relation.AND) r = " [&] ";
-		if(this.relationToNext == Relation.OR) r = " [|] ";
-		
-		String sign = "";
-		if(this.like != null) {
-			return this.itemName + " LIKE " + this.like + r;
-		}
-		if(this.equal != null) {
-			return this.itemName + " == " + this.equal + r;
-		}
-		if(this.uBound == null && this.dBound == null) {
-			return "Wrong Expression";
-		}
-		if(this.uBound == null) {
-			if(this.equalUBound) {
-				sign = " <= ";
-			} else {
-				sign = " < ";
-			}
-			return this.itemName + sign + this.uBound + r;
-		}
-		if(this.dBound == null) {
-			if(this.equalDBound) {
-				sign = " >= ";
-			} else {
-				sign = " > ";
-			}
-			return this.itemName + sign + this.dBound + r;
-		}
-		
-		String signL = this.equalDBound ? " <= " : " < ";
-		String signR = this.equalUBound ? " <= " : " < ";
-		return this.dBound + signL + this.itemName + signR + this.uBound + r;
+		return "[" + this.relation.getRelationString() + "] " + 
+				this.itemName + " " + 
+				this.sign.getSignString() + " " +
+				this.value;
 	}
 	public String output() {
 		BasicModels.Config c = new BasicModels.Config("Query Condition = ");
 		c.addToBottom(this.itemName);
-		c.addToBottom(this.uBound);
-		c.addToBottom(this.dBound);
-		c.addToBottom(this.equal);
-		c.addToBottom(this.like);
-		c.addToBottom(this.relationToNext.ordinal());
-		c.addToBottom(this.equalUBound);
-		c.addToBottom(this.equalDBound);
+		c.addToBottom(this.sign.ordinal());
+		c.addToBottom(this.value);
+		c.addToBottom(this.relation.ordinal());
 		return c.output();
 	}
 	public String input(String in) {
 		BasicModels.Config c = new BasicModels.Config(in);
 		this.itemName = c.fetchFirstString();
 		if(!c.getIsOK()) { return null; }
-		this.uBound = c.fetchFirstString();
+		this.sign = Sign.values()[c.fetchFirstInt()];
 		if(!c.getIsOK()) { return null; }
-		this.dBound = c.fetchFirstString();
+		this.value = c.fetchFirstString();
 		if(!c.getIsOK()) { return null; }
-		this.equal = c.fetchFirstString();
-		if(!c.getIsOK()) { return null; }
-		this.like = c.fetchFirstString();
-		if(!c.getIsOK()) { return null; }
-		this.relationToNext = Relation.values()[c.fetchFirstInt()];
-		if(!c.getIsOK()) { return null; }
-		this.equalUBound = c.fetchFirstBoolean();
-		if(!c.getIsOK()) { return null; }
-		this.equalDBound = c.fetchFirstBoolean();
+		this.relation = Relation.values()[c.fetchFirstInt()];
 		if(!c.getIsOK()) { return null; }
 		return c.output();
 	}
 	public void copyReference(Object o) {
 		QueryCondition q = (QueryCondition)o;
 		this.itemName = q.itemName;
-		this.uBound = q.uBound;
-		this.dBound = q.dBound;
-		this.equal = q.equal;
-		this.like = q.like;
-		this.relationToNext = q.relationToNext;
-		this.equalUBound = q.equalUBound;
-		this.equalDBound = q.equalDBound;
+		this.sign = q.sign;
+		this.value = q.value;
+		this.relation = q.relation;
 	}
 	public void copyValue(Object o) {
 		QueryCondition q = (QueryCondition)o;
 		this.itemName = new String(q.itemName);
-		this.uBound = new String(q.uBound);
-		this.dBound = new String(q.dBound);
-		this.equal = new String(q.equal);
-		this.like = new String(q.like);
-		this.relationToNext = q.relationToNext;
-		this.equalUBound = q.equalUBound;
-		this.equalDBound = q.equalDBound;
+		this.sign = q.sign;
+		this.value = new String(q.value);
+		this.relation = q.relation;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

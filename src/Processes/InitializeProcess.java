@@ -87,112 +87,16 @@ public class InitializeProcess extends Thread implements IProcess {
 		this.abort = false;
 		this.stop = false;
 		
-		boolean operateOK = true;
-		Globals.Configurations.DBConfigrations.copyReference(configurations);
-		Globals.Configurations.ThisMachine.copyReference(thisMachine);
+		// Step 1: load file: FileManagerX.cfg
 		
-		// Step 1: add config infos
+		Tools.CFGFile.createCFG();
+		Tools.CFGFile.loadCFG();
 		
-		if(this.configurations.getMachineInfo().getUrl().length() == 0) {
-			BasicModels.Error e = new BasicModels.Error();
-			e.setType(BasicEnums.ErrorType.CANNOT_FIND_CONFIGURATIONS_DATABSE);
-			e.setLevel(BasicEnums.ErrorLevel.Error);
-			e.setReason("Configurations DataBase Url is Empty");
-			e.setTip("@Processes.InitializeProcess");
-			e.setDetail("reset Configurations use method: Processes.InitializeProcess.setConfigurations");
-			e.print();
-			Globals.Datas.Errors.add(e);
-			this.finished = true;
-			this.running = false;
-			return;
-		}
-		Interfaces.IDBManager dbmanager = new DataBaseManager.DBManager();
-		operateOK = dbmanager.initialize(configurations);
-		if(!operateOK) {
-			BasicModels.Error e = new BasicModels.Error();
-			e.setType(BasicEnums.ErrorType.DATABASE_INITIALIZE_FAILED);
-			e.setLevel(BasicEnums.ErrorLevel.Error);
-			e.setReason("DataBase Initialize failed");
-			e.setTip("@Processes.InitializeProcess");
-			e.setDetail("see method: DataBaseManager.DBManager.initialize");
-			e.print();
-			Globals.Datas.Errors.add(e);
-			this.finished = true;
-			this.running = false;
-			return;
-		}
-		operateOK = dbmanager.connect();
-		if(!operateOK) {
-			BasicModels.Error e = new BasicModels.Error();
-			e.setType(BasicEnums.ErrorType.DATABASE_CONNECT_FAILED);
-			e.setLevel(BasicEnums.ErrorLevel.Error);
-			e.setReason("Can Not Connect to DataBase");
-			e.setTip("@Processes.InitializeProcess");
-			e.setDetail("see method: DataBaseManager.DBManager.connect");
-			e.print();
-			Globals.Datas.Errors.add(e);
-			this.finished = true;
-			this.running = false;
-			return;
-		}
-		operateOK = dbmanager.QueryConfigurations();
-		if(!operateOK) {
-			BasicModels.Error e = new BasicModels.Error();
-			e.setType(BasicEnums.ErrorType.WRONG_CONFIGURATION_INFOS);
-			e.setLevel(BasicEnums.ErrorLevel.Error);
-			e.setReason("the Form of the Configuration info is Not right");
-			e.setTip("@Processes.InitializeProcess");
-			e.setDetail("see Configuration info : Globals.Configurations, see query method : DataBaseManager.DBManager.QueryConfigurations");
-			e.print();
-			Globals.Datas.Errors.add(e);
-			this.finished = true;
-			this.running = false;
-			return;
-		}
+		// Step 2: check depot
 		
-		// Step2: run Server of Communicator
-		if(this.thisMachine.getIp().length() == 0 || this.thisMachine.getPort() < 0) {
-			BasicModels.Error e = new BasicModels.Error();
-			e.setType(BasicEnums.ErrorType.WRONG_LOCAL_MACHINE_INFOS);
-			e.setLevel(BasicEnums.ErrorLevel.Error);
-			e.setReason("the local machine infos of InitializeProcess.ThisMachine is Wrong");
-			e.setTip("@Processes.InitializeProcess");
-			e.setDetail("reset ThisMachine infos use: InitializeProcess.setThisMachineInfo");
-			e.print();
-			Globals.Datas.Errors.add(e);
-			this.finished = true;
-			this.running = false;
-			return;
-		}
-		Interfaces.IServerScanner server = new Communicator.ServerTCP();
-		operateOK = server.initialize(thisMachine);
-		if(!operateOK) {
-			BasicModels.Error e = new BasicModels.Error();
-			e.setType(BasicEnums.ErrorType.COMMUNICATOR_SERVER_INITIALIZE_FAILED);
-			e.setLevel(BasicEnums.ErrorLevel.Error);
-			e.setReason("Server Initialie Failed");
-			e.setTip("@Processes.InitializeProcess");
-			e.setDetail("see: Communicator.ServerTCP.initialize");
-			e.print();
-			Globals.Datas.Errors.add(e);
-			this.finished = true;
-			this.running = false;
-			return;
-		}
-		operateOK = server.connect();
-		if(!operateOK) {
-			BasicModels.Error e = new BasicModels.Error();
-			e.setType(BasicEnums.ErrorType.COMMUNICATOR_SERVER_CREATE_CONNECTION_FAILED);
-			e.setLevel(BasicEnums.ErrorLevel.Error);
-			e.setReason("Server Create Connection Failed");
-			e.setTip("@Processes.InitializeProcess");
-			e.setDetail("see: Communicator.ServerTCP.connect");
-			e.print();
-			Globals.Datas.Errors.add(e);
-			this.finished = true;
-			this.running = false;
-			return;
-		}
+		Interfaces.IDepotChecker dc = new DepotChecker.DepotChecker();
+		dc.initialize(Globals.Datas.DBManagers.searchDepotName("DepotA"));
+		dc.check();
 		
 		// end
 		this.finished = true;

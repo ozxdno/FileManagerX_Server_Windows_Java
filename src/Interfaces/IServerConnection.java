@@ -15,6 +15,7 @@ public interface IServerConnection {
 	public boolean setReceiveFile(BasicModels.BaseFile f);
 	public boolean setSendFile(BasicModels.BaseFile f);
 	public boolean setIsFileConnector(boolean isFileConnector);
+	public boolean setTotalBytes(long totalBytes);
 	
 	public boolean setAbort(boolean abort);
 	public boolean setBusy(boolean busy);

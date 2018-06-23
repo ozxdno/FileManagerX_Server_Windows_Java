@@ -141,7 +141,16 @@ public class ServerTCP implements Interfaces.IPublic, IServerScanner{
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	
+	public void removeIdleConnections() {
+		if(this.scanner != null) {
+			this.scanner.removeIdleConnections();;
+		}
+	}
+	public void removeAllConnections() {
+		if(this.scanner != null) {
+			this.scanner.removeAllConnections();
+		}
+	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
@@ -287,6 +296,9 @@ class Scanner extends Thread {
 		}catch(Exception e) {
 			;
 		}
+		
+		Tools.CFGFile.saveCFG();
+		Globals.Datas.Errors.save();
 	}
 	public void removeIdleConnections() {
 		for(int i=this.connections.size() - 1; i>=0; i--) {

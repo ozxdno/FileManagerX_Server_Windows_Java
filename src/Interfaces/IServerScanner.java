@@ -8,6 +8,9 @@ public interface IServerScanner {
 	public boolean connect();
 	public void disconnect();
 	
+	public void removeIdleConnections();
+	public void removeAllConnections();
+	
 	public int indexOf(String ip);
 	public IServerConnection search(String ip);
 	public int indexOf(long userIndex);

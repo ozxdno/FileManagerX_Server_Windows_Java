@@ -53,7 +53,6 @@ public class ExitProcess extends Thread implements IProcess{
 		Globals.Datas.Client.removeAllConnections();
 		
 		// step3: save config to database
-		Globals.Datas.DBManager.updataConfigurations();
 		Globals.Datas.DBManager.disconnect();
 		
 		this.finished = true;

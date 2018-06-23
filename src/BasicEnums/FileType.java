@@ -7,5 +7,6 @@ public enum FileType {
 	Music,
 	Video_Short,
 	Video_Long,
-	Exe
+	Exe,
+	Folder
 }

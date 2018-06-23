@@ -7,6 +7,7 @@ public interface IExcuteServerCommand {
 	
 	public IServerConnection getConnection();
 	public BasicModels.Config getCMD();
+	public boolean getCloseServer();
 	
 	public String excute();
 	public String excute(String cmd);

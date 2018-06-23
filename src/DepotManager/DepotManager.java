@@ -1,8 +1,6 @@
 package DepotManager;
 
-import Interfaces.IDepotManager;
-
-public class DepotManager implements IDepotManager{
+public class DepotManager implements Interfaces.IDepotManager{
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -11,7 +9,7 @@ public class DepotManager implements IDepotManager{
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean setFile(BasicModels.BaseFile file) {
-		if(file == null || file.getLocalUrl().length() == 0) {
+		if(file == null || file.getUrl().length() == 0) {
 			return false;
 		}
 		this.file = file;
@@ -41,7 +39,7 @@ public class DepotManager implements IDepotManager{
 
 	public boolean renameFile(String name) {
 		try {
-			String url = this.file.getLocalUrl();
+			String url = this.file.getUrl();
 			java.io.File sour = new java.io.File(url);
 			url = Tools.Url.setName(url, name);
 			java.io.File dest = new java.io.File(url);
@@ -52,7 +50,7 @@ public class DepotManager implements IDepotManager{
 	}
 	public boolean renameFileWithoutExtension(String nameWithoutExtension) {
 		try {
-			String url = this.file.getLocalUrl();
+			String url = this.file.getUrl();
 			java.io.File sour = new java.io.File(url);
 			url = Tools.Url.setNameWithoutExtension(url, nameWithoutExtension);
 			java.io.File dest = new java.io.File(url);
@@ -63,7 +61,7 @@ public class DepotManager implements IDepotManager{
 	}
 	public boolean deleteFile() {
 		try {
-			String url = this.file.getLocalUrl();
+			String url = this.file.getUrl();
 			java.io.File sour = new java.io.File(url);
 			return sour.delete();
 		} catch(Exception e) {
@@ -72,7 +70,7 @@ public class DepotManager implements IDepotManager{
 	}
 	public boolean moveFile(String destUrl) {
 		try {
-			String url = this.file.getLocalUrl();
+			String url = this.file.getUrl();
 			java.io.File sour = new java.io.File(url);
 			url = Tools.Url.getLocalUrl(destUrl);
 			java.io.File dest = new java.io.File(url);
@@ -83,20 +81,20 @@ public class DepotManager implements IDepotManager{
 		
 	}
 	public boolean copyFile(String destUrl) {
-		return this.copyFileCore(this.file.getLocalUrl(), Tools.Url.getLocalUrl(destUrl));
+		return this.copyFileCore(this.file.getUrl(), Tools.Url.getLocalUrl(destUrl));
 	}
 	
 	public boolean renameDirectory(String name) {
 		return renameFile(name);
 	}
 	public boolean deleteDirectory() {
-		return this.deleteDirectoryCore(file.getLocalUrl());
+		return this.deleteDirectoryCore(file.getUrl());
 	}
 	public boolean moveDirectory(String destUrl) {
 		return moveFile(destUrl);
 	}
 	public boolean copyDirectory(String destUrl) {
-		return this.copyDirectoryCore(file.getLocalUrl(), Tools.Url.getLocalUrl(destUrl));
+		return this.copyDirectoryCore(file.getUrl(), Tools.Url.getLocalUrl(destUrl));
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

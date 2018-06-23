@@ -46,9 +46,9 @@ public class Folders implements Interfaces.IPublic {
 		if(content == null || content.size() == 0) {
 			return "Empty";
 		}
-		String res = content.get(0).getName();
-		for(BasicModels.BaseFile m : content) {
-			res += ", " + m.getName();
+		String res = content.get(0).getUrl();
+		for(int i=1; i<content.size(); i++) {
+			res += ", " + content.get(i).getUrl();
 		}
 		return res;
 	}
@@ -57,8 +57,8 @@ public class Folders implements Interfaces.IPublic {
 			return "";
 		}
 		String res = content.get(0).output();
-		for(BasicModels.BaseFile m : content) {
-			res += "\n" + m.output();
+		for(int i=1; i<content.size(); i++) {
+			res += "\n" + content.get(i).output();
 		}
 		return res;
 	}

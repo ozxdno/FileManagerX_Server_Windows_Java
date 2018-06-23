@@ -30,9 +30,6 @@ public class MachineInfo implements Interfaces.IPublic {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public boolean setIndex(long index) {
-		if(index < 0) {
-			return false;
-		}
 		this.index = index;
 		return true;
 	}
@@ -45,6 +42,15 @@ public class MachineInfo implements Interfaces.IPublic {
 		this.name = name;
 		return true;
 	}
+	public boolean setName() {
+		try {
+			java.net.InetAddress adr = java.net.InetAddress.getLocalHost();
+			this.name = adr.getHostName().toString();
+			return true;
+		} catch(Exception e) {
+			return false;
+		}
+	}
 	public boolean setIp(String ip) {
 		if(Tools.Url.isIp(ip)) {
 			this.ip = ip;
@@ -52,12 +58,25 @@ public class MachineInfo implements Interfaces.IPublic {
 		}
 		return false;
 	}
+	public boolean setIp() {
+		try {
+			java.net.InetAddress adr = java.net.InetAddress.getLocalHost();
+			this.ip = adr.getHostAddress().toString();
+			return true;
+		} catch(Exception e) {
+			return false;
+		}
+	}
 	public boolean setPort(int port) {
 		if(0 <= port && port < 65536) {
 			this.port = port;
 			return true;
 		}
 		return false;
+	}
+	public boolean setPort() {
+		this.port = 40000;
+		return true;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -108,7 +127,7 @@ public class MachineInfo implements Interfaces.IPublic {
 		if(ip == null || ip.length() == 0) {
 			ip = "[Illegal IP]";
 		}
-		return "[" + name + "]" + ip + ":" + String.valueOf(port);
+		return "[" + name + "] " + ip + ":" + String.valueOf(port);
 	}
 	public String output() {
 		Config c = new Config("Machine = ");

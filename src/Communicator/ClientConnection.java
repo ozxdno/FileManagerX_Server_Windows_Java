@@ -303,7 +303,7 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 				if(this.isFileConnector) {
 					if(this.sendFile.getUrl().length() == 0) { // received one file
 						if(fos == null) {
-							fos = new FileOutputStream(new File(receiveFile.getLocalUrl()));
+							fos = new FileOutputStream(new File(receiveFile.getUrl()));
 						}
 						int length = dis.read(receiveBuffer, 0, receiveBuffer.length);
 						if(length > 0) {
@@ -319,7 +319,7 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 					}
 					if(this.receiveFile.getUrl().length() == 0) { // want to send a file
 						if(fis == null) {
-							fis = new FileInputStream(new File(sendFile.getLocalUrl()));
+							fis = new FileInputStream(new File(sendFile.getUrl()));
 						}
 						int length = fis.read(sendBuffer, 0, sendBuffer.length);
 						if (length > 0) {

@@ -32,6 +32,12 @@ public class User implements Interfaces.IPublic {
 	public String getPassword() {
 		return password;
 	}
+	public String getEmail() {
+		return this.email;
+	}
+	public String getPhone() {
+		return this.phone;
+	}
 	public BasicEnums.UserState getState() {
 		return state;
 	}
@@ -57,9 +63,6 @@ public class User implements Interfaces.IPublic {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public boolean setIndex(long index) {
-		if(index < 0) {
-			return false;
-		}
 		this.index = index;
 		return true;
 	}
@@ -183,9 +186,9 @@ public class User implements Interfaces.IPublic {
 		c.addToBottom(password);
 		c.addToBottom(email);
 		c.addToBottom(phone);
-		c.addToBottom(state.ordinal());
-		c.addToBottom(priority.ordinal());
-		c.addToBottom(level.ordinal());
+		c.addToBottom(state.toString());
+		c.addToBottom(priority.toString());
+		c.addToBottom(level.toString());
 		c.addToBottom(experience);
 		c.addToBottom(photoUrl);
 		c.addToBottom(coins);
@@ -206,11 +209,11 @@ public class User implements Interfaces.IPublic {
 		if(!c.getIsOK()) { return null; }
 		phone = c.fetchFirstString();
 		if(!c.getIsOK()) { return null; }
-		state = BasicEnums.UserState.values()[c.fetchFirstInt()];
+		state = BasicEnums.UserState.valueOf(c.fetchFirstString());
 		if(!c.getIsOK()) { return null; }
-		priority = BasicEnums.UserPriority.values()[c.fetchFirstInt()];
+		priority = BasicEnums.UserPriority.valueOf(c.fetchFirstString());
 		if(!c.getIsOK()) { return null; }
-		level = BasicEnums.UserLevel.values()[c.fetchFirstInt()];
+		level = BasicEnums.UserLevel.valueOf(c.fetchFirstString());
 		if(!c.getIsOK()) { return null; }
 		experience = c.fetchFirstLong();
 		if(!c.getIsOK()) { return null; }
