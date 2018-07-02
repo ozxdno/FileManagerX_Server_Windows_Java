@@ -161,7 +161,7 @@ public class User implements Interfaces.IPublic {
 		password = "";
 		email = "";
 		phone = "";
-		state = BasicEnums.UserState.OffLine;
+		state = BasicEnums.UserState.Offline;
 		priority = BasicEnums.UserPriority.Guest;
 		level = BasicEnums.UserLevel.Level1;
 		experience = 0;

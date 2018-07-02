@@ -1,0 +1,209 @@
+package Processes;
+
+public class MainProcess extends Thread implements Interfaces.IProcess {
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	private boolean finished;
+	private boolean running;
+	private boolean abort;
+	private boolean stop;
+	
+	private long ticks;
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public boolean setTicks(long ticks) {
+		this.ticks = ticks;
+		return true;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public boolean isFinished() {
+		return this.finished;
+	}
+	public boolean isRunning() {
+		return this.running;
+	}
+	public boolean isAbort() {
+		return this.abort;
+	}
+	public boolean isStop() {
+		return this.stop;
+	}
+	
+	public long getTicks() {
+		return ticks;
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public MainProcess() {
+		initThis();
+	}
+	private void initThis() {
+		this.finished = false;
+		this.running = false;
+		this.abort = false;
+		this.stop = false;
+		
+		this.setName("Process Main");
+	}
+	public void run() {
+		
+		this.finished = false;
+		this.running = true;
+		this.abort = false;
+		this.stop = false;
+		
+		boolean operateOK = true;
+		boolean cfgOK = true;
+		
+		//////////////////////////////////////////// INIT ///////////////////////////////////////////////
+		
+		// create and load CFG file
+		if(operateOK) {
+			cfgOK &= Tools.CFGFile.createCFG();
+			operateOK &= cfgOK;
+		}
+		if(operateOK) {
+			cfgOK &= Tools.CFGFile.loadCFG();
+			//cfgOK = Tools.CFGFile.resetCFG() & false;
+			operateOK &= cfgOK;
+		}
+		
+		// Set Form Title
+		if(operateOK) {
+			Globals.Datas.Form_Main.setTitle(
+					"FileManagerX - " + 
+					Globals.Configurations.StartType.toString() + " : " + 
+					Globals.Datas.ThisUser.getNickName()
+					);
+		}
+		
+		// check server
+		if(operateOK && Globals.Configurations.StartType.equals(BasicEnums.StartType.Server)) {
+			Interfaces.IServerChecker sc = Factories.ServerCheckerFactory.createServerChecker();
+			sc.setDBManager(Globals.Datas.DBManager);
+			sc.check();
+		}
+		
+		// check local depots
+		if(operateOK) {
+			for(Interfaces.IDBManager dbm : Globals.Datas.DBManagers.getContent()) {
+				Interfaces.IDepotChecker dc = Factories.DepotCheckerFactory.createDepotChecker();
+				dc.initialize(dbm);
+				dc.check();
+			}
+		}
+		
+		// start server
+		if(operateOK) {
+			Globals.Datas.Server.initialize(Globals.Datas.ThisMachine);
+			Globals.Datas.Server.connect();
+			Tools.Time.waitUntil(100);
+			operateOK &= Globals.Datas.Server.isRunning();
+		}
+		
+		// delete log file
+		if(operateOK) {
+			Globals.Datas.Errors.deleteAgoLogs(365);
+		}
+		
+		// save CFG before execute tasks
+		if(cfgOK) {
+			Tools.CFGFile.saveCFG();
+		}
+		
+		// save Server DataBase before execute tasks
+		if(Globals.Configurations.StartType.equals(BasicEnums.StartType.Server) && Globals.Datas.DBManager != null &&
+				Globals.Datas.DBManager.getDBInfo().getType().equals(BasicEnums.DataBaseType.TXT)) {
+			Globals.Datas.DBManager.disconnect();
+			Globals.Datas.DBManager.connect();
+		}
+		
+		// save DataBases before execute tasks
+		for(Interfaces.IDBManager dbm : Globals.Datas.DBManagers.getContent()) {
+			if(dbm.getDBInfo().getType().equals(BasicEnums.DataBaseType.TXT)) {
+				dbm.disconnect();
+				dbm.connect();
+			}
+		}
+		
+		// save Errors before execute tasks
+		Globals.Datas.Errors.save();
+		
+		//////////////////////////////////////////// TASK ///////////////////////////////////////////////
+		
+		// tasks
+		if(operateOK) {
+			while(!this.abort && Globals.Datas.Server.isRunning()) {
+				
+			}
+		}
+		
+		//////////////////////////////////////////// EXIT ///////////////////////////////////////////////
+		
+		// save CFG
+		if(cfgOK) {
+			Tools.CFGFile.saveCFG();
+		}
+		
+		// save Errors
+		Globals.Datas.Errors.save();
+		
+		// save DataBases
+		for(Interfaces.IDBManager dbm : Globals.Datas.DBManagers.getContent()) {
+			if(dbm.getDBInfo().getType().equals(BasicEnums.DataBaseType.TXT)) {
+				dbm.disconnect();
+			}
+		}
+		
+		// Close Form
+		Globals.Datas.Form_Main.dispose();
+		
+		this.finished = true;
+		this.running = false;
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public boolean initialize(Object infos) {
+		return true;
+	}
+	
+	public boolean startProcess() {
+		if(this.finished || (!this.finished && !this.stop && !this.running)) {
+			this.start();
+			return true;
+		}
+		if(this.stop) {
+			return this.continueProcess();
+		}
+		if(this.running) {
+			return true;
+		}
+		
+		return true;
+	}
+	public boolean stopProcess() {
+		this.stop = true;
+		return true;
+	}
+	public boolean continueProcess() {
+		this.stop = false;
+		return true;
+	}
+	public boolean restartProcess() {
+		this.abort = true;
+		while(this.running);
+		return this.startProcess();
+	}
+	public boolean exitProcess() {
+		this.abort = true;
+		return true;
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+}

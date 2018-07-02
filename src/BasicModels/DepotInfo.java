@@ -141,7 +141,7 @@ public class DepotInfo implements Interfaces.IPublic {
 		if(!c.getIsOK()) { return null; }
 		in = this.machineInfo.input(c.output());
 		if(in == null) { return null; }
-		c.setValue(in);
+		c.setLine(in);
 		this.url = c.fetchFirstString();
 		if(!c.getIsOK()) { return null; }
 		this.dbIndex = c.fetchFirstLong();

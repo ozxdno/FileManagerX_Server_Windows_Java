@@ -77,6 +77,13 @@ public class DepotChecker implements Interfaces.IDepotChecker{
 		this.deleteFolders = new BasicCollections.Folders();
 		this.deleteFiles = new BasicCollections.BaseFiles();
 		
+		if(this.totalFolders.size() == 0) {
+			return true;
+		}
+		if(this.totalFiles.size() == 0) {
+			return true;
+		}
+		
 		long currentFileIndex = Globals.Configurations.Next_FileIndex;
 		BasicModels.Folder f = new BasicModels.Folder(this.dbmanager.getDBInfo().getDepotInfo().getUrl());
 		this.checkFilesCore(f);

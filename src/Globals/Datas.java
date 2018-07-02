@@ -17,12 +17,31 @@ public class Datas {
 			new BasicCollections.Supports();
 	
 	/**
+	 * 本台机器的机器信息
 	 * 
 	 */
 	public final static BasicModels.MachineInfo ThisMachine = 
 			new BasicModels.MachineInfo();
 	
+	/**
+	 * 用户信息
+	 * 
+	 */
 	public final static BasicModels.User ThisUser = 
+			new BasicModels.User();
+	
+	/**
+	 * 服务器的机器信息
+	 * 
+	 */
+	public final static BasicModels.MachineInfo ServerMachine = 
+			new BasicModels.MachineInfo();
+	
+	/**
+	 * 服务器的用户信息
+	 * 
+	 */
+	public final static BasicModels.User ServerUser = 
 			new BasicModels.User();
 	
 	/**
@@ -36,31 +55,70 @@ public class Datas {
 	 * 
 	 */
 	public final static Interfaces.IDBManager DBManager = 
-			new DataBaseManager.DBManager();
+			Factories.DBManagerFactory.createDBManager();
+	/**
+	 * 一条专用于连接服务器的通信通道，功能与 DBManager 相似。
+	 * 通过各类命令（Interfaces.ICommands）可以访问：
+	 * 
+	 * MachineInfo;
+	 * DepotInfo;
+	 * DataBaseInfo;
+	 * Users;
+	 * Invitations;
+	 * 
+	 * 此外还有：
+	 * 
+	 * Folders;
+	 * Files;
+	 * Pixels;
+	 * 
+	 * 等等。
+	 * 
+	 */
+	public final static Interfaces.IClientConnection ServerConnection = 
+			Factories.CommunicatorFactory.createClientConnection();
 	
 	/**
-	 * 所有的本地 Depot 的管理器
+	 * 所有的本地 Depot 的管理器，Depot 包含如下信息：
 	 * 
+	 * Folders;
+	 * Files;
+	 * Pixels;
 	 * 
 	 */
 	public final static Interfaces.IDBManagers DBManagers = 
-			new DataBaseManager.DBManagers();
+			Factories.DBManagerFactory.createDBManagers();
+	/**
+	 * 在同一局域网的机器
+	 * 
+	 */
+	public final static java.util.List<Long> LANMachineIndexes = 
+			new java.util.ArrayList<Long>();
 	
 	/**
 	 * 这台机器向外通信时，作为服务器端使用
 	 * 
 	 */
 	public final static Interfaces.IServerScanner Server = 
-			new Communicator.ServerTCP();
+			Factories.CommunicatorFactory.createServer();
 	/**
 	 * 这台机器向外通信时，作为客户端使用
 	 * 
 	 */
 	public final static Interfaces.IClientLinker Client = 
-			new Communicator.ClientTCP();
+			Factories.CommunicatorFactory.createClient();
 	
-	public final static Processes.InitializeProcess pInitialize = 
-			new Processes.InitializeProcess();
-	public final static Processes.ExitProcess pExit = 
-			new Processes.ExitProcess();
+	/**
+	 * 一个简易窗体，用于测试各个命令。
+	 * 
+	 */
+	public final static Main.MainForm Form_Main = 
+			new Main.MainForm();
+	
+	/**
+	 * 主线程，控制整个程序的运行逻辑。
+	 * 
+	 */
+	public final static Interfaces.IProcess pMain = 
+			Factories.ProcessFactory.createProcessMain();
 }

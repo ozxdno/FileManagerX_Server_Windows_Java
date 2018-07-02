@@ -112,4 +112,65 @@ public class QueryCondition implements Interfaces.IPublic {
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * 只允许有一个空格作为分割符
+	 * 
+	 * @param str 导入字符串
+	 */
+	public void stringToThis(String str) {
+		if(str == null || str.length() == 0) {
+			return;
+		}
+		str = Tools.String.clearLRSpace(str);
+		
+		int idx = str.indexOf(' ');
+		String r = str.substring(0, idx);
+		str = str.substring(idx+1);
+		idx = str.indexOf(' ');
+		String n = str.substring(0, idx);
+		str = str.substring(idx+1);
+		idx = str.indexOf(' ');
+		String s = str.substring(0, idx);
+		str = str.substring(idx+1);
+		String v = str;
+		
+		if(r.equals("[&]")) {
+			this.relation = Relation.AND;
+		}
+		if(r.equals("[|]")) {
+			this.relation = Relation.OR;
+		}
+		
+		this.itemName = n;
+		
+		if(s.equals("=")) {
+			this.sign = Sign.EQUAL;
+		}
+		if(s.equals("!=")) {
+			this.sign = Sign.NOT_EQUAL;
+		}
+		if(s.equals(">")) {
+			this.sign = Sign.GREATER;
+		}
+		if(s.equals(">=")) {
+			this.sign = Sign.GREATER_OR_EQUAL;
+		}
+		if(s.equals("<")) {
+			this.sign = Sign.LESS;
+		}
+		if(s.equals("<=")) {
+			this.sign = Sign.LESS_OR_EQUAL;
+		}
+		if(s.equals("LIKE")) {
+			this.sign = Sign.LIKE;
+		}
+		if(s.equals("CONTAIN")) {
+			this.sign = Sign.CONTAIN;
+		}
+		
+		this.value = v;
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

@@ -1,0 +1,2 @@
+00:50:29 = BUILD_SOCKET_FAILED|1530463829776|Error|Build Socket Failed|setSocket[ClientConnection.java:195]<-loadDepotCFG[CFGFile.java:923]<-loadCFG[CFGFile.java:44]<-run[MainProcess.java:71]|java.net.ConnectException: Connection refused: connect
+13:56:21 = BUILD_SOCKET_FAILED|1530510981427|Error|Build Socket Failed|setSocket[ClientConnection.java:184]<-loadDepotCFG[CFGFile.java:923]<-loadCFG[CFGFile.java:44]<-run[MainProcess.java:71]|java.net.ConnectException: Connection refused: connect

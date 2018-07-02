@@ -1,3 +1,0 @@
-BaseFile = 20|-1|1|5|5|D:\Space_For_Media\Pictures\FMX_Test_Depot_B|Folder|NotExistInRemote|1529643776423|0|0|
-BaseFile = 21|20|1|5|5|D:\Space_For_Media\Pictures\FMX_Test_Depot_B\°¢¾Å|Folder|NotExistInRemote|1529643776469|0|0|
-BaseFile = 31|20|1|5|5|D:\Space_For_Media\Pictures\FMX_Test_Depot_B\jieshou|Folder|NotExistInRemote|1529652883021|0|0|

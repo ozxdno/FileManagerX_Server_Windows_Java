@@ -2,7 +2,7 @@ package BasicCollections;
 
 import java.util.*;
 
-public class BaseFiles implements Interfaces.IPublic {
+public class BaseFiles implements Interfaces.IPublic, Interfaces.ICollection {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -56,25 +56,23 @@ public class BaseFiles implements Interfaces.IPublic {
 		if(content == null || content.size() == 0) {
 			return "";
 		}
-		String res = content.get(0).output();
-		for(int i=1; i<content.size(); i++) {
-			res += "\n" + content.get(i).output();
+		String res = this.getClass().getSimpleName() + " = " + Tools.String.getValue(this.getContent().get(0).output());
+		for(int i=1; i<this.content.size(); i++) {
+			res += "|" + Tools.String.getValue(this.getContent().get(i).output());
 		}
 		return res;
 	}
 	public String input(String in) {
 		initThis();
-		String[] items = Tools.String.split(in, '\n');
-		String res = "";
-		for(int i=0; i<items.length; i++) {
-			BasicModels.BaseFile o = new BasicModels.BaseFile();
-			res = o.input(items[i]);
-			if(res == null) {
-				return null;
-			}
-			content.add(o);
+		String out = "";
+		while(true) {
+			BasicModels.BaseFile e = new BasicModels.BaseFile();
+			out = e.input(in);
+			if(out == null) { break; }
+			this.content.add(e);
+			in = out;
 		}
-		return "";
+		return in;
 	}
 	public void copyReference(Object o) {
 		BaseFiles m = (BaseFiles)o;
@@ -95,6 +93,49 @@ public class BaseFiles implements Interfaces.IPublic {
 	public int size() {
 		return content.size();
 	}
+	
+	/**
+	 * Sort By Index
+	 * 
+	 */
+	@SuppressWarnings("unchecked")
+	public void sortIncrease() {
+		@SuppressWarnings("rawtypes")
+		Comparator c = new Comparator<BasicModels.BaseFile>() {
+			public int compare(BasicModels.BaseFile e1, BasicModels.BaseFile e2) {
+				if(e1.getIndex() > e2.getIndex()) {
+					return 1;
+				} else {
+					return -1;
+				}
+			}
+		};
+		
+		Collections.sort(this.getContent(), c);
+	}
+	
+	/**
+	 * Sort By Index
+	 * 
+	 */
+	@SuppressWarnings("unchecked")
+	public void sortDecrease() {
+		@SuppressWarnings("rawtypes")
+		Comparator c = new Comparator<BasicModels.BaseFile>() {
+			public int compare(BasicModels.BaseFile e1, BasicModels.BaseFile e2) {
+				if(e1.getIndex() > e2.getIndex()) {
+					return -1;
+				} else {
+					return 1;
+				}
+			}
+		};
+		
+		Collections.sort(this.getContent(), c);
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	public int indexOf(String url) {
 		for(int i=0; i<content.size(); i++) {
 			if(content.get(i).getUrl().equals(url)) {

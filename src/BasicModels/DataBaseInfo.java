@@ -145,7 +145,7 @@ public class DataBaseInfo implements Interfaces.IPublic{
 		if(!c.getIsOK()) { return null; }
 		in = this.machineInfo.input(c.output());
 		if(in == null) { return null; }
-		c.setValue(in);
+		c.setLine(in);
 		this.url = c.fetchFirstString();
 		if(!c.getIsOK()) { return null; }
 		
@@ -153,12 +153,20 @@ public class DataBaseInfo implements Interfaces.IPublic{
 	}
 	public void copyReference(Object o) {
 		DataBaseInfo d = (DataBaseInfo)o;
+		this.index = d.index;
+		this.depotIndex = d.depotIndex;
+		this.type = d.type;
+		this.depotInfo = d.depotInfo;
 		this.machineInfo = d.machineInfo;
 		this.url = d.url;
 		this.name = d.name;
 	}
 	public void copyValue(Object o) {
 		DataBaseInfo d = (DataBaseInfo)o;
+		this.index = d.index;
+		this.depotIndex = d.depotIndex;
+		this.type = d.type;
+		this.depotInfo = d.depotInfo;
 		this.machineInfo.copyValue(d.machineInfo);
 		this.url = new String(d.url);
 		this.name = new String(d.name);

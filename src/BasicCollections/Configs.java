@@ -2,7 +2,7 @@ package BasicCollections;
 
 import java.util.*;
 
-public class Configs implements Interfaces.IPublic {
+public class Configs implements Interfaces.IPublic, Interfaces.ICollection {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -38,6 +38,9 @@ public class Configs implements Interfaces.IPublic {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
+	public void clear() {
+		initThis();
+	}
 	public String toString() {
 		
 		if(configs == null) {
@@ -65,25 +68,23 @@ public class Configs implements Interfaces.IPublic {
 		if(configs == null || configs.size() == 0) {
 			return "";
 		}
-		String res = configs.get(0).output();
-		for(int i=1; i<configs.size(); i++) {
-			res += "\n" + configs.get(i).output();
+		String res = this.getClass().getSimpleName() + " = " + Tools.String.getValue(this.getContent().get(0).output());
+		for(int i=1; i<this.configs.size(); i++) {
+			res += "|" + Tools.String.getValue(this.getContent().get(i).output());
 		}
 		return res;
 	}
 	public String input(String in) {
 		initThis();
-		String[] items = Tools.String.split(in, '\n');
-		String res = "";
-		for(int i=0; i<items.length; i++) {
-			BasicModels.Config c = new BasicModels.Config();
-			res = c.input(items[i]);
-			if(res == null) {
-				return res;
-			}
-			configs.add(c);
+		String out = "";
+		while(true) {
+			BasicModels.Config e = new BasicModels.Config();
+			out = e.input(in);
+			if(out == null) { break; }
+			this.configs.add(e);
+			in = out;
 		}
-		return res;
+		return in;
 	}
 	public void copyReference(Object o) {
 		Configs c = (Configs)o;
@@ -101,13 +102,63 @@ public class Configs implements Interfaces.IPublic {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public void clear() {
-		initThis();
-	}
-	
 	public int size() {
 		return configs.size();
 	}
+	/**
+	 * Sort By Field
+	 * 
+	 */
+	@SuppressWarnings("unchecked")
+	public void sortIncrease() {
+		@SuppressWarnings("rawtypes")
+		Comparator c = new Comparator<BasicModels.Config>() {
+			public int compare(BasicModels.Config c1, BasicModels.Config c2) {
+				if(c1 == null ) {
+					return -1;
+				}
+				if(c2 == null) {
+					return 1;
+				}
+				if(c1.getField().compareTo(c2.getField()) > 0) {
+					return 1;
+				} else {
+					return -1;
+				}
+			}
+		};
+		
+		Collections.sort(this.getContent(), c);
+	}
+	/**
+	 * Sort By Field
+	 * 
+	 */
+	@SuppressWarnings("unchecked")
+	public void sortDecrease() {
+		@SuppressWarnings("rawtypes")
+		Comparator c = new Comparator<BasicModels.Config>() {
+			public int compare(BasicModels.Config c1, BasicModels.Config c2) {
+				if(c1 == null ) {
+					return 1;
+				}
+				if(c2 == null) {
+					return -1;
+				}
+				if(c1.getField().compareTo(c2.getField()) > 0) {
+					return -1;
+				} else {
+					return 1;
+				}
+			}
+		};
+		
+		Collections.sort(this.getContent(), c);
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	
 	public int indexOf(String field) {
 		for(int i=0; i<configs.size(); i++) {
 			if(configs.get(i).getField().equals(field)) {

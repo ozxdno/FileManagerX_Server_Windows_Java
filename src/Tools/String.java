@@ -101,5 +101,39 @@ public class String {
 		}
 		return res;
 	}
+	
+	/**
+	 * 从一串字符串中获取第一个等号的前面的内容，如果没有等号，返回空字符串。该方法不会对字符串进行任何处理。
+	 * @param str 输入给定字符串
+	 * @return 第一个等号前的内容，没有等号，返回空字符串。
+	 */
+	public final static java.lang.String getField(java.lang.String str) {
+		if(str == null || str.length() == 0) {
+			return "";
+		}
+		int idx = str.indexOf('=');
+		if(idx < 0) {
+			return "";
+		}
+		
+		return str.substring(0, idx);
+	}
+	
+	/**
+	 * 从一串字符串中获取第一个等号的后面的内容，如果没有等号，返回该字符串。该方法不会对字符串进行任何处理。
+	 * @param str 输入给定字符串
+	 * @return 第一个等号后的内容，没有等号，返回本身。
+	 */
+	public final static java.lang.String getValue(java.lang.String str) {
+		if(str == null || str.length() == 0) {
+			return "";
+		}
+		int idx = str.indexOf('=');
+		if(idx < 0) {
+			return str;
+		}
+		
+		return str.substring(idx + 1);
+	}
 }
 

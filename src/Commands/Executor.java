@@ -1,0 +1,111 @@
+package Commands;
+
+public class Executor implements Interfaces.ICommandExecutor {
+
+	public boolean execute(Interfaces.IConnection connection) {
+		
+		BasicModels.Config c = new BasicModels.Config(connection.getReceiveString());
+		if(c.isEmpty()) {
+			return true;
+		}
+		
+		if(c.getField().equals("CloseServer")) {
+			Commands.CloseServer cs = new Commands.CloseServer();
+			cs.setConnection(connection);
+			return cs.input(connection.getReceiveString()) != null && cs.execute();
+		}
+		if(c.getField().equals("Input")) {
+			Commands.Input i = new Commands.Input();
+			i.setConnection(connection);
+			return i.input(connection.getReceiveString()) != null && i.execute();
+		}
+		if(c.getField().equals("Output")) {
+			Commands.Output o = new Commands.Output();
+			o.setConnection(connection);
+			return o.input(connection.getReceiveString()) != null && o.execute();
+		}
+		if(c.getField().equals("RegisterUser")) {
+			Commands.RegisterUser ru = new Commands.RegisterUser();
+			ru.setConnection(connection);
+			return ru.input(connection.getReceiveString()) != null && ru.execute();
+		}
+		if(c.getField().equals("LoginUser")) {
+			Commands.LoginUser lu = new Commands.LoginUser();
+			lu.setConnection(connection);
+			return lu.input(connection.getReceiveString()) != null && lu.execute();
+		}
+		if(c.getField().equals("QueryConfigurations")) {
+			Commands.QueryConfigurations qc = new Commands.QueryConfigurations();
+			qc.setConnection(connection);
+			return qc.input(connection.getReceiveString()) != null && qc.execute();
+		}
+		if(c.getField().equals("QueryDepots")) {
+			Commands.QueryDepots qd = new Commands.QueryDepots();
+			qd.setConnection(connection);
+			return qd.input(connection.getReceiveString()) != null && qd.execute();
+		}
+		if(c.getField().equals("QueryDataBases")) {
+			Commands.QueryDataBases qd = new Commands.QueryDataBases();
+			qd.setConnection(connection);
+			return qd.input(connection.getReceiveString()) != null && qd.execute();
+		}
+		if(c.getField().equals("QueryMachine")) {
+			Commands.QueryMachine qm = new Commands.QueryMachine();
+			qm.setConnection(connection);
+			return qm.input(connection.getReceiveString()) != null && qm.execute();
+		}
+		if(c.getField().equals("QueryDepot")) {
+			Commands.QueryDepot qd = new Commands.QueryDepot();
+			qd.setConnection(connection);
+			return qd.input(connection.getReceiveString()) != null && qd.execute();
+		}
+		if(c.getField().equals("QueryDataBase")) {
+			Commands.QueryDataBase qd = new Commands.QueryDataBase();
+			qd.setConnection(connection);
+			return qd.input(connection.getReceiveString()) != null && qd.execute();
+		}
+		if(c.getField().equals("QueryUser")) {
+			Commands.QueryUser qu = new Commands.QueryUser();
+			qu.setConnection(connection);
+			return qu.input(connection.getReceiveString()) != null && qu.execute();
+		}
+		if(c.getField().equals("UpdateMachine")) {
+			Commands.UpdateMachine um = new Commands.UpdateMachine();
+			um.setConnection(connection);
+			return um.input(connection.getReceiveString()) != null && um.execute();
+		}
+		if(c.getField().equals("UpdateDepot")) {
+			Commands.UpdateDepot ud = new Commands.UpdateDepot();
+			ud.setConnection(connection);
+			return ud.input(connection.getReceiveString()) != null && ud.execute();
+		}
+		if(c.getField().equals("UpdateDataBase")) {
+			Commands.UpdateDataBase ud = new Commands.UpdateDataBase();
+			ud.setConnection(connection);
+			return ud.input(connection.getReceiveString()) != null && ud.execute();
+		}
+		if(c.getField().equals("RemoveDepots")) {
+			Commands.RemoveDepots rd = new Commands.RemoveDepots();
+			rd.setConnection(connection);
+			return rd.input(connection.getReceiveString()) != null && rd.execute();
+		}
+		if(c.getField().equals("RemoveDataBases")) {
+			Commands.RemoveDataBases rd = new Commands.RemoveDataBases();
+			rd.setConnection(connection);
+			return rd.input(connection.getReceiveString()) != null && rd.execute();
+		}
+		if(c.getField().equals("RemoveDepot")) {
+			Commands.RemoveDepot rd = new Commands.RemoveDepot();
+			rd.setConnection(connection);
+			return rd.input(connection.getReceiveString()) != null && rd.execute();
+		}
+		if(c.getField().equals("RemoveDataBase")) {
+			Commands.RemoveDataBase rd = new Commands.RemoveDataBase();
+			rd.setConnection(connection);
+			return rd.input(connection.getReceiveString()) != null && rd.execute();
+		}
+		
+		return false;
+	}
+	
+}

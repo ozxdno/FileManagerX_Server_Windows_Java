@@ -3,10 +3,7 @@ package Communicator;
 import java.net.*;
 import java.util.*;
 
-import Interfaces.IServerConnection;
-import Interfaces.IServerScanner;
-
-public class ServerTCP implements Interfaces.IPublic, IServerScanner{
+public class ServerTCP implements Interfaces.IPublic, Interfaces.IServerScanner {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -75,7 +72,7 @@ public class ServerTCP implements Interfaces.IPublic, IServerScanner{
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean isRunning() {
-		return this.scanner.isRunning();
+		return this.scanner != null && this.scanner.isRunning();
 	}
 	
 	public boolean initialize(Object o) {
@@ -92,6 +89,7 @@ public class ServerTCP implements Interfaces.IPublic, IServerScanner{
 			scanner.start();
 			return true;
 		} catch(Exception e) {
+			BasicEnums.ErrorType.BUILD_SOCKET_FAILED.register(e.toString());
 			return false;
 		}
 	}
@@ -112,7 +110,7 @@ public class ServerTCP implements Interfaces.IPublic, IServerScanner{
 		}
 		return -1;
 	}
-	public IServerConnection search(String ip) {
+	public Interfaces.IServerConnection search(String ip) {
 		int idx = indexOf(ip);
 		if(idx == -1) {
 			return null;
@@ -131,7 +129,7 @@ public class ServerTCP implements Interfaces.IPublic, IServerScanner{
 		}
 		return -1;
 	}
-	public IServerConnection search(long userIndex) {
+	public Interfaces.IServerConnection search(long userIndex) {
 		int idx = indexOf(userIndex);
 		if(idx == -1) {
 			return null;
@@ -162,7 +160,7 @@ class Scanner extends Thread {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	private BasicModels.MachineInfo serverMachineInfo;
-	private List<ServerConnection> connections;
+	private List<Interfaces.IServerConnection> connections;
 	
 	private ServerSocket socket;
 	private boolean abort;
@@ -179,7 +177,7 @@ class Scanner extends Thread {
 		this.serverMachineInfo = serverMachineInfo;
 		return true;
 	}
-	public boolean setConnections(List<ServerConnection> connections) {
+	public boolean setConnections(List<Interfaces.IServerConnection> connections) {
 		if(connections == null) {
 			return false;
 		}
@@ -212,7 +210,7 @@ class Scanner extends Thread {
 	public BasicModels.MachineInfo getServerMachineInfo() {
 		return this.serverMachineInfo;
 	}
-	public List<ServerConnection> getConnections() {
+	public List<Interfaces.IServerConnection> getConnections() {
 		return this.connections;
 	}
 	
@@ -243,7 +241,7 @@ class Scanner extends Thread {
 	private void initThis() {
 		serverMachineInfo = null;
 		if(connections == null) {
-			connections = new ArrayList<ServerConnection>();
+			connections = new ArrayList<Interfaces.IServerConnection>();
 		}
 		connections.clear();
 		
@@ -262,9 +260,9 @@ class Scanner extends Thread {
 		}
 		while(!abort && !socket.isClosed()) {
 			try {
-				ServerConnection connection = new ServerConnection(socket.accept(),serverMachineInfo);
+				Interfaces.IServerConnection connection = new ServerConnection(socket.accept(),serverMachineInfo);
 				connections.add(connection);
-				connection.start();
+				connection.connect();
 			}catch(Exception e) {
 				;
 			}
@@ -296,9 +294,6 @@ class Scanner extends Thread {
 		}catch(Exception e) {
 			;
 		}
-		
-		Tools.CFGFile.saveCFG();
-		Globals.Datas.Errors.save();
 	}
 	public void removeIdleConnections() {
 		for(int i=this.connections.size() - 1; i>=0; i--) {
@@ -308,7 +303,7 @@ class Scanner extends Thread {
 				continue;
 			}
 			long ticks1 = Tools.Time.getTicks();
-			long ticks2 = this.connections.get(i).getLastReceiveTime();
+			long ticks2 = this.connections.get(i).getLastOperationTime();
 			long passed = ticks1 - ticks2;
 			if(passed > this.permitIdle) {
 				this.connections.get(i).disconnect();

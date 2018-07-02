@@ -77,12 +77,20 @@ public class SQLManager implements Interfaces.IDBManager{
 			Class.forName("com.mysql.jdbc.Driver");
 			connection = DriverManager.getConnection(url, loginName, password);
 		}catch(Exception e) {
+			BasicEnums.ErrorType.DB_CONNECT_FAILED.register(
+					
+					e.toString()
+					);
 			this.isConnected = false;
 			return false;
 		}
 		try {
 			statement = connection.createStatement();
 		}catch(Exception e) {
+			BasicEnums.ErrorType.DB_CONNECT_FAILED.register(
+					
+					e.toString()
+					);
 			this.isConnected = false;
 			return false;
 		}
@@ -93,6 +101,10 @@ public class SQLManager implements Interfaces.IDBManager{
 			try {
 				statement.close();
 			}catch(Exception e) {
+				BasicEnums.ErrorType.DB_DISCONNECT_FAILED.register(
+						
+						e.toString()
+						);
 				return;
 			}
 		}
@@ -101,6 +113,10 @@ public class SQLManager implements Interfaces.IDBManager{
 			try {
 				connection.close();
 			}catch(Exception e) {
+				BasicEnums.ErrorType.DB_DISCONNECT_FAILED.register(
+						
+						e.toString()
+						);
 				return;
 			}
 		}
@@ -167,6 +183,10 @@ public class SQLManager implements Interfaces.IDBManager{
 			exp += ");";
 			return statement.executeUpdate(exp) == 0;
 		} catch(Exception e) {
+			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
+					
+					e.toString()
+					);
 			return false;
 		}
 	}
@@ -380,6 +400,10 @@ public class SQLManager implements Interfaces.IDBManager{
 			statement.execute(exp);
 			return true;
 		} catch(Exception e) {
+			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
+					
+					e.toString()
+					);
 			return false;
 		}
 	}
@@ -445,6 +469,10 @@ public class SQLManager implements Interfaces.IDBManager{
 			
 			return res;
 		}catch(Exception e) {
+			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
+					
+					e.toString()
+					);
 			return res;
 		}
 	}
@@ -486,20 +514,172 @@ public class SQLManager implements Interfaces.IDBManager{
 			
 			return res;
 		}catch(Exception e) {
+			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
+					
+					e.toString()
+					);
 			return res;
 		}
 	}
 	public BasicCollections.Users QueryUsers(Object conditions) {
-		return null;
+		if(conditions == null) {
+			return null;
+		}
+		String con = "";
+		if(conditions instanceof QueryConditions) {
+			con = this.queryConditionsToStatement((QueryConditions)conditions);
+		}
+		else if(conditions instanceof QueryCondition) {
+			con = this.queryConditionToStatement((QueryCondition)conditions);
+		}
+		else {
+			return null;
+		}
+		String exp = "SELECT * FROM Users " + con + ";";
+		try {
+			ResultSet set = statement.executeQuery(exp);
+			BasicCollections.Users us = new BasicCollections.Users();
+			
+			while(set.next()) {
+				BasicModels.User u = new BasicModels.User();
+				u.setIndex(set.getLong("Index"));
+				u.setLoginName(set.getString("LoginName"));
+				u.setNickName(set.getString("NickName"));
+				u.setPassword(set.getString("Password"));
+				u.setEmail(set.getString("Email"));
+				u.setPhone(set.getString("Phone"));
+				u.setState(BasicEnums.UserState.valueOf(set.getString("State")));
+				u.setPriority(BasicEnums.UserPriority.valueOf(set.getString("Priority")));
+				u.setLevel(BasicEnums.UserLevel.valueOf(set.getString("Level")));
+				u.setExperience(set.getLong("Experience"));
+				u.setPhotoUrl(set.getString("PhotoUrl"));
+				u.setCoins(set.getLong("Coins"));
+				u.setMoney(set.getDouble("Money"));
+				us.add(u);
+			}
+			
+			return us;
+		}catch(Exception e) {
+			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
+					
+					e.toString()
+					);
+			return null;
+		}
 	}
 	public BasicCollections.Invitations QueryInvitations(Object conditions) {
-		return null;
+		if(conditions == null) {
+			return null;
+		}
+		String con = "";
+		if(conditions instanceof QueryConditions) {
+			con = this.queryConditionsToStatement((QueryConditions)conditions);
+		}
+		else if(conditions instanceof QueryCondition) {
+			con = this.queryConditionToStatement((QueryCondition)conditions);
+		}
+		else {
+			return null;
+		}
+		String exp = "SELECT * FROM Invitations " + con + ";";
+		try {
+			ResultSet set = statement.executeQuery(exp);
+			BasicCollections.Invitations invs = new BasicCollections.Invitations();
+			
+			while(set.next()) {
+				BasicModels.Invitation i = new BasicModels.Invitation();
+				i.setUser(new BasicModels.User());
+				
+				i.setCode(set.getString("Code"));
+				i.getUser().setPriority(BasicEnums.UserPriority.valueOf(set.getString("Priority")));
+				i.getUser().setLevel(BasicEnums.UserLevel.valueOf(set.getString("Level")));
+				i.getUser().setExperience(set.getLong("Experience"));
+				i.getUser().setCoins(set.getLong("Coins"));
+				i.getUser().setMoney(set.getDouble("Money"));
+				invs.add(i);
+			}
+			
+			return invs;
+		}catch(Exception e) {
+			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
+					
+					e.toString()
+					);
+			return null;
+		}
 	}
 	public BasicCollections.MachineInfos QueryMachineInfos(Object conditions) {
-		return null;
+		if(conditions == null) {
+			return null;
+		}
+		String con = "";
+		if(conditions instanceof QueryConditions) {
+			con = this.queryConditionsToStatement((QueryConditions)conditions);
+		}
+		else if(conditions instanceof QueryCondition) {
+			con = this.queryConditionToStatement((QueryCondition)conditions);
+		}
+		else {
+			return null;
+		}
+		String exp = "SELECT * FROM MachineInfo " + con + ";";
+		try {
+			ResultSet set = statement.executeQuery(exp);
+			BasicCollections.MachineInfos ms = new BasicCollections.MachineInfos();
+			
+			while(set.next()) {
+				BasicModels.MachineInfo m = new BasicModels.MachineInfo();
+				m.setIndex(set.getLong("Index"));
+				m.setName(set.getString("Name"));
+				m.setIp(set.getString("IP"));
+				m.setPort(set.getInt("Port"));
+				ms.add(m);
+			}
+			
+			return ms;
+		}catch(Exception e) {
+			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+			return null;
+		}
 	}
 	public BasicCollections.DepotInfos QueryDepotInfos(Object conditions) {
-		return null;
+		if(conditions == null) {
+			return null;
+		}
+		String con = "";
+		if(conditions instanceof QueryConditions) {
+			con = this.queryConditionsToStatement((QueryConditions)conditions);
+		}
+		else if(conditions instanceof QueryCondition) {
+			con = this.queryConditionToStatement((QueryCondition)conditions);
+		}
+		else {
+			return null;
+		}
+		String exp = "SELECT * FROM DepotInfo " + con + ";";
+		try {
+			ResultSet set = statement.executeQuery(exp);
+			BasicCollections.DepotInfos ds = new BasicCollections.DepotInfos();
+			
+			while(set.next()) {
+				BasicModels.DepotInfo d = new BasicModels.DepotInfo();
+				d.setIndex(set.getLong("Index"));
+				d.setName(set.getString("Name"));
+				d.getMachineInfo().setIndex(set.getLong("MachineIndex"));
+				d.setDBIndex(set.getLong("DataBaseIndex"));
+				d.setState(BasicEnums.DepotState.valueOf(set.getString("State")));
+				d.setUrl(set.getString("Url"));
+				ds.add(d);
+			}
+			
+			return ds;
+		}catch(Exception e) {
+			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
+					
+					e.toString()
+					);
+			return null;
+		}
 	}
 	public BasicCollections.DataBaseInfos QueryDataBaseInfos(Object conditions) {
 		if(conditions == null) {
@@ -533,6 +713,10 @@ public class SQLManager implements Interfaces.IDBManager{
 			
 			return dbs;
 		}catch(Exception e) {
+			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
+					
+					e.toString()
+					);
 			return null;
 		}
 	}
@@ -576,6 +760,10 @@ public class SQLManager implements Interfaces.IDBManager{
 			
 			return null;
 		}catch(Exception e) {
+			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
+					
+					e.toString()
+					);
 			return null;
 		}
 	}
@@ -616,6 +804,10 @@ public class SQLManager implements Interfaces.IDBManager{
 			
 			return null;
 		}catch(Exception e) {
+			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
+					
+					e.toString()
+					);
 			return null;
 		}
 	}
@@ -657,6 +849,10 @@ public class SQLManager implements Interfaces.IDBManager{
 			
 			return null;
 		}catch(Exception e) {
+			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
+					
+					e.toString()
+					);
 			return null;
 		}
 	}
@@ -693,6 +889,10 @@ public class SQLManager implements Interfaces.IDBManager{
 			
 			return null;
 		}catch(Exception e) {
+			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
+					
+					e.toString()
+					);
 			return null;
 		}
 	}
@@ -725,6 +925,10 @@ public class SQLManager implements Interfaces.IDBManager{
 			
 			return null;
 		}catch(Exception e) {
+			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
+					
+					e.toString()
+					);
 			return null;
 		}
 	}
@@ -759,6 +963,10 @@ public class SQLManager implements Interfaces.IDBManager{
 			
 			return null;
 		}catch(Exception e) {
+			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
+					
+					e.toString()
+					);
 			return null;
 		}
 	}
@@ -793,6 +1001,10 @@ public class SQLManager implements Interfaces.IDBManager{
 			
 			return null;
 		}catch(Exception e) {
+			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
+					
+					e.toString()
+					);
 			return null;
 		}
 	}
@@ -818,19 +1030,39 @@ public class SQLManager implements Interfaces.IDBManager{
 		return ok;
 	}
 	public boolean updataUsers(BasicCollections.Users users) {
-		return false;
+		boolean ok = true;
+		for(BasicModels.User u : users.getContent()) {
+			ok &= this.updataUser(u);
+		}
+		return ok;
 	}
 	public boolean updataInvitations(BasicCollections.Invitations invitations) {
-		return false;
+		boolean ok = true;
+		for(BasicModels.Invitation i : invitations.getContent()) {
+			ok &= this.updataInvitation(i);
+		}
+		return ok;
 	}
 	public boolean updataMachineInfos(BasicCollections.MachineInfos machineInfos) {
-		return false;
+		boolean ok = true;
+		for(BasicModels.MachineInfo m : machineInfos.getContent()) {
+			ok &= this.updataMachineInfo(m);
+		}
+		return ok;
 	}
 	public boolean updataDepotInfos(BasicCollections.DepotInfos depotInfos) {
-		return false;
+		boolean ok = true;
+		for(BasicModels.DepotInfo d : depotInfos.getContent()) {
+			ok &= this.updataDepotInfo(d);
+		}
+		return ok;
 	}
 	public boolean updataDataBaseInfos(BasicCollections.DataBaseInfos dbInfos) {
-		return false;
+		boolean ok = true;
+		for(BasicModels.DataBaseInfo d : dbInfos.getContent()) {
+			ok &= this.updataDataBaseInfo(d);
+		}
+		return ok;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -885,6 +1117,10 @@ public class SQLManager implements Interfaces.IDBManager{
 			statement.executeUpdate(exp);
 			return true;
 		}catch(Exception e) {
+			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
+					
+					e.toString()
+					);
 			return false;
 		}
 	}
@@ -938,6 +1174,10 @@ public class SQLManager implements Interfaces.IDBManager{
 			statement.executeUpdate(exp);
 			return true;
 		}catch(Exception e) {
+			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
+					
+					e.toString()
+					);
 			return false;
 		}
 	}
@@ -992,6 +1232,10 @@ public class SQLManager implements Interfaces.IDBManager{
 			statement.executeUpdate(exp);
 			return true;
 		}catch(Exception e) {
+			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
+					
+					e.toString()
+					);
 			return false;
 		}
 	}
@@ -1034,6 +1278,10 @@ public class SQLManager implements Interfaces.IDBManager{
 			statement.executeUpdate(exp);
 			return true;
 		}catch(Exception e) {
+			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
+					
+					e.toString()
+					);
 			return false;
 		}
 	}
@@ -1071,6 +1319,10 @@ public class SQLManager implements Interfaces.IDBManager{
 			statement.executeUpdate(exp);
 			return true;
 		}catch(Exception e) {
+			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
+					
+					e.toString()
+					);
 			return false;
 		}
 	}
@@ -1090,7 +1342,7 @@ public class SQLManager implements Interfaces.IDBManager{
 				String.valueOf(depotInfo.getIndex()) + ", " +
 				"'" + depotInfo.getName() + "', " +
 				String.valueOf(depotInfo.getMachineInfo().getIndex()) + ", " +
-				String.valueOf(depotInfo.getIndex()) + ", " +
+				String.valueOf(depotInfo.getDBIndex()) + ", " +
 				"'" + depotInfo.getState().toString() + "', " +
 				"'" + depotInfo.getUrl().replace("\\", "\\\\") + "'" +
 				");";
@@ -1112,6 +1364,10 @@ public class SQLManager implements Interfaces.IDBManager{
 			statement.executeUpdate(exp);
 			return true;
 		}catch(Exception e) {
+			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
+					
+					e.toString()
+					);
 			return false;
 		}
 	}
@@ -1131,7 +1387,7 @@ public class SQLManager implements Interfaces.IDBManager{
 				String.valueOf(dbInfo.getIndex()) + ", " +
 				"'" + dbInfo.getName() + "', " +
 				String.valueOf(dbInfo.getMachineInfo().getIndex()) + ", " +
-				String.valueOf(dbInfo.getIndex()) + ", " +
+				String.valueOf(dbInfo.getDepotIndex()) + ", " +
 				"'" + dbInfo.getType().toString() + "', " +
 				"'" + dbInfo.getUrl().replace("\\", "\\\\") + "'" +
 				");";
@@ -1153,6 +1409,10 @@ public class SQLManager implements Interfaces.IDBManager{
 			statement.executeUpdate(exp);
 			return true;
 		}catch(Exception e) {
+			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
+					
+					e.toString()
+					);
 			return false;
 		}
 	}
@@ -1178,19 +1438,39 @@ public class SQLManager implements Interfaces.IDBManager{
 		return ok;
 	}
 	public boolean removeUsers(BasicCollections.Users users) {
-		return false;
+		boolean ok = true;
+		for(BasicModels.User i : users.getContent()) {
+			ok &= this.removeUser(i);
+		}
+		return ok;
 	}
 	public boolean removeInvitations(BasicCollections.Invitations invitations) {
-		return false;
+		boolean ok = true;
+		for(BasicModels.Invitation i : invitations.getContent()) {
+			ok &= this.removeInvitation(i);
+		}
+		return ok;
 	}
 	public boolean removeMachineInfos(BasicCollections.MachineInfos machineInfos) {
-		return false;
+		boolean ok = true;
+		for(BasicModels.MachineInfo i : machineInfos.getContent()) {
+			ok &= this.removeMachineInfo(i);
+		}
+		return ok;
 	}
 	public boolean removeDepotInfos(BasicCollections.DepotInfos depotInfos) {
-		return false;
+		boolean ok = true;
+		for(BasicModels.DepotInfo i : depotInfos.getContent()) {
+			ok &= this.removeDepotInfo(i);
+		}
+		return ok;
 	}
 	public boolean removeDataBaseInfos(BasicCollections.DataBaseInfos dbInfos) {
-		return false;
+		boolean ok = true;
+		for(BasicModels.DataBaseInfo i : dbInfos.getContent()) {
+			ok &= this.removeDataBaseInfo(i);
+		}
+		return ok;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1201,6 +1481,10 @@ public class SQLManager implements Interfaces.IDBManager{
 			this.statement.execute(exp);
 			return true;
 		} catch(Exception e) {
+			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
+					
+					e.toString()
+					);
 			return true;
 		}
 	}
@@ -1210,11 +1494,25 @@ public class SQLManager implements Interfaces.IDBManager{
 			this.statement.execute(exp);
 			return true;
 		} catch(Exception e) {
+			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
+					
+					e.toString()
+					);
 			return true;
 		}
 	}
 	public boolean removeUser(BasicModels.User user) {
-		return true;
+		try {
+			String exp = "DELETE FROM Users WHERE `Index` = " + String.valueOf(user.getIndex()) + ";";
+			this.statement.execute(exp);
+			return true;
+		} catch(Exception e) {
+			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
+					
+					e.toString()
+					);
+			return true;
+		}
 	}
 	public boolean removeInvitation(BasicModels.Invitation invitation) {
 		try {
@@ -1222,11 +1520,25 @@ public class SQLManager implements Interfaces.IDBManager{
 			this.statement.execute(exp);
 			return true;
 		} catch(Exception e) {
+			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
+					
+					e.toString()
+					);
 			return true;
 		}
 	}
 	public boolean removeMachineInfo(BasicModels.MachineInfo machineInfo) {
-		return false;
+		try {
+			String exp = "DELETE FROM MachineInfo WHERE `Index` = " + String.valueOf(machineInfo.getIndex()) + ";";
+			this.statement.execute(exp);
+			return true;
+		} catch(Exception e) {
+			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
+					
+					e.toString()
+					);
+			return true;
+		}
 	}
 	public boolean removeDepotInfo(BasicModels.DepotInfo depotInfo) {
 		try {
@@ -1234,6 +1546,10 @@ public class SQLManager implements Interfaces.IDBManager{
 			this.statement.execute(exp);
 			return true;
 		} catch(Exception e) {
+			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
+					
+					e.toString()
+					);
 			return true;
 		}
 	}
@@ -1243,6 +1559,10 @@ public class SQLManager implements Interfaces.IDBManager{
 			this.statement.execute(exp);
 			return true;
 		} catch(Exception e) {
+			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
+					
+					e.toString()
+					);
 			return true;
 		}
 	}
@@ -1259,7 +1579,7 @@ public class SQLManager implements Interfaces.IDBManager{
 		
 		for(int i=1; i<conditions.size(); i++) {
 			QueryCondition qc = conditions.getContent().get(i);
-			con += qc.getRelation().toString() + " " +
+			con += " " + qc.getRelation().toString() + " " +
 				"`" + qc.getItemName() + "` " +
 				qc.getSign().getSignString() + " " +
 				qc.getValue();

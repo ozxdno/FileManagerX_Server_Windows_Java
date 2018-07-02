@@ -6,7 +6,7 @@ public enum Sign {
 	GREATER(">"),
 	LESS("<"),
 	GREATER_OR_EQUAL(">="),
-	lESS_OR_EQUAL("<="),
+	LESS_OR_EQUAL("<="),
 	LIKE("LIKE"),
 	CONTAIN("CONTAIN");
 	

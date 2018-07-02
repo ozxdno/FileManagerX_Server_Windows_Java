@@ -1,7 +1,7 @@
 package BasicEnums;
 
 public enum UserState {
-	OffLine,
+	Offline,
 	Hide,
 	Online
 }

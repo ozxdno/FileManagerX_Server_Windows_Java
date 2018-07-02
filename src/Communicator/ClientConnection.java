@@ -3,35 +3,37 @@ package Communicator;
 import java.io.*;
 import java.net.*;
 
-public class ClientConnection extends Thread implements Interfaces.IClientConnection{
+public class ClientConnection extends Thread implements Interfaces.IClientConnection {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	private BasicModels.MachineInfo serverMachineInfo;
 	private BasicModels.MachineInfo clientMachineInfo;
 	private BasicModels.User user;
-	private Interfaces.IExcuteClientCommand excutor;
 	
-	private String receiveCommand;
-	private String sendCommand;
-	private boolean isCommandConnector;
-	
-	private BasicModels.BaseFile receiveFile;
-	private BasicModels.BaseFile sendFile;
-	private long totalBytes;
-	private long finishedBytes;
-	private boolean isFileConnector;
+	private Interfaces.IReplyExecutor executor;
+	private Interfaces.IFileConnector fileConnector;
 	
 	private Socket socket;
 	private boolean abort;
 	private boolean running;
-	private boolean busy;
+	private volatile boolean busy;
 	
-	private long lastReceiveTime;
+	private boolean closeServer;
+	private boolean activeEexcutor;
+	private boolean continueReceiveString;
+	private boolean continueSendString;
 	
+	private String receiveString;
+	private String sendString;
 	private byte[] receiveBuffer;
 	private byte[] sendBuffer;
+	
 	private int bufferSize;
+	private int receiveLength;
+	private int sendLength;
+	
+	private long lastOperationTime;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -56,53 +58,112 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 		this.user = user;
 		return true;
 	}
-	public boolean setExcutor(Interfaces.IExcuteClientCommand excutor) {
-		if(excutor == null) {
+	
+	public boolean setExecutor(Interfaces.IExecutor executor) {
+		if(executor == null) {
 			return false;
 		}
-		this.excutor = excutor;
+		if(!(executor instanceof Interfaces.IReplyExecutor)) {
+			return false;
+		}
+		this.executor = (Interfaces.IReplyExecutor)executor;
+		return true;
+	}
+	public boolean setExecutor(Interfaces.IReplyExecutor executor) {
+		if(executor == null) {
+			return false;
+		}
+		this.executor = executor;
+		return true;
+	}
+	public boolean setFileConnector(Interfaces.IFileConnector fileConnector) {
+		if(fileConnector == null) {
+			return false;
+		}
+		this.fileConnector = fileConnector;
 		return true;
 	}
 	
-	public boolean setReceiveCommand(String receiveCommand) {
-		if(receiveCommand == null) {
-			return false;
-		}
-		this.receiveCommand = receiveCommand;
+	public boolean setCloseServer(boolean closeServer) {
+		this.closeServer = closeServer;
 		return true;
 	}
-	public boolean setSendCommand(String sendCommand) {
-		if(sendCommand == null) {
-			return false;
-		}
-		this.sendCommand = sendCommand;
+	public boolean setActiveExecutor(boolean active) {
+		this.activeEexcutor = active;
 		return true;
 	}
-	public boolean setIsCommandConnector(boolean isCommandConnector) {
-		this.isCommandConnector = isCommandConnector;
-		this.isFileConnector = !this.isCommandConnector;
+	public boolean setContinueReceiveString() {
+		this.busy = true;
+		this.continueReceiveString = true;
+		this.continueSendString = false;
+		return true;
+	}
+	public boolean setContinueSendString() {
+		this.busy = true;
+		this.continueReceiveString = false;
+		this.continueSendString = true;
+		return true;
+	}
+	public boolean setContinueWait() {
+		this.busy = false;
+		this.continueReceiveString = false;
+		this.continueSendString = false;
+		if(this.fileConnector != null) {
+			this.fileConnector.setState_Stop(true);
+		}
 		return true;
 	}
 	
-	public boolean setReceiveFile(BasicModels.BaseFile f) {
-		if(f == null) {
+	public boolean setReceiveString(String str) {
+		if(str == null) {
 			return false;
 		}
-		this.sendFile.clear();
-		this.receiveFile = f;
+		this.receiveString = str;
 		return true;
 	}
-	public boolean setSendFile(BasicModels.BaseFile f) {
-		if(f == null) {
+	public boolean setSendString(String str) {
+		if(str == null) {
 			return false;
 		}
-		this.receiveFile.clear();
-		this.sendFile = f;
+		this.sendString = str;
 		return true;
 	}
-	public boolean setIsFileConnector(boolean isFileConnector) {
-		this.isFileConnector = isFileConnector;
-		this.isCommandConnector = !this.isFileConnector;
+	public boolean setReceiveBuffer(byte[] receiveBuffer) {
+		if(receiveBuffer == null) {
+			return false;
+		}
+		this.receiveBuffer = receiveBuffer;
+		return true;
+	}
+	public boolean setSendBuffer(byte[] sendBuffer) {
+		if(sendBuffer == null) {
+			return false;
+		}
+		this.sendBuffer = sendBuffer;
+		return true;
+	}
+	
+	public boolean setBufferSize(int bufferSize) {
+		if(bufferSize < 0) {
+			return false;
+		}
+		this.bufferSize = bufferSize;
+		this.receiveBuffer = new byte[bufferSize];
+		this.sendBuffer = new byte[bufferSize];
+		return true;
+	}
+	public boolean setReceiveLength(int length) {
+		if(length < 0) {
+			return false;
+		}
+		this.receiveLength = length;
+		return true;
+	}
+	public boolean setSendLength(int length) {
+		if(length < 0) {
+			return false;
+		}
+		this.sendLength = length;
 		return true;
 	}
 
@@ -120,6 +181,7 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 			this.socket = new Socket(ip,port);
 			return true;
 		} catch(Exception e) {
+			BasicEnums.ErrorType.BUILD_SOCKET_FAILED.register(e.toString());
 			return false;
 		}
 	}
@@ -132,23 +194,15 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 		return true;
 	}
 	
-	public boolean setLastReceiveTime(long lastReceiveTime) {
-		if(lastReceiveTime < 0) {
+	public boolean setLastOperationTime(long lastOperationTime) {
+		if(lastOperationTime < 0) {
 			return false;
 		}
-		this.lastReceiveTime = lastReceiveTime;
+		this.lastOperationTime = lastOperationTime;
 		return true;
 	}
-	public boolean setLastReceiveTime() {
-		this.lastReceiveTime = Tools.Time.getTicks();
-		return true;
-	}
-	
-	public boolean setBufferSize(int bufferSize) {
-		if(bufferSize < 0) {
-			return false;
-		}
-		this.bufferSize = bufferSize;
+	public boolean setLastOperationTime() {
+		this.lastOperationTime = Tools.Time.getTicks();
 		return true;
 	}
 	
@@ -163,34 +217,12 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 	public BasicModels.User getUser() {
 		return this.user;
 	}
-	public Interfaces.IExcuteClientCommand getExcutor() {
-		return this.excutor;
-	}
 	
-	public String getReceiveCommand() {
-		return this.receiveCommand;
+	public Interfaces.IReplyExecutor getExecutor() {
+		return this.executor;
 	}
-	public String getSendCommand() {
-		return this.sendCommand;
-	}
-	public boolean isCommandConnector() {
-		return this.isCommandConnector;
-	}
-	
-	public BasicModels.BaseFile getReceiveFile() {
-		return this.receiveFile;
-	}
-	public BasicModels.BaseFile getSendFile() {
-		return this.sendFile;
-	}
-	public long getTotalBytes() {
-		return this.totalBytes;
-	}
-	public long getFinishedBytes() {
-		return this.finishedBytes;
-	}
-	public boolean isFileConnector() {
-		return this.isFileConnector;
+	public Interfaces.IFileConnector getFileConnector() {
+		return this.fileConnector;
 	}
 
 	public Socket getSocket() {
@@ -206,12 +238,50 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 		return this.busy;
 	}
 	
-	public long getLastReceiveTime() {
-		return this.lastReceiveTime;
+	public boolean getCloseServer() {
+		return this.closeServer;
+	}
+	public boolean isActiveExecutor() {
+		return this.activeEexcutor;
+	}
+	public boolean isContinueReceiveString() {
+		return this.continueReceiveString;
+	}
+	public boolean isContinueSendString() {
+		return this.continueSendString;
+	}
+	public boolean isContinueReceiveByte() {
+		return this.isContinueReceiveByte();
+	}
+	public boolean isContinueSendByte() {
+		return this.isContinueSendByte();
+	}
+	
+	public String getReceiveString() {
+		return this.receiveString;
+	}
+	public String getSendString() {
+		return this.sendString;
+	}
+	public byte[] getReceiveBuffer() {
+		return this.receiveBuffer;
+	}
+	public byte[] getSendBuffer() {
+		return this.sendBuffer;
 	}
 	
 	public int getBufferSize() {
 		return this.bufferSize;
+	}
+	public int getReceiveLength() {
+		return this.receiveLength;
+	}
+	public int getSendLength() {
+		return this.sendLength;
+	}
+	
+	public long getLastOperationTime() {
+		return this.lastOperationTime;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -231,29 +301,32 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 		serverMachineInfo = null;
 		clientMachineInfo = null;
 		user = null;
-		excutor = new ExcuteClientCommand(this);
 		
-		this.receiveCommand = "";
-		this.sendCommand = "";
-		this.isCommandConnector = true;
-		
-		this.receiveFile = new BasicModels.BaseFile();
-		this.sendFile = new BasicModels.BaseFile();
-		this.totalBytes = 0;
-		this.finishedBytes = 0;
-		this.isFileConnector = false;
+		executor = Factories.CommunicatorFactory.createClientExcutor();
+		fileConnector = Factories.CommunicatorFactory.createFileConnector();
 		
 		this.socket = null;
 		this.abort = false;
 		this.running = true;
 		this.busy = false;
 		
-		this.setName("TCP Client Connection");
-		this.setLastReceiveTime();
+		this.closeServer = false;
+		this.activeEexcutor = true;
+		this.continueReceiveString = false;
+		this.continueSendString = false;
 		
-		this.bufferSize = 1024;
-		this.receiveBuffer = new byte[this.bufferSize];
-		this.sendBuffer = new byte[this.bufferSize];
+		this.receiveString = null;
+		this.sendString = null;
+		this.receiveBuffer = null;
+		this.sendBuffer = null;
+		
+		this.setBufferSize(1024);
+		this.receiveLength = 0;
+		this.sendLength = 0;
+		
+		this.setLastOperationTime();
+		
+		this.setName("TCP Client Connection");
 	}
 	public void run() {
 		abort = false;
@@ -265,96 +338,125 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 		
 		BufferedReader br = null;
 		PrintWriter pw = null;
+		DataInputStream dis = null;
+		DataOutputStream dos = null;
 		try {
 			br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			pw = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-		}catch(Exception e) {
-			return;
-		}
-		
-		DataInputStream dis = null;
-		FileOutputStream fos = null;
-		try {
 			dis = new DataInputStream(socket.getInputStream());
-		} catch(Exception e) {
+			dos = new DataOutputStream(socket.getOutputStream());
+		}catch(Exception e) {
+			BasicEnums.ErrorType.CLIENT_CONNECTION_STREAM_BUILD_FAILED.register(e.toString());
 			return;
 		}
 		
-		DataOutputStream dos = null;
-		FileInputStream fis = null;
-		try {
-			dos = new DataOutputStream(socket.getOutputStream()); 
-		} catch(Exception e) {
-			return;
-		}
-		
-		while(!abort && !socket.isClosed()) {
+		while(!abort && !socket.isClosed() && !closeServer) {
 			try {
-				if(this.isCommandConnector) {
-					if(this.sendCommand == null || this.sendCommand.length() == 0) {
+				if(this.continueSendString) {
+					this.busy = true;
+					if(this.sendString == null) {
+						this.continueSendString = false;
+						this.busy = false;
 						continue;
 					}
-					this.sendCommand += '\n';
-					pw.println(this.sendCommand);
+					pw.println(this.sendString);
 					pw.flush();
-					this.receiveCommand = br.readLine();
-					this.excutor.excute(this.receiveCommand);
+					this.busy = false;
+					this.continueSendString = false;
 				}
-				if(this.isFileConnector) {
-					if(this.sendFile.getUrl().length() == 0) { // received one file
-						if(fos == null) {
-							fos = new FileOutputStream(new File(receiveFile.getUrl()));
-						}
-						int length = dis.read(receiveBuffer, 0, receiveBuffer.length);
-						if(length > 0) {
-							fos.write(receiveBuffer, 0, length);
-							fos.flush();
-							this.finishedBytes += length;
-						}
-						if(length <= this.bufferSize) {
-							fos.close();
-							fos = null;
-							this.setIsCommandConnector(true);
-						}
-					}
-					if(this.receiveFile.getUrl().length() == 0) { // want to send a file
-						if(fis == null) {
-							fis = new FileInputStream(new File(sendFile.getUrl()));
-						}
-						int length = fis.read(sendBuffer, 0, sendBuffer.length);
-						if (length > 0) {
-			                dos.write(sendBuffer, 0, length);  
-			                dos.flush();
-			                this.finishedBytes += length;
-			            }
-						if(length <= this.bufferSize) {
-							fis.close();
-							fis = null;
-							this.setIsCommandConnector(true);
+				if(this.continueReceiveString) {
+					this.busy = true;
+					this.receiveLength = 0;
+					int partId = 1;
+					while(true) {
+						String receItem = br.readLine();
+						Interfaces.ICommunicatorReceivePart RP = Factories.CommunicatorFactory.createReceivePart();
+						RP.input(receItem);
+						if(RP.isPart() && RP.getPartId() == partId) {
+							if(partId == 1) {
+								this.receiveString = RP.getContent();
+							} else {
+								this.receiveString += "\n" + RP.getContent();
+							}
+							this.receiveLength += receItem.length();
+							partId++;
+							if(partId > RP.getTotalAmount()) {
+								break;
+							}
+						} else {
+							this.receiveLength = receItem.length();
+							this.receiveString = receItem;
+							break;
 						}
 					}
+					this.continueReceiveString = false;
+					if(this.activeEexcutor && this.executor != null) {
+						this.executor.execute(this);
+					}
+					this.busy = false;
+				}
+				if(!this.continueReceiveString && !this.continueSendString && this.fileConnector.isActive() && this.fileConnector.isOutputCommand()) { // input a file
+					this.busy = true;
+					if(this.receiveBuffer == null || this.receiveBuffer.length == 0) {
+						this.busy = false;
+						continue;
+					}
+					
+					this.fileConnector.setState_Busy(true);
+					while(!this.fileConnector.isFinished()) {
+						this.receiveLength = dis.read(receiveBuffer, 0, receiveBuffer.length);
+						this.fileConnector.setReceiveBytes(receiveBuffer);
+						this.fileConnector.setReceiveLength(receiveLength);
+						if(!this.fileConnector.save()) {
+							BasicEnums.ErrorType.CLIENT_CONNECTION_RUNNING_FAILED.register("Save File Bytes Failed");
+							this.fileConnector.close();
+							break;
+						}
+					}
+					this.fileConnector.setState_Busy(false);
+					this.fileConnector.close();
+					this.busy = false;
+				}
+				if(!this.continueReceiveString && !this.continueSendString && this.fileConnector.isActive() && this.fileConnector.isOutputCommand()) { // output a file
+					this.busy = true;
+					if(this.sendBuffer == null || this.sendBuffer.length == 0) {
+						this.busy = false;
+						continue;
+					}
+					
+					this.fileConnector.setState_Busy(true);
+					this.fileConnector.setSendBytes(this.sendBuffer);
+					while(!this.fileConnector.isFinished()) {
+						if(!this.fileConnector.load()) {
+							BasicEnums.ErrorType.SERVER_CONNECTION_RUNNING_FAILED.register("Load Send Bytes Failed");
+						}
+						this.sendLength = this.fileConnector.getSendLength();
+						dos.write(this.sendBuffer, 0, this.sendLength);  
+					}
+					
+					this.fileConnector.setState_Busy(false);
+					this.fileConnector.close();
+					this.busy = false;
 				}
 				
 			}catch(Exception e) {
+				BasicEnums.ErrorType.CLIENT_CONNECTION_RUNNING_FAILED.register(e.toString());
 				break;
 			}
 		}
 		running = false;
+		
+		if(closeServer) {
+			Globals.Datas.Server.disconnect();
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean connect() {
-		disconnect();
-		try {
-			java.net.InetAddress ip = java.net.InetAddress.getByName(this.serverMachineInfo.getIp());
-			int port = this.serverMachineInfo.getPort();
-			this.socket = new java.net.Socket(ip,port);
-			this.start();
-			return true;
-		} catch(Exception e) {
-			return false;
-		}
+		this.start();
+		Tools.Time.waitUntil(100);
+		return this.running;
 	}
 	
 	public void disconnect() {

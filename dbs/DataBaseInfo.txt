@@ -1,0 +1,1 @@
+DataBaseInfo = 1|1|DESKTOP-ASFUOAO|TXT|1|DESKTOP-ASFUOAO|172.24.136.41|40000|D:\Space_For_Project\FileManagerX\Server\Windows_Java\dbs

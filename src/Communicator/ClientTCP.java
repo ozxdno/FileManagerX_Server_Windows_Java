@@ -67,7 +67,7 @@ public class ClientTCP implements IClientLinker{
 				continue;
 			}
 			long ticks1 = Tools.Time.getTicks();
-			long ticks2 = this.connections.get(i).getLastReceiveTime();
+			long ticks2 = this.connections.get(i).getLastOperationTime();
 			long passed = ticks1 - ticks2;
 			if(passed > this.permitIdle) {
 				this.connections.get(i).disconnect();

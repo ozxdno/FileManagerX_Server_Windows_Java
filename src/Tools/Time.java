@@ -58,4 +58,30 @@ public class Time {
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public final static boolean waitUntil(long ticks) {
+		long startTicks = Tools.Time.getTicks();
+		while(Tools.Time.getTicks() - startTicks < ticks) {
+			;
+		}
+		return true;
+	}
+	
+	public final static boolean waitUntilConnectionIdle(Interfaces.IConnection connection) {
+		while(connection.isBusy());
+		return true;
+	}
+	
+	public final static boolean waitUntilConnectionIdle(long ticks, Interfaces.IConnection connection) {
+		long startTicks = Tools.Time.getTicks();
+		while(Tools.Time.getTicks() - startTicks < ticks) {
+			if(!connection.isBusy()) {
+				break;
+			}
+		}
+		
+		return !connection.isBusy();
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

@@ -2,7 +2,7 @@ package DataBaseManager;
 
 import java.util.*;
 
-public class QueryConditions implements Interfaces.IPublic {
+public class QueryConditions implements Interfaces.IPublic, Interfaces.ICollection {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -56,25 +56,23 @@ public class QueryConditions implements Interfaces.IPublic {
 		if(content == null || content.size() == 0) {
 			return "";
 		}
-		String res = content.get(0).output();
+		String res = this.getClass().getSimpleName() + " = " + Tools.String.getValue(this.getContent().get(0).output());
 		for(int i=1; i<this.content.size(); i++) {
-			res += "\n" + this.content.get(i).output();
+			res += "|" + Tools.String.getValue(this.getContent().get(i).output());
 		}
 		return res;
 	}
 	public String input(String in) {
 		initThis();
-		String[] items = Tools.String.split(in, '\n');
-		String res = "";
-		for(int i=0; i<items.length; i++) {
-			QueryCondition o = new QueryCondition();
-			res = o.input(items[i]);
-			if(res == null) {
-				return null;
-			}
-			content.add(o);
+		String out = "";
+		while(true) {
+			QueryCondition e = new QueryCondition();
+			out = e.input(in);
+			if(out == null) { break; }
+			this.content.add(e);
+			in = out;
 		}
-		return "";
+		return in;
 	}
 	public void copyReference(Object o) {
 		QueryConditions m = (QueryConditions)o;
@@ -91,10 +89,80 @@ public class QueryConditions implements Interfaces.IPublic {
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public void stringToThis(String str) {
+		this.clear();
+		if(str == null || str.length() == 0) {
+			return;
+		}
+		
+		String[] items = Tools.String.split(str, ',');
+		for(int i=0; i<items.length; i++) {
+			QueryCondition qc = new QueryCondition();
+			qc.stringToThis(items[i]);
+			this.content.add(qc);
+		}
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public int size() {
 		return content.size();
 	}
+	/**
+	 * Sort By ItemName
+	 * 
+	 */
+	@SuppressWarnings("unchecked")
+	public void sortIncrease() {
+		@SuppressWarnings("rawtypes")
+		Comparator c = new Comparator<QueryCondition>() {
+			public int compare(QueryCondition e1, QueryCondition e2) {
+				if(e1.getItemName() == null) {
+					return -1;
+				}
+				if(e2.getItemName() == null) {
+					return 1;
+				}
+				if(e1.getItemName().compareTo(e2.getItemName()) > 0) {
+					return 1;
+				} else {
+					return -1;
+				}
+			}
+		};
+		
+		Collections.sort(this.getContent(), c);
+	}
+	
+	/**
+	 * Sort By ItemName
+	 * 
+	 */
+	@SuppressWarnings("unchecked")
+	public void sortDecrease() {
+		@SuppressWarnings("rawtypes")
+		Comparator c = new Comparator<QueryCondition>() {
+			public int compare(QueryCondition e1, QueryCondition e2) {
+				if(e1.getItemName() == null) {
+					return 1;
+				}
+				if(e2.getItemName() == null) {
+					return -1;
+				}
+				if(e1.getItemName().compareTo(e2.getItemName()) > 0) {
+					return -1;
+				} else {
+					return 1;
+				}
+			}
+		};
+		
+		Collections.sort(this.getContent(), c);
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	public int indexOf(String itemName) {
 		for(int i=0; i<content.size(); i++) {
 			if(content.get(i).getItemName().equals(itemName)) {

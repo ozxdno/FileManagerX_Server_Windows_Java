@@ -162,6 +162,9 @@ public class Error implements Interfaces.IPublic {
 		String level = this.level.toString();
 		System.out.println(time + "|" + type + "|" + level + "|" + tip + "|" + detail);
 	}
+	public void register() {
+		Globals.Datas.Errors.add(this);
+	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

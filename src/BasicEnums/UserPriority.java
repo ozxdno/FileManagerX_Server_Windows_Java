@@ -6,5 +6,9 @@ public enum UserPriority {
 	Depot,
 	VIP,
 	Admin,
-	Ozxdno
+	Ozxdno;
+	
+	public boolean isEnough(UserPriority p) {
+		return this.compareTo(p) >= 0;
+	}
 }

@@ -45,6 +45,10 @@ public class DepotManager implements Interfaces.IDepotManager{
 			java.io.File dest = new java.io.File(url);
 			return sour.renameTo(dest);
 		} catch(Exception e) {
+			BasicEnums.ErrorType.FILE_OPERATION_FAILED.register(
+					
+					e.toString()
+					);
 			return false;
 		}
 	}
@@ -56,6 +60,10 @@ public class DepotManager implements Interfaces.IDepotManager{
 			java.io.File dest = new java.io.File(url);
 			return sour.renameTo(dest);
 		} catch(Exception e) {
+			BasicEnums.ErrorType.FILE_OPERATION_FAILED.register(
+					
+					e.toString()
+					);
 			return false;
 		}
 	}
@@ -65,6 +73,10 @@ public class DepotManager implements Interfaces.IDepotManager{
 			java.io.File sour = new java.io.File(url);
 			return sour.delete();
 		} catch(Exception e) {
+			BasicEnums.ErrorType.FILE_OPERATION_FAILED.register(
+					
+					e.toString()
+					);
 			return false;
 		}
 	}
@@ -76,6 +88,10 @@ public class DepotManager implements Interfaces.IDepotManager{
 			java.io.File dest = new java.io.File(url);
 			return sour.renameTo(dest);
 		} catch(Exception e) {
+			BasicEnums.ErrorType.FILE_OPERATION_FAILED.register(
+					
+					e.toString()
+					);
 			return false;
 		}
 		
@@ -117,6 +133,10 @@ public class DepotManager implements Interfaces.IDepotManager{
 	        os.close();
 	        return true;
 		} catch(Exception e) {
+			BasicEnums.ErrorType.FILE_OPERATION_FAILED.register(
+					
+					e.toString()
+					);
 			return false;
 		}
 	}
@@ -137,6 +157,10 @@ public class DepotManager implements Interfaces.IDepotManager{
 			sour.delete();
 			return ok;
 		} catch(Exception e) {
+			BasicEnums.ErrorType.FILE_OPERATION_FAILED.register(
+					
+					e.toString()
+					);
 			return false;
 		}
 	}
@@ -161,6 +185,10 @@ public class DepotManager implements Interfaces.IDepotManager{
 			}
 			return ok;
 		} catch(Exception e) {
+			BasicEnums.ErrorType.FILE_OPERATION_FAILED.register(
+					
+					e.toString()
+					);
 			return false;
 		}
 	}

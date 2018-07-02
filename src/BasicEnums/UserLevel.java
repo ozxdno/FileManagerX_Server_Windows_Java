@@ -10,5 +10,9 @@ public enum UserLevel {
 	Level7,
 	Level8,
 	Level9,
-	Level0
+	Level0;
+	
+	public boolean isEnough(UserLevel level) {
+		return this.compareTo(level) >= 0;
+	}
 }

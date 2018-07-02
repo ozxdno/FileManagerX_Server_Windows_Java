@@ -128,7 +128,7 @@ public class Folder extends BaseFile implements Interfaces.IPublic {
 	}
 	@Override
 	public String output() {
-		return super.output();
+		return this.getClass().getSimpleName() + " = " + new BasicModels.Config(super.output()).getValue();
 	}
 	@Override
 	public String input(String in) {
@@ -145,8 +145,8 @@ public class Folder extends BaseFile implements Interfaces.IPublic {
 	public void copyValue(Object o) {
 		Folder f = (Folder)o;
 		super.copyValue(f);
-		this.subfolders.copyValue(f.subfolders);
-		this.subfiles.copyValue(f.subfiles);
+		this.subfolders = f.subfolders;
+		this.subfiles = f.subfiles;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -194,6 +194,11 @@ public class Folder extends BaseFile implements Interfaces.IPublic {
 		for(BaseFile i : this.subfiles.getContent()) {
 			Folder.allSubs.add(i);
 		}
+		
+		if(this.getUrl().equals(rootFolder)) {
+			
+		}
+		
 		return Folder.allSubs;
 	}
 	

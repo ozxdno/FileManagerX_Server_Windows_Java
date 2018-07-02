@@ -488,7 +488,35 @@ public class Url {
 		}
 		return extension;
 	}
+	public final static boolean isFileIn(java.lang.String fileUrl, java.lang.String folderUrl) {
+		if(folderUrl == null || folderUrl.length() == 0) {
+			return false;
+		}
+		if(fileUrl == null || fileUrl.length() == 0) {
+			return false;
+		}
+		if(fileUrl.length() < folderUrl.length()) {
+			return false;
+		}
+		
+		return folderUrl.equals(fileUrl.substring(0, folderUrl.length()));
+	}
+	public final static boolean isFolderIn(java.lang.String folderUrl, java.lang.String rootUrl) {
+		if(folderUrl == null || folderUrl.length() == 0) {
+			return false;
+		}
+		if(rootUrl == null || rootUrl.length() == 0) {
+			return false;
+		}
+		if(folderUrl.length() < rootUrl.length()) {
+			return false;
+		}
+		
+		return rootUrl.equals(folderUrl.substring(0, rootUrl.length()));
+	}
 	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public final static boolean isIp(java.lang.String ip) {
 		java.lang.String format = "([0-9]{1,3}.){3}[0-9]{1,3}";
 		return ip.matches(format);

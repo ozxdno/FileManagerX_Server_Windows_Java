@@ -2,7 +2,7 @@ package BasicCollections;
 
 import java.util.*;
 
-public class MachineInfos implements Interfaces.IPublic {
+public class MachineInfos implements Interfaces.IPublic, Interfaces.ICollection {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -56,25 +56,23 @@ public class MachineInfos implements Interfaces.IPublic {
 		if(content == null || content.size() == 0) {
 			return "";
 		}
-		String res = content.get(0).output();
-		for(int i=1; i<content.size(); i++) {
-			res += "\n" + content.get(i).output();
+		String res = this.getClass().getSimpleName() + " = " + Tools.String.getValue(this.getContent().get(0).output());
+		for(int i=1; i<this.content.size(); i++) {
+			res += "|" + Tools.String.getValue(this.getContent().get(i).output());
 		}
 		return res;
 	}
 	public String input(String in) {
 		initThis();
-		String[] items = Tools.String.split(in, '\n');
-		String res = "";
-		for(int i=0; i<items.length; i++) {
-			BasicModels.MachineInfo o = new BasicModels.MachineInfo();
-			res = o.input(items[i]);
-			if(res == null) {
-				return null;
-			}
-			content.add(o);
+		String out = "";
+		while(true) {
+			BasicModels.MachineInfo e = new BasicModels.MachineInfo();
+			out = e.input(in);
+			if(out == null) { break; }
+			this.content.add(e);
+			in = out;
 		}
-		return "";
+		return in;
 	}
 	public void copyReference(Object o) {
 		MachineInfos m = (MachineInfos)o;
@@ -95,6 +93,48 @@ public class MachineInfos implements Interfaces.IPublic {
 	public int size() {
 		return content.size();
 	}
+	/**
+	 * Sort By Index
+	 * 
+	 */
+	@SuppressWarnings("unchecked")
+	public void sortIncrease() {
+		@SuppressWarnings("rawtypes")
+		Comparator c = new Comparator<BasicModels.MachineInfo>() {
+			public int compare(BasicModels.MachineInfo e1, BasicModels.MachineInfo e2) {
+				if(e1.getIndex() > e2.getIndex()) {
+					return 1;
+				} else {
+					return -1;
+				}
+			}
+		};
+		
+		Collections.sort(this.getContent(), c);
+	}
+	
+	/**
+	 * Sort By Index
+	 * 
+	 */
+	@SuppressWarnings("unchecked")
+	public void sortDecrease() {
+		@SuppressWarnings("rawtypes")
+		Comparator c = new Comparator<BasicModels.MachineInfo>() {
+			public int compare(BasicModels.MachineInfo e1, BasicModels.MachineInfo e2) {
+				if(e1.getIndex() > e2.getIndex()) {
+					return -1;
+				} else {
+					return 1;
+				}
+			}
+		};
+		
+		Collections.sort(this.getContent(), c);
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	public int indexOf(String ip) {
 		for(int i=0; i<content.size(); i++) {
 			if(content.get(i).getIp().equals(ip)) {
