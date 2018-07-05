@@ -437,7 +437,7 @@ public class FileConnector implements Interfaces.IFileConnector {
 			}
 			
 			// wait for connection finish fetching data
-			if(!Tools.Time.waitUntilFileConnectorLoad(1000, this)) {
+			if(!Tools.Time.waitUntilFileConnectorLoad(Globals.Configurations.TimeForFileConnectorLoad, this)) {
 				return false;
 			}
 			
@@ -463,6 +463,9 @@ public class FileConnector implements Interfaces.IFileConnector {
 					fis = new java.io.FileInputStream(new java.io.File(this.sourUrl));
 				}
 				this.sendLength = fis.read(sendBytes);
+				if(this.sendLength < 0) {
+					return false;
+				}
 				this.finishedBytes += this.sendLength;
 				if(this.isFinished()) {
 					fis.close();
@@ -485,7 +488,7 @@ public class FileConnector implements Interfaces.IFileConnector {
 			}
 			
 			// wait for fill bytes
-			if(!Tools.Time.waitUntilFileConnectorSave(1000, this)) {
+			if(!Tools.Time.waitUntilFileConnectorSave(Globals.Configurations.TimeForFileConnectorSave, this)) {
 				return false;
 			}
 			

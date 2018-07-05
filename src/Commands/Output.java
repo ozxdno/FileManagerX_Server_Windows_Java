@@ -222,9 +222,10 @@ public class Output extends Comman implements Interfaces.ICommands {
 		fc.setTotalBytes(totalBytes);
 		fc.setFinishedBytes(finishedBytes);
 		fc.setIsCoverExistedFile(cover);
-		fc.setState_Active(true);
 		fc.setIsReadFromLocal(this.isArriveTargetMachine());
 		fc.setIsWriteToLocal(this.isArriveTargetMachine());
+		
+		fc.setState_Active(true);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

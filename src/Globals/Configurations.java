@@ -18,4 +18,10 @@ public final class Configurations {
 	
 	public static long Server_MachineIndex = 0;
 	public static long Server_UserIndex = 0;
+	
+	public static long TimeForCommandReceive = 1000;
+	public static long TimeForCommandSend = 100;
+	public static long TimeForFileConnectorLoad = 2000;
+	public static long TimeForFileConnectorSave = 2000;
+	public static long TimeForInputFileWait = 1000;
 }

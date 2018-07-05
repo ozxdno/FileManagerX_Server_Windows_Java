@@ -164,7 +164,6 @@ public class Input extends Comman implements Interfaces.ICommands {
 		
 		if(this.isArriveTargetMachine()) {
 			this.fillFileConnector(this.getConnection().getFileConnector());
-			
 			Replies.Input rep = this.getReply();
 			rep.setSourUrl(this.sourUrl);
 			rep.setDestUrl(this.destUrl);

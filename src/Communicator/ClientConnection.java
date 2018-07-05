@@ -376,6 +376,8 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 			return;
 		}
 		
+		//Input = 2|1|1|1|0|0|1|1|172.24.136.41|172.24.136.41|40001|40000|**********|0|D:\Space_For_Media\Pictures\FMX_Test_Depot_H\阿九\a0.jpg|D:\Space_For_Media\Pictures\FMX_Test_Depot_H\阿九\a10.jpg|1044220|0
+		
 		while(!abort && !socket.isClosed() && !closeServer) {
 			try {
 				if(this.continueSendString) {
@@ -421,53 +423,64 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 					this.continueReceiveString = false;
 					this.busy = false;
 				}
-				if(!this.continueReceiveString && !this.continueSendString && this.fileConnector.isActive() && this.fileConnector.isInputCommand()) { // input a file
-					//this.busy = true;
+				if(!this.continueReceiveString && !this.continueSendString && this.fileConnector.isActive() && 
+						this.fileConnector.isInputCommand()) { // save data to file
+					
+					// 缓冲区不能为空。
 					if(this.receiveBuffer == null || this.receiveBuffer.length == 0) {
 						this.busy = false;
 						continue;
 					}
 					
+					java.util.List<Integer> cnt = new java.util.ArrayList<Integer>();
+					
+					// 初始化
 					this.fileConnector.setState_Busy(true);
 					this.fileConnector.clear();
+					this.receiveLength = 0;
+					this.sendLength = 0;
+					
+					// 接收
 					while(!this.fileConnector.isFinished()) {
 						this.receiveLength = dis.read(receiveBuffer, 0, receiveBuffer.length);
-						if(this.fileConnector.getFinishedBytes() + this.receiveLength >= this.fileConnector.getTotalBytes()) {
-							this.receiveLength = this.receiveLength + 1 - 1;
-						}
-						if(this.receiveLength < 1024) {
-							this.receiveLength = this.receiveLength + 1 - 1;
-						}
+
+						cnt.add(this.receiveLength);
+						
 						if(this.receiveLength < 0) {
-							this.fileConnector.close();
 							break;
 						}
 						this.fileConnector.setReceiveBytes(receiveBuffer);
 						this.fileConnector.setReceiveLength(receiveLength);
 						if(!this.fileConnector.save()) {
 							BasicEnums.ErrorType.CLIENT_CONNECTION_RUNNING_FAILED.register("Save File Bytes Failed");
-							this.fileConnector.close();
 							break;
 						}
-						if(this.fileConnector.isFinished()) {
-							this.receiveLength = 0;
-						}
-						if(this.receiveLength < 1024) {
-							this.receiveLength = this.receiveLength + 1 - 1;
-						}
 					}
+					
+					// 结束
 					this.fileConnector.setState_Busy(false);
 					this.fileConnector.close();
-					//this.busy = false;
+					dis.close();
+					
+					// 退出
 					this.abort = true;
 				}
-				if(!this.continueReceiveString && !this.continueSendString && this.fileConnector.isActive() && this.fileConnector.isOutputCommand()) { // output a file
-					//this.busy = true;
+				if(!this.continueReceiveString && !this.continueSendString && this.fileConnector.isActive() &&
+						this.fileConnector.isOutputCommand()) { // load data to send
+					
+					// 缓冲区不能为空。
 					if(this.sendBuffer == null || this.sendBuffer.length == 0) {
 						this.busy = false;
 						continue;
 					}
 					
+					// 初始化
+					this.fileConnector.setState_Busy(true);
+					this.fileConnector.clear();
+					this.receiveLength = 0;
+					this.sendLength = 0;
+					
+					// 接收
 					this.fileConnector.setState_Busy(true);
 					this.fileConnector.clear();
 					this.fileConnector.setSendBytes(this.sendBuffer);
@@ -479,11 +492,15 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 						}
 						this.sendLength = this.fileConnector.getSendLength();
 						dos.write(this.sendBuffer, 0, this.sendLength);  
+						dos.flush();
 					}
 					
+					// 结束
 					this.fileConnector.setState_Busy(false);
 					this.fileConnector.close();
-					//this.busy = false;
+					dos.close();
+					
+					// 退出
 					this.abort = true;
 				}
 				

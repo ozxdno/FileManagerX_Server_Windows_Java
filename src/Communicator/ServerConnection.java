@@ -397,41 +397,62 @@ public class ServerConnection extends Thread implements Interfaces.IServerConnec
 					this.continueSendString = false;
 					this.continueReceiveString = !this.fileConnector.isActive();
 				}
-				if(!this.continueReceiveString && !this.continueSendString && this.fileConnector.isActive() && this.fileConnector.isOutputCommand()) { // input a file
-					//this.busy = true;
+				if(!this.continueReceiveString && !this.continueSendString && this.fileConnector.isActive() &&
+						this.fileConnector.isOutputCommand()) { // save data to file
+					
+					// 缓冲区不能为空。
 					if(this.receiveBuffer == null || this.receiveBuffer.length == 0) {
 						this.busy = false;
 						continue;
 					}
 					
+					// 初始化
 					this.fileConnector.setState_Busy(true);
 					this.fileConnector.clear();
+					this.receiveLength = 0;
+					this.sendLength = 0;
+					
+					// 接收
 					while(!this.fileConnector.isFinished()) {
 						this.receiveLength = dis.read(receiveBuffer, 0, receiveBuffer.length);
 						if(this.receiveLength < 0) {
-							this.fileConnector.close();
 							break;
 						}
 						this.fileConnector.setReceiveBytes(receiveBuffer);
 						this.fileConnector.setReceiveLength(receiveLength);
 						if(!this.fileConnector.save()) {
 							BasicEnums.ErrorType.CLIENT_CONNECTION_RUNNING_FAILED.register("Save File Bytes Failed");
-							this.fileConnector.close();
 							break;
 						}
 					}
+					
+					// 结束
 					this.fileConnector.setState_Busy(false);
 					this.fileConnector.close();
-					//this.busy = false;
-					//this.continueReceiveString = true;
+					dis.close();
+					
+					// 退出
 					this.abort = true;
 				}
-				if(!this.continueReceiveString && !this.continueSendString && this.fileConnector.isActive() && this.fileConnector.isInputCommand()) { // output a file
-					//this.busy = true;
+				if(!this.continueReceiveString && !this.continueSendString && this.fileConnector.isActive() && 
+						this.fileConnector.isInputCommand()) { // load data to send
+					
+					// 缓冲区不能为空。
 					if(this.sendBuffer == null || this.sendBuffer.length == 0) {
 						this.busy = false;
 						continue;
 					}
+					
+					// 初始化
+					this.fileConnector.setState_Busy(true);
+					this.fileConnector.clear();
+					this.receiveLength = 0;
+					this.sendLength = 0;
+					
+					// 延迟一段时间开始发送（对方接收器可能还没打开）
+					Tools.Time.sleepUntil(Globals.Configurations.TimeForInputFileWait);
+					
+					// 接收
 					this.fileConnector.setState_Busy(true);
 					this.fileConnector.clear();
 					this.fileConnector.setSendBytes(this.sendBuffer);
@@ -443,12 +464,15 @@ public class ServerConnection extends Thread implements Interfaces.IServerConnec
 						}
 						this.sendLength = this.fileConnector.getSendLength();
 						dos.write(this.sendBuffer, 0, this.sendLength);  
+						dos.flush();
 					}
 					
+					// 结束
 					this.fileConnector.setState_Busy(false);
 					this.fileConnector.close();
-					//this.busy = false;
-					//this.continueReceiveString = true;
+					dos.close();
+					
+					// 退出
 					this.abort = true;
 				}
 				
