@@ -23,14 +23,14 @@ public class FileConnector implements Interfaces.IFileConnector {
 	
 	private byte[] sendBytes;
 	private byte[] receiveBytes;
-	private int sendLength;
-	private int receiveLength;
+	private volatile int sendLength;
+	private volatile int receiveLength;
 	
-	private Interfaces.IClientConnection connection;
+	private Interfaces.IConnection connection;
 	
-	private boolean active;
-	private boolean busy;
-	private boolean stop;
+	private volatile boolean active;
+	private volatile boolean busy;
+	private volatile boolean stop;
 	
 	private java.io.FileOutputStream fos;
 	private java.io.FileInputStream fis;
@@ -148,7 +148,7 @@ public class FileConnector implements Interfaces.IFileConnector {
 		return true;
 	}
 	
-	public boolean setConnection(Interfaces.IClientConnection connection) {
+	public boolean setConnection(Interfaces.IConnection connection) {
 		if(connection == null) {
 			return false;
 		}
@@ -227,7 +227,7 @@ public class FileConnector implements Interfaces.IFileConnector {
 		return this.receiveLength;
 	}
 	
-	public Interfaces.IClientConnection getConnection() {
+	public Interfaces.IConnection getConnection() {
 		return this.connection;
 	}
 	
@@ -285,8 +285,129 @@ public class FileConnector implements Interfaces.IFileConnector {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public void clear() {
-		this.close();
+		this.receiveLength = 0;
+		this.sendLength = 0;
 	}
+	public String toString() {
+		return this.sourUrl + " -> " + this.destUrl;
+	}
+	public String output() {
+		
+		BasicModels.Config c = new BasicModels.Config();
+		c.setField(this.getClass().getSimpleName());
+		c.addToBottom(this.sourMachine);
+		c.addToBottom(this.destMachine);
+		c.addToBottom(this.sourDepot);
+		c.addToBottom(this.destDepot);
+		
+		c.addToBottom(this.input);
+		c.addToBottom(this.output);
+		c.addToBottom(this.sourUrl);
+		c.addToBottom(this.destUrl);
+		
+		c.addToBottom(this.finishedBytes);
+		c.addToBottom(this.totalBytes);
+		
+		c.addToBottom(this.cover);
+		c.addToBottom(this.readFromLocal);
+		c.addToBottom(this.writeToLocal);
+		
+		c.addToBottom(this.active);
+		c.addToBottom(this.busy);
+		c.addToBottom(this.stop);
+		
+		return c.output();
+	}
+	public String input(String in) {
+		
+		BasicModels.Config c = new BasicModels.Config(in);
+		
+		this.sourMachine = c.fetchFirstLong();
+		if(!c.getIsOK()) { return null; }
+		this.destMachine = c.fetchFirstLong();
+		if(!c.getIsOK()) { return null; }
+		this.sourDepot = c.fetchFirstLong();
+		if(!c.getIsOK()) { return null; }
+		this.destDepot = c.fetchFirstLong();
+		if(!c.getIsOK()) { return null; }
+		
+		this.input = c.fetchFirstBoolean();
+		if(!c.getIsOK()) { return null; }
+		this.output = c.fetchFirstBoolean();
+		if(!c.getIsOK()) { return null; }
+		this.sourUrl = c.fetchFirstString();
+		if(!c.getIsOK()) { return null; }
+		this.destUrl = c.fetchFirstString();
+		if(!c.getIsOK()) { return null; }
+		
+		this.finishedBytes = c.fetchFirstLong();
+		if(!c.getIsOK()) { return null; }
+		this.totalBytes = c.fetchFirstLong();
+		if(!c.getIsOK()) { return null; }
+		
+		this.cover = c.fetchFirstBoolean();
+		if(!c.getIsOK()) { return null; }
+		this.readFromLocal = c.fetchFirstBoolean();
+		if(!c.getIsOK()) { return null; }
+		this.writeToLocal = c.fetchFirstBoolean();
+		if(!c.getIsOK()) { return null; }
+		
+		this.active = c.fetchFirstBoolean();
+		if(!c.getIsOK()) { return null; }
+		this.busy = c.fetchFirstBoolean();
+		if(!c.getIsOK()) { return null; }
+		this.stop = c.fetchFirstBoolean();
+		if(!c.getIsOK()) { return null; }
+		
+		return c.output();
+	}
+	public void copyReference(Object o) {
+		FileConnector fc = (FileConnector)o;
+		this.sourMachine = fc.sourMachine;
+		this.destMachine = fc.destMachine;
+		this.sourDepot = fc.sourDepot;
+		this.destDepot = fc.destDepot;
+		
+		this.input = fc.input;
+		this.output = fc.output;
+		this.sourUrl = fc.sourUrl;
+		this.destUrl = fc.destUrl;
+		
+		this.finishedBytes = fc.finishedBytes;
+		this.totalBytes = fc.totalBytes;
+		
+		this.cover = fc.cover;
+		this.readFromLocal = fc.readFromLocal;
+		this.writeToLocal = fc.writeToLocal;
+	}
+	public void copyValue(Object o) {
+		FileConnector fc = (FileConnector)o;
+		this.sourMachine = fc.sourMachine;
+		this.destMachine = fc.destMachine;
+		this.sourDepot = fc.sourDepot;
+		this.destDepot = fc.destDepot;
+		
+		this.input = fc.input;
+		this.output = fc.output;
+		this.sourUrl = new String(fc.sourUrl);
+		this.destUrl = new String(fc.destUrl);
+		
+		this.finishedBytes = fc.finishedBytes;
+		this.totalBytes = fc.totalBytes;
+		
+		this.cover = fc.cover;
+		this.readFromLocal = fc.readFromLocal;
+		this.writeToLocal = fc.writeToLocal;
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	/**
+	 * 我有一个容器，你有一个容器。我的容器收到了东西（Receive），要存起来，那好: <BR/>
+	 * 我就保存在我的容器中等你来拿(SendBytes)。<BR/>
+	 * 我收到了东西，SendLength != 0.
+	 * 
+	 */
 	public boolean save() {
 		if(this.writeToLocal) {
 			try {
@@ -307,7 +428,7 @@ public class FileConnector implements Interfaces.IFileConnector {
 		} 
 		else {
 			if(this.connection == null) {
-				BasicEnums.ErrorType.COMMUNICATOR_CONNECTION_CLOSED.register("Connection is NULL");
+				BasicEnums.ErrorType.UNKNOW.register("The Connection of FileConnector is NULL");
 				return false;
 			}
 			if(!this.connection.isRunning()) {
@@ -315,10 +436,26 @@ public class FileConnector implements Interfaces.IFileConnector {
 				return false;
 			}
 			
-			this.connection.getFileConnector().setSendBytes(this.receiveBytes);
+			// wait for connection finish fetching data
+			if(!Tools.Time.waitUntilFileConnectorLoad(1000, this)) {
+				return false;
+			}
+			
+			// copyData
+			this.sendBytes = this.receiveBytes.clone();
+			this.sendLength = this.receiveLength;
+			this.finishedBytes += this.sendLength;
 			return true;
 		}
 	}
+	
+	/**
+	 * 我有一个容器，你有一个容器。你的容器收到了东西（Receive），那好: <BR/>
+	 * 我就从你的容器中拿走你收到的东西。<BR/>
+	 * 你的容器中的东西保存在 SendBytes中。<BR/>
+	 * 我取走你容器的东西，那么，你的容器就空了。SendLength = 0.
+	 * 
+	 */
 	public boolean load() {
 		if(this.readFromLocal) {
 			try {
@@ -338,17 +475,35 @@ public class FileConnector implements Interfaces.IFileConnector {
 			
 		}
 		else {
-			long waitTicks = 1000;
-			long startTick = Tools.Time.getTicks();
-			while(Tools.Time.getTicks() - startTick < waitTicks) {
-				if(this.sendBytes != null) {
-					break;
-				}
-			}
-			if(this.sendBytes == null) {
-				BasicEnums.ErrorType.RECEIVE_OVER_TIME.register("Too long to get Send Bytes From Other Connection");
+			if(this.connection == null) {
+				BasicEnums.ErrorType.UNKNOW.register("The Connection of FileConnector is NULL");
 				return false;
 			}
+			if(!this.connection.isRunning()) {
+				BasicEnums.ErrorType.COMMUNICATOR_CONNECTION_CLOSED.register();
+				return false;
+			}
+			
+			// wait for fill bytes
+			if(!Tools.Time.waitUntilFileConnectorSave(1000, this)) {
+				return false;
+			}
+			
+			// 对方的容器
+			Interfaces.IFileConnector opponentFC = this.connection.getFileConnector();
+			byte[] opponentData = opponentFC.getSendBytes();
+			
+			// you can load now.
+			if(opponentData.length != this.sendBytes.length) {
+				BasicEnums.ErrorType.UNKNOW.register("The Buffer Length of Two FileConnector is not Equal");
+				return false;
+			}
+			for(int i=0; i<this.sendBytes.length; i++) {
+				this.sendBytes[i] = opponentData[i];
+			}
+			this.sendLength = opponentFC.getSendLength();
+			this.finishedBytes += this.sendLength;
+			opponentFC.setSendLength(0);
 			return true;
 		}
 	}

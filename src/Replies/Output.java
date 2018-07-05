@@ -4,10 +4,6 @@ public class Output extends Comman implements Interfaces.IReplies {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	private long sourMachine;
-	private long destMachine;
-	private long sourDepot;
-	private long destDepot;
 	private boolean cover;
 	private String sourUrl;
 	private String destUrl;
@@ -16,35 +12,6 @@ public class Output extends Comman implements Interfaces.IReplies {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public boolean setSourMachine(long index) {
-		if(index < 0) {
-			return false;
-		}
-		this.sourMachine = index;
-		return true;
-	}
-	public boolean setDestMachine(long index) {
-		if(index < 0) {
-			return false;
-		}
-		this.destMachine = index;
-		return true;
-	}
-	public boolean setSourDepot(long index) {
-		if(index < 0) {
-			return false;
-		}
-		this.sourDepot = index;
-		return true;
-	}
-	public boolean setDestDepot(long index) {
-		if(index < 0) {
-			return false;
-		}
-		this.destDepot = index;
-		return true;
-	}
-	
 	public boolean setCover(boolean cover) {
 		this.cover = cover;
 		return true;
@@ -81,19 +48,6 @@ public class Output extends Comman implements Interfaces.IReplies {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public long getSourMachine() {
-		return this.sourMachine;
-	}
-	public long getDestMachine() {
-		return this.destMachine;
-	}
-	public long getSourDepot() {
-		return this.sourDepot;
-	}
-	public long getDestDepot() {
-		return this.destDepot;
-	}
-	
 	public boolean isCover() {
 		return this.cover;
 	}
@@ -116,10 +70,6 @@ public class Output extends Comman implements Interfaces.IReplies {
 		initThis();
 	}
 	private void initThis() {
-		this.sourMachine = 0;
-		this.destMachine = 0;
-		this.sourDepot = 0;
-		this.destDepot = 0;
 		cover = false;
 		this.sourUrl = "";
 		this.destUrl = "";
@@ -139,14 +89,7 @@ public class Output extends Comman implements Interfaces.IReplies {
 	public String output() {
 		BasicModels.Config c = new BasicModels.Config();
 		c.setField(this.getClass().getSimpleName());
-		c.addToBottom(this.isOK());
-		c.addToBottom(this.getUserIndex());
-		c.addToBottom(this.getPassword());
-		c.addToBottom(this.getFailedReason());
-		c.addToBottom(this.sourMachine);
-		c.addToBottom(this.destMachine);
-		c.addToBottom(this.sourDepot);
-		c.addToBottom(this.destDepot);
+		c.addToBottom(new BasicModels.Config(super.output()));
 		c.addToBottom(this.cover);
 		c.addToBottom(this.sourUrl);
 		c.addToBottom(this.destUrl);
@@ -161,14 +104,6 @@ public class Output extends Comman implements Interfaces.IReplies {
 		}
 		
 		BasicModels.Config c = new BasicModels.Config(in);
-		this.sourMachine = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		this.destMachine = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		this.sourDepot = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		this.destDepot = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
 		this.cover = c.fetchFirstBoolean();
 		if(!c.getIsOK()) { return null; }
 		this.sourUrl = c.fetchFirstString();
@@ -185,10 +120,6 @@ public class Output extends Comman implements Interfaces.IReplies {
 	public void copyReference(Object o) {
 		super.copyReference(o);
 		Output op = (Output)o;
-		this.sourMachine = op.sourMachine;
-		this.destMachine = op.destMachine;
-		this.sourDepot = op.sourDepot;
-		this.destDepot = op.destDepot;
 		this.cover = op.cover;
 		this.sourUrl = op.sourUrl;
 		this.destUrl = op.destUrl;
@@ -198,10 +129,6 @@ public class Output extends Comman implements Interfaces.IReplies {
 	public void copyValue(Object o) {
 		super.copyValue(o);
 		Output op = (Output)o;
-		this.sourMachine = op.sourMachine;
-		this.destMachine = op.destMachine;
-		this.sourDepot = op.sourDepot;
-		this.destDepot = op.destDepot;
 		this.cover = op.cover;
 		this.sourUrl = new String(op.sourUrl);
 		this.destUrl = new String(op.destUrl);
@@ -220,20 +147,18 @@ public class Output extends Comman implements Interfaces.IReplies {
 		}
 		
 		Interfaces.IFileConnector fc = connection.getFileConnector();
-		fc.setSourMachine(this.sourMachine);
-		fc.setDestMachine(this.destMachine);
-		fc.setSourDepot(this.sourDepot);
-		fc.setDestDepot(this.destDepot);
-		
+		fc.setSourMachine(this.getBasicMessagePackage().getSourMachineIndex());
+		fc.setDestMachine(this.getBasicMessagePackage().getDestMachineIndex());
+		fc.setSourDepot(this.getBasicMessagePackage().getSourDepotIndex());
+		fc.setDestDepot(this.getBasicMessagePackage().getDestDepotIndex());
 		fc.setIsOutputCommand(true);
 		fc.setSourUrl(this.sourUrl);
 		fc.setDestUrl(this.destUrl);
-		
 		fc.setTotalBytes(totalBytes);
 		fc.setFinishedBytes(finishedBytes);
 		fc.setIsCoverExistedFile(cover);
-		
-		fc.setIsReadFromLocal(!Globals.Configurations.IsServer);
+		fc.setIsReadFromLocal(this.isArriveSourMachine());
+		fc.setIsWriteToLocal(this.isArriveSourMachine());
 		fc.setState_Active(true);
 		
 		return true;

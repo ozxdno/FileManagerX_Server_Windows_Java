@@ -1,12 +1,16 @@
 package Commands;
 
+/**
+ * Commands.Output.sourMachine EQUALS_TO Replies.Output.sourMachine; <BR/>
+ * Commands.Output.machineIndex EQUALS_TO Replies.Output.destMachine;
+ * 
+ * @author ozxdno
+ *
+ */
 public class Output extends Comman implements Interfaces.ICommands {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	private long sourMachine; // destMachine is in machineIndex
-	private long sourDepot;
-	
 	private boolean cover;
 	private String sourUrl;
 	private String destUrl;
@@ -15,21 +19,6 @@ public class Output extends Comman implements Interfaces.ICommands {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public boolean setSourMachine(long index) {
-		if(index < 0) {
-			return false;
-		}
-		this.sourMachine = index;
-		return true;
-	}
-	public boolean setSourDepot(long index) {
-		if(index < 0) {
-			return false;
-		}
-		this.sourDepot = index;
-		return true;
-	}
-
 	public boolean setCover(boolean cover) {
 		this.cover = cover;
 		return true;
@@ -65,13 +54,6 @@ public class Output extends Comman implements Interfaces.ICommands {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public long getSourMachine() {
-		return this.sourMachine;
-	}
-	public long getSourDepot() {
-		return this.sourDepot;
-	}
-	
 	public boolean isCover() {
 		return this.cover;
 	}
@@ -102,8 +84,6 @@ public class Output extends Comman implements Interfaces.ICommands {
 		this.input(command);
 	}
 	private void initThis() {
-		this.sourMachine = Globals.Configurations.This_MachineIndex;
-		this.sourDepot = 0;
 		this.cover = false;
 		this.sourUrl = "";
 		this.destUrl = "";
@@ -123,13 +103,7 @@ public class Output extends Comman implements Interfaces.ICommands {
 	public String output() {
 		BasicModels.Config c = new BasicModels.Config();
 		c.setField(this.getClass().getSimpleName());
-		c.addToBottom(this.getUserIndex());
-		c.addToBottom(this.getPassword());
-		c.addToBottom(this.getMachineIndex());
-		c.addToBottom(this.getDepotIndex());
-		c.addToBottom(this.getDataBaseIndex());
-		c.addToBottom(this.sourMachine);
-		c.addToBottom(this.sourDepot);
+		c.addToBottom(new BasicModels.Config(super.output()));
 		c.addToBottom(this.cover);
 		c.addToBottom(this.sourUrl);
 		c.addToBottom(this.destUrl);
@@ -143,10 +117,6 @@ public class Output extends Comman implements Interfaces.ICommands {
 			return null;
 		}
 		BasicModels.Config c = new BasicModels.Config(in);
-		this.sourMachine = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		this.sourDepot = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
 		this.cover = c.fetchFirstBoolean();
 		if(!c.getIsOK()) { return null; }
 		this.sourUrl = c.fetchFirstString();
@@ -163,8 +133,6 @@ public class Output extends Comman implements Interfaces.ICommands {
 	public void copyReference(Object o) {
 		super.copyReference(o);
 		Output sf = (Output)o;
-		this.sourMachine = sf.sourMachine;
-		this.sourDepot = sf.sourDepot;
 		this.cover = sf.cover;
 		this.sourUrl = sf.sourUrl;
 		this.destUrl = sf.destUrl;
@@ -174,8 +142,6 @@ public class Output extends Comman implements Interfaces.ICommands {
 	public void copyValue(Object o) {
 		super.copyValue(o);
 		Output sf = (Output)o;
-		this.sourMachine = sf.sourMachine;
-		this.sourDepot = sf.sourDepot;
 		this.cover = sf.cover;
 		this.sourUrl = new String(sf.sourUrl);
 		this.destUrl = new String(sf.destUrl);
@@ -186,52 +152,58 @@ public class Output extends Comman implements Interfaces.ICommands {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public boolean execute() {
-		
-		if(!this.isConnected()) {
+		if(!this.isConnected_Login_UserIndexRigth_PasswordRight_PriorityEnough(BasicEnums.UserPriority.Member)) {
 			this.reply();
 			return false;
 		}
-		if(!this.isLogin()) {
-			this.reply();
-			return false;
-		}
-		if(!this.isUserIndexRight()) {
-			this.reply();
-			return false;
-		}
-		if(!this.isPasswordRight()) {
-			this.reply();
-			return false;
-		}
-		if(!this.isMechineIndexRight()) {
-			this.reply();
-			return false;
-		}
-		if(!this.isDepotIndexRight()) {
+		if(!this.isExistDest_MachineIndex_DepotIndex()) {
 			this.reply();
 			return false;
 		}
 		
-		boolean ok = this.getMachineIndex() == Globals.Configurations.This_MachineIndex ?
-				this.executeInLocal() :
-				this.excuteInRemote();
+		if(this.isArriveTargetMachine()) {
+			this.fillFileConnector(this.getConnection().getFileConnector());
+			Replies.Output rep = this.getReply();
+			rep.setSourUrl(this.sourUrl);
+			rep.setDestUrl(this.destUrl);
+			rep.setCover(this.cover);
+			rep.setTotalBytes(this.totalBytes);
+			rep.setFinishedBytes(finishedBytes);
+			rep.setOK(true);
+			this.reply();
+			return true;
+		}
+		else {
+			if(this.isSelfToSelf()) {
+				this.reply();
+				return false;
+			}
+			
+			Interfaces.IFSWRE fswre = Factories.CommunicatorFactory.createFSWRE();
+			fswre.setServerMachineIndex(this.getBasicMessagePackage().getDestMachineIndex());
+			fswre.setClientMachineIndex(Globals.Configurations.This_MachineIndex);
+			fswre.setUserIndex(this.getBasicMessagePackage().getSourUserIndex());
+			fswre.setConnection();
+			fswre.getConnection().getFileConnector().setConnection(this.getConnection());
+			this.getConnection().getFileConnector().setConnection(fswre.getConnection());
+			
+			Replies.Output rep = (Replies.Output)fswre.execute(this.output());
+			if(rep == null) {
+				this.getReply().setFailedReason("Reply of FSWRE is NULL");
+				this.getReply().setOK(false);
+				this.reply();
+				return true;
+			}
+			
+			this.fillFileConnector(this.getConnection().getFileConnector());
+			this.setReply(rep);
+			this.reply();
+			return false;
+		}
 		
-		Replies.Output rep = this.getReply();
-		rep.setSourMachine(this.sourMachine);
-		rep.setSourDepot(this.sourDepot);
-		rep.setDestMachine(this.getMachineIndex());
-		rep.setDestDepot(this.getDepotIndex());
-		rep.setSourUrl(this.sourUrl);
-		rep.setDestUrl(this.destUrl);
-		rep.setCover(this.cover);
-		rep.setTotalBytes(this.totalBytes);
-		rep.setFinishedBytes(finishedBytes);
-		rep.setOK(ok);
-		this.reply();
-		return true;
 	}
 	public void reply() {
-		this.setUserIndexAndPassword();
+		this.setBasicMessagePackageToReply();
 		this.getConnection().setSendString(this.getReply().output());
 		this.getConnection().setSendLength(this.getConnection().getSendString().length());
 		this.getConnection().setContinueSendString();
@@ -239,27 +211,20 @@ public class Output extends Comman implements Interfaces.ICommands {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	private boolean executeInLocal() {
-		Interfaces.IFileConnector fc = this.getConnection().getFileConnector();
-		fc.setSourMachine(this.sourMachine);
-		fc.setDestMachine(this.getMachineIndex());
-		fc.setSourDepot(this.sourDepot);
-		fc.setDestDepot(this.getDepotIndex());
-		
+	private void fillFileConnector(Interfaces.IFileConnector fc) {
+		fc.setSourMachine(this.getBasicMessagePackage().getSourMachineIndex());
+		fc.setDestMachine(this.getBasicMessagePackage().getDestMachineIndex());
+		fc.setSourDepot(this.getBasicMessagePackage().getSourDepotIndex());
+		fc.setDestDepot(this.getBasicMessagePackage().getDestDepotIndex());
 		fc.setIsOutputCommand(true);
 		fc.setSourUrl(this.sourUrl);
 		fc.setDestUrl(this.destUrl);
-		
 		fc.setTotalBytes(totalBytes);
 		fc.setFinishedBytes(finishedBytes);
 		fc.setIsCoverExistedFile(cover);
 		fc.setState_Active(true);
-		fc.setIsWriteToLocal(this.getMachineIndex() == Globals.Configurations.This_MachineIndex);
-		
-		return true;
-	}
-	private boolean excuteInRemote() {
-		return false;
+		fc.setIsReadFromLocal(this.isArriveTargetMachine());
+		fc.setIsWriteToLocal(this.isArriveTargetMachine());
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -93,6 +93,17 @@ public class DepotInfos implements Interfaces.IPublic, Interfaces.ICollection {
 	public int size() {
 		return content.size();
 	}
+	public boolean add(Object item) {
+		if(item == null) {
+			return false;
+		}
+		try {
+			this.content.add((BasicModels.DepotInfo)item);
+			return true;
+		} catch(Exception e) {
+			return false;
+		}
+	}
 	/**
 	 * Sort By Index
 	 * 
@@ -158,13 +169,6 @@ public class DepotInfos implements Interfaces.IPublic, Interfaces.ICollection {
 		BasicModels.DepotInfo i = content.get(index);
 		content.remove(index);
 		return i;
-	}
-	public boolean add(BasicModels.DepotInfo item) {
-		if(item == null) {
-			return false;
-		}
-		content.add(item);
-		return true;
 	}
 	public void delete(String url) {
 		int index = this.indexOf(url);

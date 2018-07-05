@@ -3,6 +3,12 @@ package Replies;
 public class Executor implements Interfaces.IReplyExecutor {
 	
 	private Interfaces.IReplies reply;
+	private String predict = "";
+	
+	public boolean setPredict(String predict) {
+		this.predict = predict;
+		return true;
+	}
 	
 	public Interfaces.IReplies getReply() {
 		return reply;
@@ -10,13 +16,29 @@ public class Executor implements Interfaces.IReplyExecutor {
 	
 	public boolean execute(Interfaces.IConnection connection) {
 		
-		this.reply = null;
-		
 		BasicModels.Config c = new BasicModels.Config(connection.getReceiveString());
-		if(c.isEmpty()) {
-			return true;
+
+		if(!c.getField().equals(predict)) {
+			Replies.Unsupport u = new Replies.Unsupport();
+			u.setUnsupportCommand(connection.getReceiveString());
+			u.setOK(false);
+			u.setFailedReason("[Expect]: " + this.predict);
+			this.reply = u;
+			return false;
 		}
 		
+		if(c.getField().equals("Test")) {
+			Replies.Test t = new Replies.Test();
+			this.reply = t;
+			return t.input(connection.getReceiveString()) != null &&
+					t.execute(connection);
+		}
+		if(c.getField().equals("Comman")) {
+			Replies.Comman com = new Replies.Comman();
+			this.reply = com;
+			return com.input(connection.getReceiveString()) != null &&
+					com.execute(connection);
+		}
 		if(c.getField().equals("CloseServer")) {
 			Replies.CloseServer cs = new Replies.CloseServer();
 			this.reply = cs;
@@ -46,6 +68,12 @@ public class Executor implements Interfaces.IReplyExecutor {
 			this.reply = lu;
 			return lu.input(connection.getReceiveString()) != null &&
 					lu.execute(connection);
+		}
+		if(c.getField().equals("LoginMachine")) {
+			Replies.LoginMachine lm = new Replies.LoginMachine();
+			this.reply = lm;
+			return lm.input(connection.getReceiveString()) != null &&
+					lm.execute(connection);
 		}
 		if(c.getField().equals("QueryConfigurations")) {
 			Replies.QueryConfigurations qc = new Replies.QueryConfigurations();
@@ -142,6 +170,15 @@ public class Executor implements Interfaces.IReplyExecutor {
 					rd.execute(connection);
 		}
 		
+		
+		while(true) {
+			Replies.Unsupport u = new Replies.Unsupport();
+			u.setOK(false);
+			u.setUnsupportCommand(connection.getReceiveString());
+			u.setFailedReason("[Not Register Expect]: " + this.predict);
+			this.reply = u;
+			break;
+		}
 		return false;
 	}
 	

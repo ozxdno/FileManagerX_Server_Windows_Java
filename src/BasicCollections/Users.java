@@ -93,6 +93,17 @@ public class Users implements Interfaces.IPublic, Interfaces.ICollection {
 	public int size() {
 		return content.size();
 	}
+	public boolean add(Object item) {
+		if(item == null) {
+			return false;
+		}
+		try {
+			this.content.add((BasicModels.User)item);
+			return true;
+		} catch(Exception e) {
+			return false;
+		}
+	}
 	/**
 	 * Sort By Index
 	 * 
@@ -158,13 +169,6 @@ public class Users implements Interfaces.IPublic, Interfaces.ICollection {
 		BasicModels.User i = content.get(index);
 		content.remove(index);
 		return i;
-	}
-	public boolean add(BasicModels.User item) {
-		if(item == null) {
-			return false;
-		}
-		content.add(item);
-		return true;
 	}
 	public void delete(String loginName) {
 		int index = this.indexOf(loginName);

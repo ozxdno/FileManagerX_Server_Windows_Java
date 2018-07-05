@@ -167,13 +167,7 @@ public class MachineInfo implements Interfaces.IPublic {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public boolean isLocal() {
-		try {
-			java.net.InetAddress adr = java.net.InetAddress.getLocalHost();
-			String ip = adr.toString();
-			return ip.equals(this.ip);
-		}catch(Exception e) {
-			return false;
-		}
+		return this.index == Globals.Configurations.This_MachineIndex;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

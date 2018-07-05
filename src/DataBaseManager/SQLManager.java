@@ -6,9 +6,9 @@ public class SQLManager implements Interfaces.IDBManager{
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	private boolean isConnected;
-	private boolean isQueryOK;
-	private boolean isUpdataOK;
+	private volatile boolean isConnected;
+	private volatile boolean isQueryOK;
+	private volatile boolean isUpdataOK;
 	
 	private BasicModels.DataBaseInfo dbInfo;
 	
@@ -207,7 +207,7 @@ public class SQLManager implements Interfaces.IDBManager{
 				"Tags"
 		};
 		String[] types = new String[] {
-				"BIGINT",
+				"BIGINT PRIMARY KEY",
 				"BIGINT",
 				"BIGINT",
 				"BIGINT",
@@ -239,7 +239,7 @@ public class SQLManager implements Interfaces.IDBManager{
 				"Tags"
 		};
 		String[] types = new String[] {
-				"BIGINT",
+				"BIGINT PRIMARY KEY",
 				"BIGINT",
 				"BIGINT",
 				"BIGINT",
@@ -263,8 +263,8 @@ public class SQLManager implements Interfaces.IDBManager{
 				"Port"
 		};
 		String[] types = new String[] {
-				"BIGINT",
-				"VARCHAR(100)",
+				"BIGINT PRIMARY KEY",
+				"VARCHAR(100) UNIQUE",
 				"VARCHAR(16)",
 				"INT"
 		};
@@ -281,8 +281,8 @@ public class SQLManager implements Interfaces.IDBManager{
 				"Url"
 		};
 		String[] types = new String[] {
-				"BIGINT",
-				"VARCHAR(100)",
+				"BIGINT PRIMARY KEY",
+				"VARCHAR(100) UNIQUE",
 				"BIGINT",
 				"BIGINT",
 				"VARCHAR(100)",
@@ -301,8 +301,8 @@ public class SQLManager implements Interfaces.IDBManager{
 				"Url"
 		};
 		String[] types = new String[] {
-				"BIGINT",
-				"VARCHAR(100)",
+				"BIGINT PRIMARY KEY",
+				"VARCHAR(100) UNIQUE",
 				"BIGINT",
 				"BIGINT",
 				"VARCHAR(100)",
@@ -328,8 +328,8 @@ public class SQLManager implements Interfaces.IDBManager{
 				"Money"
 		};
 		String[] types = new String[] {
-				"BIGINT",
-				"VARCHAR(100)",
+				"BIGINT PRIMARY KEY",
+				"VARCHAR(100) UNIQUE",
 				"VARCHAR(100)",
 				"VARCHAR(100)",
 				"VARCHAR(1024)",
@@ -355,7 +355,7 @@ public class SQLManager implements Interfaces.IDBManager{
 				"Money"
 		};
 		String[] types = new String[] {
-				"VARCHAR(100)",
+				"VARCHAR(100) PRIMARY KEY",
 				"VARCHAR(100)",
 				"VARCHAR(100)",
 				"BIGINT",
@@ -443,6 +443,16 @@ public class SQLManager implements Interfaces.IDBManager{
 		else if(conditions instanceof QueryCondition) {
 			con = this.queryConditionToStatement((QueryCondition)conditions);
 		}
+		else if(conditions instanceof String) {
+			DataBaseManager.QueryConditions qcs = new DataBaseManager.QueryConditions();
+			try {
+				qcs.stringToThis((String)conditions);
+			}catch(Exception e) {
+				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				return null;
+			}
+			con = this.queryConditionsToStatement(qcs);
+		}
 		else {
 			return null;
 		}
@@ -488,6 +498,16 @@ public class SQLManager implements Interfaces.IDBManager{
 		else if(conditions instanceof QueryCondition) {
 			con = this.queryConditionToStatement((QueryCondition)conditions);
 		}
+		else if(conditions instanceof String) {
+			DataBaseManager.QueryConditions qcs = new DataBaseManager.QueryConditions();
+			try {
+				qcs.stringToThis((String)conditions);
+			}catch(Exception e) {
+				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				return null;
+			}
+			con = this.queryConditionsToStatement(qcs);
+		}
 		else {
 			return null;
 		}
@@ -531,6 +551,16 @@ public class SQLManager implements Interfaces.IDBManager{
 		}
 		else if(conditions instanceof QueryCondition) {
 			con = this.queryConditionToStatement((QueryCondition)conditions);
+		}
+		else if(conditions instanceof String) {
+			DataBaseManager.QueryConditions qcs = new DataBaseManager.QueryConditions();
+			try {
+				qcs.stringToThis((String)conditions);
+			}catch(Exception e) {
+				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				return null;
+			}
+			con = this.queryConditionsToStatement(qcs);
 		}
 		else {
 			return null;
@@ -578,6 +608,16 @@ public class SQLManager implements Interfaces.IDBManager{
 		else if(conditions instanceof QueryCondition) {
 			con = this.queryConditionToStatement((QueryCondition)conditions);
 		}
+		else if(conditions instanceof String) {
+			DataBaseManager.QueryConditions qcs = new DataBaseManager.QueryConditions();
+			try {
+				qcs.stringToThis((String)conditions);
+			}catch(Exception e) {
+				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				return null;
+			}
+			con = this.queryConditionsToStatement(qcs);
+		}
 		else {
 			return null;
 		}
@@ -619,6 +659,16 @@ public class SQLManager implements Interfaces.IDBManager{
 		else if(conditions instanceof QueryCondition) {
 			con = this.queryConditionToStatement((QueryCondition)conditions);
 		}
+		else if(conditions instanceof String) {
+			DataBaseManager.QueryConditions qcs = new DataBaseManager.QueryConditions();
+			try {
+				qcs.stringToThis((String)conditions);
+			}catch(Exception e) {
+				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				return null;
+			}
+			con = this.queryConditionsToStatement(qcs);
+		}
 		else {
 			return null;
 		}
@@ -652,6 +702,16 @@ public class SQLManager implements Interfaces.IDBManager{
 		}
 		else if(conditions instanceof QueryCondition) {
 			con = this.queryConditionToStatement((QueryCondition)conditions);
+		}
+		else if(conditions instanceof String) {
+			DataBaseManager.QueryConditions qcs = new DataBaseManager.QueryConditions();
+			try {
+				qcs.stringToThis((String)conditions);
+			}catch(Exception e) {
+				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				return null;
+			}
+			con = this.queryConditionsToStatement(qcs);
 		}
 		else {
 			return null;
@@ -691,6 +751,16 @@ public class SQLManager implements Interfaces.IDBManager{
 		}
 		else if(conditions instanceof QueryCondition) {
 			con = this.queryConditionToStatement((QueryCondition)conditions);
+		}
+		else if(conditions instanceof String) {
+			DataBaseManager.QueryConditions qcs = new DataBaseManager.QueryConditions();
+			try {
+				qcs.stringToThis((String)conditions);
+			}catch(Exception e) {
+				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				return null;
+			}
+			con = this.queryConditionsToStatement(qcs);
 		}
 		else {
 			return null;
@@ -733,6 +803,16 @@ public class SQLManager implements Interfaces.IDBManager{
 		}
 		else if(conditions instanceof QueryCondition) {
 			con = this.queryConditionToStatement((QueryCondition)conditions);
+		}
+		else if(conditions instanceof String) {
+			DataBaseManager.QueryConditions qcs = new DataBaseManager.QueryConditions();
+			try {
+				qcs.stringToThis((String)conditions);
+			}catch(Exception e) {
+				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				return null;
+			}
+			con = this.queryConditionsToStatement(qcs);
 		}
 		else {
 			return null;
@@ -778,6 +858,16 @@ public class SQLManager implements Interfaces.IDBManager{
 		else if(conditions instanceof QueryCondition) {
 			con = this.queryConditionToStatement((QueryCondition)conditions);
 		}
+		else if(conditions instanceof String) {
+			DataBaseManager.QueryConditions qcs = new DataBaseManager.QueryConditions();
+			try {
+				qcs.stringToThis((String)conditions);
+			}catch(Exception e) {
+				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				return null;
+			}
+			con = this.queryConditionsToStatement(qcs);
+		}
 		else {
 			return null;
 		}
@@ -821,6 +911,16 @@ public class SQLManager implements Interfaces.IDBManager{
 		}
 		else if(conditions instanceof QueryCondition) {
 			con = this.queryConditionToStatement((QueryCondition)conditions);
+		}
+		else if(conditions instanceof String) {
+			DataBaseManager.QueryConditions qcs = new DataBaseManager.QueryConditions();
+			try {
+				qcs.stringToThis((String)conditions);
+			}catch(Exception e) {
+				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				return null;
+			}
+			con = this.queryConditionsToStatement(qcs);
 		}
 		else {
 			return null;
@@ -867,6 +967,16 @@ public class SQLManager implements Interfaces.IDBManager{
 		else if(conditions instanceof QueryCondition) {
 			con = this.queryConditionToStatement((QueryCondition)conditions);
 		}
+		else if(conditions instanceof String) {
+			DataBaseManager.QueryConditions qcs = new DataBaseManager.QueryConditions();
+			try {
+				qcs.stringToThis((String)conditions);
+			}catch(Exception e) {
+				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				return null;
+			}
+			con = this.queryConditionsToStatement(qcs);
+		}
 		else {
 			return null;
 		}
@@ -907,6 +1017,16 @@ public class SQLManager implements Interfaces.IDBManager{
 		else if(conditions instanceof QueryCondition) {
 			con = this.queryConditionToStatement((QueryCondition)conditions);
 		}
+		else if(conditions instanceof String) {
+			DataBaseManager.QueryConditions qcs = new DataBaseManager.QueryConditions();
+			try {
+				qcs.stringToThis((String)conditions);
+			}catch(Exception e) {
+				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				return null;
+			}
+			con = this.queryConditionsToStatement(qcs);
+		}
 		else {
 			return null;
 		}
@@ -942,6 +1062,16 @@ public class SQLManager implements Interfaces.IDBManager{
 		}
 		else if(conditions instanceof QueryCondition) {
 			con = this.queryConditionToStatement((QueryCondition)conditions);
+		}
+		else if(conditions instanceof String) {
+			DataBaseManager.QueryConditions qcs = new DataBaseManager.QueryConditions();
+			try {
+				qcs.stringToThis((String)conditions);
+			}catch(Exception e) {
+				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				return null;
+			}
+			con = this.queryConditionsToStatement(qcs);
 		}
 		else {
 			return null;
@@ -980,6 +1110,16 @@ public class SQLManager implements Interfaces.IDBManager{
 		}
 		else if(conditions instanceof QueryCondition) {
 			con = this.queryConditionToStatement((QueryCondition)conditions);
+		}
+		else if(conditions instanceof String) {
+			DataBaseManager.QueryConditions qcs = new DataBaseManager.QueryConditions();
+			try {
+				qcs.stringToThis((String)conditions);
+			}catch(Exception e) {
+				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				return null;
+			}
+			con = this.queryConditionsToStatement(qcs);
 		}
 		else {
 			return null;
@@ -1076,7 +1216,9 @@ public class SQLManager implements Interfaces.IDBManager{
 		qc.setItemName("Index");
 		qc.setSign(Sign.EQUAL);
 		qc.setValue(String.valueOf(folder.getIndex()));
-		BasicModels.Folder exists = folder.getIndex() >= 0 ? this.QueryFolder(qc) : null;
+		BasicModels.Folder exists = (folder.getIndex() >= 0 && folder.getIndex() <= Globals.Configurations.Next_FileIndex) ?
+				this.QueryFolder(qc) :
+				null;
 		if(exists == null) {
 			folder.setIndex();
 			exp = "INSERT INTO Folders VALUES(" +
@@ -1133,7 +1275,9 @@ public class SQLManager implements Interfaces.IDBManager{
 		qc.setItemName("Index");
 		qc.setSign(Sign.EQUAL);
 		qc.setValue(String.valueOf(file.getIndex()));
-		BasicModels.BaseFile exists = file.getIndex() >= 0 ? this.QueryFile(qc) : null;
+		BasicModels.BaseFile exists = (file.getIndex() >= 0 && file.getIndex() <= Globals.Configurations.Next_FileIndex) ?
+				this.QueryFile(qc) :
+				null;
 		if(exists == null) {
 			file.setIndex();
 			exp = "INSERT INTO Files VALUES(" +
@@ -1190,7 +1334,9 @@ public class SQLManager implements Interfaces.IDBManager{
 		qc.setItemName("Index");
 		qc.setSign(Sign.EQUAL);
 		qc.setValue(String.valueOf(user.getIndex()));
-		BasicModels.User exists = user.getIndex() >=0 ? this.QueryUser(qc) : null;
+		BasicModels.User exists = (user.getIndex() >=0 && user.getIndex() <= Globals.Configurations.Next_UserIndex) ? 
+				this.QueryUser(qc) :
+				null;
 		if(exists == null) {
 			user.setIndex();
 			exp = "INSERT INTO Users VALUES(" +
@@ -1294,7 +1440,9 @@ public class SQLManager implements Interfaces.IDBManager{
 		qc.setItemName("Index");
 		qc.setSign(Sign.EQUAL);
 		qc.setValue(String.valueOf(machineInfo.getIndex()));
-		BasicModels.MachineInfo exists = machineInfo.getIndex() >= 0 ? this.QueryMachineInfo(qc) : null;
+		BasicModels.MachineInfo exists = (machineInfo.getIndex() >= 0 && machineInfo.getIndex() <= Globals.Configurations.Next_MachineIndex) ?
+				this.QueryMachineInfo(qc) :
+				null;
 		if(exists == null) {
 			machineInfo.setIndex();
 			exp = "INSERT INTO MachineInfo VALUES(" +
@@ -1335,7 +1483,9 @@ public class SQLManager implements Interfaces.IDBManager{
 		qc.setItemName("Index");
 		qc.setSign(Sign.EQUAL);
 		qc.setValue(String.valueOf(depotInfo.getIndex()));
-		BasicModels.DepotInfo exists = depotInfo.getIndex() >= 0 ? this.QueryDepotInfo(qc) : null;
+		BasicModels.DepotInfo exists = (depotInfo.getIndex() >= 0 && depotInfo.getIndex() <= Globals.Configurations.Next_DepotIndex) ?
+				this.QueryDepotInfo(qc) :
+				null;
 		if(exists == null) {
 			depotInfo.setIndex();
 			exp = "INSERT INTO DepotInfo VALUES(" +
@@ -1380,7 +1530,9 @@ public class SQLManager implements Interfaces.IDBManager{
 		qc.setItemName("Index");
 		qc.setSign(Sign.EQUAL);
 		qc.setValue(String.valueOf(dbInfo.getIndex()));
-		BasicModels.DataBaseInfo exists = dbInfo.getIndex() >= 0 ? this.QueryDataBaseInfo(qc) : null;
+		BasicModels.DataBaseInfo exists = (dbInfo.getIndex() >= 0 && dbInfo.getIndex() <= Globals.Configurations.Next_DataBaseIndex) ?
+				this.QueryDataBaseInfo(qc) :
+				null;
 		if(exists == null) {
 			dbInfo.setIndex();
 			exp = "INSERT INTO DataBaseInfo VALUES(" +

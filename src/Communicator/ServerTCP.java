@@ -3,17 +3,27 @@ package Communicator;
 import java.net.*;
 import java.util.*;
 
-public class ServerTCP implements Interfaces.IPublic, Interfaces.IServerScanner {
+public class ServerTCP implements Interfaces.IServerScanner {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	private BasicModels.MachineInfo serverMachineInfo;
 	private Scanner scanner;
+	private int Next_ConnectionIndex;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public BasicModels.MachineInfo getServerMachineInfo() {
 		return serverMachineInfo;
+	}
+	public List<Interfaces.IServerConnection> getConnections() {
+		return this.scanner == null ? null : this.scanner.getConnections();
+	}
+	public long getPermitIdle() {
+		return this.scanner == null ? -1 : this.scanner.getPermitIdle();
+	}
+	public boolean isRunning() {
+		return this.scanner != null && this.scanner.isRunning();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -23,6 +33,24 @@ public class ServerTCP implements Interfaces.IPublic, Interfaces.IServerScanner 
 			return false;
 		}
 		this.serverMachineInfo = serverMachineInfo;
+		return true;
+	}
+	public boolean setConnections(List<Interfaces.IServerConnection> connections) {
+		if(this.scanner == null) {
+			return false;
+		}
+		this.scanner.setConnections(connections);
+		return true;
+	}
+	public boolean setPermitIdle(long permitIdle) {
+		if(this.scanner == null) {
+			return false;
+		}
+		this.scanner.setPermitIdle(permitIdle);
+		return true;
+	}
+	public boolean setNext_ConnectionIndex(int nextIndex) {
+		this.Next_ConnectionIndex = nextIndex;
 		return true;
 	}
 	
@@ -36,45 +64,75 @@ public class ServerTCP implements Interfaces.IPublic, Interfaces.IServerScanner 
 		setServerMachineInfo(serverMachineInfo);
 	}
 	private void initThis() {
-		if(serverMachineInfo == null) {
-			serverMachineInfo = new BasicModels.MachineInfo();
-		}
-		serverMachineInfo.clear();
+		this.serverMachineInfo = Globals.Datas.ServerMachine;
+		this.Next_ConnectionIndex = 0;
+	}
+	public int getNext_ConnectionIndex() {
+		return this.Next_ConnectionIndex;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	public int size() {
+		if(this.scanner == null) {
+			return 0;
+		}
+		return this.scanner.getConnections().size();
+	}
 	public void clear() {
+		this.removeAllConnections();
+		this.disconnect();
 		initThis();
 	}
-	public String toString() {
-		return "Server: " + this.serverMachineInfo.getName() + " " + 
-				this.serverMachineInfo.getIp() + ":" +
-				String.valueOf(this.serverMachineInfo.getPort());
+	public boolean add(Object item) {
+		if(item == null) {
+			return false;
+		}
+		try {
+			this.scanner.getConnections().add((Interfaces.IServerConnection)item);
+			return false;
+		} catch(Exception e) {
+			return true;
+		}
 	}
-	public String output() {
-		BasicModels.Config c = new BasicModels.Config(this.serverMachineInfo.output());
-		c.setField("ServerTCP");
-		return c.output();
+	/**
+	 * Sort By ConnectionIndex
+	 * 
+	 */
+	@SuppressWarnings("unchecked")
+	public void sortIncrease() {
+		if(this.scanner == null || this.scanner.getConnections() == null) {
+			return;
+		}
+		@SuppressWarnings("rawtypes")
+		Comparator c = new Comparator<Interfaces.IServerConnection>() {
+			public int compare(Interfaces.IServerConnection e1, Interfaces.IServerConnection e2) {
+				return e1.getIndex() > e2.getIndex() ? 1 : -1;
+			}
+		};
+		Collections.sort(this.scanner.getConnections(), c);
 	}
-	public String input(String in) {
-		return this.serverMachineInfo.input(in);
-	}
-	public void copyReference(Object o) {
-		ServerTCP s = (ServerTCP)o;
-		this.serverMachineInfo = s.serverMachineInfo;
-		this.scanner = s.scanner;
-	}
-	public void copyValue(Object o) {
-		this.copyReference(o);
+	
+	/**
+	 * Sort ConnectionIndex
+	 * 
+	 */
+	@SuppressWarnings("unchecked")
+	public void sortDecrease() {
+		if(this.scanner == null || this.scanner.getConnections() == null) {
+			return;
+		}
+		@SuppressWarnings("rawtypes")
+		Comparator c = new Comparator<Interfaces.IServerConnection>() {
+			public int compare(Interfaces.IServerConnection e1, Interfaces.IServerConnection e2) {
+				return e1.getIndex() > e2.getIndex() ? -1 : 1;
+			}
+		};
+		Collections.sort(this.scanner.getConnections(), c);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public boolean isRunning() {
-		return this.scanner != null && this.scanner.isRunning();
-	}
-	
 	public boolean initialize(Object o) {
 		BasicModels.MachineInfo sm = (BasicModels.MachineInfo)o;
 		this.setServerMachineInfo(sm);
@@ -99,42 +157,80 @@ public class ServerTCP implements Interfaces.IPublic, Interfaces.IServerScanner 
 		}
 	}
 	
-	public int indexOf(String ip) {
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public int indexOf(int index) {
 		if(this.scanner == null) {
 			return -1;
 		}
 		for(int i=0; i<this.scanner.getConnections().size(); i++) {
-			if(this.scanner.getConnections().get(i).getClientMachineInfo().getIp().equals(ip)) {
+			if(this.scanner.getConnections().get(i).getIndex() == index) {
 				return i;
 			}
 		}
 		return -1;
 	}
-	public Interfaces.IServerConnection search(String ip) {
-		int idx = indexOf(ip);
+	public Interfaces.IServerConnection search(int index) {
+		int idx = indexOf(index);
 		if(idx == -1) {
 			return null;
 		}
 		return this.scanner.getConnections().get(idx);
+	}
+	public Interfaces.IServerConnection fetch(int index) {
+		int idx = indexOf(index);
+		if(idx == -1) {
+			return null;
+		}
+		Interfaces.IServerConnection res = this.scanner.getConnections().get(idx);
+		this.scanner.getConnections().remove(idx);
+		return res;
+	}
+	public void delete(int index) {
+		int idx = indexOf(index);
+		if(idx == -1) {
+			return;
+		}
+		this.scanner.getConnections().get(idx).disconnect();
+		this.scanner.getConnections().remove(idx);
 	}
 	
-	public int indexOf(long userIndex) {
+	public int indexOf(String ip, int port) {
 		if(this.scanner == null) {
 			return -1;
 		}
 		for(int i=0; i<this.scanner.getConnections().size(); i++) {
-			if(this.scanner.getConnections().get(i).getUser().getIndex() == userIndex) {
+			String iip = this.scanner.getConnections().get(i).getClientMachineInfo().getIp();
+			int iport = this.scanner.getConnections().get(i).getSocket().getPort();
+			if(iip.equals(ip) && iport == port) {
 				return i;
 			}
 		}
 		return -1;
 	}
-	public Interfaces.IServerConnection search(long userIndex) {
-		int idx = indexOf(userIndex);
+	public Interfaces.IServerConnection search(String ip, int port) {
+		int idx = indexOf(ip, port);
 		if(idx == -1) {
 			return null;
 		}
 		return this.scanner.getConnections().get(idx);
+	}
+	public Interfaces.IServerConnection fetch(String ip, int port) {
+		int idx = indexOf(ip, port);
+		if(idx == -1) {
+			return null;
+		}
+		Interfaces.IServerConnection res = this.scanner.getConnections().get(idx);
+		this.scanner.getConnections().remove(idx);
+		return res;
+	}
+	public void delete(String ip, int port) {
+		int idx = indexOf(ip, port);
+		if(idx == -1) {
+			return;
+		}
+		this.scanner.getConnections().get(idx).disconnect();
+		this.scanner.getConnections().remove(idx);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -163,10 +259,10 @@ class Scanner extends Thread {
 	private List<Interfaces.IServerConnection> connections;
 	
 	private ServerSocket socket;
-	private boolean abort;
-	private boolean running; // 指的是机器有没有在运行，而不是其中线程有没有在运行。
+	private volatile boolean abort;
+	private volatile boolean running; // 指的是机器有没有在运行，而不是其中线程有没有在运行。
 	
-	private long permitIdle;
+	private volatile long permitIdle;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -239,7 +335,7 @@ class Scanner extends Thread {
 		setServerMachineInfo(serverMachineInfo);
 	}
 	private void initThis() {
-		serverMachineInfo = null;
+		serverMachineInfo = Globals.Datas.ServerMachine;
 		if(connections == null) {
 			connections = new ArrayList<Interfaces.IServerConnection>();
 		}
@@ -248,7 +344,7 @@ class Scanner extends Thread {
 		socket = null;
 		abort = false;
 		running = true;
-		permitIdle = 1 * 60 * 1000;
+		permitIdle = 60 * 60 * 1000;
 		this.setName("TCP Server Scanner");
 	}
 	public void run() {
@@ -260,7 +356,10 @@ class Scanner extends Thread {
 		}
 		while(!abort && !socket.isClosed()) {
 			try {
-				Interfaces.IServerConnection connection = new ServerConnection(socket.accept(),serverMachineInfo);
+				Socket clientSocket = socket.accept();
+				Interfaces.IServerConnection connection = Factories.CommunicatorFactory.createServerConnection();
+				connection.setSocket(clientSocket);
+				connection.setServerMachineInfo(serverMachineInfo);
 				connections.add(connection);
 				connection.connect();
 			}catch(Exception e) {
@@ -295,7 +394,7 @@ class Scanner extends Thread {
 			;
 		}
 	}
-	public void removeIdleConnections() {
+	public synchronized void removeIdleConnections() {
 		for(int i=this.connections.size() - 1; i>=0; i--) {
 			if(!this.connections.get(i).isRunning()) {
 				this.connections.get(i).disconnect();
@@ -311,7 +410,7 @@ class Scanner extends Thread {
 			}
 		}
 	}
-	public void removeAllConnections() {
+	public synchronized void removeAllConnections() {
 		for(int i=this.connections.size()-1; i>=0; i--) {
 			this.connections.get(i).disconnect();
 			this.connections.remove(i);

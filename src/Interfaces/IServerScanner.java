@@ -1,7 +1,18 @@
 package Interfaces;
 
-public interface IServerScanner {
+import java.util.List;
+
+public interface IServerScanner extends ICollection {
 	
+	public boolean setServerMachineInfo(BasicModels.MachineInfo serverMachineInfo);
+	public boolean setConnections(List<Interfaces.IServerConnection> connections);
+	public boolean setPermitIdle(long permitIdle);
+	public boolean setNext_ConnectionIndex(int nextIndex);
+	
+	public BasicModels.MachineInfo getServerMachineInfo();
+	public List<Interfaces.IServerConnection> getConnections();
+	public long getPermitIdle();
+	public int getNext_ConnectionIndex();
 	public boolean isRunning();
 	
 	public boolean initialize(Object infos);
@@ -11,8 +22,13 @@ public interface IServerScanner {
 	public void removeIdleConnections();
 	public void removeAllConnections();
 	
-	public int indexOf(String ip);
-	public IServerConnection search(String ip);
-	public int indexOf(long userIndex);
-	public IServerConnection search(long userIndex);
+	public int indexOf(int index);
+	public Interfaces.IServerConnection search(int index);
+	public Interfaces.IServerConnection fetch(int index);
+	public void delete(int index);
+	
+	public int indexOf(String ip, int port);
+	public Interfaces.IServerConnection search(String ip, int port);
+	public Interfaces.IServerConnection fetch(String ip, int port);
+	public void delete(String ip, int port);
 }

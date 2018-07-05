@@ -1,2 +1,11 @@
 00:50:29 = BUILD_SOCKET_FAILED|1530463829776|Error|Build Socket Failed|setSocket[ClientConnection.java:195]<-loadDepotCFG[CFGFile.java:923]<-loadCFG[CFGFile.java:44]<-run[MainProcess.java:71]|java.net.ConnectException: Connection refused: connect
 13:56:21 = BUILD_SOCKET_FAILED|1530510981427|Error|Build Socket Failed|setSocket[ClientConnection.java:184]<-loadDepotCFG[CFGFile.java:923]<-loadCFG[CFGFile.java:44]<-run[MainProcess.java:71]|java.net.ConnectException: Connection refused: connect
+15:47:22 = BUILD_SOCKET_FAILED|1530517642573|Error|Build Socket Failed|setSocket[ClientConnection.java:184]<-loadDepotCFG[CFGFile.java:923]<-loadCFG[CFGFile.java:44]<-run[MainProcess.java:71]|java.net.ConnectException: Connection refused: connect
+21:50:26 = BUILD_SOCKET_FAILED|1530539426417|Error|Build Socket Failed|connect[ServerTCP.java:92]<-run[MainProcess.java:104]|java.net.BindException: Address already in use: JVM_Bind
+21:51:26 = BUILD_SOCKET_FAILED|1530539486219|Error|Build Socket Failed|connect[ServerTCP.java:92]<-run[MainProcess.java:104]|java.net.BindException: Address already in use: JVM_Bind
+21:55:48 = BUILD_SOCKET_FAILED|1530539748265|Error|Build Socket Failed|setSocket[ClientConnection.java:184]<-loadDepotCFG[CFGFile.java:925]<-loadCFG[CFGFile.java:46]<-run[MainProcess.java:71]|java.net.ConnectException: Connection refused: connect
+22:10:35 = RECEIVE_OVER_TIME|1530540635900|Error|Too long to Receive Info|execute[SWRE.java:88]<-execute[SWRE.java:102]<-loadDepotCFG[CFGFile.java:936]<-loadCFG[CFGFile.java:46]<-run[MainProcess.java:71]|You can check Your net make sure you and Server in a same LAN
+22:17:29 = COMMUNICATOR_CONNECTION_CLOSED|1530541049245|Error|Connection is Closed|run[MainProcess.java:147]|Server[Remote Machine] Closed
+22:50:38 = RECEIVE_OVER_TIME|1530543038248|Error|Too long to Receive Info|execute[SWRE.java:88]<-execute[SWRE.java:102]<-actionPerformed[MainForm.java:176]|You can check Your net make sure you and Server in a same LAN
+22:50:46 = CLIENT_CONNECTION_RUNNING_FAILED|1530543046582|Error|Error occurs in Client Connection Running|run[ClientConnection.java:443]|java.net.SocketException: Connection reset
+22:50:46 = COMMUNICATOR_CONNECTION_CLOSED|1530543046583|Error|Connection is Closed|run[MainProcess.java:147]|Server[Remote Machine] Closed

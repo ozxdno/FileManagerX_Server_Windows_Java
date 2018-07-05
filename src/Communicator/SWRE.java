@@ -15,7 +15,7 @@ public class SWRE implements Interfaces.ISWRE {
 
 	private long sendWaitTicks;
 	private long receiveWaitTicks;
-	private Interfaces.IClientConnection connection;
+	private Interfaces.IConnection connection;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -33,7 +33,7 @@ public class SWRE implements Interfaces.ISWRE {
 		this.receiveWaitTicks = receiveWaitTicks;
 		return true;
 	}
-	public boolean setConnection(Interfaces.IClientConnection connection) {
+	public boolean setConnection(Interfaces.IConnection connection) {
 		if(connection == null) {
 			return false;
 		}
@@ -52,7 +52,7 @@ public class SWRE implements Interfaces.ISWRE {
 	public long getReceiveWaitTicks() {
 		return this.receiveWaitTicks;
 	}
-	public Interfaces.IClientConnection getConnection() {
+	public Interfaces.IConnection getConnection() {
 		return this.connection;
 	}
 	
@@ -75,6 +75,8 @@ public class SWRE implements Interfaces.ISWRE {
 			return null;
 		}
 		
+		this.setPredict();
+		
 		connection.setActiveExecutor(true);
 		connection.setContinueSendString();
 		
@@ -90,6 +92,7 @@ public class SWRE implements Interfaces.ISWRE {
 		}
 		
 		//connection.setActiveExecutor(false);
+		//connection.setContinueWait();
 		return ((Interfaces.IReplyExecutor)connection.getExecutor()).getReply();
 	}
 	
@@ -100,6 +103,21 @@ public class SWRE implements Interfaces.ISWRE {
 		}
 		connection.setSendString(command);
 		return this.execute();
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	private boolean setPredict() {
+		Interfaces.IExecutor exe = this.connection.getExecutor();
+		if(!(exe instanceof Interfaces.IReplyExecutor)) {
+			return false;
+		}
+		Interfaces.IReplyExecutor rex = (Interfaces.IReplyExecutor)exe;
+		String cmd = Tools.String.getField(connection.getSendString());
+		cmd = Tools.String.clearLRSpace(cmd);
+		
+		rex.setPredict(cmd);
+		return true;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -56,6 +56,14 @@ public class Datas {
 	 */
 	public final static Interfaces.IDBManager DBManager = 
 			Factories.DBManagerFactory.createDBManager();
+	
+	/**
+	 * DBManager 的一个扩展，实现跨电脑数据访问。以及一些与服务器通信时命令的缩写形式。
+	 * 
+	 * 
+	 */
+	public final static Interfaces.IGAPManager GAPManager = 
+			Factories.DBManagerFactory.createGAPManager();
 	/**
 	 * 一条专用于连接服务器的通信通道，功能与 DBManager 相似。
 	 * 通过各类命令（Interfaces.ICommands）可以访问：
@@ -113,7 +121,7 @@ public class Datas {
 	 * 
 	 */
 	public final static Main.MainForm Form_Main = 
-			new Main.MainForm();
+			Factories.MainFactory.createMainForm();
 	
 	/**
 	 * 主线程，控制整个程序的运行逻辑。

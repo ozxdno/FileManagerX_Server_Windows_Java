@@ -10,6 +10,7 @@ public class ClientTCP implements IClientLinker{
 
 	private List<Interfaces.IClientConnection> connections;
 	private long permitIdle;
+	private int Next_ConnectionIndex;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -27,6 +28,10 @@ public class ClientTCP implements IClientLinker{
 		}
 		return false;
 	}
+	public boolean setNext_ConnectionIndex(int nextIndex) {
+		this.Next_ConnectionIndex = nextIndex;
+		return true;
+	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -35,6 +40,9 @@ public class ClientTCP implements IClientLinker{
 	}
 	public long getPermitIdle() {
 		return this.permitIdle;
+	}
+	public int getNext_ConnectionIndex() {
+		return this.Next_ConnectionIndex;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -47,19 +55,63 @@ public class ClientTCP implements IClientLinker{
 			this.connections = new ArrayList<Interfaces.IClientConnection>();
 		}
 		this.connections.clear();
+		this.permitIdle = 60 * 60 * 1000;
+		this.Next_ConnectionIndex = 0;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public boolean add(Interfaces.IClientConnection connection) {
-		this.removeIdleConnections();
-		if(connection == null) {
+	public int size() {
+		return this.connections.size();
+	}
+	public void clear() {
+		this.removeAllConnections();
+		initThis();
+	}
+	public boolean add(Object item) {
+		if(item == null) {
 			return false;
 		}
-		this.connections.add(connection);
-		return true;
+		try {
+			this.connections.add((Interfaces.IClientConnection)item);
+			return false;
+		} catch(Exception e) {
+			return true;
+		}
 	}
-	public void removeIdleConnections() {
+	/**
+	 * Sort By ConnectionIndex
+	 * 
+	 */
+	@SuppressWarnings("unchecked")
+	public void sortIncrease() {
+		@SuppressWarnings("rawtypes")
+		Comparator c = new Comparator<Interfaces.IClientConnection>() {
+			public int compare(Interfaces.IClientConnection e1, Interfaces.IClientConnection e2) {
+				return e1.getIndex() > e2.getIndex() ? 1 : -1;
+			}
+		};
+		Collections.sort(this.connections, c);
+	}
+	
+	/**
+	 * Sort ConnectionIndex
+	 * 
+	 */
+	@SuppressWarnings("unchecked")
+	public void sortDecrease() {
+		@SuppressWarnings("rawtypes")
+		Comparator c = new Comparator<Interfaces.IClientConnection>() {
+			public int compare(Interfaces.IClientConnection e1, Interfaces.IClientConnection e2) {
+				return e1.getIndex() > e2.getIndex() ? -1 : 1;
+			}
+		};
+		Collections.sort(this.connections, c);
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public synchronized void removeIdleConnections() {
 		for(int i=this.connections.size() - 1; i>=0; i--) {
 			if(!this.connections.get(i).isRunning()) {
 				this.connections.get(i).disconnect();
@@ -75,7 +127,7 @@ public class ClientTCP implements IClientLinker{
 			}
 		}
 	}
-	public void removeAllConnections() {
+	public synchronized void removeAllConnections() {
 		for(int i=this.connections.size()-1; i>=0; i--) {
 			this.connections.get(i).disconnect();
 			this.connections.remove(i);
@@ -84,52 +136,76 @@ public class ClientTCP implements IClientLinker{
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public int indexOf(String serverIp) {
+	public int indexOf(int index) {
+		if(this.connections == null) {
+			return -1;
+		}
 		for(int i=0; i<this.connections.size(); i++) {
-			if(this.connections.get(i).getServerMachineInfo().getIp().equals(serverIp)) {
+			if(this.connections.get(i).getIndex() == index) {
 				return i;
 			}
 		}
 		return -1;
 	}
-	public Interfaces.IClientConnection search(String serverIp) {
-		int idx = this.indexOf(serverIp);
-		if(idx < 0) {
+	public Interfaces.IClientConnection search(int index) {
+		int idx = indexOf(index);
+		if(idx == -1) {
 			return null;
 		}
 		return this.connections.get(idx);
 	}
-	public void remove(String serverIp) {
-		int idx = this.indexOf(serverIp);
-		if(idx < 0) {
+	public Interfaces.IClientConnection fetch(int index) {
+		int idx = indexOf(index);
+		if(idx == -1) {
+			return null;
+		}
+		Interfaces.IClientConnection res = this.connections.get(idx);
+		this.connections.remove(idx);
+		return res;
+	}
+	public void delete(int index) {
+		int idx = indexOf(index);
+		if(idx == -1) {
 			return;
 		}
-		
 		this.connections.get(idx).disconnect();
 		this.connections.remove(idx);
 	}
 	
-	public int indexOf(long userIndex) {
+	public int indexOf(String ip, int port) {
+		if(this.connections == null) {
+			return -1;
+		}
 		for(int i=0; i<this.connections.size(); i++) {
-			if(this.connections.get(i).getUser().getIndex() == userIndex) {
+			String iip = this.connections.get(i).getServerMachineInfo().getIp();
+			int iport = this.connections.get(i).getSocket().getPort();
+			if(iip.equals(ip) && iport == port) {
 				return i;
 			}
 		}
 		return -1;
 	}
-	public Interfaces.IClientConnection search(long userIndex) {
-		int idx = this.indexOf(userIndex);
-		if(idx < 0) {
+	public Interfaces.IClientConnection search(String ip, int port) {
+		int idx = indexOf(ip, port);
+		if(idx == -1) {
 			return null;
 		}
 		return this.connections.get(idx);
 	}
-	public void remove(long userIndex) {
-		int idx = this.indexOf(userIndex);
-		if(idx < 0) {
+	public Interfaces.IClientConnection fetch(String ip, int port) {
+		int idx = indexOf(ip, port);
+		if(idx == -1) {
+			return null;
+		}
+		Interfaces.IClientConnection res = this.connections.get(idx);
+		this.connections.remove(idx);
+		return res;
+	}
+	public void delete(String ip, int port) {
+		int idx = indexOf(ip, port);
+		if(idx == -1) {
 			return;
 		}
-		
 		this.connections.get(idx).disconnect();
 		this.connections.remove(idx);
 	}

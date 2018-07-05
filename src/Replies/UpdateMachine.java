@@ -43,10 +43,7 @@ public class UpdateMachine extends Comman implements Interfaces.IReplies {
 	public String output() {
 		BasicModels.Config c = new BasicModels.Config();
 		c.setField(this.getClass().getSimpleName());
-		c.addToBottom(this.isOK());
-		c.addToBottom(this.getUserIndex());
-		c.addToBottom(this.getPassword());
-		c.addToBottom(this.getFailedReason());
+		c.addToBottom(new BasicModels.Config(super.output()));
 		c.addToBottom(new BasicModels.Config(this.machineInfo.output()));
 		return c.output();
 	}

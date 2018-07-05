@@ -10,13 +10,15 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 	private BasicModels.MachineInfo serverMachineInfo;
 	private BasicModels.MachineInfo clientMachineInfo;
 	private BasicModels.User user;
+	private BasicEnums.ConnectionType type;
+	private int index;
 	
 	private Interfaces.IReplyExecutor executor;
 	private Interfaces.IFileConnector fileConnector;
 	
 	private Socket socket;
-	private boolean abort;
-	private boolean running;
+	private volatile boolean abort;
+	private volatile boolean running;
 	private volatile boolean busy;
 	
 	private boolean closeServer;
@@ -56,6 +58,24 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 			return false;
 		}
 		this.user = user;
+		return true;
+	}
+	public boolean setType(BasicEnums.ConnectionType type) {
+		if(type == null) {
+			return false;
+		}
+		this.type = type;
+		return true;
+	}
+	public boolean setIndex(int index) {
+		this.index = index;
+		return true;
+	}
+	public boolean setIndex() {
+		if(Globals.Datas.Client != null) {
+			this.index = Globals.Datas.Client.getNext_ConnectionIndex() + 1;
+			Globals.Datas.Client.setNext_ConnectionIndex(index);
+		}
 		return true;
 	}
 	
@@ -105,12 +125,8 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 		return true;
 	}
 	public boolean setContinueWait() {
-		this.busy = false;
 		this.continueReceiveString = false;
 		this.continueSendString = false;
-		if(this.fileConnector != null) {
-			this.fileConnector.setState_Stop(true);
-		}
 		return true;
 	}
 	
@@ -217,6 +233,12 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 	public BasicModels.User getUser() {
 		return this.user;
 	}
+	public BasicEnums.ConnectionType getType() {
+		return this.type;
+	}
+	public int getIndex() {
+		return this.index;
+	}
 	
 	public Interfaces.IReplyExecutor getExecutor() {
 		return this.executor;
@@ -288,6 +310,7 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 	
 	public ClientConnection() {
 		initThis();
+		this.setIndex();
 	}
 	public ClientConnection(Socket socket,
 			BasicModels.MachineInfo serverMachineInfo, 
@@ -296,18 +319,21 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 		this.setSocket(socket);
 		this.setServerMachineInfo(serverMachineInfo);
 		this.setClientMachineInfo(clientMachineInfo);
+		this.setIndex();
 	}
 	private void initThis() {
 		serverMachineInfo = null;
 		clientMachineInfo = null;
 		user = null;
+		type = BasicEnums.ConnectionType.TRANSPORT_COMMAND;
+		index = 0;
 		
 		executor = Factories.CommunicatorFactory.createClientExcutor();
 		fileConnector = Factories.CommunicatorFactory.createFileConnector();
 		
 		this.socket = null;
 		this.abort = false;
-		this.running = true;
+		this.running = false;
 		this.busy = false;
 		
 		this.closeServer = false;
@@ -389,20 +415,21 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 							break;
 						}
 					}
-					this.continueReceiveString = false;
 					if(this.activeEexcutor && this.executor != null) {
 						this.executor.execute(this);
 					}
+					this.continueReceiveString = false;
 					this.busy = false;
 				}
-				if(!this.continueReceiveString && !this.continueSendString && this.fileConnector.isActive() && this.fileConnector.isOutputCommand()) { // input a file
-					this.busy = true;
+				if(!this.continueReceiveString && !this.continueSendString && this.fileConnector.isActive() && this.fileConnector.isInputCommand()) { // input a file
+					//this.busy = true;
 					if(this.receiveBuffer == null || this.receiveBuffer.length == 0) {
 						this.busy = false;
 						continue;
 					}
 					
 					this.fileConnector.setState_Busy(true);
+					this.fileConnector.clear();
 					while(!this.fileConnector.isFinished()) {
 						this.receiveLength = dis.read(receiveBuffer, 0, receiveBuffer.length);
 						this.fileConnector.setReceiveBytes(receiveBuffer);
@@ -415,20 +442,24 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 					}
 					this.fileConnector.setState_Busy(false);
 					this.fileConnector.close();
-					this.busy = false;
+					//this.busy = false;
+					this.abort = true;
 				}
 				if(!this.continueReceiveString && !this.continueSendString && this.fileConnector.isActive() && this.fileConnector.isOutputCommand()) { // output a file
-					this.busy = true;
+					//this.busy = true;
 					if(this.sendBuffer == null || this.sendBuffer.length == 0) {
 						this.busy = false;
 						continue;
 					}
 					
 					this.fileConnector.setState_Busy(true);
+					this.fileConnector.clear();
 					this.fileConnector.setSendBytes(this.sendBuffer);
 					while(!this.fileConnector.isFinished()) {
 						if(!this.fileConnector.load()) {
 							BasicEnums.ErrorType.SERVER_CONNECTION_RUNNING_FAILED.register("Load Send Bytes Failed");
+							this.fileConnector.close();
+							break;
 						}
 						this.sendLength = this.fileConnector.getSendLength();
 						dos.write(this.sendBuffer, 0, this.sendLength);  
@@ -436,8 +467,11 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 					
 					this.fileConnector.setState_Busy(false);
 					this.fileConnector.close();
-					this.busy = false;
+					//this.busy = false;
+					this.abort = true;
 				}
+				
+				Tools.Time.sleepUntil(10);
 				
 			}catch(Exception e) {
 				BasicEnums.ErrorType.CLIENT_CONNECTION_RUNNING_FAILED.register(e.toString());
@@ -445,6 +479,8 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 			}
 		}
 		running = false;
+		this.disconnect();
+		Globals.Datas.Client.removeIdleConnections();
 		
 		if(closeServer) {
 			Globals.Datas.Server.disconnect();
@@ -469,6 +505,7 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 		}
 		
 		while(running) {
+			Tools.Time.sleepUntil(1);
 			abort = true;
 		}
 		

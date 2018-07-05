@@ -284,9 +284,6 @@ public class BaseFile implements Interfaces.IPublic {
 		File f = new File(url);
 		return f.exists();
 	}
-	public boolean isLocal() {
-		return this.machine == Globals.Configurations.This_MachineIndex;
-	}
 	public boolean register() {
 		return true;
 	}

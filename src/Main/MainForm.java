@@ -16,6 +16,8 @@ public class MainForm extends JFrame {
 	public JButton jQuery = new JButton("query");
 	public JButton jExecute = new JButton("execute");
 	
+	public String CmdName = "";
+	public Interfaces.ICommands Command = null;
 	public Interfaces.IReplies Reply = null;
 	public Interfaces.ISWRE SWRE = Factories.CommunicatorFactory.createSWRE();
 	 
@@ -123,45 +125,99 @@ public class MainForm extends JFrame {
 	            q = q.toLowerCase();
 	            
 	            if(q.equals("closeserver") || q.equals("cs")) {
-	            	String res = "CloseServer = ";
-	            	res += Globals.Configurations.This_UserIndex;
-	            	res += "|" + Globals.Datas.ThisUser.getPassword();
-	            	res += "|-1";
-	            	res += "|-1";
-	            	res += "|-1";
-	            	jInput.setText(res);
+	            	CmdName = "CloseServer";
+	            	Command = new Commands.CloseServer();
+	            	jInput.setText(((Commands.CloseServer)Command).output());
+	            	
+	            	String tip = CmdName + " = " +
+	            			"[01-sourMachineIndex]" +
+	            			"[02-destMachineIndex]" +
+	            			"[03-ourDepotIndex]" +
+	            			"[04-destDepotIndex]" +
+	            			"[05-sourDataBaseIndex]" + 
+	            			"[06-destDataBaseIndex]" +
+	            			"[07-sourUserIndex]" +
+	            			"[08-destUserIndex]" +
+	            			"[09-ip1]" + 
+	            			"[10-ip2]" +
+	            			"[11-port1]" +
+	            			"[12-port2]" +
+	            			"[13-password]";
+	            	jResult.setText(tip);
+	            }
+	            if(q.equals("test") || q.equals("t")) {
+	            	CmdName = "Test";
+	            	Command = new Commands.Test();
+	            	jInput.setText(((Commands.Test)Command).output());
+	            	
+	            	String tip = CmdName + " = " +
+	            			"[01-sourMachineIndex]" +
+	            			"[02-destMachineIndex]" +
+	            			"[03-ourDepotIndex]" +
+	            			"[04-destDepotIndex]" +
+	            			"[05-sourDataBaseIndex]" + 
+	            			"[06-destDataBaseIndex]" +
+	            			"[07-sourUserIndex]" +
+	            			"[08-destUserIndex]" +
+	            			"[09-ip1]" + 
+	            			"[10-ip2]" +
+	            			"[11-port1]" +
+	            			"[12-port2]" +
+	            			"[13-password]" +
+	            			"[14-testString]";
+	            	jResult.setText(tip);
 	            }
 	            if(q.equals("input") || q.equals("i")) {
-	            	String res = "Input = " +
-	            		Globals.Configurations.This_UserIndex + "|" +
-	            		Globals.Datas.ThisUser.getPassword() + "|" +
-	            		"targetMachine|" +
-	            		"targetDepot|" +
-	            		"-1|" +
-	            		"sourMachine|" +
-	            		"sourDepot|" +
-	            		"isCover|" +
-	            		"sourUrl|" +
-	            		"destUrl|" +
-	            		"totalBytes|" +
-	            		"finishedBytes";
-	            	jInput.setText(res);
+	            	CmdName = "Input";
+	            	Command = new Commands.Input();
+	            	jInput.setText(Command.output());
+	            	
+	            	String tip = CmdName + " = " +
+	            			"[01-sourMachineIndex]" +
+	            			"[02-destMachineIndex]" +
+	            			"[03-ourDepotIndex]" +
+	            			"[04-destDepotIndex]" +
+	            			"[05-sourDataBaseIndex]" + 
+	            			"[06-destDataBaseIndex]" +
+	            			"[07-sourUserIndex]" +
+	            			"[08-destUserIndex]" +
+	            			"[09-ip1]" + 
+	            			"[10-ip2]" +
+	            			"[11-port1]" +
+	            			"[12-port2]" +
+	            			"[13-password]" +
+	            			"[14-cover]" +
+	            			"[15-sourUrl]" +
+	            			"[16-destUrl]" +
+	            			"[17-totalBytes]" +
+	            			"[18-finishedBytes]";
+	            	jResult.setText(tip);
 	            }
 	            if(q.equals("output") || q.equals("o")) {
-	            	String res = "Output = " +
-	            		Globals.Configurations.This_UserIndex + "|" +
-	            		Globals.Datas.ThisUser.getPassword() + "|" +
-	            		"targetMachine|" +
-	            		"targetDepot|" +
-	            		"-1|" +
-	            		"sourMachine|" +
-	            		"sourDepot|" +
-	            		"isCover|" +
-	            		"sourUrl|" +
-	            		"destUrl|" +
-	            		"totalBytes|" +
-	            		"finishedBytes";
-	            	jInput.setText(res);
+	            	CmdName = "Output";
+	            	Command = new Commands.Output();
+	            	jInput.setText(Command.output());
+	            	
+	            	String tip = CmdName + " = " +
+	            			"[01-sourMachineIndex]" +
+	            			"[02-destMachineIndex]" +
+	            			"[03-ourDepotIndex]" +
+	            			"[04-destDepotIndex]" +
+	            			"[05-sourDataBaseIndex]" + 
+	            			"[06-destDataBaseIndex]" +
+	            			"[07-sourUserIndex]" +
+	            			"[08-destUserIndex]" +
+	            			"[09-ip1]" + 
+	            			"[10-ip2]" +
+	            			"[11-port1]" +
+	            			"[12-port2]" +
+	            			"[13-password]" +
+	            			"[14-cover]" +
+	            			"[15-sourUrl]" +
+	            			"[16-destUrl]" +
+	            			"[17-totalBytes]" +
+	            			"[18-finishedBytes]";
+	            	jResult.setText(tip);
 	            }
 	        }
 	    }
@@ -172,21 +228,50 @@ public class MainForm extends JFrame {
 	        if (jExecute == e.getSource()) {//如果是jBtn这个按钮被点击了,
 	        	
 	        	String cmd = jInput.getText();
+	        	boolean directAccess = cmd.length() > 2 && cmd.substring(0, 2).equals("d ");
+	        	if(directAccess) {
+	        		cmd = cmd.substring(2);
+	        		cmd = Tools.String.clearLRSpace(cmd);
+	        	}
 	        	
-	            Reply = SWRE.execute(cmd);
-	            jResult.setText("executing ...");
-	            
+	        	CmdName = Tools.String.clearLRSpace(Tools.String.getField(cmd));
+	        	
+	        	if(CmdName.equals("Input") || CmdName.equals("Output")) {
+	        		Interfaces.IFSWRE fswre = Factories.CommunicatorFactory.createFSWRE();
+	        		if(directAccess) {
+	        			Reply = fswre.executeDirectly(cmd);
+	        		} else {
+	        			fswre.setConnection();
+	        			Reply = fswre.execute(cmd);
+	        		}
+	        	}
+	        	else if(directAccess) {
+	        		Interfaces.IDSWRE dswre = Factories.CommunicatorFactory.createDSWRE();
+	        		Reply = dswre.execute(cmd);
+	        	}
+	        	else {
+	        		Reply = SWRE.execute(cmd);
+	        	}
+	        	
 	            if(Reply == null) {
 	            	jResult.setText("NULL");
 	            	return;
 	            }
+	            
+	            /*
 	            if(Reply instanceof Replies.CloseServer) {
 	            	Replies.CloseServer reply = (Replies.CloseServer)Reply;
 	            	jResult.setText(reply.toString());
 	            	return;
 	            }
+	            if(Reply instanceof Replies.Unsupport) {
+	            	Replies.Unsupport reply = (Replies.Unsupport)Reply;
+	            	jResult.setText(reply.toString());
+	            	return;
+	            }
+	            */
 	            
-	            jResult.setText(Reply.toString());
+	            jResult.setText(Reply.output());
 	        }
 	    }
 	};

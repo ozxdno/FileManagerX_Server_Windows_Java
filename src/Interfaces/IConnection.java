@@ -9,6 +9,9 @@ public interface IConnection {
 	public boolean setServerMachineInfo(BasicModels.MachineInfo serverMachineInfo);
 	public boolean setClientMachineInfo(BasicModels.MachineInfo clientMachineInfo);
 	public boolean setUser(BasicModels.User user);
+	public boolean setType(BasicEnums.ConnectionType type);
+	public boolean setIndex(int index);
+	public boolean setIndex(); 
 	
 	public boolean setExecutor(Interfaces.IExecutor executor);
 	public boolean setFileConnector(Interfaces.IFileConnector fileConnector);
@@ -41,6 +44,8 @@ public interface IConnection {
 	public BasicModels.MachineInfo getServerMachineInfo();
 	public BasicModels.MachineInfo getClientMachineInfo();
 	public BasicModels.User getUser();
+	public BasicEnums.ConnectionType getType();
+	public int getIndex();
 	
 	public Interfaces.IExecutor getExecutor();
 	public Interfaces.IFileConnector getFileConnector();

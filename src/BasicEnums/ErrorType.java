@@ -45,6 +45,9 @@ public enum ErrorType {
 			if(stes[i].getClassName().equals(this.getClass().getName())) {
 				continue;
 			}
+			if(stes[i].getFileName() == null || stes[i].getLineNumber() < 0) {
+				continue;
+			}
 			tip += "<-" + stes[i].getMethodName() + "[" + stes[i].getFileName() + ":" + stes[i].getLineNumber() + "]";
 		}
 		if(tip.length() > 2) { tip = tip.substring(2); }

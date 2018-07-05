@@ -10,4 +10,13 @@ public class LoginUser extends Comman implements Interfaces.IReplies {
 		return super.output(this.getClass().getSimpleName());
 	}
 	
+	public boolean execute(Interfaces.IConnection connection) {
+		if(!this.isOK()) {
+			return false;
+		}
+		
+		connection.setUser(Globals.Datas.ThisUser);
+		return true;
+	}
+	
 }

@@ -4,22 +4,22 @@ public class DepotManager implements Interfaces.IDepotManager{
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	private BasicModels.BaseFile file;
+	private BasicModels.DepotInfo depot;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public boolean setFile(BasicModels.BaseFile file) {
-		if(file == null || file.getUrl().length() == 0) {
+	public boolean setDepot(BasicModels.DepotInfo depot) {
+		if(depot == null) {
 			return false;
 		}
-		this.file = file;
+		this.depot = depot;
 		return true;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public BasicModels.BaseFile getFile() {
-		return file;
+	public BasicModels.DepotInfo getDepot() {
+		return depot;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -27,22 +27,21 @@ public class DepotManager implements Interfaces.IDepotManager{
 	public DepotManager() {
 		initThis();
 	}
-	public DepotManager(BasicModels.BaseFile file) {
-		initThis();
-		this.setFile(file);
-	}
 	private void initThis() {
-		this.file = new BasicModels.BaseFile();
+		this.depot = new BasicModels.DepotInfo();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public boolean renameFile(String name) {
+	public boolean renameFile(String sourUrl, String targetName) {
+		if(!this.isDepotRight()) {
+			return false;
+		}
+		
 		try {
-			String url = this.file.getUrl();
-			java.io.File sour = new java.io.File(url);
-			url = Tools.Url.setName(url, name);
-			java.io.File dest = new java.io.File(url);
+			java.io.File sour = new java.io.File(sourUrl);
+			String destUrl = Tools.Url.setName(sourUrl, targetName);
+			java.io.File dest = new java.io.File(destUrl);
 			return sour.renameTo(dest);
 		} catch(Exception e) {
 			BasicEnums.ErrorType.FILE_OPERATION_FAILED.register(
@@ -52,12 +51,15 @@ public class DepotManager implements Interfaces.IDepotManager{
 			return false;
 		}
 	}
-	public boolean renameFileWithoutExtension(String nameWithoutExtension) {
+	public boolean renameFileWithoutExtension(String sourUrl, String targetNameWithoutExtension) {
+		if(!this.isDepotRight()) {
+			return false;
+		}
+		
 		try {
-			String url = this.file.getUrl();
-			java.io.File sour = new java.io.File(url);
-			url = Tools.Url.setNameWithoutExtension(url, nameWithoutExtension);
-			java.io.File dest = new java.io.File(url);
+			java.io.File sour = new java.io.File(sourUrl);
+			String destUrl = Tools.Url.setNameWithoutExtension(sourUrl, targetNameWithoutExtension);
+			java.io.File dest = new java.io.File(destUrl);
 			return sour.renameTo(dest);
 		} catch(Exception e) {
 			BasicEnums.ErrorType.FILE_OPERATION_FAILED.register(
@@ -67,10 +69,13 @@ public class DepotManager implements Interfaces.IDepotManager{
 			return false;
 		}
 	}
-	public boolean deleteFile() {
+	public boolean deleteFile(String targetFile) {
+		if(!this.isDepotRight()) {
+			return false;
+		}
+		
 		try {
-			String url = this.file.getUrl();
-			java.io.File sour = new java.io.File(url);
+			java.io.File sour = new java.io.File(targetFile);
 			return sour.delete();
 		} catch(Exception e) {
 			BasicEnums.ErrorType.FILE_OPERATION_FAILED.register(
@@ -80,12 +85,17 @@ public class DepotManager implements Interfaces.IDepotManager{
 			return false;
 		}
 	}
-	public boolean moveFile(String destUrl) {
+	public boolean moveFile(String sourUrl, String destUrl) {
+		if(!this.isDepotRight()) {
+			return false;
+		}
+		if(!this.isInDepot(destUrl)) {
+			return false;
+		}
+		
 		try {
-			String url = this.file.getUrl();
-			java.io.File sour = new java.io.File(url);
-			url = Tools.Url.getLocalUrl(destUrl);
-			java.io.File dest = new java.io.File(url);
+			java.io.File sour = new java.io.File(sourUrl);
+			java.io.File dest = new java.io.File(destUrl);
 			return sour.renameTo(dest);
 		} catch(Exception e) {
 			BasicEnums.ErrorType.FILE_OPERATION_FAILED.register(
@@ -96,21 +106,80 @@ public class DepotManager implements Interfaces.IDepotManager{
 		}
 		
 	}
-	public boolean copyFile(String destUrl) {
-		return this.copyFileCore(this.file.getUrl(), Tools.Url.getLocalUrl(destUrl));
+	public boolean copyFile(String sourUrl, String destUrl) {
+		if(!this.isDepotRight()) {
+			return false;
+		}
+		if(!this.isInDepot(destUrl)) {
+			return false;
+		}
+		return this.copyFileCore(sourUrl, destUrl);
 	}
 	
-	public boolean renameDirectory(String name) {
-		return renameFile(name);
+	public boolean renameDirectory(String sourUrl, String targetName) {
+		if(!this.isDepotRight()) {
+			return false;
+		}
+		
+		return renameFile(sourUrl, targetName);
 	}
-	public boolean deleteDirectory() {
-		return this.deleteDirectoryCore(file.getUrl());
+	public boolean deleteDirectory(String targetFolder) {
+		if(!this.isDepotRight()) {
+			return false;
+		}
+		
+		return this.deleteDirectoryCore(targetFolder);
 	}
-	public boolean moveDirectory(String destUrl) {
-		return moveFile(destUrl);
+	public boolean moveDirectory(String sourUrl, String destUrl) {
+		if(!this.isDepotRight()) {
+			return false;
+		}
+		if(!this.isInDepot(destUrl)) {
+			return false;
+		}
+		return moveFile(sourUrl, destUrl);
 	}
-	public boolean copyDirectory(String destUrl) {
-		return this.copyDirectoryCore(file.getUrl(), Tools.Url.getLocalUrl(destUrl));
+	public boolean copyDirectory(String sourUrl, String destUrl) {
+		if(!this.isDepotRight()) {
+			return false;
+		}
+		if(!this.isInDepot(destUrl)) {
+			return false;
+		}
+		return this.copyDirectoryCore(sourUrl, destUrl);
+	}
+	
+	public boolean createFolder(String targetUrl) {
+		if(!this.isDepotRight()) {
+			return false;
+		}
+		if(!this.isInDepot(targetUrl)) {
+			return false;
+		}
+		
+		java.io.File f = new java.io.File(targetUrl);
+		try {
+			return f.createNewFile();
+		} catch(Exception e) {
+			BasicEnums.ErrorType.FILE_OPERATION_FAILED.register(e.toString());
+			return false;
+		}
+	}
+	public boolean createFile(String targetUrl) {
+		if(!this.isDepotRight()) {
+			return false;
+		}
+		if(!this.isInDepot(targetUrl)) {
+			return false;
+		}
+		
+		java.io.File f = new java.io.File(targetUrl);
+		try {
+			return f.mkdirs();
+		} catch(Exception e) {
+			BasicEnums.ErrorType.FILE_OPERATION_FAILED.register(e.toString());
+			return false;
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -191,6 +260,32 @@ public class DepotManager implements Interfaces.IDepotManager{
 					);
 			return false;
 		}
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	private boolean isInDepot(String url) {
+		if(!Tools.Url.isFileIn(url, depot.getUrl())) {
+			BasicEnums.ErrorType.FILE_OPERATION_FAILED.register("URL Not in This Depot");
+			return false;
+		}
+		return true;
+	}
+	private boolean isDepotRight() {
+		if(depot == null) {
+			BasicEnums.ErrorType.FILE_OPERATION_FAILED.register("Depot is NULL");
+			return false;
+		}
+		if(depot.getIndex() <= 0) {
+			BasicEnums.ErrorType.FILE_OPERATION_FAILED.register("Depot Index Error");
+			return false;
+		}
+		if(depot.getUrl() == null || depot.getUrl().length() == 0) {
+			BasicEnums.ErrorType.FILE_OPERATION_FAILED.register("Depot Url is NULL or Empty");
+			return false;
+		}
+		
+		return true;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

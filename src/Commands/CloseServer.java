@@ -4,7 +4,7 @@ public class CloseServer extends Comman implements Interfaces.ICommands {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public Replies.CloseServer getReplies() {
+	public Replies.CloseServer getReply() {
 		return (Replies.CloseServer)super.getReply();
 	}
 	
@@ -46,36 +46,49 @@ public class CloseServer extends Comman implements Interfaces.ICommands {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean execute() {
-		if(!super.isConnected()) {
-			this.reply();
-			return false;
-		}
-		if(!super.isLogin()) {
-			this.reply();
-			return false;
-		}
-		if(!super.isUserIndexRight()) {
-			this.reply();
-			return false;
-		}
-		if(!super.isPasswordRight()) {
-			this.reply();
-			return false;
-		}
-		if(!super.isPriorityEnough(BasicEnums.UserPriority.Admin)) {
+		if(!this.isConnected_Login_UserIndexRigth_PasswordRight_PriorityEnough(BasicEnums.UserPriority.Admin)) {
 			this.reply();
 			return false;
 		}
 		
-		super.getConnection().setCloseServer(true);
-		this.reply();
-		return true;
+		if(this.isArriveTargetMachine()) {
+			this.getConnection().setCloseServer(true);
+			this.reply();
+			return true;
+		}
+		else {
+			if(this.isSelfToSelf()) {
+				this.reply();
+				return false;
+			}
+			
+			Interfaces.ICommandConnector cc = Factories.CommunicatorFactory.createCommandConnector();
+			cc.setIsExecuteCommand(true);
+			cc.setDestMachineIndex(this.getBasicMessagePackage().getDestMachineIndex());
+			cc.setSendCommand(this.output());
+			cc.setSourConnection(this.getConnection());
+			Replies.CloseServer rep = (Replies.CloseServer)cc.execute();
+			if(rep == null) {
+				this.replyNULL();
+				return false;
+			}
+			
+			this.setReply(rep);
+			this.reply();
+			return true;
+		}
 	}
 	public void reply() {
-		super.setUserIndexAndPassword();
+		this.setBasicMessagePackageToReply();
 		this.getConnection().setSendString(this.getReply().output());
 		this.getConnection().setSendLength(this.getConnection().getSendString().length());
 		this.getConnection().setContinueSendString();
+	}
+	public void replyNULL() {
+		BasicEnums.ErrorType.EXECUTE_COMMAND_FAILED.register("The Reply from other Connection is NULL");
+		this.getReply().setOK(false);
+		this.getReply().setFailedReason("The Reply from other Connection is NULL");
+		this.reply();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

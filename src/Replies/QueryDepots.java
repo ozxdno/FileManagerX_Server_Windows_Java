@@ -67,10 +67,7 @@ public class QueryDepots extends Comman implements Interfaces.IReplies {
 	public String output() {
 		BasicModels.Config c = new BasicModels.Config();
 		c.setField(this.getClass().getSimpleName());
-		c.addToBottom(this.isOK());
-		c.addToBottom(this.getUserIndex());
-		c.addToBottom(this.getPassword());
-		c.addToBottom(this.getFailedReason());
+		c.addToBottom(new BasicModels.Config(super.output()));
 		c.addToBottom(this.amount);
 		c.addToBottom(new BasicModels.Config(this.depotInfo.output()));
 		return c.output();
@@ -105,6 +102,9 @@ public class QueryDepots extends Comman implements Interfaces.IReplies {
 	public boolean execute(Interfaces.IConnection connection) {
 		if(!this.isOK()) {
 			return false;
+		}
+		if(this.depotInfos.size() >= this.amount) {
+			return true;
 		}
 		
 		BasicModels.DepotInfo newDepot = new BasicModels.DepotInfo();

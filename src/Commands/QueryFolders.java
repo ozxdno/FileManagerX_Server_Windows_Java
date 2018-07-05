@@ -12,6 +12,16 @@ public class QueryFolders extends Comman implements Interfaces.ICommands {
 		this.conditions = conditions;
 		return true;
 	}
+	public boolean setQueryConditions(String conditions) {
+		DataBaseManager.QueryConditions qcs = new DataBaseManager.QueryConditions();
+		try {
+			qcs.stringToThis(conditions);
+			this.conditions = qcs;
+			return true;
+		} catch(Exception e) {
+			return false;
+		}
+	}
 	public boolean setQueryCondition(DataBaseManager.QueryCondition condition) {
 		DataBaseManager.QueryConditions qcs = new DataBaseManager.QueryConditions();
 		qcs.add(condition);
@@ -80,21 +90,7 @@ public class QueryFolders extends Comman implements Interfaces.ICommands {
 			this.reply();
 			return false;
 		}
-		if(this.conditions == null) {
-			super.getReply().setOK(false);
-			super.getReply().setFailedReason("Wrong Query Conditions");
-			this.reply();
-			return false;
-		}
-		
-		if(super.isLocal()) {
-			boolean res = this.executeLocal();
-			return res;
-		}
-		else {
-			boolean res = this.executeRemote();
-			return res;
-		}
+		return true;
 		
 	}
 	public void reply() {
@@ -106,73 +102,5 @@ public class QueryFolders extends Comman implements Interfaces.ICommands {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	private boolean executeLocal() {
-		Interfaces.IDBManager dbmanager = Globals.Datas.DBManagers.fetchDataBaseIndex(this.getDataBaseIndex());
-		BasicCollections.Folders folders = dbmanager.QueryFolders(getQueryConditions());
-		Replies.QueryFolders qf = (Replies.QueryFolders)super.getReply();
-		super.setUserIndexAndPassword();
-		qf.setAmount(folders.size());
-		if(qf.getAmount() == 0) {
-			this.reply();
-			return true;
-		}
-		
-		for(int i=0; i<folders.size(); i++) {
-			qf.setFolder(folders.getContent().get(i));
-			this.reply();
-		}
-		
-		return true;
-	}
-	private boolean executeRemote() {
-		Interfaces.IClientConnection connection = new Communicator.ClientConnection();
-		connection.setServerMachineInfo(super.getMachineInfo());
-		connection.setClientMachineInfo(super.getConnection().getServerMachineInfo());
-		connection.setSocket();
-		connection.connect();
-		if(!connection.isRunning()) {
-			super.getReply().setOK(false);
-			super.getReply().setFailedReason("Connect to Depot Failed");
-			this.reply();
-			return false;
-		}
-		
-		Globals.Datas.Client.add(connection);
-		connection.setContinueSendString();
-		connection.setSendString(this.output());
-		connection.setSendLength(connection.getSendString().length());
-		connection.notify();
-		
-		
-		Replies.QueryFolders qf = (Replies.QueryFolders)super.getReply();
-		int finishedAmount = 0;
-		while(true) {
-			//super.waitForDepotReply();
-			if(connection.isBusy()) {
-				super.getReply().setOK(false);
-				super.getReply().setFailedReason("Too long to get Reply of Target Depot");
-				this.reply();
-				return false;
-			}
-			
-			this.getConnection().setSendString(connection.getReceiveString());
-			this.getConnection().setSendLength(connection.getReceiveLength());
-			this.getConnection().setContinueSendString();
-			this.getConnection().notify();
-			if(qf.input(this.getConnection().getReceiveString()) == null) {
-				super.getReply().setOK(false);
-				super.getReply().setFailedReason("Receive Wrong Info from Target Depot");
-				this.reply();
-				return false;
-			}
-			finishedAmount++;
-			if(finishedAmount >= qf.getAmount()) {
-				break;
-			}
-		}
-		
-		return true;
-	}
-	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

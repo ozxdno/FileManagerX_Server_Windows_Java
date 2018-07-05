@@ -38,22 +38,64 @@ public class DBManagers implements Interfaces.IDBManagers {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public void clear() {
-		initThis();
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
 	public int size() {
 		return content.size();
 	}
-	public boolean add(Interfaces.IDBManager item) {
+	public void clear() {
+		initThis();
+	}
+	public boolean add(Object item) {
 		if(item == null) {
 			return false;
 		}
-		content.add(item);
-		return true;
+		try {
+			content.add((Interfaces.IDBManager)item);
+			return true;
+		} catch(Exception e) {
+			return false;
+		}
 	}
+	/**
+	 * Sort By DataBaseIndex
+	 * 
+	 */
+	@SuppressWarnings("unchecked")
+	public void sortIncrease() {
+		@SuppressWarnings("rawtypes")
+		Comparator c = new Comparator<Interfaces.IDBManager>() {
+			public int compare(Interfaces.IDBManager e1, Interfaces.IDBManager e2) {
+				if(e1.getDBInfo().getIndex() > e2.getDBInfo().getIndex()) {
+					return 1;
+				} else {
+					return -1;
+				}
+			}
+		};
+		
+		Collections.sort(this.getContent(), c);
+	}
+	
+	/**
+	 * Sort By DataBaseIndex
+	 * 
+	 */
+	@SuppressWarnings("unchecked")
+	public void sortDecrease() {
+		@SuppressWarnings("rawtypes")
+		Comparator c = new Comparator<Interfaces.IDBManager>() {
+			public int compare(Interfaces.IDBManager e1, Interfaces.IDBManager e2) {
+				if(e1.getDBInfo().getIndex() > e2.getDBInfo().getIndex()) {
+					return -1;
+				} else {
+					return 1;
+				}
+			}
+		};
+		
+		Collections.sort(this.getContent(), c);
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public int indexOfDataBaseName(String dbName) {
 		for(int i=0; i<content.size(); i++) {

@@ -92,6 +92,17 @@ public class DataBaseInfo implements Interfaces.IPublic{
 		return this.depotInfo;
 	}
 	
+	public Interfaces.IDBManager getManager() {
+		Interfaces.IDBManager m = Globals.Datas.DBManagers.searchDataBaseIndex(this.index);
+		if(m != null) {
+			return m;
+		}
+		
+		m = Factories.DBManagerFactory.createDBManager();
+		m.initialize(this);
+		return m;
+	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public DataBaseInfo() {
@@ -175,14 +186,8 @@ public class DataBaseInfo implements Interfaces.IPublic{
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean isLocal() {
-		return this.depotInfo.getMachineInfo().isLocal();
+		return this.machineInfo.isLocal();
 	}
-	
-	public Interfaces.IDBManager getManager() {
-		Interfaces.IDBManager m = new DataBaseManager.DBManager();
-		m.initialize(this);
-		return m;
-	}
-	
+
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

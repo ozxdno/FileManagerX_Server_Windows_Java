@@ -52,11 +52,7 @@ public class UpdateDepot extends Comman implements Interfaces.ICommands {
 	public String output() {
 		BasicModels.Config c = new BasicModels.Config();
 		c.setField(this.getClass().getSimpleName());
-		c.addToBottom(this.getUserIndex());
-		c.addToBottom(this.getPassword());
-		c.addToBottom(this.getMachineIndex());
-		c.addToBottom(this.getDepotIndex());
-		c.addToBottom(this.getDataBaseIndex());
+		c.addToBottom(new BasicModels.Config(super.output()));
 		c.addToBottom(new BasicModels.Config(this.depotInfo.output()));
 		return c.output();
 	}
@@ -92,7 +88,7 @@ public class UpdateDepot extends Comman implements Interfaces.ICommands {
 				this.executeInDepot();
 	}
 	public void reply() {
-		this.setUserIndexAndPassword();
+		this.setBasicMessagePackageToReply();
 		this.getConnection().setSendString(this.getReply().output());
 		this.getConnection().setSendLength(this.getConnection().getSendString().length());
 		this.getConnection().setContinueSendString();

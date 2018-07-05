@@ -94,6 +94,17 @@ public class Errors implements Interfaces.IPublic, Interfaces.ICollection {
 	public int size() {
 		return content.size();
 	}
+	public boolean add(Object item) {
+		if(item == null) {
+			return false;
+		}
+		try {
+			this.content.add((BasicModels.Error)item);
+			return true;
+		} catch(Exception e) {
+			return false;
+		}
+	}
 	/**
 	 * Sort By Type
 	 * 
@@ -159,13 +170,6 @@ public class Errors implements Interfaces.IPublic, Interfaces.ICollection {
 		BasicModels.Error i = content.get(index);
 		content.remove(index);
 		return i;
-	}
-	public boolean add(BasicModels.Error item) {
-		if(item == null) {
-			return false;
-		}
-		content.add(item);
-		return true;
 	}
 	public void delete(BasicEnums.ErrorType type) {
 		int index = this.indexOf(type);

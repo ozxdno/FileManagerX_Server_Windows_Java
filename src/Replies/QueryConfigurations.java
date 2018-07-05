@@ -147,10 +147,7 @@ public class QueryConfigurations extends Comman implements Interfaces.IReplies {
 	public String output() {
 		BasicModels.Config c = new BasicModels.Config();
 		c.setField(this.getClass().getSimpleName());
-		c.addToBottom(this.isOK());
-		c.addToBottom(this.getUserIndex());
-		c.addToBottom(this.getPassword());
-		c.addToBottom(this.getFailedReason());
+		c.addToBottom(new BasicModels.Config(super.output()));
 		c.addToBottom(this.Next_FileIndex);
 		c.addToBottom(this.Next_MachineIndex);
 		c.addToBottom(this.Next_UserIndex);
@@ -223,14 +220,6 @@ public class QueryConfigurations extends Comman implements Interfaces.IReplies {
 		if(!this.isOK()) {
 			return false;
 		}
-		
-		Globals.Configurations.Next_FileIndex = this.Next_FileIndex;
-		Globals.Configurations.Next_MachineIndex = this.Next_MachineIndex;
-		Globals.Configurations.Next_UserIndex = this.Next_UserIndex;
-		Globals.Configurations.Next_DepotIndex = this.Next_DepotIndex;
-		Globals.Configurations.Next_DataBaseIndex = this.Next_DataBaseIndex;
-		Globals.Configurations.Server_MachineIndex = this.Server_MachineIndex;
-		Globals.Configurations.Server_UserIndex = this.Server_UserIndex;
 		
 		return true;
 	}

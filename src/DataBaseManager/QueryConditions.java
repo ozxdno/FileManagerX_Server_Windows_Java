@@ -109,6 +109,17 @@ public class QueryConditions implements Interfaces.IPublic, Interfaces.ICollecti
 	public int size() {
 		return content.size();
 	}
+	public boolean add(Object item) {
+		if(item == null) {
+			return false;
+		}
+		try {
+			this.content.add((QueryCondition)item);
+			return true;
+		} catch(Exception e) {
+			return false;
+		}
+	}
 	/**
 	 * Sort By ItemName
 	 * 
@@ -186,13 +197,6 @@ public class QueryConditions implements Interfaces.IPublic, Interfaces.ICollecti
 		QueryCondition i = content.get(index);
 		content.remove(index);
 		return i;
-	}
-	public boolean add(QueryCondition item) {
-		if(item == null) {
-			return false;
-		}
-		content.add(item);
-		return true;
 	}
 	public void delete(String itemName) {
 		int index = this.indexOf(itemName);

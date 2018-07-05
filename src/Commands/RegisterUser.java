@@ -61,7 +61,13 @@ public class RegisterUser extends Comman implements Interfaces.ICommands {
 		return this.output();
 	}
 	public String output() {
-		return super.output(this.getClass().getSimpleName()) + "|" + this.invitationCode + "|" + this.user.output();
+		BasicModels.Config c = new BasicModels.Config();
+		c.setField(this.getClass().getSimpleName());
+		c.addToBottom(new BasicModels.Config(super.output()));
+		c.addToBottom(this.invitationCode);
+		c.addToBottom(new BasicModels.Config(this.user.output()));
+		
+		return c.output();
 	}
 	public String input(String in) {
 		in = super.input(in);
@@ -92,6 +98,12 @@ public class RegisterUser extends Comman implements Interfaces.ICommands {
 	
 	public boolean execute() {
 		if(!super.isConnected()) {
+			this.reply();
+			return false;
+		}
+		if(!Globals.Configurations.IsServer) {
+			this.getReply().setFailedReason("This Machine is Not a Server, RegisterUser Failed");
+			this.getReply().setOK(false);
 			this.reply();
 			return false;
 		}
@@ -137,16 +149,15 @@ public class RegisterUser extends Comman implements Interfaces.ICommands {
 		}
 		
 		Globals.Datas.DBManager.removeInvitation(i);
-		this.setUserIndexAndPassword();
 		this.getConnection().setUser(user);
 		this.reply();
 		return true;
 	}
 	public void reply() {
+		this.setBasicMessagePackageToReply();
 		this.getConnection().setSendString(this.getReply().output());
 		this.getConnection().setSendLength(this.getConnection().getSendString().length());
 		this.getConnection().setContinueSendString();
-		this.getConnection().notify();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

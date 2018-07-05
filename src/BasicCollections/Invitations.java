@@ -93,6 +93,17 @@ public class Invitations implements Interfaces.IPublic, Interfaces.ICollection {
 	public int size() {
 		return content.size();
 	}
+	public boolean add(Object item) {
+		if(item == null) {
+			return false;
+		}
+		try {
+			this.content.add((BasicModels.Invitation)item);
+			return true;
+		} catch(Exception e) {
+			return false;
+		}
+	}
 	/**
 	 * Sort By Code
 	 * 
@@ -170,13 +181,6 @@ public class Invitations implements Interfaces.IPublic, Interfaces.ICollection {
 		BasicModels.Invitation i = content.get(index);
 		content.remove(index);
 		return i;
-	}
-	public boolean add(BasicModels.Invitation item) {
-		if(item == null) {
-			return false;
-		}
-		content.add(item);
-		return true;
 	}
 	public void delete(String code) {
 		int index = this.indexOf(code);

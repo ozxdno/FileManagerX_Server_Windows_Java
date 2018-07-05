@@ -36,6 +36,8 @@ public class CFGFile {
 		
 		Globals.Configurations.StartType = type;
 		Globals.Configurations.IsServer = type.equals(BasicEnums.StartType.Server);
+		Globals.Configurations.IsDepot = type.equals(BasicEnums.StartType.Depot);
+		Globals.Configurations.IsClient = type.equals(BasicEnums.StartType.Client);
 		
 		if(type.equals(BasicEnums.StartType.Server)) {
 			return loadServerCFG(cs);
@@ -799,6 +801,63 @@ public class CFGFile {
 	
 	private final static boolean loadDepotCFG(BasicCollections.Configs cs) {
 		
+		// Configurations
+		// All the index you not set will be preset to 0.
+		// You should not change it.
+		// This_MachineIndex equals to Server_MachineIndex
+		// This_UserIndex equals to Server_UserIndex
+		// if you set not same value, the process will exit.
+		// if you set wrong value, it will copy which is right.
+		if(true) {
+			try {
+				Globals.Configurations.Next_MachineIndex = cs.fetch("Next_MachineIndex").getLong();
+			}catch(Exception e) {
+				Globals.Configurations.Next_MachineIndex = 0;
+			}
+			try {
+				Globals.Configurations.Next_DepotIndex = cs.fetch("Next_DepotIndex").getLong();
+			}catch(Exception e) {
+				Globals.Configurations.Next_DepotIndex = 0;
+			}
+			try {
+				Globals.Configurations.Next_DataBaseIndex = cs.fetch("Next_DataBaseIndex").getLong();
+			}catch(Exception e) {
+				Globals.Configurations.Next_DataBaseIndex = 0;
+			}
+			try {
+				Globals.Configurations.Next_FileIndex = cs.fetch("Next_FileIndex").getLong();
+			}catch(Exception e) {
+				Globals.Configurations.Next_FileIndex = 0;
+			}
+			try {
+				Globals.Configurations.Next_UserIndex = cs.fetch("Next_UserIndex").getLong();
+			}catch(Exception e) {
+				Globals.Configurations.Next_UserIndex = 0;
+			}
+			
+			try {
+				Globals.Configurations.This_MachineIndex = cs.fetch("This_MachineIndex").getLong();
+			}catch(Exception e) {
+				Globals.Configurations.This_MachineIndex = 0;
+			}
+			try {
+				Globals.Configurations.This_UserIndex = cs.fetch("This_UserIndex").getLong();
+			}catch(Exception e) {
+				Globals.Configurations.This_UserIndex = 0;
+			}
+			
+			try {
+				Globals.Configurations.Server_MachineIndex = cs.fetch("Server_MachineIndex").getLong();
+			}catch(Exception e) {
+				Globals.Configurations.Server_MachineIndex = 0;
+			}
+			try {
+				Globals.Configurations.Server_UserIndex = cs.fetch("Server_UserIndex").getLong();
+			}catch(Exception e) {
+				Globals.Configurations.Server_UserIndex = 0;
+			}
+		}
+		
 		// Prepare Word
 		// SWRE contains the full process of:
 		// send,
@@ -820,6 +879,15 @@ public class CFGFile {
 		// You cannot change: ServerMachineIP, ServerMachinePort
 		if(true) {
 			BasicModels.MachineInfo machine = new BasicModels.MachineInfo();
+			machine.setIndex(Globals.Configurations.Server_MachineIndex);
+			
+			c = cs.fetch("ServerMachineIndex");
+			if(c != null) {
+				long idx = c.getLong();
+				if(c.getIsOK()) {
+					machine.setIndex(idx);
+				}
+			}
 			
 			c = cs.fetch("ServerMachineIP");
 			if(c == null) {
@@ -845,6 +913,10 @@ public class CFGFile {
 			}
 			machine.setPort(port);
 			
+			if(machine.getIndex() != Globals.Configurations.Server_MachineIndex) {
+				BasicEnums.ErrorType.WRONG_CFG_CONTENT.register("ServerMachineIndex Not Equals to Server_MachineIndex");
+				return false;
+			}
 			Globals.Datas.ServerMachine.copyReference(machine);
 		}
 		
@@ -855,11 +927,18 @@ public class CFGFile {
 		// all items of This Machine Info have default values.
 		if(true) {
 			BasicModels.MachineInfo machine = Factories.DefaultFactory.createDefaultMachineInfo();
+			machine.setIndex(Globals.Configurations.This_MachineIndex);
+			
 			try {
-				long idx = cs.fetch("MachineIndex").getLong();
-				machine.setIndex(idx);
+				c = cs.fetch("MachineIndex");
+				if(c != null) {
+					long idx = c.getLong();
+					if(c.getIsOK()) {
+						machine.setIndex(idx);
+					}
+				}
 			}catch(Exception e) {
-				machine.setIndex(0);
+				;
 			}
 			try {
 				java.lang.String name = cs.fetch("MachineName").getValue();
@@ -886,6 +965,9 @@ public class CFGFile {
 				;
 			}
 			
+			if(machine.getIndex() != Globals.Configurations.This_MachineIndex) {
+				BasicEnums.ErrorType.WRONG_CFG_CONTENT.register("MachineIndex Not Equals to This_MachineIndex");
+			}
 			Globals.Datas.ThisMachine.copyReference(machine);
 		}
 		
@@ -913,6 +995,7 @@ public class CFGFile {
 			}
 			
 			Globals.Datas.ThisUser.copyReference(user);
+			Globals.Datas.ThisUser.setIndex(Globals.Configurations.This_UserIndex);
 		}
 		
 		// Build ServerConnection
@@ -930,7 +1013,6 @@ public class CFGFile {
 			// to get right user index.
 			Commands.LoginUser lu = new Commands.LoginUser();
 			lu.setLoginName(Globals.Datas.ThisUser.getLoginName());
-			lu.setPassword(Globals.Datas.ThisUser.getPassword());
 			Replies.LoginUser replu = (Replies.LoginUser)swre.execute(lu.output());
 			if(replu == null) { return false; }
 			if(!replu.isOK()) {
@@ -938,11 +1020,10 @@ public class CFGFile {
 				return false;
 			}
 			
-			Globals.Configurations.This_UserIndex = replu.getUserIndex();
-			Globals.Datas.ThisUser.setIndex(replu.getUserIndex());
+			Globals.Configurations.This_UserIndex = replu.getBasicMessagePackage().getSourUserIndex();
+			Globals.Datas.ThisUser.setIndex(replu.getBasicMessagePackage().getSourUserIndex());
 			
-			// QueryConfigurations
-			// to get ServerMachineIndex and ServerUserIndex
+			// QueryConfigurations[To Get Server Index]
 			Commands.QueryConfigurations qcfg = new Commands.QueryConfigurations();
 			Replies.QueryConfigurations repqcfg = (Replies.QueryConfigurations)swre.execute(qcfg.output());
 			if(repqcfg == null) { return false; }
@@ -950,6 +1031,10 @@ public class CFGFile {
 				BasicEnums.ErrorType.EXECUTE_COMMAND_FAILED.register("QueryConfigurations Failed");
 				return false;
 			}
+			Globals.Configurations.Server_MachineIndex = repqcfg.getServer_MachineIndex();
+			Globals.Configurations.Server_UserIndex = repqcfg.getServer_UserIndex();
+			Globals.Datas.ServerMachine.setIndex(repqcfg.getServer_MachineIndex());
+			Globals.Datas.ServerUser.setIndex(repqcfg.getServer_UserIndex());
 			
 			// QueryUser[This]
 			// to get self info
@@ -978,27 +1063,17 @@ public class CFGFile {
 			Globals.Datas.ServerUser.copyReference(repqsu.getUser());
 			Globals.Configurations.Server_UserIndex = repqsu.getUser().getIndex();
 			
-			// QueryMachine[This] or UpdateMachine[This]
-			Commands.QueryMachine qtm = new Commands.QueryMachine();
-			dbqcs.stringToThis("[&] Index = " + Globals.Datas.ThisMachine.getIndex());
-			qtm.setQueryConditions(dbqcs);
-			Replies.QueryMachine repqtm = (Replies.QueryMachine)swre.execute(qtm.output());
-			if(repqtm == null) { return false; }
-			if(!repqtm.isOK()) {
-				Commands.UpdateMachine utm = new Commands.UpdateMachine();
-				utm.setMachineInfo(Globals.Datas.ThisMachine);
-				Replies.UpdateMachine reputm = (Replies.UpdateMachine)swre.execute(utm.output());
-				if(reputm == null) { return false; }
-				if(!reputm.isOK()) {
-					BasicEnums.ErrorType.EXECUTE_COMMAND_FAILED.register("QueryMachine and UpdateMachine[This] Failed");
-					return false;
-				}
-				Globals.Datas.ThisMachine.copyReference(reputm.getMachineInfo());
-				Globals.Configurations.This_MachineIndex = Globals.Datas.ThisMachine.getIndex();
-			} else {
-				Globals.Datas.ThisMachine.copyReference(repqtm.getMachineInfo());
-				Globals.Configurations.This_MachineIndex = Globals.Datas.ThisMachine.getIndex();
+			// UpdateMachine[This]
+			Commands.UpdateMachine utm = new Commands.UpdateMachine();
+			utm.setMachineInfo(Globals.Datas.ThisMachine);
+			Replies.UpdateMachine reputm = (Replies.UpdateMachine)swre.execute(utm.output());
+			if(reputm == null) { return false; }
+			if(!reputm.isOK()) {
+				BasicEnums.ErrorType.EXECUTE_COMMAND_FAILED.register("QueryMachine and UpdateMachine[This] Failed");
+				return false;
 			}
+			Globals.Datas.ThisMachine.copyReference(reputm.getMachineInfo());
+			Globals.Configurations.This_MachineIndex = Globals.Datas.ThisMachine.getIndex();
 			
 			// QueryMachine[Server]
 			Commands.QueryMachine qsm = new Commands.QueryMachine();
@@ -1013,13 +1088,12 @@ public class CFGFile {
 			Globals.Datas.ServerMachine.copyReference(repqsm.getMachineInfo());
 			Globals.Configurations.Server_MachineIndex = Globals.Datas.ServerMachine.getIndex();
 			
-			// QueryConfigurations
-			// to get ServerMachineIndex and ServerUserIndex
-			qcfg = new Commands.QueryConfigurations();
-			repqcfg = (Replies.QueryConfigurations)swre.execute(qcfg.output());
-			if(repqcfg == null) { return false; }
-			if(!repqcfg.isOK()) {
-				BasicEnums.ErrorType.EXECUTE_COMMAND_FAILED.register("QueryConfigurations Failed");
+			// LoginMachine
+			Commands.LoginMachine lm = new Commands.LoginMachine();
+			Replies.LoginMachine replm = (Replies.LoginMachine)swre.execute(lm.output());
+			if(replm == null) { return false; }
+			if(!replm.isOK()) {
+				BasicEnums.ErrorType.EXECUTE_COMMAND_FAILED.register("LoginMachine Failed");
 				return false;
 			}
 		}
@@ -1135,16 +1209,6 @@ public class CFGFile {
 				break;
 			}
 			
-			// QueryConfigurations
-			// to get ServerMachineIndex and ServerUserIndex
-			Commands.QueryConfigurations qcfg = new Commands.QueryConfigurations();
-			Replies.QueryConfigurations repqcfg = (Replies.QueryConfigurations)swre.execute(qcfg.output());
-			if(repqcfg == null) { return false; }
-			if(!repqcfg.isOK()) {
-				BasicEnums.ErrorType.EXECUTE_COMMAND_FAILED.register("QueryConfigurations Failed");
-				return false;
-			}
-			
 			// Build Depot and DataBase
 			BasicModels.DepotInfo depotInfo = Factories.DefaultFactory.createDefaultDepotInfo();
 			BasicModels.DataBaseInfo dbInfo = depotInfo.getDBInfo();
@@ -1192,7 +1256,18 @@ public class CFGFile {
 			} catch(Exception e) {
 				continue;
 			}
-		
+			
+			// QueryConfigurations
+			Commands.QueryConfigurations qcfg = new Commands.QueryConfigurations();
+			Replies.QueryConfigurations repqcfg = (Replies.QueryConfigurations)swre.execute(qcfg.output());
+			if(repqcfg == null) { return false; }
+			if(!repqcfg.isOK()) {
+				BasicEnums.ErrorType.EXECUTE_COMMAND_FAILED.register("QueryConfigurations Failed");
+				return false;
+			}
+			
+			depotInfo.setIndex(repqcfg.getNext_DepotIndex() + 1);
+			dbInfo.setIndex(repqcfg.getNext_DataBaseIndex() + 1);
 			depotInfo.setDBInfo(dbInfo);
 			dbInfo.setDepotInfo(depotInfo);
 			depotInfo.setDBIndex();
@@ -1345,6 +1420,32 @@ public class CFGFile {
 		
 		line = "";
 		txt.getContent().add(line);
+		line = "/*************************************************** All Indexes *****************************************************/";
+		txt.getContent().add(line);
+		line = "";
+		txt.getContent().add(line);
+		
+		line = "Next_FileIndex = " + java.lang.String.valueOf(Globals.Configurations.Next_FileIndex);
+		txt.getContent().add(line);
+		line = "Next_UserIndex = " + java.lang.String.valueOf(Globals.Configurations.Next_UserIndex);
+		txt.getContent().add(line);
+		line = "Next_MachineIndex = " + java.lang.String.valueOf(Globals.Configurations.Next_MachineIndex);
+		txt.getContent().add(line);
+		line = "Next_DepotIndex = " + java.lang.String.valueOf(Globals.Configurations.Next_DepotIndex);
+		txt.getContent().add(line);
+		line = "Next_DataBaseIndex = " + java.lang.String.valueOf(Globals.Configurations.Next_DataBaseIndex);
+		txt.getContent().add(line);
+		line = "This_MachineIndex = " + java.lang.String.valueOf(Globals.Configurations.This_MachineIndex);
+		txt.getContent().add(line);
+		line = "This_UserIndex = " + java.lang.String.valueOf(Globals.Configurations.This_UserIndex);
+		txt.getContent().add(line);
+		line = "Server_MachineIndex = " + java.lang.String.valueOf(Globals.Configurations.Server_MachineIndex);
+		txt.getContent().add(line);
+		line = "Server_UserIndex = " + java.lang.String.valueOf(Globals.Configurations.Server_UserIndex);
+		txt.getContent().add(line);
+		
+		line = "";
+		txt.getContent().add(line);
 		line = "/************************************************** Machine Info ***************************************************/";
 		txt.getContent().add(line);
 		line = "";
@@ -1474,8 +1575,6 @@ public class CFGFile {
 		qc.setValue("" + Globals.Configurations.This_MachineIndex);
 		
 		Commands.RemoveDepots rd = new Commands.RemoveDepots();
-		rd.setUserIndex(Globals.Configurations.This_UserIndex);
-		rd.setPassword(Globals.Datas.ThisUser.getPassword());
 		rd.setQueryCondition(qc);
 		Globals.Datas.ServerConnection.setSendString(rd.output());
 		Globals.Datas.ServerConnection.setContinueSendString();
@@ -1512,8 +1611,6 @@ public class CFGFile {
 		
 		// RemoveDataBases
 		Commands.RemoveDataBases rdb = new Commands.RemoveDataBases();
-		rdb.setUserIndex(Globals.Configurations.This_UserIndex);
-		rdb.setPassword(Globals.Datas.ThisUser.getPassword());
 		rdb.setQueryCondition(qc);
 		Globals.Datas.ServerConnection.setSendString(rdb.output());
 		Globals.Datas.ServerConnection.setContinueSendString();
@@ -1583,6 +1680,32 @@ public class CFGFile {
 			line = "DataBase = " + dbm.getDBInfo().getName() + "|" + dbm.getDBInfo().getType().toString() + "|" + dbm.getDBInfo().getUrl();
 			txt.getContent().add(line);
 		}
+		
+		line = "";
+		txt.getContent().add(line);
+		line = "/*************************************************** All Indexes *****************************************************/";
+		txt.getContent().add(line);
+		line = "";
+		txt.getContent().add(line);
+		
+		line = "Next_FileIndex = " + java.lang.String.valueOf(Globals.Configurations.Next_FileIndex);
+		txt.getContent().add(line);
+		line = "Next_UserIndex = " + java.lang.String.valueOf(Globals.Configurations.Next_UserIndex);
+		txt.getContent().add(line);
+		line = "Next_MachineIndex = " + java.lang.String.valueOf(Globals.Configurations.Next_MachineIndex);
+		txt.getContent().add(line);
+		line = "Next_DepotIndex = " + java.lang.String.valueOf(Globals.Configurations.Next_DepotIndex);
+		txt.getContent().add(line);
+		line = "Next_DataBaseIndex = " + java.lang.String.valueOf(Globals.Configurations.Next_DataBaseIndex);
+		txt.getContent().add(line);
+		line = "This_MachineIndex = " + java.lang.String.valueOf(Globals.Configurations.This_MachineIndex);
+		txt.getContent().add(line);
+		line = "This_UserIndex = " + java.lang.String.valueOf(Globals.Configurations.This_UserIndex);
+		txt.getContent().add(line);
+		line = "Server_MachineIndex = " + java.lang.String.valueOf(Globals.Configurations.Server_MachineIndex);
+		txt.getContent().add(line);
+		line = "Server_UserIndex = " + java.lang.String.valueOf(Globals.Configurations.Server_UserIndex);
+		txt.getContent().add(line);
 		
 		line = "";
 		txt.getContent().add(line);

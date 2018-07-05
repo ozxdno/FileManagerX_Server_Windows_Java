@@ -2,14 +2,10 @@ package Interfaces;
 
 import java.util.List;
 
-public interface IDBManagers {
+public interface IDBManagers extends ICollection {
 
 	public boolean setContent(List<Interfaces.IDBManager> content);
 	public List<Interfaces.IDBManager> getContent();
-	
-	public void clear();
-	public int size();
-	public boolean add(Interfaces.IDBManager item);
 	
 	public int indexOfDataBaseName(String dbName);
 	public Interfaces.IDBManager searchDataBaseName(String dbName);

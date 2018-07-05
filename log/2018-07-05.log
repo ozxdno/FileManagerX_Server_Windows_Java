@@ -1,0 +1,13 @@
+11:45:50 = BUILD_SOCKET_FAILED|1530762350709|Error|Build Socket Failed|setSocket[ClientConnection.java:200]<-loadDepotCFG[CFGFile.java:1006]<-loadCFG[CFGFile.java:46]<-run[MainProcess.java:71]|java.net.ConnectException: Connection refused: connect
+13:39:40 = RECEIVE_OVER_TIME|1530769180888|Error|Too long to Receive Info|execute[SWRE.java:90]<-execute[SWRE.java:105]<-execute[FSWRE.java:56]<-actionPerformed[MainForm.java:244]|You can check Your net make sure you and Server in a same LAN
+13:42:13 = CLIENT_CONNECTION_RUNNING_FAILED|1530769333144|Error|Error occurs in Client Connection Running|run[ClientConnection.java:475]|java.net.SocketException: Connection reset
+13:42:13 = COMMUNICATOR_CONNECTION_CLOSED|1530769333424|Error|Connection is Closed|run[MainProcess.java:147]|Server[Remote Machine] Closed
+13:45:46 = COMMUNICATOR_CONNECTION_CLOSED|1530769546341|Error|Connection is Closed|run[MainProcess.java:147]|Server[Remote Machine] Closed
+13:48:12 = RECEIVE_OVER_TIME|1530769692091|Error|Too long to Receive Info|execute[SWRE.java:90]<-execute[SWRE.java:105]<-execute[FSWRE.java:56]<-actionPerformed[MainForm.java:244]|You can check Your net make sure you and Server in a same LAN
+13:50:12 = COMMUNICATOR_CONNECTION_CLOSED|1530769812543|Error|Connection is Closed|run[MainProcess.java:147]|Server[Remote Machine] Closed
+13:54:04 = RECEIVE_OVER_TIME|1530770044991|Error|Too long to Receive Info|execute[SWRE.java:90]<-execute[SWRE.java:105]<-execute[FSWRE.java:56]<-actionPerformed[MainForm.java:244]|You can check Your net make sure you and Server in a same LAN
+13:59:46 = CLIENT_CONNECTION_RUNNING_FAILED|1530770386922|Error|Error occurs in Client Connection Running|run[ClientConnection.java:475]|java.net.SocketException: Connection reset
+13:59:47 = COMMUNICATOR_CONNECTION_CLOSED|1530770387511|Error|Connection is Closed|run[MainProcess.java:147]|Server[Remote Machine] Closed
+14:10:48 = RECEIVE_OVER_TIME|1530771048690|Error|Too long to Receive Info|execute[SWRE.java:90]<-execute[SWRE.java:105]<-loginUser[GAPManager.java:152]<-loginUser[GAPManager.java:131]<-createRunningClientConnection[CommunicatorFactory.java:111]<-setConnection[FSWRE.java:29]<-actionPerformed[MainForm.java:244]|You can check Your net make sure you and Server in a same LAN
+14:10:49 = COMMUNICATOR_CONNECTION_CLOSED|1530771049344|Error|Connection is Closed|run[MainProcess.java:147]|Server[Remote Machine] Closed
+14:45:36 = BUILD_SOCKET_FAILED|1530773136947|Error|Build Socket Failed|setSocket[ClientConnection.java:200]<-loadDepotCFG[CFGFile.java:1006]<-loadCFG[CFGFile.java:46]<-run[MainProcess.java:71]|java.net.ConnectException: Connection refused: connect

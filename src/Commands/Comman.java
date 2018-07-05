@@ -4,57 +4,28 @@ public class Comman implements Interfaces.ICommands {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	private long userIndex;
-	private String password;
-	private long machineIndex;
-	private long depotIndex;
-	private long dbIndex;
-	
+	private Interfaces.IBasicMessagePackage bmp;
 	private Interfaces.IConnection connection;
 	private Interfaces.IReplies reply;
-	private BasicModels.User user;
-	private BasicModels.MachineInfo machine;
-	private BasicModels.DepotInfo depot;
-	private BasicModels.DataBaseInfo database;
+	
+	private BasicModels.User suser;
+	private BasicModels.MachineInfo smachine;
+	private BasicModels.DepotInfo sdepot;
+	private BasicModels.DataBaseInfo sdatabase;
+	private BasicModels.User duser;
+	private BasicModels.MachineInfo dmachine;
+	private BasicModels.DepotInfo ddepot;
+	private BasicModels.DataBaseInfo ddatabase;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public boolean setUserIndex(long userIndex) {
-		if(userIndex <= 0) {
+	public boolean setBasicMessagePackage(Interfaces.IBasicMessagePackage bmp) {
+		if(bmp == null) {
 			return false;
 		}
-		this.userIndex = userIndex;
+		this.bmp = bmp;
 		return true;
 	}
-	public boolean setPassword(String password) {
-		if(password == null) {
-			return false;
-		}
-		this.password = password;
-		return true;
-	}
-	public boolean setMachineIndex(long machineIndex) {
-		if(machineIndex <= 0) {
-			return false;
-		}
-		this.machineIndex = machineIndex;
-		return true;
-	}
-	public boolean setDepotIndex(long depotIndex) {
-		if(depotIndex <= 0) {
-			return false;
-		}
-		this.depotIndex = depotIndex;
-		return true;
-	}
-	public boolean setDataBaseIndex(long dbIndex) {
-		if(dbIndex <= 0) {
-			return false;
-		}
-		this.dbIndex = dbIndex;
-		return true;
-	}
-	
 	public boolean setConnection(Interfaces.IConnection connection) {
 		if(connection == null) {
 			return false;
@@ -69,46 +40,45 @@ public class Comman implements Interfaces.ICommands {
 		this.reply = reply;
 		return true;
 	}
-	public void setUserIndexAndPassword() {
-		this.reply.setUserIndex(this.userIndex);
-		this.reply.setPassword(this.password);
+	public void setBasicMessagePackageToReply() {
+		this.reply.getBasicMessagePackage().copyValue(this.bmp);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public long getUserIndex() {
-		return this.userIndex;
+	public Interfaces.IBasicMessagePackage getBasicMessagePackage() {
+		return this.bmp;
 	}
-	public String getPassword() {
-		return this.password;
-	}
-	public long getMachineIndex() {
-		return this.machineIndex;
-	}
-	public long getDepotIndex() {
-		return this.depotIndex;
-	}
-	public long getDataBaseIndex() {
-		return this.dbIndex;
-	}
-	
 	public Interfaces.IConnection getConnection() {
 		return this.connection;
 	}
 	public Interfaces.IReplies getReply() {
 		return this.reply;
 	}
-	public BasicModels.User getUser() {
-		return this.user;
+	
+	public BasicModels.User getSourUser() {
+		return this.suser;
 	}
-	public BasicModels.MachineInfo getMachineInfo() {
-		return this.machine;
+	public BasicModels.MachineInfo getSourMachineInfo() {
+		return this.smachine;
 	}
-	public BasicModels.DepotInfo getDepotInfo() {
-		return this.depot;
+	public BasicModels.DepotInfo getSourDepotInfo() {
+		return this.sdepot;
 	}
-	public BasicModels.DataBaseInfo getDataBaseInfo() {
-		return this.database;
+	public BasicModels.DataBaseInfo getSourDataBaseInfo() {
+		return this.sdatabase;
+	}
+	public BasicModels.User getDestUser() {
+		return this.duser;
+	}
+	public BasicModels.MachineInfo getDestMachineInfo() {
+		return this.dmachine;
+	}
+	public BasicModels.DepotInfo getDestDepotInfo() {
+		return this.ddepot;
+	}
+	public BasicModels.DataBaseInfo getDestDataBaseInfo() {
+		return this.ddatabase;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -117,17 +87,17 @@ public class Comman implements Interfaces.ICommands {
 		initThis();
 	}
 	private void initThis() {
-		this.userIndex = Globals.Datas.ThisUser.getIndex();
-		this.password = Globals.Datas.ThisUser.getPassword();
-		this.machineIndex = Globals.Configurations.This_MachineIndex;
-		this.depotIndex = -1;
-		this.dbIndex = -1;
+		this.bmp = Factories.CommunicatorFactory.createBasicMessagePackage();
 		this.reply = new Replies.Comman();
 		this.connection = null;
-		this.user = null;
-		this.machine = null;
-		this.depot = null;
-		this.database = null;
+		this.suser = null;
+		this.smachine = null;
+		this.sdepot = null;
+		this.sdatabase = null;
+		this.duser = null;
+		this.dmachine = null;
+		this.ddepot = null;
+		this.ddatabase = null;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -141,130 +111,100 @@ public class Comman implements Interfaces.ICommands {
 	public String output() {
 		BasicModels.Config c = new BasicModels.Config();
 		c.setField(this.getClass().getSimpleName());
-		c.addToBottom(this.userIndex);
-		c.addToBottom(this.password);
-		c.addToBottom(this.machineIndex);
-		c.addToBottom(this.depotIndex);
-		c.addToBottom(this.dbIndex);
+		c.addToBottom(new BasicModels.Config(this.bmp.output()));
 		
 		return c.output();
 	}
 	public String output(String cmdName) {
 		BasicModels.Config c = new BasicModels.Config();
 		c.setField(cmdName);
-		c.addToBottom(this.userIndex);
-		c.addToBottom(this.password);
-		c.addToBottom(this.machineIndex);
-		c.addToBottom(this.depotIndex);
-		c.addToBottom(this.dbIndex);
+		c.addToBottom(new BasicModels.Config(this.bmp.output()));
 		
 		return c.output();
 	}
 	public String input(String in) {
-		BasicModels.Config c = new BasicModels.Config(in);
-		this.userIndex = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		this.password = c.fetchFirstString();
-		if(!c.getIsOK()) { return null; }
-		this.machineIndex = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		this.depotIndex = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		this.dbIndex = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		
-		return c.output();
+		return this.bmp.input(in);
 	}
 	public void copyReference(Object o) {
 		Comman c = (Comman)o;
-		this.userIndex = c.userIndex;
-		this.password = c.password;
-		this.machineIndex = c.machineIndex;
-		this.depotIndex = c.depotIndex;
-		this.dbIndex = c.dbIndex;
+		this.bmp = c.bmp;
 		this.reply = c.reply;
 		this.connection = c.connection;
 	}
 	public void copyValue(Object o) {
 		Comman c = (Comman)o;
-		this.userIndex = c.userIndex;
-		this.password = new String(c.password);
-		this.machineIndex = c.machineIndex;
-		this.depotIndex = c.depotIndex;
-		this.dbIndex = c.dbIndex;
+		this.bmp.copyValue(c.bmp);
 		this.reply.copyValue(c.reply);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean execute() {
-		if(!this.isConnected()) {
+		if(!this.isConnected_Login_UserIndexRigth_PasswordRight()) {
+			this.reply();
 			return false;
 		}
 		
-		return Globals.Configurations.StartType.equals(BasicEnums.StartType.Server) ?
-				this.executeInServer() :
-				this.executeInDepot();
+		if(this.isArriveTargetMachine()) {
+			this.reply();
+			return this.getReply().isOK();
+		}
+		else {
+			Interfaces.ICommandConnector cc = Factories.CommunicatorFactory.createCommandConnector();
+			cc.setIsExecuteCommand(true);
+			cc.setDestMachineIndex(this.bmp.getDestMachineIndex());
+			cc.setSendCommand(this.output());
+			cc.setSourConnection(this.getConnection());
+			Replies.Comman rep = (Replies.Comman)cc.execute();
+			if(rep == null) { 
+				this.replyNULL();
+				return false;
+			}
+			this.setReply(rep);
+			this.reply();
+			return true;
+		}
 	}
 	public void reply() {
-		this.setUserIndexAndPassword();
+		this.setBasicMessagePackageToReply();
 		this.connection.setSendString(this.reply.output());
 		this.connection.setSendLength(this.getConnection().getSendString().length());
 		this.connection.setContinueSendString();
 	}
 	public void replyTotal(Interfaces.ICommunicatorSendTotal sendTotal) {
-		this.setUserIndexAndPassword();
+		this.setBasicMessagePackageToReply();
 		this.connection.setSendString(sendTotal.output());
 		this.connection.setSendLength(this.getConnection().getSendString().length());
 		this.connection.setContinueSendString();
 	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	private boolean executeInServer() {
-		if(!this.isLogin()) {
-			return false;
-		}
-		if(!this.isUserIndexRight()) {
-			return false;
-		}
-		if(!this.isPasswordRight()) {
-			return false;
-		}
-		if(!this.isMechineIndexRight()) {
-			return false;
-		}
-		if(!this.isDepotIndexRight()) {
-			return false;
-		}
-		if(!this.isDataBaseIndexRight()) {
-			return false;
-		}
-		return true;
-	}
-	private boolean executeInDepot() {
-		return true;
+	public void replyNULL() {
+		BasicEnums.ErrorType.EXECUTE_COMMAND_FAILED.register("The Reply from other Connection is NULL");
+		this.getReply().setOK(false);
+		this.getReply().setFailedReason("The Reply from other Connection is NULL");
+		this.reply();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public boolean isLocal() {
-		return this.machineIndex == Globals.Configurations.This_MachineIndex;
+	public boolean isArriveTargetMachine() {
+		return this.bmp.getDestMachineIndex() == Globals.Configurations.This_MachineIndex;
 	}
-	public boolean isServer() {
-		return this.machineIndex == Globals.Configurations.Server_MachineIndex;
+	public boolean isArriveSourMachine() {
+		return this.bmp.getSourMachineIndex() == Globals.Configurations.This_MachineIndex;
 	}
-	public boolean isInLAN() {
-		if(Globals.Configurations.Server_MachineIndex == Globals.Configurations.This_MachineIndex) {
-			return true;
-		}
-		for(int i=0; i<Globals.Datas.LANMachineIndexes.size(); i++) {
-			if(this.machineIndex == Globals.Datas.LANMachineIndexes.get(i)) {
-				return true;
-			}
-		}
-		return false;
+	public boolean isArriveDestMachine() {
+		return this.bmp.getDestMachineIndex() == Globals.Configurations.This_MachineIndex;
 	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public boolean isPriorityEnough(BasicEnums.UserPriority p) {
+		return this.connection.getUser().getPriority().isEnough(p);
+	}
+	public boolean isLevelEnough(BasicEnums.UserLevel level) {
+		return this.connection.getUser().getLevel().isEnough(level);
+	}
+	
 	public boolean isConnected() {
 		if(connection == null || !connection.isRunning()) {
 			reply.setOK(false);
@@ -276,105 +216,411 @@ public class Comman implements Interfaces.ICommands {
 	public boolean isLogin() {
 		if(this.connection.getUser() == null || this.connection.getUser().getIndex() <= 0) {
 			reply.setOK(false);
-			reply.setFailedReason("No Login");
+			reply.setFailedReason("No Login User");
 			return false;
 		}
+		/*
+		if(this.connection.getClientMachineInfo() == null || this.connection.getClientMachineInfo().getIndex() <= 0) {
+			reply.setOK(false);
+			reply.setFailedReason("No Login Machine");
+			return false;
+		}
+		*/
+		
 		return true;
 	}
 	public boolean isUserIndexRight() {
-		if(this.userIndex <= 0) {
+		if(this.bmp.getSourUserIndex() <= 0) {
 			reply.setOK(false);
 			reply.setFailedReason("Wrong User Index");
 			return false;
 		}
-		if(this.connection.getUser().getIndex() != this.userIndex) {
+		if(this.connection.getUser().getIndex() != this.bmp.getSourUserIndex()) {
 			reply.setOK(false);
 			reply.setFailedReason("Wrong User Index");
-			return false;
-		}
-		return true;
-	}
-	public boolean isUserExist() {
-		DataBaseManager.QueryCondition qc = new DataBaseManager.QueryCondition();
-		qc.setItemName("Index");
-		qc.setValue(String.valueOf(this.userIndex));
-		this.user = Globals.Datas.DBManager.QueryUser(qc);
-		if(this.user == null) {
-			reply.setOK(false);
-			reply.setFailedReason("Not Exist such User in DataBase");
 			return false;
 		}
 		return true;
 	}
 	public boolean isPasswordRight() {
-		if(this.password == null || this.password.length() == 0) {
+		if(this.bmp.getPassword() == null || this.bmp.getPassword().length() == 0) {
 			reply.setOK(false);
 			reply.setFailedReason("Wrong Password");
 			return false;
 		}
-		if(!this.password.equals(this.connection.getUser().getPassword())) {
+		if(!this.bmp.getPassword().equals(this.connection.getUser().getPassword())) {
 			reply.setOK(false);
 			reply.setFailedReason("Wrong Password");
 			return false;
 		}
 		return true;
 	}
-	public boolean isMechineIndexRight() {
-		if(this.machineIndex <= 0) {
-			reply.setOK(false);
-			reply.setFailedReason("Wrong Machine Index");
+	
+	public boolean isConnected_Login_UserIndexRigth_PasswordRight() {
+		if(!this.isConnected()) {
 			return false;
 		}
-		DataBaseManager.QueryCondition qc = new DataBaseManager.QueryCondition();
-		qc.setItemName("Index");
-		qc.setValue(String.valueOf(this.machineIndex));
-		this.machine = Globals.Datas.DBManager.QueryMachineInfo(qc);
-		if(this.machine == null) {
-			reply.setOK(false);
-			reply.setFailedReason("Not Exist such Machine Index");
+		if(!this.isLogin()) {
+			return false;
+		}
+		if(!this.isUserIndexRight()) {
+			return false;
+		}
+		if(!this.isPasswordRight()) {
+			return false;
+		}
+		
+		return true;
+	}
+	public boolean isConnected_Login_UserIndexRigth_PasswordRight_PriorityEnough(BasicEnums.UserPriority p) {
+		if(!this.isConnected_Login_UserIndexRigth_PasswordRight()) {
+			return false;
+		}
+		if(!this.isPriorityEnough(p)) {
 			return false;
 		}
 		return true;
 	}
-	public boolean isDepotIndexRight() {
-		if(this.depotIndex <= 0) {
-			reply.setOK(false);
-			reply.setFailedReason("Wrong Depot Index");
+	public boolean isConnected_Login_UserIndexRigth_PasswordRight_LevelEnough(BasicEnums.UserLevel level) {
+		if(!this.isConnected_Login_UserIndexRigth_PasswordRight()) {
 			return false;
 		}
-		DataBaseManager.QueryCondition qc = new DataBaseManager.QueryCondition();
-		qc.setItemName("Index");
-		qc.setValue(String.valueOf(this.depotIndex));
-		this.depot = Globals.Datas.DBManager.QueryDepotInfo(qc);
-		if(this.depot == null) {
-			reply.setOK(false);
-			reply.setFailedReason("Not Exist such Depot Index");
+		if(!this.isLevelEnough(level)) {
 			return false;
 		}
 		return true;
 	}
-	public boolean isDataBaseIndexRight() {
-		if(this.dbIndex <= 0) {
-			reply.setOK(false);
-			reply.setFailedReason("Wrong DataBase Index");
+	public boolean isConnected_Login_UserIndexRigth_PasswordRight_PriorityEnough_LevelEnough(BasicEnums.UserPriority p, BasicEnums.UserLevel level) {
+		if(!this.isConnected_Login_UserIndexRigth_PasswordRight()) {
 			return false;
 		}
-		DataBaseManager.QueryCondition qc = new DataBaseManager.QueryCondition();
-		qc.setItemName("Index");
-		qc.setValue(String.valueOf(this.dbIndex));
-		this.database = Globals.Datas.DBManager.QueryDataBaseInfo(qc);
-		if(this.database == null) {
-			reply.setOK(false);
-			reply.setFailedReason("Not Exist such DataBase Index");
+		if(!this.isPriorityEnough(p)) {
+			return false;
+		}
+		if(!this.isLevelEnough(level)) {
 			return false;
 		}
 		return true;
 	}
-	public boolean isPriorityEnough(BasicEnums.UserPriority p) {
-		return this.connection.getUser().getPriority().isEnough(p);
+	
+	
+	public boolean isSourUserExist() {
+		if(Globals.Configurations.IsServer) {
+			BasicModels.User u = Globals.Datas.DBManager.QueryUser("[&] Index = " + this.bmp.getSourUserIndex());
+			if(u == null) {
+				reply.setOK(false);
+				reply.setFailedReason("Not Exist such User in DataBase");
+				return false;
+			} else {
+				this.suser = u;
+				return true;
+			}
+		}
+		else {
+			Interfaces.ISWRE swre = Factories.CommunicatorFactory.createSWRE();
+			
+			Commands.QueryUser cmd = new Commands.QueryUser();
+			cmd.setQueryConditions("[&] Index = " + this.bmp.getSourUserIndex());
+			Replies.QueryUser rep = (Replies.QueryUser)swre.execute(cmd.output());
+			
+			if(rep == null) {
+				reply.setOK(false);
+				reply.setFailedReason("Not Exist such User in DataBase");
+				return false;
+			}
+			if(!rep.isOK()) {
+				reply.setOK(false);
+				reply.setFailedReason(rep.getFailedReason());
+				return false;
+			}
+			
+			this.suser = rep.getUser();
+			return true;
+		}
 	}
-	public boolean isLevelEnough(BasicEnums.UserLevel level) {
-		return this.connection.getUser().getLevel().isEnough(level);
+	public boolean isSourMachineIndexExist() {
+		if(Globals.Configurations.IsServer) {
+			BasicModels.MachineInfo m = Globals.Datas.DBManager.QueryMachineInfo("[&] Index = " + this.bmp.getSourMachineIndex());
+			if(m == null) {
+				reply.setOK(false);
+				reply.setFailedReason("Not Exist such MachineIndex in DataBase");
+				return false;
+			} else {
+				this.smachine = m;
+				return true;
+			}
+		}
+		else {
+			Interfaces.ISWRE swre = Factories.CommunicatorFactory.createSWRE();
+			
+			Commands.QueryMachine cmd = new Commands.QueryMachine();
+			cmd.setQueryConditions("[&] Index = " + this.bmp.getSourMachineIndex());
+			Replies.QueryMachine rep = (Replies.QueryMachine)swre.execute(cmd.output());
+			
+			if(rep == null) {
+				reply.setOK(false);
+				reply.setFailedReason("Not Exist such MachineIndex in DataBase");
+				return false;
+			}
+			if(!rep.isOK()) {
+				reply.setOK(false);
+				reply.setFailedReason(rep.getFailedReason());
+				return false;
+			}
+			
+			this.smachine = rep.getMachineInfo();
+			return true;
+		}
+	}
+	public boolean isSourDepotIndexExist() {
+		if(Globals.Configurations.IsServer) {
+			BasicModels.DepotInfo d = Globals.Datas.DBManager.QueryDepotInfo("[&] Index = " + this.bmp.getSourDepotIndex());
+			if(d == null) {
+				reply.setOK(false);
+				reply.setFailedReason("Not Exist such DepotIndex in DataBase");
+				return false;
+			} else {
+				this.sdepot = d;
+				return true;
+			}
+		}
+		else {
+			Interfaces.ISWRE swre = Factories.CommunicatorFactory.createSWRE();
+			
+			Commands.QueryDepot cmd = new Commands.QueryDepot();
+			cmd.setQueryConditions("[&] Index = " + this.bmp.getSourDepotIndex());
+			Replies.QueryDepot rep = (Replies.QueryDepot)swre.execute(cmd.output());
+			
+			if(rep == null) {
+				reply.setOK(false);
+				reply.setFailedReason("Not Exist such DepotIndex in DataBase");
+				return false;
+			}
+			if(!rep.isOK()) {
+				reply.setOK(false);
+				reply.setFailedReason(rep.getFailedReason());
+				return false;
+			}
+			
+			this.sdepot = rep.getDepotInfo();
+			return true;
+		}
+	}
+	public boolean isSourDataBaseIndexExist() {
+		if(Globals.Configurations.IsServer) {
+			BasicModels.DataBaseInfo d = Globals.Datas.DBManager.QueryDataBaseInfo("[&] Index = " + this.bmp.getSourDataBaseIndex());
+			if(d == null) {
+				reply.setOK(false);
+				reply.setFailedReason("Not Exist such DataBaseIndex in DataBase");
+				return false;
+			} else {
+				this.sdatabase = d;
+				return true;
+			}
+		}
+		else {
+			Interfaces.ISWRE swre = Factories.CommunicatorFactory.createSWRE();
+			
+			Commands.QueryDataBase cmd = new Commands.QueryDataBase();
+			cmd.setQueryConditions("[&] Index = " + this.bmp.getSourDataBaseIndex());
+			Replies.QueryDataBase rep = (Replies.QueryDataBase)swre.execute(cmd.output());
+			
+			if(rep == null) {
+				reply.setOK(false);
+				reply.setFailedReason("Not Exist such DataBaseIndex in DataBase");
+				return false;
+			}
+			if(!rep.isOK()) {
+				reply.setOK(false);
+				reply.setFailedReason(rep.getFailedReason());
+				return false;
+			}
+			
+			this.sdatabase = rep.getDataBaseInfo();
+			return true;
+		}
+	}
+	public boolean isDestUserExist() {
+		if(Globals.Configurations.IsServer) {
+			BasicModels.User u = Globals.Datas.DBManager.QueryUser("[&] Index = " + this.bmp.getDestUserIndex());
+			if(u == null) {
+				reply.setOK(false);
+				reply.setFailedReason("Not Exist such User in DataBase");
+				return false;
+			} else {
+				this.duser = u;
+				return true;
+			}
+		}
+		else {
+			Interfaces.ISWRE swre = Factories.CommunicatorFactory.createSWRE();
+			
+			Commands.QueryUser cmd = new Commands.QueryUser();
+			cmd.setQueryConditions("[&] Index = " + this.bmp.getDestUserIndex());
+			Replies.QueryUser rep = (Replies.QueryUser)swre.execute(cmd.output());
+			
+			if(rep == null) {
+				reply.setOK(false);
+				reply.setFailedReason("Not Exist such User in DataBase");
+				return false;
+			}
+			if(!rep.isOK()) {
+				reply.setOK(false);
+				reply.setFailedReason(rep.getFailedReason());
+				return false;
+			}
+			
+			this.duser = rep.getUser();
+			return true;
+		}
+	}
+	public boolean isDestMachineIndexExist() {
+		if(Globals.Configurations.IsServer) {
+			BasicModels.MachineInfo m = Globals.Datas.DBManager.QueryMachineInfo("[&] Index = " + this.bmp.getDestMachineIndex());
+			if(m == null) {
+				reply.setOK(false);
+				reply.setFailedReason("Not Exist such MachineIndex in DataBase");
+				return false;
+			} else {
+				this.dmachine = m;
+				return true;
+			}
+		}
+		else {
+			Interfaces.ISWRE swre = Factories.CommunicatorFactory.createSWRE();
+			
+			Commands.QueryMachine cmd = new Commands.QueryMachine();
+			cmd.setQueryConditions("[&] Index = " + this.bmp.getDestMachineIndex());
+			Replies.QueryMachine rep = (Replies.QueryMachine)swre.execute(cmd.output());
+			
+			if(rep == null) {
+				reply.setOK(false);
+				reply.setFailedReason("Not Exist such MachineIndex in DataBase");
+				return false;
+			}
+			if(!rep.isOK()) {
+				reply.setOK(false);
+				reply.setFailedReason(rep.getFailedReason());
+				return false;
+			}
+			
+			this.dmachine = rep.getMachineInfo();
+			return true;
+		}
+	}
+	public boolean isDestDepotIndexExist() {
+		if(Globals.Configurations.IsServer) {
+			BasicModels.DepotInfo d = Globals.Datas.DBManager.QueryDepotInfo("[&] Index = " + this.bmp.getDestDepotIndex());
+			if(d == null) {
+				reply.setOK(false);
+				reply.setFailedReason("Not Exist such DepotIndex in DataBase");
+				return false;
+			} else {
+				this.ddepot = d;
+				return true;
+			}
+		}
+		else {
+			Interfaces.ISWRE swre = Factories.CommunicatorFactory.createSWRE();
+			
+			Commands.QueryDepot cmd = new Commands.QueryDepot();
+			cmd.setQueryConditions("[&] Index = " + this.bmp.getDestDepotIndex());
+			Replies.QueryDepot rep = (Replies.QueryDepot)swre.execute(cmd.output());
+			
+			if(rep == null) {
+				reply.setOK(false);
+				reply.setFailedReason("Not Exist such DepotIndex in DataBase");
+				return false;
+			}
+			if(!rep.isOK()) {
+				reply.setOK(false);
+				reply.setFailedReason(rep.getFailedReason());
+				return false;
+			}
+			
+			this.ddepot = rep.getDepotInfo();
+			return true;
+		}
+	}
+	public boolean isDestDataBaseIndexExist() {
+		if(Globals.Configurations.IsServer) {
+			BasicModels.DataBaseInfo d = Globals.Datas.DBManager.QueryDataBaseInfo("[&] Index = " + this.bmp.getDestDataBaseIndex());
+			if(d == null) {
+				reply.setOK(false);
+				reply.setFailedReason("Not Exist such DataBaseIndex in DataBase");
+				return false;
+			} else {
+				this.ddatabase = d;
+				return true;
+			}
+		}
+		else {
+			Interfaces.ISWRE swre = Factories.CommunicatorFactory.createSWRE();
+			
+			Commands.QueryDataBase cmd = new Commands.QueryDataBase();
+			cmd.setQueryConditions("[&] Index = " + this.bmp.getDestDataBaseIndex());
+			Replies.QueryDataBase rep = (Replies.QueryDataBase)swre.execute(cmd.output());
+			
+			if(rep == null) {
+				reply.setOK(false);
+				reply.setFailedReason("Not Exist such DataBaseIndex in DataBase");
+				return false;
+			}
+			if(!rep.isOK()) {
+				reply.setOK(false);
+				reply.setFailedReason(rep.getFailedReason());
+				return false;
+			}
+			
+			this.ddatabase = rep.getDataBaseInfo();
+			return true;
+		}
+	}
+	
+	public boolean isExistSour_MachineIndex_DepotIndex_DataBaseIndex() {
+		return this.isSourMachineIndexExist() &&
+			this.isSourDepotIndexExist() &&
+			this.isSourDataBaseIndexExist();
+	}
+	public boolean isExistSour_MachineIndex_DepotIndex() {
+		return this.isSourMachineIndexExist() &&
+			this.isSourDepotIndexExist();
+	}
+	public boolean isExistSour_MachineIndex_DataBaseIndex() {
+		return this.isSourMachineIndexExist() &&
+			this.isSourDataBaseIndexExist();
+	}
+	public boolean isExistSour_DepotIndex_DataBaseIndex() {
+		return this.isSourDepotIndexExist() &&
+			this.isSourDataBaseIndexExist();
+	}
+	
+	public boolean isExistDest_MachineIndex_DepotIndex_DataBaseIndex() {
+		return this.isDestMachineIndexExist() &&
+			this.isDestDepotIndexExist() &&
+			this.isDestDataBaseIndexExist();
+	}
+	public boolean isExistDest_MachineIndex_DepotIndex() {
+		return this.isDestMachineIndexExist() &&
+			this.isDestDepotIndexExist();
+	}
+	public boolean isExistDest_MachineIndex_DataBaseIndex() {
+		return this.isDestMachineIndexExist() &&
+			this.isDestDataBaseIndexExist();
+	}
+	public boolean isExistDest_DepotIndex_DataBaseIndex() {
+		return this.isDestDepotIndexExist() &&
+			this.isDestDataBaseIndexExist();
+	}
+	
+	
+	public boolean isSelfToSelf() {
+		if(this.bmp.getSourMachineIndex() == this.bmp.getDestMachineIndex()) {
+			this.reply.setFailedReason("You send command self to self");
+			this.reply.setOK(false);
+			return true;
+		}
+		return false;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

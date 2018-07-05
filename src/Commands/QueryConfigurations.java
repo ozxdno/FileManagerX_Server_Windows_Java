@@ -55,7 +55,7 @@ public class QueryConfigurations extends Comman implements Interfaces.ICommands 
 				this.executeInDepot();
 	}
 	public void reply() {
-		this.setUserIndexAndPassword();
+		this.setBasicMessagePackageToReply();
 		this.getConnection().setSendString(this.getReply().output());
 		this.getConnection().setSendLength(this.getConnection().getSendString().length());
 		this.getConnection().setContinueSendString();

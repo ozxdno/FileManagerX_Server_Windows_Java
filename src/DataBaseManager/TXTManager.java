@@ -5,9 +5,9 @@ public class TXTManager implements Interfaces.IDBManager {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	private BasicModels.DataBaseInfo dbInfo;
-	private boolean isConnected;
-	private boolean isQueryOK;
-	private boolean isUpdataOK;
+	private volatile boolean isConnected;
+	private volatile boolean isQueryOK;
+	private volatile boolean isUpdataOK;
 	
 	private BasicCollections.Folders folders;
 	private BasicCollections.BaseFiles files;
@@ -282,6 +282,14 @@ public class TXTManager implements Interfaces.IDBManager {
 		else if(conditions instanceof QueryConditions) {
 			qcs = (QueryConditions)conditions;
 		}
+		else if(conditions instanceof String) {
+			try {
+				qcs.stringToThis((String)conditions);
+			}catch(Exception e) {
+				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				return null;
+			}
+		}
 		else {
 			return null;
 		}
@@ -464,6 +472,14 @@ public class TXTManager implements Interfaces.IDBManager {
 		}
 		else if(conditions instanceof QueryConditions) {
 			qcs = (QueryConditions)conditions;
+		}
+		else if(conditions instanceof String) {
+			try {
+				qcs.stringToThis((String)conditions);
+			}catch(Exception e) {
+				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				return null;
+			}
 		}
 		else {
 			return null;
@@ -648,6 +664,14 @@ public class TXTManager implements Interfaces.IDBManager {
 		}
 		else if(conditions instanceof QueryConditions) {
 			qcs = (QueryConditions)conditions;
+		}
+		else if(conditions instanceof String) {
+			try {
+				qcs.stringToThis((String)conditions);
+			}catch(Exception e) {
+				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				return null;
+			}
 		}
 		else {
 			return null;
@@ -844,6 +868,14 @@ public class TXTManager implements Interfaces.IDBManager {
 		else if(conditions instanceof QueryConditions) {
 			qcs = (QueryConditions)conditions;
 		}
+		else if(conditions instanceof String) {
+			try {
+				qcs.stringToThis((String)conditions);
+			}catch(Exception e) {
+				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				return null;
+			}
+		}
 		else {
 			return null;
 		}
@@ -955,6 +987,14 @@ public class TXTManager implements Interfaces.IDBManager {
 		else if(conditions instanceof QueryConditions) {
 			qcs = (QueryConditions)conditions;
 		}
+		else if(conditions instanceof String) {
+			try {
+				qcs.stringToThis((String)conditions);
+			}catch(Exception e) {
+				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				return null;
+			}
+		}
 		else {
 			return null;
 		}
@@ -1041,6 +1081,14 @@ public class TXTManager implements Interfaces.IDBManager {
 		}
 		else if(conditions instanceof QueryConditions) {
 			qcs = (QueryConditions)conditions;
+		}
+		else if(conditions instanceof String) {
+			try {
+				qcs.stringToThis((String)conditions);
+			}catch(Exception e) {
+				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				return null;
+			}
 		}
 		else {
 			return null;
@@ -1152,6 +1200,14 @@ public class TXTManager implements Interfaces.IDBManager {
 		}
 		else if(conditions instanceof QueryConditions) {
 			qcs = (QueryConditions)conditions;
+		}
+		else if(conditions instanceof String) {
+			try {
+				qcs.stringToThis((String)conditions);
+			}catch(Exception e) {
+				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				return null;
+			}
 		}
 		else {
 			return null;
@@ -1266,6 +1322,14 @@ public class TXTManager implements Interfaces.IDBManager {
 		}
 		else if(conditions instanceof QueryConditions) {
 			qcs = (QueryConditions)conditions;
+		}
+		else if(conditions instanceof String) {
+			try {
+				qcs.stringToThis((String)conditions);
+			}catch(Exception e) {
+				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				return null;
+			}
 		}
 		else {
 			return null;
@@ -1413,6 +1477,14 @@ public class TXTManager implements Interfaces.IDBManager {
 		else if(conditions instanceof QueryConditions) {
 			qcs = (QueryConditions)conditions;
 		}
+		else if(conditions instanceof String) {
+			try {
+				qcs.stringToThis((String)conditions);
+			}catch(Exception e) {
+				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				return null;
+			}
+		}
 		else {
 			return null;
 		}
@@ -1558,6 +1630,14 @@ public class TXTManager implements Interfaces.IDBManager {
 		}
 		else if(conditions instanceof QueryConditions) {
 			qcs = (QueryConditions)conditions;
+		}
+		else if(conditions instanceof String) {
+			try {
+				qcs.stringToThis((String)conditions);
+			}catch(Exception e) {
+				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				return null;
+			}
 		}
 		else {
 			return null;
@@ -1714,6 +1794,14 @@ public class TXTManager implements Interfaces.IDBManager {
 		else if(conditions instanceof QueryConditions) {
 			qcs = (QueryConditions)conditions;
 		}
+		else if(conditions instanceof String) {
+			try {
+				qcs.stringToThis((String)conditions);
+			}catch(Exception e) {
+				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				return null;
+			}
+		}
 		else {
 			return null;
 		}
@@ -1806,6 +1894,14 @@ public class TXTManager implements Interfaces.IDBManager {
 		else if(conditions instanceof QueryConditions) {
 			qcs = (QueryConditions)conditions;
 		}
+		else if(conditions instanceof String) {
+			try {
+				qcs.stringToThis((String)conditions);
+			}catch(Exception e) {
+				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				return null;
+			}
+		}
 		else {
 			return null;
 		}
@@ -1879,6 +1975,14 @@ public class TXTManager implements Interfaces.IDBManager {
 		}
 		else if(conditions instanceof QueryConditions) {
 			qcs = (QueryConditions)conditions;
+		}
+		else if(conditions instanceof String) {
+			try {
+				qcs.stringToThis((String)conditions);
+			}catch(Exception e) {
+				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				return null;
+			}
 		}
 		else {
 			return null;
@@ -1971,6 +2075,14 @@ public class TXTManager implements Interfaces.IDBManager {
 		}
 		else if(conditions instanceof QueryConditions) {
 			qcs = (QueryConditions)conditions;
+		}
+		else if(conditions instanceof String) {
+			try {
+				qcs.stringToThis((String)conditions);
+			}catch(Exception e) {
+				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				return null;
+			}
 		}
 		else {
 			return null;
@@ -2130,12 +2242,15 @@ public class TXTManager implements Interfaces.IDBManager {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public boolean updataFolder(BasicModels.Folder folder) {
+	public synchronized boolean updataFolder(BasicModels.Folder folder) {
 		if(this.folders == null) {
 			this.loadFolders();
 		}
 		
-		int index = this.folders.indexOf(folder.getIndex());
+		int index = (folder.getIndex() >= 0 && folder.getIndex() <= Globals.Configurations.Next_FileIndex) ?
+				this.folders.indexOf(folder.getIndex()) :
+				-1;
+		
 		if(index >= 0) {
 			this.folders.getContent().set(index, folder);
 		} else {
@@ -2147,12 +2262,15 @@ public class TXTManager implements Interfaces.IDBManager {
 		
 		return true;
 	}
-	public boolean updataFile(BasicModels.BaseFile file) {
+	public synchronized boolean updataFile(BasicModels.BaseFile file) {
 		if(this.files == null) {
 			this.loadFiles();
 		}
 		
-		int index = this.files.indexOf(file.getIndex());
+		int index = (file.getIndex() >= 0 && file.getIndex() <= Globals.Configurations.Next_FileIndex) ?
+				this.files.indexOf(file.getIndex()) :
+				-1;
+		
 		if(index >= 0) {
 			this.files.getContent().set(index, file);
 		} else {
@@ -2164,12 +2282,15 @@ public class TXTManager implements Interfaces.IDBManager {
 		
 		return true;
 	}
-	public boolean updataUser(BasicModels.User user) {
+	public synchronized boolean updataUser(BasicModels.User user) {
 		if(this.users == null) {
 			this.loadUsers();
 		}
 		
-		int index = this.users.indexOf(user.getIndex());
+		int index = (user.getIndex() >= 0 && user.getIndex() <= Globals.Configurations.Next_UserIndex) ?
+				this.users.indexOf(user.getIndex()) :
+				-1;
+		
 		if(index >= 0) {
 			this.users.getContent().set(index, user);
 		} else {
@@ -2181,12 +2302,15 @@ public class TXTManager implements Interfaces.IDBManager {
 		
 		return true;
 	}
-	public boolean updataInvitation(BasicModels.Invitation invitation) {
+	public synchronized boolean updataInvitation(BasicModels.Invitation invitation) {
 		if(this.invitations == null) {
 			this.loadInvitations();
 		}
 		
-		int index = this.invitations.indexOf(invitation.getCode());
+		int index = (invitation.getCode() != null && invitation.getCode().length() >= 0) ?
+				this.invitations.indexOf(invitation.getCode()) :
+				-1;
+		
 		if(index >= 0) {
 			this.invitations.getContent().set(index, invitation);
 		} else {
@@ -2199,12 +2323,15 @@ public class TXTManager implements Interfaces.IDBManager {
 		
 		return true;
 	}
-	public boolean updataMachineInfo(BasicModels.MachineInfo machineInfo) {
+	public synchronized boolean updataMachineInfo(BasicModels.MachineInfo machineInfo) {
 		if(this.machineInfos == null) {
 			this.loadMachineInfos();
 		}
 		
-		int index = this.machineInfos.indexOf(machineInfo.getIndex());
+		int index = (machineInfo.getIndex() >= 0 && machineInfo.getIndex() <= Globals.Configurations.Next_MachineIndex) ?
+				this.machineInfos.indexOf(machineInfo.getIndex()) :
+				-1;
+		
 		if(index >= 0) {
 			this.machineInfos.getContent().set(index, machineInfo);
 		} else {
@@ -2217,12 +2344,15 @@ public class TXTManager implements Interfaces.IDBManager {
 		
 		return true;
 	}
-	public boolean updataDepotInfo(BasicModels.DepotInfo depotInfo) {
+	public synchronized boolean updataDepotInfo(BasicModels.DepotInfo depotInfo) {
 		if(this.depotInfos == null) {
 			this.loadDepotInfos();
 		}
 		
-		int index = this.depotInfos.indexOf(depotInfo.getIndex());
+		int index = (depotInfo.getIndex() >= 0 && depotInfo.getIndex() <= Globals.Configurations.Next_DepotIndex) ?
+				this.depotInfos.indexOf(depotInfo.getIndex()) :
+				-1;
+		
 		if(index >= 0) {
 			this.depotInfos.getContent().set(index, depotInfo);
 		} else {
@@ -2234,12 +2364,15 @@ public class TXTManager implements Interfaces.IDBManager {
 		
 		return true;
 	}
-	public boolean updataDataBaseInfo(BasicModels.DataBaseInfo dbInfo) {
+	public synchronized boolean updataDataBaseInfo(BasicModels.DataBaseInfo dbInfo) {
 		if(this.dbInfos == null) {
 			this.loadDataBaseInfos();
 		}
+
+		int index = (dbInfo.getIndex() >= 0 && dbInfo.getIndex() <= Globals.Configurations.Next_DataBaseIndex) ?
+				this.dbInfos.indexOf(dbInfo.getIndex()) :
+				-1;
 		
-		int index = this.dbInfos.indexOf(dbInfo.getIndex());
 		if(index >= 0) {
 			this.dbInfos.getContent().set(index, dbInfo);
 		} else {

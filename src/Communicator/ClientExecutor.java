@@ -7,6 +7,9 @@ public class ClientExecutor implements Interfaces.IReplyExecutor {
 	public Interfaces.IReplies getReply() {
 		return executor.getReply();
 	}
+	public boolean setPredict(String predict) {
+		return executor.setPredict(predict);
+	}
 	
 	public ClientExecutor() {
 		initThis();

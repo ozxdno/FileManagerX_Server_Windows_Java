@@ -10,4 +10,16 @@ public class CloseServer extends Comman implements Interfaces.IReplies {
 		return super.output(this.getClass().getSimpleName());
 	}
 	
+	public boolean execute(Interfaces.IConnection connection) {
+		if(!this.isOK()) {
+			return false;
+		}
+		if(this.getBasicMessagePackage().getDestMachineIndex() != connection.getServerMachineInfo().getIndex()) {
+			return true;
+		}
+		
+		
+		connection.setCloseServer(true);
+		return true;
+	}
 }

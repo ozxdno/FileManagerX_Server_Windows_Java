@@ -95,6 +95,12 @@ public class DepotInfo implements Interfaces.IPublic {
 		return this.state;
 	}
 	
+	public Interfaces.IDepotManager getManager() {
+		Interfaces.IDepotManager dm = Factories.DepotManagerFactory.createDepotManager();
+		dm.setDepot(this);
+		return dm;
+	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public DepotInfo() {
@@ -174,7 +180,7 @@ public class DepotInfo implements Interfaces.IPublic {
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+	
 	public boolean isLocal() {
 		return this.machineInfo.isLocal();
 	}

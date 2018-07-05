@@ -1,12 +1,17 @@
 package Commands;
 
+/**
+ * 
+ * Commands.Input.sourMachine EQUALS_TO Replies.Input.destMachine; <BR/>
+ * Commands.Input.machineIndex EQUALS_TO Replies.Input.sourMachine;
+ * 
+ * @author ozxdno
+ *
+ */
 public class Input extends Comman implements Interfaces.ICommands {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	private long sourMachine; // destMachine is in machineIndex
-	private long sourDepot;
-	
 	private boolean cover;
 	private String sourUrl;
 	private String destUrl;
@@ -15,21 +20,6 @@ public class Input extends Comman implements Interfaces.ICommands {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public boolean setSourMachine(long index) {
-		if(index < 0) {
-			return false;
-		}
-		this.sourMachine = index;
-		return true;
-	}
-	public boolean setSourDepot(long index) {
-		if(index < 0) {
-			return false;
-		}
-		this.sourDepot = index;
-		return true;
-	}
-
 	public boolean setCover(boolean cover) {
 		this.cover = cover;
 		return true;
@@ -65,13 +55,6 @@ public class Input extends Comman implements Interfaces.ICommands {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public long getSourMachine() {
-		return this.sourMachine;
-	}
-	public long getSourDepot() {
-		return this.sourDepot;
-	}
-	
 	public boolean isCover() {
 		return this.cover;
 	}
@@ -102,14 +85,12 @@ public class Input extends Comman implements Interfaces.ICommands {
 		this.input(command);
 	}
 	private void initThis() {
-		this.sourMachine = Globals.Configurations.This_MachineIndex;
-		this.sourDepot = 0;
 		this.cover = false;
 		this.sourUrl = "";
 		this.destUrl = "";
 		this.totalBytes = 0;
 		this.finishedBytes = 0;
-		super.setReply(new Replies.Output());
+		super.setReply(new Replies.Input());
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -123,13 +104,7 @@ public class Input extends Comman implements Interfaces.ICommands {
 	public String output() {
 		BasicModels.Config c = new BasicModels.Config();
 		c.setField(this.getClass().getSimpleName());
-		c.addToBottom(this.getUserIndex());
-		c.addToBottom(this.getPassword());
-		c.addToBottom(this.getMachineIndex());
-		c.addToBottom(this.getDepotIndex());
-		c.addToBottom(this.getDataBaseIndex());
-		c.addToBottom(this.sourMachine);
-		c.addToBottom(this.sourDepot);
+		c.addToBottom(new BasicModels.Config(super.output()));
 		c.addToBottom(this.cover);
 		c.addToBottom(this.sourUrl);
 		c.addToBottom(this.destUrl);
@@ -143,10 +118,6 @@ public class Input extends Comman implements Interfaces.ICommands {
 			return null;
 		}
 		BasicModels.Config c = new BasicModels.Config(in);
-		this.sourMachine = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		this.sourDepot = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
 		this.cover = c.fetchFirstBoolean();
 		if(!c.getIsOK()) { return null; }
 		this.sourUrl = c.fetchFirstString();
@@ -163,8 +134,6 @@ public class Input extends Comman implements Interfaces.ICommands {
 	public void copyReference(Object o) {
 		super.copyReference(o);
 		Input sf = (Input)o;
-		this.sourMachine = sf.sourMachine;
-		this.sourDepot = sf.sourDepot;
 		this.cover = sf.cover;
 		this.sourUrl = sf.sourUrl;
 		this.destUrl = sf.destUrl;
@@ -174,8 +143,6 @@ public class Input extends Comman implements Interfaces.ICommands {
 	public void copyValue(Object o) {
 		super.copyValue(o);
 		Input sf = (Input)o;
-		this.sourMachine = sf.sourMachine;
-		this.sourDepot = sf.sourDepot;
 		this.cover = sf.cover;
 		this.sourUrl = new String(sf.sourUrl);
 		this.destUrl = new String(sf.destUrl);
@@ -186,80 +153,116 @@ public class Input extends Comman implements Interfaces.ICommands {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public boolean execute() {
-		
-		if(!this.isConnected()) {
+		if(!this.isConnected_Login_UserIndexRigth_PasswordRight_PriorityEnough(BasicEnums.UserPriority.Member)) {
 			this.reply();
 			return false;
 		}
-		if(!this.isLogin()) {
-			this.reply();
-			return false;
-		}
-		if(!this.isUserIndexRight()) {
-			this.reply();
-			return false;
-		}
-		if(!this.isPasswordRight()) {
-			this.reply();
-			return false;
-		}
-		if(!this.isMechineIndexRight()) {
-			this.reply();
-			return false;
-		}
-		if(!this.isDepotIndexRight()) {
+		if(!this.isExistDest_MachineIndex_DepotIndex()) {
 			this.reply();
 			return false;
 		}
 		
-		boolean ok = this.getMachineIndex() == Globals.Configurations.This_MachineIndex ?
-				this.executeInLocal() :
-				this.excuteInRemote();
-		
-		Replies.Input rep = this.getReply();
-		rep.setSourMachine(this.sourMachine);
-		rep.setSourDepot(this.sourDepot);
-		rep.setDestMachine(this.getMachineIndex());
-		rep.setDestDepot(this.getDepotIndex());
-		rep.setSourUrl(this.sourUrl);
-		rep.setDestUrl(this.destUrl);
-		rep.setCover(this.cover);
-		rep.setTotalBytes(this.totalBytes);
-		rep.setFinishedBytes(finishedBytes);
-		rep.setOK(ok);
-		this.reply();
-		return true;
+		if(this.isArriveTargetMachine()) {
+			this.fillFileConnector(this.getConnection().getFileConnector());
+			this.getConnection().getFileConnector().setState_Active(true);
+			
+			Replies.Input rep = this.getReply();
+			rep.setSourUrl(this.sourUrl);
+			rep.setDestUrl(this.destUrl);
+			rep.setCover(this.cover);
+			rep.setTotalBytes(this.totalBytes);
+			rep.setFinishedBytes(finishedBytes);
+			rep.setOK(true);
+			this.reply();
+			return true;
+		}
+		else {
+			Interfaces.ICommandConnector cc = Factories.CommunicatorFactory.createCommandConnector();
+			cc.setIsExecuteCommand(true);
+			cc.setDestMachineIndex(this.getBasicMessagePackage().getDestMachineIndex());
+			cc.setSendCommand(this.output());
+			cc.setSourConnection(this.getConnection());
+			Replies.Test rep = (Replies.Test)cc.execute();
+			if(rep == null) { 
+				this.replyNULL();
+				return false;
+			}
+			this.setReply(rep);
+			if(!rep.isOK()) {
+				this.reply();
+				return false;
+			}
+			
+			Interfaces.IConnection scon = Globals.Datas.Server.search(this.getBasicMessagePackage().getIp2(), this.getBasicMessagePackage().getPort2());
+			if(scon == null) {
+				BasicEnums.ErrorType.EXECUTE_COMMAND_FAILED.register("Sour Connection Not Exist");
+				this.getReply().setFailedReason("Sour Connection Not Exist");
+				this.getReply().setOK(false);
+				this.reply();
+				return false;
+			}
+			
+			Interfaces.IConnection dcon = this.createDestConnection();
+			if(dcon == null) {
+				BasicEnums.ErrorType.EXECUTE_COMMAND_FAILED.register("Dest Connection Create Failed");
+				this.getReply().setFailedReason("Dest Connection Create Failed");
+				this.getReply().setOK(false);
+				this.reply();
+				return false;
+			}
+			
+			this.fillFileConnector(scon.getFileConnector());
+			this.fillFileConnector(dcon.getFileConnector());
+			scon.getFileConnector().setConnection(dcon);
+			dcon.getFileConnector().setConnection(scon);
+			scon.getFileConnector().setState_Active(true);
+			dcon.getFileConnector().setState_Active(true);
+			
+			this.reply();
+			return true;
+		}
 	}
 	public void reply() {
-		this.setUserIndexAndPassword();
+		this.setBasicMessagePackageToReply();
 		this.getConnection().setSendString(this.getReply().output());
 		this.getConnection().setSendLength(this.getConnection().getSendString().length());
 		this.getConnection().setContinueSendString();
 	}
+	public void replyNULL() {
+		BasicEnums.ErrorType.EXECUTE_COMMAND_FAILED.register("The Reply from other Connection is NULL");
+		this.getReply().setOK(false);
+		this.getReply().setFailedReason("The Reply from other Connection is NULL");
+		this.reply();
+	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	private boolean executeInLocal() {
-		Interfaces.IFileConnector fc = this.getConnection().getFileConnector();
-		fc.setSourMachine(this.sourMachine);
-		fc.setDestMachine(this.getMachineIndex());
-		fc.setSourDepot(this.sourDepot);
-		fc.setDestDepot(this.getDepotIndex());
-		
+	private void fillFileConnector(Interfaces.IFileConnector fc) {
+		fc.setSourMachine(this.getBasicMessagePackage().getSourMachineIndex());
+		fc.setDestMachine(this.getBasicMessagePackage().getDestMachineIndex());
+		fc.setSourDepot(this.getBasicMessagePackage().getSourDepotIndex());
+		fc.setDestDepot(this.getBasicMessagePackage().getDestDepotIndex());
 		fc.setIsInputCommand(true);
 		fc.setSourUrl(this.sourUrl);
 		fc.setDestUrl(this.destUrl);
-		
 		fc.setTotalBytes(totalBytes);
 		fc.setFinishedBytes(finishedBytes);
 		fc.setIsCoverExistedFile(cover);
-		fc.setState_Active(true);
-		fc.setIsReadFromLocal(this.getMachineIndex() == Globals.Configurations.This_MachineIndex);
-		
-		return true;
+		fc.setIsReadFromLocal(this.isArriveTargetMachine());
+		fc.setIsWriteToLocal(this.isArriveTargetMachine());
 	}
-	private boolean excuteInRemote() {
-		return false;
+	private Interfaces.IConnection createDestConnection() {
+		Interfaces.IClientConnection con = Factories.CommunicatorFactory.createClientConnection();
+		con.setServerMachineInfo(this.getDestMachineInfo());
+		con.setClientMachineInfo(Globals.Datas.ThisMachine);
+		con.setSocket();
+		con.connect();
+		if(!con.isRunning()) {
+			BasicEnums.ErrorType.BUILD_SOCKET_FAILED.register();
+			return null;
+		}
+		Globals.Datas.Client.add(con);
+		return con;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -17,4 +17,8 @@ public class DBManagerFactory {
 	public static final Interfaces.IDBManager createTXTManager() {
 		return new DataBaseManager.TXTManager();
 	}
+	
+	public static final Interfaces.IGAPManager createGAPManager() {
+		return new DataBaseManager.GAPManager();
+	}
 }

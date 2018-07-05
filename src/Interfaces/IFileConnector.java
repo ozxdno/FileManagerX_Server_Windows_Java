@@ -26,7 +26,7 @@ package Interfaces;
  * @author ozxdno
  *
  */
-public interface IFileConnector {
+public interface IFileConnector extends IPublic {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -52,7 +52,7 @@ public interface IFileConnector {
 	public boolean setSendLength(int length);
 	public boolean setReceiveLength(int length);
 	
-	public boolean setConnection(Interfaces.IClientConnection connection);
+	public boolean setConnection(Interfaces.IConnection connection);
 	
 	public boolean setState_Active(boolean active);
 	public boolean setState_Busy(boolean busy);
@@ -82,7 +82,7 @@ public interface IFileConnector {
 	public int getSendLength();
 	public int getReceiveLength();
 	
-	public Interfaces.IClientConnection getConnection();
+	public Interfaces.IConnection getConnection();
 	
 	public boolean isActive();
 	public boolean isBusy();

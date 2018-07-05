@@ -14,11 +14,11 @@ public interface ISWRE {
 	
 	public boolean setSendWaitTicks(long sendWaitTicks);
 	public boolean setReceiveWaitTicks(long receiveWaitTicks);
-	public boolean setConnection(Interfaces.IClientConnection connection);
+	public boolean setConnection(Interfaces.IConnection connection);
 	
 	public long getSendWaitTicks();
 	public long getReceiveWaitTicks();
-	public Interfaces.IClientConnection getConnection();
+	public Interfaces.IConnection getConnection();
 	
 	public Interfaces.IReplies execute();
 	public Interfaces.IReplies execute(String command);

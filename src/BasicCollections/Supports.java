@@ -93,6 +93,17 @@ public class Supports implements Interfaces.IPublic, Interfaces.ICollection {
 	public int size() {
 		return content.size();
 	}
+	public boolean add(Object item) {
+		if(item == null) {
+			return false;
+		}
+		try {
+			this.content.add((BasicModels.Support)item);
+			return true;
+		} catch(Exception e) {
+			return false;
+		}
+	}
 	/**
 	 * Sort By Extension
 	 * 
@@ -170,13 +181,6 @@ public class Supports implements Interfaces.IPublic, Interfaces.ICollection {
 		BasicModels.Support i = content.get(index);
 		content.remove(index);
 		return i;
-	}
-	public boolean add(BasicModels.Support item) {
-		if(item == null) {
-			return false;
-		}
-		content.add(item);
-		return true;
 	}
 	public void delete(String extension) {
 		int index = this.indexOf(extension);

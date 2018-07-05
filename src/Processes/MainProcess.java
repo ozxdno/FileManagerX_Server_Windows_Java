@@ -74,7 +74,7 @@ public class MainProcess extends Thread implements Interfaces.IProcess {
 		}
 		
 		// Set Form Title
-		if(operateOK) {
+		if(operateOK && Globals.Datas.Form_Main != null) {
 			Globals.Datas.Form_Main.setTitle(
 					"FileManagerX - " + 
 					Globals.Configurations.StartType.toString() + " : " + 
@@ -102,13 +102,12 @@ public class MainProcess extends Thread implements Interfaces.IProcess {
 		if(operateOK) {
 			Globals.Datas.Server.initialize(Globals.Datas.ThisMachine);
 			Globals.Datas.Server.connect();
-			Tools.Time.waitUntil(100);
 			operateOK &= Globals.Datas.Server.isRunning();
 		}
 		
 		// delete log file
 		if(operateOK) {
-			Globals.Datas.Errors.deleteAgoLogs(365);
+			Globals.Datas.Errors.deleteAgoLogs(30);
 		}
 		
 		// save CFG before execute tasks
@@ -138,8 +137,18 @@ public class MainProcess extends Thread implements Interfaces.IProcess {
 		
 		// tasks
 		if(operateOK) {
-			while(!this.abort && Globals.Datas.Server.isRunning()) {
+			while(!this.abort) {
+				if(!Globals.Datas.Server.isRunning()) {
+					BasicEnums.ErrorType.COMMUNICATOR_CONNECTION_CLOSED.register("Server[This Machine] Closed");
+					break;
+				}
 				
+				if(!Globals.Configurations.IsServer && !Globals.Datas.ServerConnection.isRunning()) {
+					BasicEnums.ErrorType.COMMUNICATOR_CONNECTION_CLOSED.register("Server[Remote Machine] Closed");
+					break;
+				}
+				
+				Tools.Time.sleepUntil(1000);
 			}
 		}
 		
@@ -161,7 +170,16 @@ public class MainProcess extends Thread implements Interfaces.IProcess {
 		}
 		
 		// Close Form
-		Globals.Datas.Form_Main.dispose();
+		if(Globals.Datas.Form_Main != null) {
+			Globals.Datas.Form_Main.dispose();
+		}
+		
+		// Close Server
+		Globals.Datas.Server.disconnect();
+		
+		// Close Connection
+		Globals.Datas.ServerConnection.disconnect();
+		Globals.Datas.Client.removeAllConnections();
 		
 		this.finished = true;
 		this.running = false;

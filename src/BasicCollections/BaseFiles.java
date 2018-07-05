@@ -93,7 +93,17 @@ public class BaseFiles implements Interfaces.IPublic, Interfaces.ICollection {
 	public int size() {
 		return content.size();
 	}
-	
+	public boolean add(Object item) {
+		if(item == null) {
+			return false;
+		}
+		try {
+			this.content.add((BasicModels.BaseFile)item);
+			return true;
+		} catch(Exception e) {
+			return false;
+		}
+	}
 	/**
 	 * Sort By Index
 	 * 
@@ -159,13 +169,6 @@ public class BaseFiles implements Interfaces.IPublic, Interfaces.ICollection {
 		BasicModels.BaseFile i = content.get(index);
 		content.remove(index);
 		return i;
-	}
-	public boolean add(BasicModels.BaseFile item) {
-		if(item == null) {
-			return false;
-		}
-		content.add(item);
-		return true;
 	}
 	public void delete(String url) {
 		int index = this.indexOf(url);

@@ -4,6 +4,8 @@ public final class Configurations {
 	
 	public static BasicEnums.StartType StartType = BasicEnums.StartType.Client;
 	public static boolean IsServer = false;
+	public static boolean IsDepot = false;
+	public static boolean IsClient = false;
 	
 	public static long Next_FileIndex = 0;
 	public static long Next_MachineIndex = 0;

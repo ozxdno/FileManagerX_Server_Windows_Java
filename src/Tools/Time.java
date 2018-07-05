@@ -59,28 +59,69 @@ public class Time {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
+	public final static boolean sleepUntil(long ticks) {
+		try {
+			java.lang.Thread.sleep(ticks);
+			return true;
+		} catch(Exception e) {
+			BasicEnums.ErrorType.UNKNOW.register(e.toString());
+			return false;
+		}
+	}
 	public final static boolean waitUntil(long ticks) {
 		long startTicks = Tools.Time.getTicks();
 		while(Tools.Time.getTicks() - startTicks < ticks) {
-			;
+			sleepUntil(1);
 		}
 		return true;
 	}
-	
 	public final static boolean waitUntilConnectionIdle(Interfaces.IConnection connection) {
-		while(connection.isBusy());
+		while(connection.isBusy()) {
+			sleepUntil(1);
+		}
 		return true;
 	}
-	
 	public final static boolean waitUntilConnectionIdle(long ticks, Interfaces.IConnection connection) {
 		long startTicks = Tools.Time.getTicks();
 		while(Tools.Time.getTicks() - startTicks < ticks) {
 			if(!connection.isBusy()) {
 				break;
 			}
+			sleepUntil(1);
 		}
-		
 		return !connection.isBusy();
+	}
+	public final static boolean waitUntilFileConnectorSave(long ticks, Interfaces.IFileConnector fc) {
+		Interfaces.IFileConnector opponentFC = fc.getConnection().getFileConnector();
+		
+		// wait for fill bytes
+		long startTick = Tools.Time.getTicks();
+		while(Tools.Time.getTicks() - startTick < ticks) {
+			if(opponentFC.getSendLength() != 0) {
+				break;
+			}
+			sleepUntil(1);
+		}
+		if(opponentFC.getSendLength() == 0) {
+			BasicEnums.ErrorType.RECEIVE_OVER_TIME.register("Too long to get Send Bytes From Other Connection");
+			return false;
+		}
+		return true;
+	}
+	public final static boolean waitUntilFileConnectorLoad(long ticks, Interfaces.IFileConnector fc) {
+		// wait for connection finish fetching data
+		long startTick = Tools.Time.getTicks();
+		while(Tools.Time.getTicks() - startTick < ticks) {
+			if(fc.getSendLength() == 0) {
+				break;
+			}
+			sleepUntil(1);
+		}
+		if(fc.getSendLength() != 0) {
+			BasicEnums.ErrorType.RECEIVE_OVER_TIME.register("Too long to Wait Bytes Fetch By Other Connection");
+			return false;
+		}
+		return true;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

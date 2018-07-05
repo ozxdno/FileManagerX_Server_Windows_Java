@@ -5,10 +5,22 @@ public class Executor implements Interfaces.ICommandExecutor {
 	public boolean execute(Interfaces.IConnection connection) {
 		
 		BasicModels.Config c = new BasicModels.Config(connection.getReceiveString());
+		/*
 		if(c.isEmpty()) {
 			return true;
 		}
+		*/
 		
+		if(c.getField().equals("Test")) {
+			Commands.Test t = new Commands.Test();
+			t.setConnection(connection);
+			return t.input(connection.getReceiveString()) != null && t.execute();
+		}
+		if(c.getField().equals("Comman")) {
+			Commands.Comman com = new Commands.Comman();
+			com.setConnection(connection);
+			return com.input(connection.getReceiveString()) != null && com.execute();
+		}
 		if(c.getField().equals("CloseServer")) {
 			Commands.CloseServer cs = new Commands.CloseServer();
 			cs.setConnection(connection);
@@ -33,6 +45,11 @@ public class Executor implements Interfaces.ICommandExecutor {
 			Commands.LoginUser lu = new Commands.LoginUser();
 			lu.setConnection(connection);
 			return lu.input(connection.getReceiveString()) != null && lu.execute();
+		}
+		if(c.getField().equals("LoginMachine")) {
+			Commands.LoginMachine lm = new Commands.LoginMachine();
+			lm.setConnection(connection);
+			return lm.input(connection.getReceiveString()) != null && lm.execute();
 		}
 		if(c.getField().equals("QueryConfigurations")) {
 			Commands.QueryConfigurations qc = new Commands.QueryConfigurations();
@@ -105,7 +122,17 @@ public class Executor implements Interfaces.ICommandExecutor {
 			return rd.input(connection.getReceiveString()) != null && rd.execute();
 		}
 		
-		return false;
+		return this.executeUnsupport(connection);
 	}
 	
+	
+	private boolean executeUnsupport(Interfaces.IConnection connection) {
+		String rece = new String(connection.getReceiveString());
+		
+		connection.setSendString(rece);
+		connection.setSendLength(rece.length());
+		connection.setContinueSendString();
+		
+		return false;
+	}
 }

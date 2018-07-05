@@ -105,6 +105,17 @@ public class Configs implements Interfaces.IPublic, Interfaces.ICollection {
 	public int size() {
 		return configs.size();
 	}
+	public boolean add(Object item) {
+		if(item == null) {
+			return false;
+		}
+		try {
+			this.configs.add((BasicModels.Config)item);
+			return true;
+		} catch(Exception e) {
+			return false;
+		}
+	}
 	/**
 	 * Sort By Field
 	 * 
@@ -182,13 +193,6 @@ public class Configs implements Interfaces.IPublic, Interfaces.ICollection {
 		BasicModels.Config c = configs.get(index);
 		configs.remove(index);
 		return c;
-	}
-	public boolean add(BasicModels.Config c) {
-		if(c == null) {
-			return false;
-		}
-		configs.add(c);
-		return true;
 	}
 	public void delete(String field) {
 		int index = this.indexOf(field);

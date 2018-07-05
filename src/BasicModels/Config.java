@@ -243,6 +243,10 @@ public class Config implements Interfaces.IPublic {
 		}
 	}
 	public String getString(int item) {
+		if(value != null && value.length() == 0 && item == 0) {
+			return "";
+		}
+		
 		try {
 			ok = true;
 			return items[item];
@@ -378,7 +382,8 @@ public class Config implements Interfaces.IPublic {
 		if(c == null || c.value.length() == 0) {
 			return;
 		}
-		this.setValue(value + "|" + c.value);
+		value = value.length() == 0 ? c.value : value + "|" + c.value;
+		this.setValue(value);
 	}
 	
 	public boolean fetchFirstBoolean() {
@@ -430,6 +435,9 @@ public class Config implements Interfaces.IPublic {
 		}
 	}
 	public String fetchFirstString() {
+		if(value != null && value.length() == 0) {
+			return "";
+		}
 		String res = "";
 		try {
 			res = items[0];
@@ -507,6 +515,9 @@ public class Config implements Interfaces.IPublic {
 		}
 	}
 	public String fetchLastString() {
+		if(value != null && value.length() == 0) {
+			return "";
+		}
 		String res = "";
 		try {
 			res = items[items.length-1];
