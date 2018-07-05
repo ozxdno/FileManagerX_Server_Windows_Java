@@ -419,7 +419,8 @@ public class ServerConnection extends Thread implements Interfaces.IServerConnec
 					this.fileConnector.setState_Busy(false);
 					this.fileConnector.close();
 					//this.busy = false;
-					this.continueReceiveString = true;
+					//this.continueReceiveString = true;
+					this.abort = true;
 				}
 				if(!this.continueReceiveString && !this.continueSendString && this.fileConnector.isActive() && this.fileConnector.isInputCommand()) { // output a file
 					//this.busy = true;
@@ -443,7 +444,8 @@ public class ServerConnection extends Thread implements Interfaces.IServerConnec
 					this.fileConnector.setState_Busy(false);
 					this.fileConnector.close();
 					//this.busy = false;
-					this.continueReceiveString = true;
+					//this.continueReceiveString = true;
+					this.abort = true;
 				}
 				
 				Tools.Time.sleepUntil(10);

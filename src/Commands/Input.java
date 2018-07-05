@@ -164,7 +164,6 @@ public class Input extends Comman implements Interfaces.ICommands {
 		
 		if(this.isArriveTargetMachine()) {
 			this.fillFileConnector(this.getConnection().getFileConnector());
-			this.getConnection().getFileConnector().setState_Active(true);
 			
 			Replies.Input rep = this.getReply();
 			rep.setSourUrl(this.sourUrl);
@@ -177,49 +176,31 @@ public class Input extends Comman implements Interfaces.ICommands {
 			return true;
 		}
 		else {
-			Interfaces.ICommandConnector cc = Factories.CommunicatorFactory.createCommandConnector();
-			cc.setIsExecuteCommand(true);
-			cc.setDestMachineIndex(this.getBasicMessagePackage().getDestMachineIndex());
-			cc.setSendCommand(this.output());
-			cc.setSourConnection(this.getConnection());
-			Replies.Test rep = (Replies.Test)cc.execute();
-			if(rep == null) { 
-				this.replyNULL();
+			if(this.isSelfToSelf()) {
+				this.reply();
 				return false;
 			}
+			
+			Interfaces.IFSWRE fswre = Factories.CommunicatorFactory.createFSWRE();
+			fswre.setServerMachineIndex(this.getBasicMessagePackage().getDestMachineIndex());
+			fswre.setClientMachineIndex(Globals.Configurations.This_MachineIndex);
+			fswre.setUserIndex(this.getBasicMessagePackage().getSourUserIndex());
+			fswre.setConnection();
+			fswre.getConnection().getFileConnector().setConnection(this.getConnection());
+			this.getConnection().getFileConnector().setConnection(fswre.getConnection());
+			
+			Replies.Input rep = (Replies.Input)fswre.execute(this.output());
+			if(rep == null) {
+				this.getReply().setFailedReason("Reply of FSWRE is NULL");
+				this.getReply().setOK(false);
+				this.reply();
+				return true;
+			}
+			
+			this.fillFileConnector(this.getConnection().getFileConnector());
 			this.setReply(rep);
-			if(!rep.isOK()) {
-				this.reply();
-				return false;
-			}
-			
-			Interfaces.IConnection scon = Globals.Datas.Server.search(this.getBasicMessagePackage().getIp2(), this.getBasicMessagePackage().getPort2());
-			if(scon == null) {
-				BasicEnums.ErrorType.EXECUTE_COMMAND_FAILED.register("Sour Connection Not Exist");
-				this.getReply().setFailedReason("Sour Connection Not Exist");
-				this.getReply().setOK(false);
-				this.reply();
-				return false;
-			}
-			
-			Interfaces.IConnection dcon = this.createDestConnection();
-			if(dcon == null) {
-				BasicEnums.ErrorType.EXECUTE_COMMAND_FAILED.register("Dest Connection Create Failed");
-				this.getReply().setFailedReason("Dest Connection Create Failed");
-				this.getReply().setOK(false);
-				this.reply();
-				return false;
-			}
-			
-			this.fillFileConnector(scon.getFileConnector());
-			this.fillFileConnector(dcon.getFileConnector());
-			scon.getFileConnector().setConnection(dcon);
-			dcon.getFileConnector().setConnection(scon);
-			scon.getFileConnector().setState_Active(true);
-			dcon.getFileConnector().setState_Active(true);
-			
 			this.reply();
-			return true;
+			return false;
 		}
 	}
 	public void reply() {
@@ -250,19 +231,8 @@ public class Input extends Comman implements Interfaces.ICommands {
 		fc.setIsCoverExistedFile(cover);
 		fc.setIsReadFromLocal(this.isArriveTargetMachine());
 		fc.setIsWriteToLocal(this.isArriveTargetMachine());
-	}
-	private Interfaces.IConnection createDestConnection() {
-		Interfaces.IClientConnection con = Factories.CommunicatorFactory.createClientConnection();
-		con.setServerMachineInfo(this.getDestMachineInfo());
-		con.setClientMachineInfo(Globals.Datas.ThisMachine);
-		con.setSocket();
-		con.connect();
-		if(!con.isRunning()) {
-			BasicEnums.ErrorType.BUILD_SOCKET_FAILED.register();
-			return null;
-		}
-		Globals.Datas.Client.add(con);
-		return con;
+		
+		fc.setState_Active(true);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

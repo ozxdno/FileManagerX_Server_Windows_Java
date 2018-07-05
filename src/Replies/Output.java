@@ -159,6 +159,7 @@ public class Output extends Comman implements Interfaces.IReplies {
 		fc.setIsCoverExistedFile(cover);
 		fc.setIsReadFromLocal(this.isArriveSourMachine());
 		fc.setIsWriteToLocal(this.isArriveSourMachine());
+		
 		fc.setState_Active(true);
 		
 		return true;

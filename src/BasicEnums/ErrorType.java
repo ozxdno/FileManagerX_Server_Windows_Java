@@ -2,6 +2,9 @@ package BasicEnums;
 
 public enum ErrorType {
 	NORMAL,
+	COMMON_FILE_READ_FAILED,
+	COMMON_FILE_WRITE_FAILED,
+	COMMON_FILE_OPERATE_FAILED,
 	READ_FILE_FAILED,
 	WRITE_FILE_FAILED,
 	READ_WRITE_FILE_FAILED,
@@ -30,15 +33,18 @@ public enum ErrorType {
 	;
 	
 	public BasicModels.Error getError() {
-		return this.getError(BasicEnums.ErrorLevel.Error, "");
+		return this.getError(BasicEnums.ErrorLevel.Error, "", "");
 	}
 	public BasicModels.Error getError(BasicEnums.ErrorLevel level) {
-		return this.getError(level, "");
+		return this.getError(level, "", "");
 	}
 	public BasicModels.Error getError(String detail) {
-		return this.getError(BasicEnums.ErrorLevel.Error, detail);
+		return this.getError(BasicEnums.ErrorLevel.Error, "", detail);
 	}
 	public BasicModels.Error getError(BasicEnums.ErrorLevel level, String detail) {
+		return this.getError(level, "", detail);
+	}
+	public BasicModels.Error getError(BasicEnums.ErrorLevel level, String reason, String detail) {
 		StackTraceElement[] stes = Thread.currentThread().getStackTrace();
 		String tip = "";
 		for(int i=1; i<stes.length; i++) {
@@ -58,7 +64,7 @@ public enum ErrorType {
 		if(this.equals(ErrorType.NORMAL)) {
 			e.setType(this);
 			e.setLevel(BasicEnums.ErrorLevel.Normal);
-			e.setReason("Normal");
+			e.setReason(reason.length() == 0 ? "Normal" : reason);
 			e.setDetail(detail);
 		}
 		if(this.equals(ErrorType.READ_FILE_FAILED)) {
