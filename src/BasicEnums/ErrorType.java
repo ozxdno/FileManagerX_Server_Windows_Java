@@ -2,47 +2,49 @@ package BasicEnums;
 
 public enum ErrorType {
 	NORMAL,
+	
 	COMMON_FILE_READ_FAILED,
 	COMMON_FILE_WRITE_FAILED,
 	COMMON_FILE_OPERATE_FAILED,
-	READ_FILE_FAILED,
-	WRITE_FILE_FAILED,
-	READ_WRITE_FILE_FAILED,
-	FILE_OPERATION_FAILED,
-	READ_WRITE_CFG_FAILED,
-	WRONG_CFG_CONTENT,
-	DELETE_LOG_FAILED,
-	CONNECT_SERVER_FAILED,
-	RECEIVE_OVER_TIME,
-	SEND_OVER_TIME,
-	EXECUTE_COMMAND_FAILED,
-	BUILD_SOCKET_FAILED,
-	SERVER_CONNECTION_STREAM_BUILD_FAILED,
-	SERVER_CONNECTION_RUNNING_FAILED,
-	CLIENT_CONNECTION_STREAM_BUILD_FAILED,
-	CLIENT_CONNECTION_RUNNING_FAILED,
+	COMMON_STREAM_BUILD_FAILED,
+	COMMON_STREAM_CLOSE_FAILED,
+	COMMON_SET_WRONG_VALUE,
+	COMMON_NULL,
+	
+	COMMANDS_EXECUTE_FAILED,
+	
+	COMMUNICATOR_BUILD_SOCKED_FAILED,
+	COMMUNICATOR_RECEIVE_FAILED,
+	COMMUNICATOR_SEND_FAILED,
+	COMMUNICATOR_RUNNING_FAILED,
+	COMMUNICATOR_CONNECTION_CLOSED,
+	COMMUNICATOR_CONNECTION_BUSY,
+	
 	DB_CONNECT_FAILED,
 	DB_DISCONNECT_FAILED,
-	DB_OPERATION_FAILED,
-	COMMUNICATOR_CONNECTION_CLOSED,
-	COMMUNICATOR_OVER_TIME,
-	CONNECTION_BUSY,
-	DB_CONNECTION_CLOSED,
-	WRONG_CONFIGURATIONS_INDEX,
-	UNKNOW
+	DB_OPERATE_FAILED,
+	
+	CFG_WRONG_CONTENT,
+	CFG_NOT_EXIST,
+	CFG_NOT_EQUAL,
+	
+	OTHERS
 	;
 	
 	public BasicModels.Error getError() {
-		return this.getError(BasicEnums.ErrorLevel.Error, "", "");
+		return this.getError(BasicEnums.ErrorLevel.Warning, "", "");
 	}
 	public BasicModels.Error getError(BasicEnums.ErrorLevel level) {
 		return this.getError(level, "", "");
 	}
 	public BasicModels.Error getError(String detail) {
-		return this.getError(BasicEnums.ErrorLevel.Error, "", detail);
+		return this.getError(BasicEnums.ErrorLevel.Warning, "", detail);
 	}
 	public BasicModels.Error getError(BasicEnums.ErrorLevel level, String detail) {
 		return this.getError(level, "", detail);
+	}
+	public BasicModels.Error getError(String reason, String detail) {
+		return this.getError(BasicEnums.ErrorLevel.Warning, reason, detail);
 	}
 	public BasicModels.Error getError(BasicEnums.ErrorLevel level, String reason, String detail) {
 		StackTraceElement[] stes = Thread.currentThread().getStackTrace();
@@ -67,173 +69,130 @@ public enum ErrorType {
 			e.setReason(reason.length() == 0 ? "Normal" : reason);
 			e.setDetail(detail);
 		}
-		if(this.equals(ErrorType.READ_FILE_FAILED)) {
+		
+		if(this.equals(ErrorType.COMMON_FILE_READ_FAILED)) {
 			e.setType(this);
 			e.setLevel(level);
-			e.setReason("Read File Failed");
+			e.setReason(reason.length() == 0 ? "Read File Failed" : reason);
 			e.setDetail(detail);
 		}
-		if(this.equals(ErrorType.WRITE_FILE_FAILED)) {
+		if(this.equals(ErrorType.COMMON_FILE_WRITE_FAILED)) {
 			e.setType(this);
 			e.setLevel(level);
-			e.setReason("Write File Failed");
+			e.setReason(reason.length() == 0 ? "Write File Failed" : reason);
 			e.setDetail(detail);
 		}
-		if(this.equals(ErrorType.READ_WRITE_FILE_FAILED)) {
+		if(this.equals(ErrorType.COMMON_FILE_OPERATE_FAILED)) {
 			e.setType(this);
 			e.setLevel(level);
-			e.setReason("Read or Write File Failed");
+			e.setReason(reason.length() == 0 ? "Operate File Failed" : reason);
 			e.setDetail(detail);
 		}
-		if(this.equals(ErrorType.FILE_OPERATION_FAILED)) {
+		if(this.equals(ErrorType.COMMON_SET_WRONG_VALUE)) {
 			e.setType(this);
 			e.setLevel(level);
-			e.setReason("File Operation Failed, such as: Create, Delete, Copy");
+			e.setReason(reason.length() == 0 ? "Use Wrong Value to call Set Function" : reason);
 			e.setDetail(detail);
 		}
-		if(this.equals(ErrorType.READ_WRITE_CFG_FAILED)) {
+		if(this.equals(ErrorType.COMMON_NULL)) {
 			e.setType(this);
 			e.setLevel(level);
-			e.setReason("Read or Write CFG File Failed");
+			e.setReason(reason.length() == 0 ? "Value is NULL" : reason);
 			e.setDetail(detail);
 		}
-		if(this.equals(ErrorType.WRONG_CFG_CONTENT)) {
+		if(this.equals(ErrorType.COMMON_STREAM_BUILD_FAILED)) {
 			e.setType(this);
 			e.setLevel(level);
-			e.setReason("the Content of CFG File have mistakes");
-			
+			e.setReason(reason.length() == 0 ? "Build Stream Failed" : reason);
 			e.setDetail(detail);
 		}
-		if(this.equals(ErrorType.DELETE_LOG_FAILED)) {
+		if(this.equals(ErrorType.COMMON_STREAM_CLOSE_FAILED)) {
 			e.setType(this);
 			e.setLevel(level);
-			e.setReason("Delete error log Failed");
-			
+			e.setReason(reason.length() == 0 ? "Close Stream Failed" : reason);
 			e.setDetail(detail);
 		}
-		if(this.equals(ErrorType.CONNECT_SERVER_FAILED)) {
+		
+		if(this.equals(ErrorType.COMMANDS_EXECUTE_FAILED)) {
 			e.setType(this);
 			e.setLevel(level);
-			e.setReason("Cannot connect to Server");
-			
+			e.setReason(reason.length() == 0 ? "Command Execute Failed" : reason);
 			e.setDetail(detail);
 		}
-		if(this.equals(ErrorType.RECEIVE_OVER_TIME)) {
+		
+		if(this.equals(ErrorType.COMMUNICATOR_BUILD_SOCKED_FAILED)) {
 			e.setType(this);
 			e.setLevel(level);
-			e.setReason("Too long to Receive Info");
-			
+			e.setReason(reason.length() == 0 ? "Build Socked Failed" : reason);
 			e.setDetail(detail);
 		}
-		if(this.equals(ErrorType.SEND_OVER_TIME)) {
+		if(this.equals(ErrorType.COMMUNICATOR_RECEIVE_FAILED)) {
 			e.setType(this);
 			e.setLevel(level);
-			e.setReason("Too long to Send Info");
-			
+			e.setReason(reason.length() == 0 ? "Receive Data Failed" : reason);
 			e.setDetail(detail);
 		}
-		if(this.equals(ErrorType.EXECUTE_COMMAND_FAILED)) {
+		if(this.equals(ErrorType.COMMUNICATOR_SEND_FAILED)) {
 			e.setType(this);
 			e.setLevel(level);
-			e.setReason("Execute Command Failed");
-			
-			e.setDetail(detail);
-		}
-		if(this.equals(ErrorType.BUILD_SOCKET_FAILED)) {
-			e.setType(this);
-			e.setLevel(level);
-			e.setReason("Build Socket Failed");
-			
-			e.setDetail(detail);
-		}
-		if(this.equals(ErrorType.SERVER_CONNECTION_STREAM_BUILD_FAILED)) {
-			e.setType(this);
-			e.setLevel(level);
-			e.setReason("Build InputStream or OutputStream of Server Connection Failed");
-			
-			e.setDetail(detail);
-		}
-		if(this.equals(ErrorType.SERVER_CONNECTION_RUNNING_FAILED)) {
-			e.setType(this);
-			e.setLevel(level);
-			e.setReason("Error occurs in Server Connection Running");
-			
-			e.setDetail(detail);
-		}
-		if(this.equals(ErrorType.CLIENT_CONNECTION_STREAM_BUILD_FAILED)) {
-			e.setType(this);
-			e.setLevel(level);
-			e.setReason("Build InputStream or OutputStream of Client Connection Failed");
-			
-			e.setDetail(detail);
-		}
-		if(this.equals(ErrorType.CLIENT_CONNECTION_RUNNING_FAILED)) {
-			e.setType(this);
-			e.setLevel(level);
-			e.setReason("Error occurs in Client Connection Running");
-			
-			e.setDetail(detail);
-		}
-		if(this.equals(ErrorType.DB_CONNECT_FAILED)) {
-			e.setType(this);
-			e.setLevel(level);
-			e.setReason("Connect DataBase Failed");
-			
-			e.setDetail(detail);
-		}
-		if(this.equals(ErrorType.DB_DISCONNECT_FAILED)) {
-			e.setType(this);
-			e.setLevel(level);
-			e.setReason("Disconnect DataBase Failed");
-			
-			e.setDetail(detail);
-		}
-		if(this.equals(ErrorType.DB_OPERATION_FAILED)) {
-			e.setType(this);
-			e.setLevel(level);
-			e.setReason("Operate DataBase Failed");
-			
+			e.setReason(reason.length() == 0 ? "Send Data Failed" : reason);
 			e.setDetail(detail);
 		}
 		if(this.equals(ErrorType.COMMUNICATOR_CONNECTION_CLOSED)) {
 			e.setType(this);
 			e.setLevel(level);
-			e.setReason("Connection is Closed");
-			
+			e.setReason(reason.length() == 0 ? "Connection Already has been Closed" : reason);
 			e.setDetail(detail);
 		}
-		if(this.equals(ErrorType.COMMUNICATOR_OVER_TIME)) {
+		if(this.equals(ErrorType.COMMUNICATOR_CONNECTION_BUSY)) {
 			e.setType(this);
 			e.setLevel(level);
-			e.setReason("Connection Receive/Send/Wait Over Time");
-			
+			e.setReason(reason.length() == 0 ? "Connection is Busy" : reason);
 			e.setDetail(detail);
 		}
-		if(this.equals(ErrorType.CONNECTION_BUSY)) {
+		
+		if(this.equals(ErrorType.DB_CONNECT_FAILED)) {
 			e.setType(this);
 			e.setLevel(level);
-			e.setReason("Connection is busy");
-			
+			e.setReason(reason.length() == 0 ? "Connect to DataBase Failed" : reason);
 			e.setDetail(detail);
 		}
-		if(this.equals(ErrorType.DB_CONNECTION_CLOSED)) {
+		if(this.equals(ErrorType.DB_DISCONNECT_FAILED)) {
 			e.setType(this);
 			e.setLevel(level);
-			e.setReason("Connection is Closed");
-			
+			e.setReason(reason.length() == 0 ? "Close DataBase Failed" : reason);
 			e.setDetail(detail);
 		}
-		if(this.equals(ErrorType.WRONG_CONFIGURATIONS_INDEX)) {
+		if(this.equals(ErrorType.DB_OPERATE_FAILED)) {
 			e.setType(this);
 			e.setLevel(level);
-			e.setReason("One or More Index in Configurations is Wrong");
-			
+			e.setReason(reason.length() == 0 ? "DataBase Operation Failed" : reason);
 			e.setDetail(detail);
 		}
-		if(this.equals(ErrorType.UNKNOW)) {
+		
+		if(this.equals(ErrorType.CFG_WRONG_CONTENT)) {
 			e.setType(this);
 			e.setLevel(level);
-			e.setReason("Unknow");
+			e.setReason(reason.length() == 0 ? "Content is Wrong" : reason);
+			e.setDetail(detail);
+		}
+		if(this.equals(ErrorType.CFG_NOT_EXIST)) {
+			e.setType(this);
+			e.setLevel(level);
+			e.setReason(reason.length() == 0 ? "Item Not Exist" : reason);
+			e.setDetail(detail);
+		}
+		if(this.equals(ErrorType.CFG_NOT_EQUAL)) {
+			e.setType(this);
+			e.setLevel(level);
+			e.setReason(reason.length() == 0 ? "Value Not Equals to" : reason);
+			e.setDetail(detail);
+		}
+		
+		if(this.equals(ErrorType.OTHERS)) {
+			e.setType(this);
+			e.setLevel(level);
+			e.setReason(reason.length() == 0 ? "Unknow Reason Type" : reason);
 			e.setDetail(detail);
 		}
 		
@@ -251,5 +210,11 @@ public enum ErrorType {
 	}
 	public void register(BasicEnums.ErrorLevel level, String detail) {
 		this.getError(level, detail).register();
+	}
+	public void register(String reason, String detail) {
+		this.getError(reason, detail).register();
+	}
+	public void register(BasicEnums.ErrorLevel level, String reason, String detail) {
+		this.getError(level, reason, detail).register();
 	}
 }

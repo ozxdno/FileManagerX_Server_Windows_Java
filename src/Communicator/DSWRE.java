@@ -66,7 +66,10 @@ public class DSWRE extends SWRE implements Interfaces.IDSWRE {
 			}
 		}
 		if(!inLAN) {
-			BasicEnums.ErrorType.UNKNOW.register("Target Machine is Not in LAN List in CFG File");
+			BasicEnums.ErrorType.OTHERS.register(
+					"Target Machine is Not in LAN List in CFG File",
+					"TargetMachine = " + this.destMachineIndex
+					);
 			return false;
 		}
 		

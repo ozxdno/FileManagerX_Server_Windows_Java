@@ -76,7 +76,7 @@ public class Text extends BasicModels.BaseFile implements Interfaces.IPublic {
 			}
 			return true;
 		} catch(Exception e) {
-			BasicEnums.ErrorType.READ_FILE_FAILED.register(e.toString());
+			BasicEnums.ErrorType.COMMON_FILE_READ_FAILED.register(e.toString());
 			return false;
 		}
 	}
@@ -94,7 +94,7 @@ public class Text extends BasicModels.BaseFile implements Interfaces.IPublic {
 			bw.close();
 			return true;
 		} catch(Exception e) {
-			BasicEnums.ErrorType.WRITE_FILE_FAILED.register(e.toString());
+			BasicEnums.ErrorType.COMMON_FILE_WRITE_FAILED.register(e.toString());
 			return false;
 		}
 	}

@@ -62,8 +62,8 @@ public class SWRE implements Interfaces.ISWRE {
 		initThis();
 	}
 	private void initThis() {
-		this.sendWaitTicks = 100;
-		this.receiveWaitTicks = 1000;
+		this.sendWaitTicks = Globals.Configurations.TimeForCommandSend;
+		this.receiveWaitTicks = Globals.Configurations.TimeForCommandReceive;
 		this.connection = Globals.Datas.ServerConnection;
 	}
 	
@@ -71,7 +71,7 @@ public class SWRE implements Interfaces.ISWRE {
 
 	public Interfaces.IReplies execute() {
 		if(connection == null || connection.getExecutor() == null) {
-			BasicEnums.ErrorType.UNKNOW.register("Connection is NULL or Executor is NULL");
+			BasicEnums.ErrorType.COMMON_NULL.register("Connection is NULL or Executor is NULL");
 			return null;
 		}
 		
@@ -81,13 +81,13 @@ public class SWRE implements Interfaces.ISWRE {
 		connection.setContinueSendString();
 		
 		if(!Tools.Time.waitUntilConnectionIdle(this.sendWaitTicks, connection)) {
-			BasicEnums.ErrorType.SEND_OVER_TIME.register("You can check Your net make sure you and Server in a same LAN");
+			BasicEnums.ErrorType.COMMUNICATOR_SEND_FAILED.register("Time out");
 			return null;
 		}
 		
 		connection.setContinueReceiveString();
 		if(!Tools.Time.waitUntilConnectionIdle(this.receiveWaitTicks, connection)) {
-			BasicEnums.ErrorType.RECEIVE_OVER_TIME.register("You can check Your net make sure you and Server in a same LAN");
+			BasicEnums.ErrorType.COMMUNICATOR_RECEIVE_FAILED.register("Time out");
 			return null;
 		}
 		
@@ -98,7 +98,7 @@ public class SWRE implements Interfaces.ISWRE {
 	
 	public Interfaces.IReplies execute(String command) {
 		if(connection == null || connection.getExecutor() == null) {
-			BasicEnums.ErrorType.UNKNOW.register("Connection is NULL or Executor is NULL");
+			BasicEnums.ErrorType.COMMON_NULL.register("Connection is NULL or Executor is NULL");
 			return null;
 		}
 		connection.setSendString(command);

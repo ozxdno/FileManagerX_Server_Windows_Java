@@ -422,13 +422,13 @@ public class FileConnector implements Interfaces.IFileConnector {
 				}
 				return true;
 			} catch(Exception e) {
-				BasicEnums.ErrorType.WRITE_FILE_FAILED.register(e.toString());
+				BasicEnums.ErrorType.COMMON_FILE_WRITE_FAILED.register(e.toString());
 				return false;
 			}
 		} 
 		else {
 			if(this.connection == null) {
-				BasicEnums.ErrorType.UNKNOW.register("The Connection of FileConnector is NULL");
+				BasicEnums.ErrorType.COMMON_NULL.register("The Connection of FileConnector is NULL");
 				return false;
 			}
 			if(!this.connection.isRunning()) {
@@ -472,14 +472,14 @@ public class FileConnector implements Interfaces.IFileConnector {
 				}
 				return true;
 			} catch(Exception e) {
-				BasicEnums.ErrorType.READ_FILE_FAILED.register(e.toString());
+				BasicEnums.ErrorType.COMMON_FILE_READ_FAILED.register(e.toString());
 				return false;
 			}
 			
 		}
 		else {
 			if(this.connection == null) {
-				BasicEnums.ErrorType.UNKNOW.register("The Connection of FileConnector is NULL");
+				BasicEnums.ErrorType.COMMON_NULL.register("The Connection of FileConnector is NULL");
 				return false;
 			}
 			if(!this.connection.isRunning()) {
@@ -498,7 +498,6 @@ public class FileConnector implements Interfaces.IFileConnector {
 			
 			// you can load now.
 			if(opponentData.length != this.sendBytes.length) {
-				BasicEnums.ErrorType.UNKNOW.register("The Buffer Length of Two FileConnector is not Equal");
 				return false;
 			}
 			for(int i=0; i<this.sendBytes.length; i++) {
@@ -516,14 +515,14 @@ public class FileConnector implements Interfaces.IFileConnector {
 			try {
 				fos.close();
 			} catch(Exception e) {
-				BasicEnums.ErrorType.UNKNOW.register(e.toString());
+				BasicEnums.ErrorType.COMMON_STREAM_CLOSE_FAILED.register(e.toString());
 			}
 		}
 		if(fis != null) {
 			try {
 				fis.close();
 			} catch(Exception e) {
-				BasicEnums.ErrorType.UNKNOW.register(e.toString());
+				BasicEnums.ErrorType.COMMON_STREAM_CLOSE_FAILED.register(e.toString());
 			}
 		}
 		

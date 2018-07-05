@@ -14,3 +14,5 @@
 18:48:48 = SEND_OVER_TIME|1530787728635|Error|Too long to Send Info|execute[SWRE.java:84]<-execute[SWRE.java:105]<-loadDepotCFG[CFGFile.java:1016]<-loadCFG[CFGFile.java:46]<-run[MainProcess.java:71]|You can check Your net make sure you and Server in a same LAN
 19:12:18 = RECEIVE_OVER_TIME|1530789138929|Error|Too long to Receive Info|execute[SWRE.java:90]<-execute[SWRE.java:105]<-loadDepotCFG[CFGFile.java:1028]<-loadCFG[CFGFile.java:46]<-run[MainProcess.java:71]|You can check Your net make sure you and Server in a same LAN
 19:26:30 = BUILD_SOCKET_FAILED|1530789990103|Error|Build Socket Failed|setSocket[ClientConnection.java:200]<-loadDepotCFG[CFGFile.java:1006]<-loadCFG[CFGFile.java:46]<-run[MainProcess.java:71]|java.net.ConnectException: Connection refused: connect
+23:42:14 = BUILD_SOCKET_FAILED|1530805334425|Error|Build Socket Failed|setSocket[ClientConnection.java:200]<-loadDepotCFG[CFGFile.java:1006]<-loadCFG[CFGFile.java:46]<-run[MainProcess.java:72]|java.net.ConnectException: Connection refused: connect
+23:42:35 = COMMUNICATOR_CONNECTION_CLOSED|1530805355764|Error|Connection is Closed|run[MainProcess.java:143]|Server[This Machine] Closed

@@ -1,0 +1,3 @@
+00:34:22 = CLIENT_CONNECTION_RUNNING_FAILED|1530808462921|Error|Error occurs in Client Connection Running|run[ClientConnection.java:510]|java.net.SocketException: Connection reset
+00:34:23 = COMMUNICATOR_CONNECTION_CLOSED|1530808463782|Error|Connection is Closed|run[MainProcess.java:148]|Server[Remote Machine] Closed
+03:11:29 = COMMUNICATOR_BUILD_SOCKED_FAILED|1530817889649|Warning|Build Socked Failed|setSocket[ClientConnection.java:200]<-loadDepotCFG[CFGFile.java:1006]<-loadCFG[CFGFile.java:46]<-run[MainProcess.java:72]|java.net.ConnectException: Connection refused: connect

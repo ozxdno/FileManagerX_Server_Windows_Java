@@ -45,11 +45,9 @@ public class CommunicatorFactory {
 		lu.setLoginName(user.getLoginName());
 		Replies.LoginUser replu = (Replies.LoginUser)swre.execute(lu.output());
 		if(replu == null) {
-			BasicEnums.ErrorType.EXECUTE_COMMAND_FAILED.register("Reply of LoginUser is NULL");
 			return null;
 		}
 		if(!replu.isOK()) {
-			BasicEnums.ErrorType.EXECUTE_COMMAND_FAILED.register(replu.getFailedReason());
 			return null;
 		}
 		
@@ -59,11 +57,9 @@ public class CommunicatorFactory {
 		lm.getBasicMessagePackage().setSourMachineIndex(clientMachine.getIndex());
 		Replies.LoginMachine replm = (Replies.LoginMachine)swre.execute(lm.output());
 		if(replm == null) {
-			BasicEnums.ErrorType.EXECUTE_COMMAND_FAILED.register("Reply of LoginMachine is NULL");
 			return null;
 		}
 		if(!replm.isOK()) {
-			BasicEnums.ErrorType.EXECUTE_COMMAND_FAILED.register(replm.getFailedReason());
 			return null;
 		}
 		
@@ -112,6 +108,9 @@ public class CommunicatorFactory {
 			return null;
 		}
 		if(!Globals.Datas.GAPManager.loginMachine(con)) {
+			return null;
+		}
+		if(!Globals.Datas.GAPManager.loginConnection(con)) {
 			return null;
 		}
 		

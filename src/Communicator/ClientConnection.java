@@ -197,7 +197,7 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 			this.socket = new Socket(ip,port);
 			return true;
 		} catch(Exception e) {
-			BasicEnums.ErrorType.BUILD_SOCKET_FAILED.register(e.toString());
+			BasicEnums.ErrorType.COMMUNICATOR_BUILD_SOCKED_FAILED.register(e.toString());
 			return false;
 		}
 	}
@@ -322,8 +322,8 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 		this.setIndex();
 	}
 	private void initThis() {
-		serverMachineInfo = null;
-		clientMachineInfo = null;
+		serverMachineInfo = new BasicModels.MachineInfo();
+		clientMachineInfo = new BasicModels.MachineInfo();
 		user = null;
 		type = BasicEnums.ConnectionType.TRANSPORT_COMMAND;
 		index = 0;
@@ -372,7 +372,7 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 			dis = new DataInputStream(socket.getInputStream());
 			dos = new DataOutputStream(socket.getOutputStream());
 		}catch(Exception e) {
-			BasicEnums.ErrorType.CLIENT_CONNECTION_STREAM_BUILD_FAILED.register(e.toString());
+			BasicEnums.ErrorType.OTHERS.register("Build Stream of Input or Output of Client Failed", e.toString());
 			return;
 		}
 		
@@ -452,7 +452,6 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 						this.fileConnector.setReceiveBytes(receiveBuffer);
 						this.fileConnector.setReceiveLength(receiveLength);
 						if(!this.fileConnector.save()) {
-							BasicEnums.ErrorType.CLIENT_CONNECTION_RUNNING_FAILED.register("Save File Bytes Failed");
 							break;
 						}
 					}
@@ -486,7 +485,6 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 					this.fileConnector.setSendBytes(this.sendBuffer);
 					while(!this.fileConnector.isFinished()) {
 						if(!this.fileConnector.load()) {
-							BasicEnums.ErrorType.SERVER_CONNECTION_RUNNING_FAILED.register("Load Send Bytes Failed");
 							this.fileConnector.close();
 							break;
 						}
@@ -507,7 +505,10 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 				Tools.Time.sleepUntil(10);
 				
 			}catch(Exception e) {
-				BasicEnums.ErrorType.CLIENT_CONNECTION_RUNNING_FAILED.register(e.toString());
+				BasicEnums.ErrorType.COMMUNICATOR_RUNNING_FAILED.register(
+						this.serverMachineInfo.getName() + "->" +
+						this.clientMachineInfo.getName() + ": " + 
+						e.toString());
 				break;
 			}
 		}

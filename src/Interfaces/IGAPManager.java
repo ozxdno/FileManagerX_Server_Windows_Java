@@ -17,9 +17,17 @@ public interface IGAPManager {
 	public boolean loginMachine(long machineIndex, Interfaces.IConnection connection);
 	public boolean loginMachine(long machineIndex, long userIndex, String password, Interfaces.IConnection connection);
 	
+	public boolean loginConnection();
+	public boolean loginConnection(Interfaces.IConnection connection);
+	public boolean loginConnection(long userIndex, String password, Interfaces.IConnection connection);
+	
 	public String test();
 	public String test(String str);
 	public String test(Interfaces.IConnection connection);
 	public String test(String str, Interfaces.IConnection connection);
 	public String test(String str, long userIndex, String password, Interfaces.IConnection connection);
+	
+	public boolean closeServer();
+	public boolean closeServer(Interfaces.IConnection connection);
+	public boolean closeServer(long userIndex, String password, Interfaces.IConnection connection);
 }

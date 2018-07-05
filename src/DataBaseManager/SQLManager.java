@@ -77,10 +77,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			Class.forName("com.mysql.jdbc.Driver");
 			connection = DriverManager.getConnection(url, loginName, password);
 		}catch(Exception e) {
-			BasicEnums.ErrorType.DB_CONNECT_FAILED.register(
-					
-					e.toString()
-					);
+			BasicEnums.ErrorType.DB_CONNECT_FAILED.register(e.toString());
 			this.isConnected = false;
 			return false;
 		}
@@ -101,10 +98,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			try {
 				statement.close();
 			}catch(Exception e) {
-				BasicEnums.ErrorType.DB_DISCONNECT_FAILED.register(
-						
-						e.toString()
-						);
+				BasicEnums.ErrorType.DB_DISCONNECT_FAILED.register(e.toString());
 				return;
 			}
 		}
@@ -113,10 +107,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			try {
 				connection.close();
 			}catch(Exception e) {
-				BasicEnums.ErrorType.DB_DISCONNECT_FAILED.register(
-						
-						e.toString()
-						);
+				BasicEnums.ErrorType.DB_DISCONNECT_FAILED.register(e.toString());
 				return;
 			}
 		}
@@ -183,10 +174,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			exp += ");";
 			return statement.executeUpdate(exp) == 0;
 		} catch(Exception e) {
-			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
-					
-					e.toString()
-					);
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register("Create Table " + tableName + " Failed", e.toString());
 			return false;
 		}
 	}
@@ -400,10 +388,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			statement.execute(exp);
 			return true;
 		} catch(Exception e) {
-			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
-					
-					e.toString()
-					);
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register("Delete Table " + tableName + " Failed", e.toString());
 			return false;
 		}
 	}
@@ -448,7 +433,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			try {
 				qcs.stringToThis((String)conditions);
 			}catch(Exception e) {
-				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
 				return null;
 			}
 			con = this.queryConditionsToStatement(qcs);
@@ -479,10 +464,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			
 			return res;
 		}catch(Exception e) {
-			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
-					
-					e.toString()
-					);
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
 			return res;
 		}
 	}
@@ -503,7 +485,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			try {
 				qcs.stringToThis((String)conditions);
 			}catch(Exception e) {
-				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
 				return null;
 			}
 			con = this.queryConditionsToStatement(qcs);
@@ -534,10 +516,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			
 			return res;
 		}catch(Exception e) {
-			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
-					
-					e.toString()
-					);
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
 			return res;
 		}
 	}
@@ -557,7 +536,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			try {
 				qcs.stringToThis((String)conditions);
 			}catch(Exception e) {
-				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
 				return null;
 			}
 			con = this.queryConditionsToStatement(qcs);
@@ -590,10 +569,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			
 			return us;
 		}catch(Exception e) {
-			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
-					
-					e.toString()
-					);
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
 			return null;
 		}
 	}
@@ -613,7 +589,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			try {
 				qcs.stringToThis((String)conditions);
 			}catch(Exception e) {
-				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
 				return null;
 			}
 			con = this.queryConditionsToStatement(qcs);
@@ -641,10 +617,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			
 			return invs;
 		}catch(Exception e) {
-			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
-					
-					e.toString()
-					);
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
 			return null;
 		}
 	}
@@ -664,7 +637,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			try {
 				qcs.stringToThis((String)conditions);
 			}catch(Exception e) {
-				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
 				return null;
 			}
 			con = this.queryConditionsToStatement(qcs);
@@ -688,7 +661,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			
 			return ms;
 		}catch(Exception e) {
-			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
 			return null;
 		}
 	}
@@ -708,7 +681,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			try {
 				qcs.stringToThis((String)conditions);
 			}catch(Exception e) {
-				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
 				return null;
 			}
 			con = this.queryConditionsToStatement(qcs);
@@ -734,10 +707,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			
 			return ds;
 		}catch(Exception e) {
-			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
-					
-					e.toString()
-					);
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
 			return null;
 		}
 	}
@@ -757,7 +727,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			try {
 				qcs.stringToThis((String)conditions);
 			}catch(Exception e) {
-				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
 				return null;
 			}
 			con = this.queryConditionsToStatement(qcs);
@@ -783,10 +753,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			
 			return dbs;
 		}catch(Exception e) {
-			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
-					
-					e.toString()
-					);
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
 			return null;
 		}
 	}
@@ -809,7 +776,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			try {
 				qcs.stringToThis((String)conditions);
 			}catch(Exception e) {
-				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
 				return null;
 			}
 			con = this.queryConditionsToStatement(qcs);
@@ -840,10 +807,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			
 			return null;
 		}catch(Exception e) {
-			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
-					
-					e.toString()
-					);
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
 			return null;
 		}
 	}
@@ -863,7 +827,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			try {
 				qcs.stringToThis((String)conditions);
 			}catch(Exception e) {
-				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
 				return null;
 			}
 			con = this.queryConditionsToStatement(qcs);
@@ -894,10 +858,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			
 			return null;
 		}catch(Exception e) {
-			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
-					
-					e.toString()
-					);
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
 			return null;
 		}
 	}
@@ -917,7 +878,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			try {
 				qcs.stringToThis((String)conditions);
 			}catch(Exception e) {
-				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
 				return null;
 			}
 			con = this.queryConditionsToStatement(qcs);
@@ -949,10 +910,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			
 			return null;
 		}catch(Exception e) {
-			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
-					
-					e.toString()
-					);
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
 			return null;
 		}
 	}
@@ -972,7 +930,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			try {
 				qcs.stringToThis((String)conditions);
 			}catch(Exception e) {
-				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
 				return null;
 			}
 			con = this.queryConditionsToStatement(qcs);
@@ -999,10 +957,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			
 			return null;
 		}catch(Exception e) {
-			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
-					
-					e.toString()
-					);
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
 			return null;
 		}
 	}
@@ -1022,7 +977,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			try {
 				qcs.stringToThis((String)conditions);
 			}catch(Exception e) {
-				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
 				return null;
 			}
 			con = this.queryConditionsToStatement(qcs);
@@ -1045,10 +1000,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			
 			return null;
 		}catch(Exception e) {
-			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
-					
-					e.toString()
-					);
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
 			return null;
 		}
 	}
@@ -1068,7 +1020,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			try {
 				qcs.stringToThis((String)conditions);
 			}catch(Exception e) {
-				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
 				return null;
 			}
 			con = this.queryConditionsToStatement(qcs);
@@ -1093,10 +1045,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			
 			return null;
 		}catch(Exception e) {
-			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
-					
-					e.toString()
-					);
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
 			return null;
 		}
 	}
@@ -1116,7 +1065,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			try {
 				qcs.stringToThis((String)conditions);
 			}catch(Exception e) {
-				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
 				return null;
 			}
 			con = this.queryConditionsToStatement(qcs);
@@ -1141,10 +1090,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			
 			return null;
 		}catch(Exception e) {
-			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
-					
-					e.toString()
-					);
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
 			return null;
 		}
 	}
@@ -1259,10 +1205,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			statement.executeUpdate(exp);
 			return true;
 		}catch(Exception e) {
-			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
-					
-					e.toString()
-					);
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
 			return false;
 		}
 	}
@@ -1318,10 +1261,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			statement.executeUpdate(exp);
 			return true;
 		}catch(Exception e) {
-			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
-					
-					e.toString()
-					);
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
 			return false;
 		}
 	}
@@ -1378,10 +1318,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			statement.executeUpdate(exp);
 			return true;
 		}catch(Exception e) {
-			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
-					
-					e.toString()
-					);
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
 			return false;
 		}
 	}
@@ -1424,10 +1361,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			statement.executeUpdate(exp);
 			return true;
 		}catch(Exception e) {
-			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
-					
-					e.toString()
-					);
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
 			return false;
 		}
 	}
@@ -1467,10 +1401,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			statement.executeUpdate(exp);
 			return true;
 		}catch(Exception e) {
-			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
-					
-					e.toString()
-					);
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
 			return false;
 		}
 	}
@@ -1514,10 +1445,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			statement.executeUpdate(exp);
 			return true;
 		}catch(Exception e) {
-			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
-					
-					e.toString()
-					);
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
 			return false;
 		}
 	}
@@ -1561,10 +1489,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			statement.executeUpdate(exp);
 			return true;
 		}catch(Exception e) {
-			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
-					
-					e.toString()
-					);
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
 			return false;
 		}
 	}
@@ -1633,10 +1558,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			this.statement.execute(exp);
 			return true;
 		} catch(Exception e) {
-			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
-					
-					e.toString()
-					);
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
 			return true;
 		}
 	}
@@ -1646,10 +1568,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			this.statement.execute(exp);
 			return true;
 		} catch(Exception e) {
-			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
-					
-					e.toString()
-					);
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
 			return true;
 		}
 	}
@@ -1659,10 +1578,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			this.statement.execute(exp);
 			return true;
 		} catch(Exception e) {
-			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
-					
-					e.toString()
-					);
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
 			return true;
 		}
 	}
@@ -1672,10 +1588,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			this.statement.execute(exp);
 			return true;
 		} catch(Exception e) {
-			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
-					
-					e.toString()
-					);
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
 			return true;
 		}
 	}
@@ -1685,10 +1598,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			this.statement.execute(exp);
 			return true;
 		} catch(Exception e) {
-			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
-					
-					e.toString()
-					);
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
 			return true;
 		}
 	}
@@ -1698,10 +1608,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			this.statement.execute(exp);
 			return true;
 		} catch(Exception e) {
-			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
-					
-					e.toString()
-					);
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
 			return true;
 		}
 	}
@@ -1711,10 +1618,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			this.statement.execute(exp);
 			return true;
 		} catch(Exception e) {
-			BasicEnums.ErrorType.DB_OPERATION_FAILED.register(
-					
-					e.toString()
-					);
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
 			return true;
 		}
 	}

@@ -209,7 +209,6 @@ public class Input extends Comman implements Interfaces.ICommands {
 		this.getConnection().setContinueSendString();
 	}
 	public void replyNULL() {
-		BasicEnums.ErrorType.EXECUTE_COMMAND_FAILED.register("The Reply from other Connection is NULL");
 		this.getReply().setOK(false);
 		this.getReply().setFailedReason("The Reply from other Connection is NULL");
 		this.reply();

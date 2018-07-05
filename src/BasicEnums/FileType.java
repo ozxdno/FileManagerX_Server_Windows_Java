@@ -5,8 +5,7 @@ public enum FileType {
 	Picture,
 	Gif,
 	Music,
-	Video_Short,
-	Video_Long,
+	Video,
 	Exe,
 	Folder
 }

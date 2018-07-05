@@ -147,7 +147,7 @@ public class ServerTCP implements Interfaces.IServerScanner {
 			scanner.start();
 			return true;
 		} catch(Exception e) {
-			BasicEnums.ErrorType.BUILD_SOCKET_FAILED.register(e.toString());
+			BasicEnums.ErrorType.COMMUNICATOR_BUILD_SOCKED_FAILED.register(e.toString());
 			return false;
 		}
 	}

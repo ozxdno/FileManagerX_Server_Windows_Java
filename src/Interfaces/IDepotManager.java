@@ -5,7 +5,12 @@ public interface IDepotManager {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public boolean setDepot(BasicModels.DepotInfo depot);
+	public boolean setUncheck(boolean uncheck);
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public BasicModels.DepotInfo getDepot();
+	public boolean isUncheck();
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -17,6 +22,7 @@ public interface IDepotManager {
 	
 	public boolean renameDirectory(String sourUrl, String targetName);
 	public boolean deleteDirectory(String targetFolder);
+	public boolean deleteContent(String folderUrl);
 	public boolean moveDirectory(String sourUrl, String destUrl);
 	public boolean copyDirectory(String sourUrl, String destUrl);
 	

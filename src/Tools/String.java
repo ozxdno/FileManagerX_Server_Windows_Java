@@ -76,6 +76,14 @@ public class String {
 			java.lang.String mark) {
 		return link(items,mark,0,items.length-1);
 	}
+	
+	public static final java.lang.String linkBefore(java.lang.String[] items, int index, java.lang.String mark) {
+		return link(items, mark, 0, index-1);
+	}
+	public static final java.lang.String linkBehind(java.lang.String[] items, int index, java.lang.String mark) {
+		return link(items, mark, index+1, items.length);
+	}
+	
 	/**
 	 * 把指定一行字符串分割成若干个子字符串，分割标志为 mark 。
 	 * @param line 指定字符串

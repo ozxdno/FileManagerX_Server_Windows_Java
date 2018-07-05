@@ -327,7 +327,7 @@ public class Errors implements Interfaces.IPublic, Interfaces.ICollection {
 				bw.close();
 				
 			} catch(Exception exception) {
-				BasicModels.Error ie = BasicEnums.ErrorType.WRITE_FILE_FAILED.getError(exception.toString());
+				BasicModels.Error ie = BasicEnums.ErrorType.COMMON_FILE_WRITE_FAILED.getError(exception.toString());
 				newErrors.add(ie);
 				continue;
 			}
@@ -358,7 +358,7 @@ public class Errors implements Interfaces.IPublic, Interfaces.ICollection {
 				try {
 					ok &= f.delete();
 				} catch(Exception e) {
-					BasicEnums.ErrorType.DELETE_LOG_FAILED.register(e.toString());
+					BasicEnums.ErrorType.COMMON_FILE_OPERATE_FAILED.register("Delete Log File Failed", e.toString());
 					ok = false;
 				}
 			}

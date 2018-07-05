@@ -12,6 +12,7 @@ public class BaseFiles implements Interfaces.IPublic, Interfaces.ICollection {
 	
 	public boolean setContent(List<BasicModels.BaseFile> content) {
 		if(content == null) {
+			BasicEnums.ErrorType.COMMON_SET_WRONG_VALUE.register("content is NULL");
 			return false;
 		}
 		this.content = content;
@@ -121,7 +122,11 @@ public class BaseFiles implements Interfaces.IPublic, Interfaces.ICollection {
 			}
 		};
 		
-		Collections.sort(this.getContent(), c);
+		try {
+			Collections.sort(this.getContent(), c);
+		} catch(Exception e) {
+			BasicEnums.ErrorType.OTHERS.register(BasicEnums.ErrorLevel.Error,"Error in Compare",e.toString());
+		}
 	}
 	
 	/**
@@ -141,7 +146,11 @@ public class BaseFiles implements Interfaces.IPublic, Interfaces.ICollection {
 			}
 		};
 		
-		Collections.sort(this.getContent(), c);
+		try {
+			Collections.sort(this.getContent(), c);
+		} catch(Exception e) {
+			BasicEnums.ErrorType.OTHERS.register(BasicEnums.ErrorLevel.Error,"Error in Compare",e.toString());
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

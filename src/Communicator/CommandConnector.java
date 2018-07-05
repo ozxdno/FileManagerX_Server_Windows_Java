@@ -225,16 +225,16 @@ public class CommandConnector implements Interfaces.ICommandConnector {
 		if(this.destMachineInfo == null || this.destMachine != this.destMachineInfo.getIndex()) {
 			this.setDestMachineInfo(); }
 		if(this.sourMachineInfo == null) {
-			BasicEnums.ErrorType.UNKNOW.register("SourMachineInfo is NULL");
+			BasicEnums.ErrorType.COMMON_NULL.register("SourMachineInfo is NULL");
 			return null;
 		}
 		if(this.destMachineInfo == null) {
-			BasicEnums.ErrorType.UNKNOW.register("DestMachineInfo is NULL");
+			BasicEnums.ErrorType.COMMON_NULL.register("DestMachineInfo is NULL");
 			return null;
 		}
 		
 		if(this.sourConnection == null) {
-			BasicEnums.ErrorType.UNKNOW.register("SourConnection is NULL");
+			BasicEnums.ErrorType.COMMON_NULL.register("SourConnection is NULL");
 			return null;
 		}
 		if(this.destConnection == null) {
@@ -247,9 +247,12 @@ public class CommandConnector implements Interfaces.ICommandConnector {
 				}
 			}
 			if(this.destConnection == null) {
-				Interfaces.IConnection con = Factories.CommunicatorFactory.createRunningClientConnection(destMachineInfo, sourMachineInfo, this.sourConnection.getUser());
+				Interfaces.IConnection con = Factories.CommunicatorFactory.createRunningClientConnection(
+						destMachineInfo, 
+						sourMachineInfo,
+						this.sourConnection.getUser()
+						);
 				if(con == null) {
-					BasicEnums.ErrorType.UNKNOW.register("Create Connnectionn Failed");
 					return null;
 				}
 				Globals.Datas.Client.add(con);
@@ -257,7 +260,7 @@ public class CommandConnector implements Interfaces.ICommandConnector {
 			}
 		}
 		if(this.destConnection  == null) {
-			BasicEnums.ErrorType.UNKNOW.register("DestConnection is NULL");
+			BasicEnums.ErrorType.COMMON_NULL.register("DestConnection is NULL");
 			return null;
 		}
 		if(!this.destConnection.isRunning()) {

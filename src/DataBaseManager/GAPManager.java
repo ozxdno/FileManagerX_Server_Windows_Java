@@ -19,7 +19,7 @@ public class GAPManager implements Interfaces.IGAPManager {
 				cmd.setQueryConditions((QueryConditions)conditions);
 			}
 			else {
-				BasicEnums.ErrorType.UNKNOW.register("Type of conditions is Wrong");
+				BasicEnums.ErrorType.OTHERS.register("Type of conditions is Wrong");
 				return null;
 			}
 			
@@ -48,7 +48,7 @@ public class GAPManager implements Interfaces.IGAPManager {
 				cmd.setQueryConditions((QueryConditions)conditions);
 			}
 			else {
-				BasicEnums.ErrorType.UNKNOW.register("Type of conditions is Wrong");
+				BasicEnums.ErrorType.OTHERS.register("Type of conditions is Wrong");
 				return null;
 			}
 			
@@ -77,7 +77,7 @@ public class GAPManager implements Interfaces.IGAPManager {
 				cmd.setQueryConditions((QueryConditions)conditions);
 			}
 			else {
-				BasicEnums.ErrorType.UNKNOW.register("Type of conditions is Wrong");
+				BasicEnums.ErrorType.OTHERS.register("Type of conditions is Wrong");
 				return null;
 			}
 			
@@ -106,7 +106,7 @@ public class GAPManager implements Interfaces.IGAPManager {
 				cmd.setQueryConditions((QueryConditions)conditions);
 			}
 			else {
-				BasicEnums.ErrorType.UNKNOW.register("Type of conditions is Wrong");
+				BasicEnums.ErrorType.OTHERS.register("Type of conditions is Wrong");
 				return null;
 			}
 			
@@ -190,6 +190,33 @@ public class GAPManager implements Interfaces.IGAPManager {
 		return rep != null && rep.isOK();
 	}
 	
+	public boolean loginConnection() {
+		return this.loginConnection(
+				Globals.Datas.ServerConnection.getUser().getIndex(),
+				Globals.Datas.ServerConnection.getUser().getPassword(),
+				Globals.Datas.ServerConnection
+				);
+	}
+	public boolean loginConnection(Interfaces.IConnection connection) {
+		return this.loginConnection(
+				connection.getUser().getIndex(),
+				connection.getUser().getPassword(),
+				connection
+				);
+	}
+	public boolean loginConnection(long userIndex, String password, Interfaces.IConnection connection) {
+		Interfaces.ISWRE swre = Factories.CommunicatorFactory.createSWRE();
+		swre.setConnection(connection);
+		
+		Commands.LoginConnection cmd = new Commands.LoginConnection();
+		cmd.getBasicMessagePackage().setSourUserIndex(userIndex);
+		cmd.getBasicMessagePackage().setPassword(password);
+		cmd.setConnectionType(connection.getType());
+		
+		Interfaces.IReplies rep = swre.execute(cmd.output());
+		return rep != null && rep.isOK();
+	}
+
 	public String test() {
 		return this.test(
 				"This is a test String",
@@ -236,5 +263,31 @@ public class GAPManager implements Interfaces.IGAPManager {
 			return rep.getTestString();
 		}
 		return null;
+	}
+	
+	public boolean closeServer() {
+		return this.closeServer(
+				Globals.Configurations.This_UserIndex,
+				Globals.Datas.ThisUser.getPassword(),
+				Globals.Datas.ServerConnection
+				);
+	}
+	public boolean closeServer(Interfaces.IConnection connection) {
+		return this.closeServer(
+				Globals.Configurations.This_UserIndex,
+				Globals.Datas.ThisUser.getPassword(),
+				connection
+				);
+	}
+	public boolean closeServer(long userIndex, String password, Interfaces.IConnection connection) {
+		Interfaces.ISWRE swre = Factories.CommunicatorFactory.createSWRE();
+		swre.setConnection(connection);
+		
+		Commands.CloseServer cmd = new Commands.CloseServer();
+		cmd.getBasicMessagePackage().setSourUserIndex(userIndex);
+		cmd.getBasicMessagePackage().setPassword(password);
+		
+		Interfaces.IReplies rep = swre.execute(cmd.output());
+		return rep != null && rep.isOK();
 	}
 }

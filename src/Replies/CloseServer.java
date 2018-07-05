@@ -14,7 +14,7 @@ public class CloseServer extends Comman implements Interfaces.IReplies {
 		if(!this.isOK()) {
 			return false;
 		}
-		if(this.getBasicMessagePackage().getDestMachineIndex() != connection.getServerMachineInfo().getIndex()) {
+		if(this.getBasicMessagePackage().getDestMachineIndex() != Globals.Configurations.This_MachineIndex) {
 			return true;
 		}
 		

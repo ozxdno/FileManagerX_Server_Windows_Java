@@ -12,7 +12,7 @@ public class CFGFile {
 		try {
 			return f.createNewFile();
 		} catch(Exception e) {
-			BasicEnums.ErrorType.READ_WRITE_CFG_FAILED.register(e.toString());
+			BasicEnums.ErrorType.COMMON_FILE_OPERATE_FAILED.register(e.toString());
 			return false;
 		}
 	}
@@ -23,14 +23,14 @@ public class CFGFile {
 		
 		BasicModels.Config c = cs.fetch("StartType");
 		if(c == null) {
-			BasicEnums.ErrorType.WRONG_CFG_CONTENT.register("No StartType, You should set StartType in CFG file. Example: StartType = Client");
+			BasicEnums.ErrorType.CFG_NOT_EXIST.register("Not Exist StartType");
 			return false;
 		}
 		BasicEnums.StartType type = BasicEnums.StartType.Server;
 		try {
 			type = BasicEnums.StartType.valueOf(c.getValue());
 		} catch(Exception e) {
-			BasicEnums.ErrorType.WRONG_CFG_CONTENT.register("Wrong StartType, No such StartType: " + c.getValue());
+			BasicEnums.ErrorType.CFG_WRONG_CONTENT.register("Wrong StartType, No such StartType: " + c.getValue());
 			return false;
 		}
 		
@@ -144,7 +144,7 @@ public class CFGFile {
 				Globals.Configurations.This_MachineIndex = Globals.Configurations.Server_MachineIndex;
 			}
 			if(Globals.Configurations.Server_MachineIndex != Globals.Configurations.This_MachineIndex) {
-				BasicEnums.ErrorType.WRONG_CFG_CONTENT.register(
+				BasicEnums.ErrorType.CFG_NOT_EQUAL.register(
 						"This_MachineIndex not equals to Server_MachineIndex, " +
 						"This_MachineIndex and Server_MachineIndex must have same value or you can remain it blank."
 						);
@@ -158,7 +158,7 @@ public class CFGFile {
 				Globals.Configurations.Server_UserIndex = Globals.Configurations.This_UserIndex;
 			}
 			if(Globals.Configurations.Server_UserIndex != Globals.Configurations.This_UserIndex) {
-				BasicEnums.ErrorType.WRONG_CFG_CONTENT.register(
+				BasicEnums.ErrorType.CFG_NOT_EQUAL.register(
 						"This_UserIndex not equals to Server_UserIndex, " + 
 						"This_UserIndex and Server_UserIndex must have same value or you can remain it blank."
 						);
@@ -306,15 +306,15 @@ public class CFGFile {
 			// then the index in Configurations is invalid.
 			// we should report this error.
 			if(Globals.Configurations.Next_MachineIndex < Globals.Configurations.This_MachineIndex) {
-				BasicEnums.ErrorType.WRONG_CONFIGURATIONS_INDEX.register("You should clear Server DataBase");
+				BasicEnums.ErrorType.CFG_WRONG_CONTENT.register("You should clear Server DataBase");
 				return false;
 			}
 			if(Globals.Configurations.Next_DepotIndex < depotInfo.getIndex()) {
-				BasicEnums.ErrorType.WRONG_CONFIGURATIONS_INDEX.register("You should clear Server DataBase");
+				BasicEnums.ErrorType.CFG_WRONG_CONTENT.register("You should clear Server DataBase");
 				return false;
 			}
 			if(Globals.Configurations.Next_DataBaseIndex < dbInfo.getIndex()) {
-				BasicEnums.ErrorType.WRONG_CONFIGURATIONS_INDEX.register("You should clear Server DataBase");
+				BasicEnums.ErrorType.CFG_WRONG_CONTENT.register("You should clear Server DataBase");
 				return false;
 			}
 		}
@@ -351,7 +351,7 @@ public class CFGFile {
 			// then the index in Configurations is invalid.
 			// we should report this error.
 			if(Globals.Configurations.Next_UserIndex < Globals.Configurations.This_UserIndex) {
-				BasicEnums.ErrorType.WRONG_CONFIGURATIONS_INDEX.register("You should clear Server DataBase");
+				BasicEnums.ErrorType.CFG_WRONG_CONTENT.register("You should clear Server DataBase");
 				return false;
 			}
 		}
@@ -891,30 +891,30 @@ public class CFGFile {
 			
 			c = cs.fetch("ServerMachineIP");
 			if(c == null) {
-				BasicEnums.ErrorType.WRONG_CFG_CONTENT.register("Not Find: ServerMachineIP");
+				BasicEnums.ErrorType.CFG_NOT_EXIST.register("Not Find: ServerMachineIP");
 				return false;
 			}
 			java.lang.String ip = c.getValue();
 			if(!Tools.Url.isIp(ip)) {
-				BasicEnums.ErrorType.WRONG_CFG_CONTENT.register("the Value of ServerMachineIP is wrong");
+				BasicEnums.ErrorType.CFG_WRONG_CONTENT.register("the Value of ServerMachineIP is wrong");
 				return false;
 			}
 			machine.setIp(ip);
 			
 			c = cs.fetch("ServerMachinePort");
 			if(c == null) {
-				BasicEnums.ErrorType.WRONG_CFG_CONTENT.register("Not Find: ServerMachinePort");
+				BasicEnums.ErrorType.CFG_NOT_EXIST.register("Not Find: ServerMachinePort");
 				return false;
 			}
 			int port = c.getInt();
 			if(port <=0 || port > 65535) {
-				BasicEnums.ErrorType.WRONG_CFG_CONTENT.register("the Value of ServerMachinePort is wrong");
+				BasicEnums.ErrorType.CFG_WRONG_CONTENT.register("the Value of ServerMachinePort is wrong");
 				return false;
 			}
 			machine.setPort(port);
 			
 			if(machine.getIndex() != Globals.Configurations.Server_MachineIndex) {
-				BasicEnums.ErrorType.WRONG_CFG_CONTENT.register("ServerMachineIndex Not Equals to Server_MachineIndex");
+				BasicEnums.ErrorType.CFG_NOT_EQUAL.register("ServerMachineIndex Not Equals to Server_MachineIndex");
 				return false;
 			}
 			Globals.Datas.ServerMachine.copyReference(machine);
@@ -966,7 +966,7 @@ public class CFGFile {
 			}
 			
 			if(machine.getIndex() != Globals.Configurations.This_MachineIndex) {
-				BasicEnums.ErrorType.WRONG_CFG_CONTENT.register("MachineIndex Not Equals to This_MachineIndex");
+				BasicEnums.ErrorType.CFG_NOT_EQUAL.register("MachineIndex Not Equals to This_MachineIndex");
 			}
 			Globals.Datas.ThisMachine.copyReference(machine);
 		}
@@ -1016,7 +1016,7 @@ public class CFGFile {
 			Replies.LoginUser replu = (Replies.LoginUser)swre.execute(lu.output());
 			if(replu == null) { return false; }
 			if(!replu.isOK()) {
-				BasicEnums.ErrorType.EXECUTE_COMMAND_FAILED.register("Login Failed");
+				BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register("Login Failed");
 				return false;
 			}
 			
@@ -1028,7 +1028,7 @@ public class CFGFile {
 			Replies.QueryConfigurations repqcfg = (Replies.QueryConfigurations)swre.execute(qcfg.output());
 			if(repqcfg == null) { return false; }
 			if(!repqcfg.isOK()) {
-				BasicEnums.ErrorType.EXECUTE_COMMAND_FAILED.register("QueryConfigurations Failed");
+				BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register("QueryConfigurations Failed");
 				return false;
 			}
 			Globals.Configurations.Server_MachineIndex = repqcfg.getServer_MachineIndex();
@@ -1044,7 +1044,7 @@ public class CFGFile {
 			Replies.QueryUser repqtu = (Replies.QueryUser)swre.execute(qtu.output());
 			if(repqtu == null) { return false; }
 			if(!repqtu.isOK()) {
-				BasicEnums.ErrorType.EXECUTE_COMMAND_FAILED.register("QueryUser[This] Failed");
+				BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register("QueryUser[This] Failed");
 				return false;
 			}
 			Globals.Datas.ThisUser.copyReference(repqtu.getUser());
@@ -1057,7 +1057,7 @@ public class CFGFile {
 			Replies.QueryUser repqsu = (Replies.QueryUser)swre.execute(qsu.output());
 			if(repqsu == null) { return false; }
 			if(!repqsu.isOK()) {
-				BasicEnums.ErrorType.EXECUTE_COMMAND_FAILED.register("QueryUser[Server] Failed");
+				BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register("QueryUser[Server] Failed");
 				return false;
 			}
 			Globals.Datas.ServerUser.copyReference(repqsu.getUser());
@@ -1069,7 +1069,7 @@ public class CFGFile {
 			Replies.UpdateMachine reputm = (Replies.UpdateMachine)swre.execute(utm.output());
 			if(reputm == null) { return false; }
 			if(!reputm.isOK()) {
-				BasicEnums.ErrorType.EXECUTE_COMMAND_FAILED.register("QueryMachine and UpdateMachine[This] Failed");
+				BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register("QueryMachine and UpdateMachine[This] Failed");
 				return false;
 			}
 			Globals.Datas.ThisMachine.copyReference(reputm.getMachineInfo());
@@ -1082,7 +1082,7 @@ public class CFGFile {
 			Replies.QueryMachine repqsm = (Replies.QueryMachine)swre.execute(qsm.output());
 			if(repqsm == null) { return false; }
 			if(!repqsm.isOK()) {
-				BasicEnums.ErrorType.EXECUTE_COMMAND_FAILED.register("QueryMachine[Server] Failed");
+				BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register("QueryMachine[Server] Failed");
 				return false;
 			}
 			Globals.Datas.ServerMachine.copyReference(repqsm.getMachineInfo());
@@ -1093,7 +1093,7 @@ public class CFGFile {
 			Replies.LoginMachine replm = (Replies.LoginMachine)swre.execute(lm.output());
 			if(replm == null) { return false; }
 			if(!replm.isOK()) {
-				BasicEnums.ErrorType.EXECUTE_COMMAND_FAILED.register("LoginMachine Failed");
+				BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register("LoginMachine Failed");
 				return false;
 			}
 		}
@@ -1157,7 +1157,7 @@ public class CFGFile {
 			Replies.QueryDepots repqde = (Replies.QueryDepots)swre.execute(qde.output());
 			if(repqde == null) { return false; }
 			if(!repqde.isOK()) {
-				BasicEnums.ErrorType.EXECUTE_COMMAND_FAILED.register("QueryDepots[load] Failed");
+				BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register("QueryDepots[load] Failed");
 				return false;
 			}
 			des = repqde.getDepotInfos();
@@ -1169,7 +1169,7 @@ public class CFGFile {
 			Replies.QueryDataBases repqdb = (Replies.QueryDataBases)swre.execute(qdb.output());
 			if(repqdb == null) { return false; }
 			if(!repqdb.isOK()) {
-				BasicEnums.ErrorType.EXECUTE_COMMAND_FAILED.register("QueryDataBases[load] Failed");
+				BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register("QueryDataBases[load] Failed");
 				return false;
 			}
 			dbs = repqdb.getDBInfos();
@@ -1262,7 +1262,7 @@ public class CFGFile {
 			Replies.QueryConfigurations repqcfg = (Replies.QueryConfigurations)swre.execute(qcfg.output());
 			if(repqcfg == null) { return false; }
 			if(!repqcfg.isOK()) {
-				BasicEnums.ErrorType.EXECUTE_COMMAND_FAILED.register("QueryConfigurations Failed");
+				BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register("QueryConfigurations Failed");
 				return false;
 			}
 			
@@ -1280,7 +1280,7 @@ public class CFGFile {
 			Replies.QueryDepot repqd = (Replies.QueryDepot)swre.execute(qd.output());
 			if(repqd == null) { continue; }
 			if(!(!repqd.isOK() && repqd.getFailedReason().equals("Not Exist"))) {
-				BasicEnums.ErrorType.EXECUTE_COMMAND_FAILED.register( "Add Depot Failed, Existed: " + depotInfo.getName() );
+				BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register( "Add Depot Failed, Existed: " + depotInfo.getName() );
 				continue;
 			}
 			
@@ -1291,7 +1291,7 @@ public class CFGFile {
 			Replies.QueryDataBase repqdb = (Replies.QueryDataBase)swre.execute(qdb.output());
 			if(repqdb == null) { continue; }
 			if(!(!repqdb.isOK() && repqdb.getFailedReason().equals("Not Exist"))) {
-				BasicEnums.ErrorType.EXECUTE_COMMAND_FAILED.register( "Add DataBase Failed, Existed: " + dbInfo.getName() );
+				BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register( "Add DataBase Failed, Existed: " + dbInfo.getName() );
 				continue;
 			}
 			
@@ -1301,7 +1301,7 @@ public class CFGFile {
 			Replies.UpdateDepot repud = (Replies.UpdateDepot)swre.execute(ud.output());
 			if(repud == null) { continue; }
 			if(!repud.isOK()) {
-				BasicEnums.ErrorType.EXECUTE_COMMAND_FAILED.register( "UpdataDepot Failed, " + repud.getFailedReason() );
+				BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register( "UpdataDepot Failed, " + repud.getFailedReason() );
 				continue;
 			}
 			depotInfo = repud.getDepotInfo();
@@ -1312,7 +1312,7 @@ public class CFGFile {
 			Replies.UpdateDataBase repudb = (Replies.UpdateDataBase)swre.execute(udb.output());
 			if(repudb == null) { continue; }
 			if(!repudb.isOK()) {
-				BasicEnums.ErrorType.EXECUTE_COMMAND_FAILED.register( "UpdateDataBase Failed, " + repudb.getFailedReason() );
+				BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register( "UpdateDataBase Failed, " + repudb.getFailedReason() );
 				continue;
 			}
 			dbInfo = repudb.getDataBaseInfo();
@@ -1375,7 +1375,7 @@ public class CFGFile {
 			
 			// operate failed
 			if(reprd == null || !reprd.isOK() || reprdb == null || !reprdb.isOK()) {
-				BasicEnums.ErrorType.EXECUTE_COMMAND_FAILED.register(BasicEnums.ErrorLevel.Warning, "Delete Depot or DataBase Failed");
+				BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register(BasicEnums.ErrorLevel.Warning, "Delete Depot or DataBase Failed");
 			}
 			
 			// remove database
@@ -1565,85 +1565,7 @@ public class CFGFile {
 	}
 	private final static boolean resetDepotCFG() {
 		// delete all depots
-		for(Interfaces.IDBManager dbm : Globals.Datas.DBManagers.getContent()) {
-			dbm.deleteDepotTables();
-		}
 		
-		// RemoveDepots
-		DataBaseManager.QueryCondition qc = new DataBaseManager.QueryCondition();
-		qc.setItemName("MachineIndex");
-		qc.setValue("" + Globals.Configurations.This_MachineIndex);
-		
-		Commands.RemoveDepots rd = new Commands.RemoveDepots();
-		rd.setQueryCondition(qc);
-		Globals.Datas.ServerConnection.setSendString(rd.output());
-		Globals.Datas.ServerConnection.setContinueSendString();
-		if(!Tools.Time.waitUntilConnectionIdle(100, Globals.Datas.ServerConnection)) {
-			BasicEnums.ErrorType.SEND_OVER_TIME.register(
-					"RemoveDepots Failed, " +
-					"You can check Your net make sure you and Server in a same LAN"
-					);
-			return false;
-		}
-		Globals.Datas.ServerConnection.setContinueReceiveString();
-		if(!Tools.Time.waitUntilConnectionIdle(1000, Globals.Datas.ServerConnection)) {
-			BasicEnums.ErrorType.RECEIVE_OVER_TIME.register(
-					"RemoveDepots Failed, " + 
-					"You can check Your net make sure you and Server in a same LAN"
-					);
-			return false;
-		}
-		
-		try {
-			Replies.RemoveDepots reprd = (Replies.RemoveDepots)((Interfaces.IReplyExecutor)Globals.Datas.ServerConnection.getExecutor()).getReply();
-			if(!reprd.isOK()) {
-				BasicEnums.ErrorType.EXECUTE_COMMAND_FAILED.register(
-						"Command: " + rd.output() + " , " +
-						reprd.getFailedReason()
-						);
-			}
-		} catch(Exception e) {
-			BasicEnums.ErrorType.UNKNOW.register(
-					"RemoveDepot Failed, " +
-					e.toString()
-					);
-		}
-		
-		// RemoveDataBases
-		Commands.RemoveDataBases rdb = new Commands.RemoveDataBases();
-		rdb.setQueryCondition(qc);
-		Globals.Datas.ServerConnection.setSendString(rdb.output());
-		Globals.Datas.ServerConnection.setContinueSendString();
-		if(!Tools.Time.waitUntilConnectionIdle(100, Globals.Datas.ServerConnection)) {
-			BasicEnums.ErrorType.SEND_OVER_TIME.register(
-					"RemoveDataBases Failed" + " , " + 
-					"You can check Your net make sure you and Server in a same LAN"
-					);
-			return false;
-		}
-		Globals.Datas.ServerConnection.setContinueReceiveString();
-		if(!Tools.Time.waitUntilConnectionIdle(1000, Globals.Datas.ServerConnection)) {
-			BasicEnums.ErrorType.RECEIVE_OVER_TIME.register(
-					"RemoveDataBases Failed" + " , " +
-					"You can check Your net make sure you and Server in a same LAN"
-					);
-			return false;
-		}
-		
-		try {
-			Replies.RemoveDataBases reprd = (Replies.RemoveDataBases)((Interfaces.IReplyExecutor)Globals.Datas.ServerConnection.getExecutor()).getReply();
-			if(!reprd.isOK()) {
-				BasicEnums.ErrorType.EXECUTE_COMMAND_FAILED.register(
-						"Command: " + rdb.output() + " , " +
-						reprd.getFailedReason()
-						);
-			}
-		} catch(Exception e) {
-			BasicEnums.ErrorType.UNKNOW.register(
-					"RemoveDataBases Failed" + " , " +
-					e.toString()
-					);
-		}
 		
 		// save to file
 		return saveDepotCFG();

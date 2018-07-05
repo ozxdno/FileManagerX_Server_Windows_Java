@@ -71,8 +71,8 @@ public class RESW implements Interfaces.IRESW {
 		this.setConnection(connection);
 	}
 	private void initThis() {
-		this.sendWaitTicks = 1000;
-		this.receiveWaitTicks = 1000;
+		this.sendWaitTicks = Globals.Configurations.TimeForCommandSend;
+		this.receiveWaitTicks = Globals.Configurations.TimeForCommandReceive;
 		this.connection = null;
 	}
 	
@@ -80,17 +80,17 @@ public class RESW implements Interfaces.IRESW {
 
 	public boolean execute() {
 		if(connection == null) {
-			BasicEnums.ErrorType.COMMUNICATOR_CONNECTION_CLOSED.register("Connection is NULL");
+			BasicEnums.ErrorType.COMMON_NULL.register("Connection is NULL");
 			return false;
 		}
 		if(!Tools.Time.waitUntilConnectionIdle(this.receiveWaitTicks, connection)) {
-			BasicEnums.ErrorType.CONNECTION_BUSY.register("Maybe execute receive string not complete");
+			BasicEnums.ErrorType.COMMUNICATOR_CONNECTION_BUSY.register("Connection is Busy");
 			return false;
 		}
 		
 		connection.setContinueSendString();
 		if(!Tools.Time.waitUntilConnectionIdle(sendWaitTicks, connection)) {
-			BasicEnums.ErrorType.SEND_OVER_TIME.register("You can check Your net make sure you and Server in a same LAN");
+			BasicEnums.ErrorType.COMMUNICATOR_SEND_FAILED.register("wait Too long to send Command");
 			return false;
 		}
 		
@@ -102,14 +102,14 @@ public class RESW implements Interfaces.IRESW {
 			return false;
 		}
 		if(!Tools.Time.waitUntilConnectionIdle(this.receiveWaitTicks, connection)) {
-			BasicEnums.ErrorType.CONNECTION_BUSY.register("Maybe execute receive string not complete");
+			BasicEnums.ErrorType.COMMUNICATOR_CONNECTION_BUSY.register("Connection is Busy");
 			return false;
 		}
 		
 		connection.setSendString(command);
 		connection.setContinueSendString();
 		if(!Tools.Time.waitUntilConnectionIdle(sendWaitTicks, connection)) {
-			BasicEnums.ErrorType.SEND_OVER_TIME.register("You can check Your net make sure you and Server in a same LAN");
+			BasicEnums.ErrorType.COMMUNICATOR_SEND_FAILED.register("wait Too long to send Command");
 			return false;
 		}
 		

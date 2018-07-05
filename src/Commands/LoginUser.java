@@ -93,7 +93,6 @@ public class LoginUser extends Comman implements Interfaces.ICommands {
 			qu.setQueryConditions("[&] LoginName = '" + this.loginName + "'");
 			Replies.QueryUser repqu = (Replies.QueryUser)swre.execute(qu.output());
 			if(repqu == null) {
-				BasicEnums.ErrorType.EXECUTE_COMMAND_FAILED.register("Reply of QueryUser is NULL");
 				this.getReply().setFailedReason("Reply of QueryUser is NULL");
 				this.getReply().setOK(false);
 				this.reply();

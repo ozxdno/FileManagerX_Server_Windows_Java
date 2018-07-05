@@ -64,7 +64,7 @@ public class Time {
 			java.lang.Thread.sleep(ticks);
 			return true;
 		} catch(Exception e) {
-			BasicEnums.ErrorType.UNKNOW.register(e.toString());
+			BasicEnums.ErrorType.OTHERS.register(e.toString());
 			return false;
 		}
 	}
@@ -103,7 +103,7 @@ public class Time {
 			sleepUntil(1);
 		}
 		if(opponentFC.getSendLength() == 0) {
-			BasicEnums.ErrorType.RECEIVE_OVER_TIME.register("Too long to get Send Bytes From Other Connection");
+			BasicEnums.ErrorType.COMMUNICATOR_RECEIVE_FAILED.register("Too long to get Send Bytes From Other Connection");
 			return false;
 		}
 		return true;
@@ -118,7 +118,7 @@ public class Time {
 			sleepUntil(1);
 		}
 		if(fc.getSendLength() != 0) {
-			BasicEnums.ErrorType.RECEIVE_OVER_TIME.register("Too long to Wait Bytes Fetch By Other Connection");
+			BasicEnums.ErrorType.COMMUNICATOR_SEND_FAILED.register("Too long to Wait Bytes Fetch By Other Connection");
 			return false;
 		}
 		return true;

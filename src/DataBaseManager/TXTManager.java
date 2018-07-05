@@ -239,7 +239,7 @@ public class TXTManager implements Interfaces.IDBManager {
 		try {
 			return f.delete();
 		} catch(Exception e) {
-			BasicEnums.ErrorType.FILE_OPERATION_FAILED.register(e.toString());
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register("Table Name = " + tableName, e.toString());
 			return false;
 		}
 	}
@@ -286,7 +286,7 @@ public class TXTManager implements Interfaces.IDBManager {
 			try {
 				qcs.stringToThis((String)conditions);
 			}catch(Exception e) {
-				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
 				return null;
 			}
 		}
@@ -477,7 +477,7 @@ public class TXTManager implements Interfaces.IDBManager {
 			try {
 				qcs.stringToThis((String)conditions);
 			}catch(Exception e) {
-				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
 				return null;
 			}
 		}
@@ -669,7 +669,7 @@ public class TXTManager implements Interfaces.IDBManager {
 			try {
 				qcs.stringToThis((String)conditions);
 			}catch(Exception e) {
-				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
 				return null;
 			}
 		}
@@ -872,7 +872,7 @@ public class TXTManager implements Interfaces.IDBManager {
 			try {
 				qcs.stringToThis((String)conditions);
 			}catch(Exception e) {
-				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
 				return null;
 			}
 		}
@@ -991,7 +991,7 @@ public class TXTManager implements Interfaces.IDBManager {
 			try {
 				qcs.stringToThis((String)conditions);
 			}catch(Exception e) {
-				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
 				return null;
 			}
 		}
@@ -1086,7 +1086,7 @@ public class TXTManager implements Interfaces.IDBManager {
 			try {
 				qcs.stringToThis((String)conditions);
 			}catch(Exception e) {
-				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
 				return null;
 			}
 		}
@@ -1205,7 +1205,7 @@ public class TXTManager implements Interfaces.IDBManager {
 			try {
 				qcs.stringToThis((String)conditions);
 			}catch(Exception e) {
-				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
 				return null;
 			}
 		}
@@ -1327,7 +1327,7 @@ public class TXTManager implements Interfaces.IDBManager {
 			try {
 				qcs.stringToThis((String)conditions);
 			}catch(Exception e) {
-				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
 				return null;
 			}
 		}
@@ -1481,7 +1481,7 @@ public class TXTManager implements Interfaces.IDBManager {
 			try {
 				qcs.stringToThis((String)conditions);
 			}catch(Exception e) {
-				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
 				return null;
 			}
 		}
@@ -1635,7 +1635,7 @@ public class TXTManager implements Interfaces.IDBManager {
 			try {
 				qcs.stringToThis((String)conditions);
 			}catch(Exception e) {
-				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
 				return null;
 			}
 		}
@@ -1798,7 +1798,7 @@ public class TXTManager implements Interfaces.IDBManager {
 			try {
 				qcs.stringToThis((String)conditions);
 			}catch(Exception e) {
-				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
 				return null;
 			}
 		}
@@ -1898,7 +1898,7 @@ public class TXTManager implements Interfaces.IDBManager {
 			try {
 				qcs.stringToThis((String)conditions);
 			}catch(Exception e) {
-				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
 				return null;
 			}
 		}
@@ -1980,7 +1980,7 @@ public class TXTManager implements Interfaces.IDBManager {
 			try {
 				qcs.stringToThis((String)conditions);
 			}catch(Exception e) {
-				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
 				return null;
 			}
 		}
@@ -2080,7 +2080,7 @@ public class TXTManager implements Interfaces.IDBManager {
 			try {
 				qcs.stringToThis((String)conditions);
 			}catch(Exception e) {
-				BasicEnums.ErrorType.DB_OPERATION_FAILED.register(e.toString());
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
 				return null;
 			}
 		}

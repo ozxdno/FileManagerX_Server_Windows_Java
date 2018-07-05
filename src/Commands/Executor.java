@@ -51,6 +51,11 @@ public class Executor implements Interfaces.ICommandExecutor {
 			lm.setConnection(connection);
 			return lm.input(connection.getReceiveString()) != null && lm.execute();
 		}
+		if(c.getField().equals("LoginUser")) {
+			Commands.LoginConnection lc = new Commands.LoginConnection();
+			lc.setConnection(connection);
+			return lc.input(connection.getReceiveString()) != null && lc.execute();
+		}
 		if(c.getField().equals("QueryConfigurations")) {
 			Commands.QueryConfigurations qc = new Commands.QueryConfigurations();
 			qc.setConnection(connection);
