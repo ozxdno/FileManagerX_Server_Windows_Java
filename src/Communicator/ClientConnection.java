@@ -432,12 +432,28 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 					this.fileConnector.clear();
 					while(!this.fileConnector.isFinished()) {
 						this.receiveLength = dis.read(receiveBuffer, 0, receiveBuffer.length);
+						if(this.fileConnector.getFinishedBytes() + this.receiveLength >= this.fileConnector.getTotalBytes()) {
+							this.receiveLength = this.receiveLength + 1 - 1;
+						}
+						if(this.receiveLength < 1024) {
+							this.receiveLength = this.receiveLength + 1 - 1;
+						}
+						if(this.receiveLength < 0) {
+							this.fileConnector.close();
+							break;
+						}
 						this.fileConnector.setReceiveBytes(receiveBuffer);
 						this.fileConnector.setReceiveLength(receiveLength);
 						if(!this.fileConnector.save()) {
 							BasicEnums.ErrorType.CLIENT_CONNECTION_RUNNING_FAILED.register("Save File Bytes Failed");
 							this.fileConnector.close();
 							break;
+						}
+						if(this.fileConnector.isFinished()) {
+							this.receiveLength = 0;
+						}
+						if(this.receiveLength < 1024) {
+							this.receiveLength = this.receiveLength + 1 - 1;
 						}
 					}
 					this.fileConnector.setState_Busy(false);

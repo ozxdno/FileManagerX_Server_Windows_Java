@@ -408,6 +408,10 @@ public class ServerConnection extends Thread implements Interfaces.IServerConnec
 					this.fileConnector.clear();
 					while(!this.fileConnector.isFinished()) {
 						this.receiveLength = dis.read(receiveBuffer, 0, receiveBuffer.length);
+						if(this.receiveLength < 0) {
+							this.fileConnector.close();
+							break;
+						}
 						this.fileConnector.setReceiveBytes(receiveBuffer);
 						this.fileConnector.setReceiveLength(receiveLength);
 						if(!this.fileConnector.save()) {
