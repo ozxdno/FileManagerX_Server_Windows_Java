@@ -904,7 +904,7 @@ public class CFGFile {
 			Globals.Configurations.Server_MachineIndex = repqc.getServer_MachineIndex();
 			Globals.Configurations.Server_UserIndex = repqc.getServer_UserIndex();
 			
-			BasicModels.MachineInfo sm = Globals.Datas.ServerConnection.getCommandsManager().qeuryMachine(
+			BasicModels.MachineInfo sm = Globals.Datas.ServerConnection.getCommandsManager().queryMachine(
 					"[&] Index = " + Globals.Configurations.Server_MachineIndex);
 			if(sm == null) {
 				BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register("qeuryMachine Failed");
@@ -912,7 +912,7 @@ public class CFGFile {
 			}
 			Globals.Datas.ServerMachine.copyValue(sm);
 			
-			BasicModels.User user = Globals.Datas.ServerConnection.getCommandsManager().qeuryUser(
+			BasicModels.User user = Globals.Datas.ServerConnection.getCommandsManager().queryUser(
 					"[&] Index = " + Globals.Configurations.Server_UserIndex);
 			if(user == null) {
 				BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register("qeuryUser Failed");

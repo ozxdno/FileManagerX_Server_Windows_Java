@@ -15,6 +15,7 @@ public interface ICommandsManager {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public Replies.QueryConfigurations queryConfigurations();
+	public BasicCollections.MachineInfos queryMachines(Object conditions);
 	public BasicCollections.DepotInfos queryDepots(Object conditions);
 	public BasicCollections.DataBaseInfos queryDataBases(Object conditions);
 	public BasicCollections.Users queryUsers(Object conditions);
@@ -26,10 +27,17 @@ public interface ICommandsManager {
 	public BasicCollections.BaseFiles queryFiles(long depotIndex, Object conditions);
 	public BasicCollections.BaseFiles queryFiles(long machineIndex, long depotIndex, Object conditions);
 	
-	public BasicModels.User qeuryUser(Object conditions);
-	public BasicModels.MachineInfo qeuryMachine(Object conditions);
+	public BasicModels.User queryUser(Object conditions);
+	public BasicModels.MachineInfo queryMachine(Object conditions);
 	public BasicModels.DepotInfo queryDepot(Object conditions);
 	public BasicModels.DataBaseInfo queryDataBase(Object conditions);
+	public BasicModels.Invitation queryInvitation(Object conditions);
+	
+	public BasicModels.Folder queryFolder(long depotIndex, Object conditions);
+	public BasicModels.Folder queryFolder(long machineIndex, long depotIndex, Object conditions);
+	
+	public BasicModels.BaseFile queryFile(long depotIndex, Object conditions);
+	public BasicModels.BaseFile queryFile(long machineIndex, long depotIndex, Object conditions);
 	
 	public boolean removeDepots(Object conditions);
 	public boolean removeDataBases(Object conditions);

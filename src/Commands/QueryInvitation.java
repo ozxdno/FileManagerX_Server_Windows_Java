@@ -1,6 +1,6 @@
 package Commands;
 
-public class QueryFolder extends Comman implements Interfaces.ICommands {
+public class QueryInvitation extends Comman implements Interfaces.ICommands {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -35,22 +35,22 @@ public class QueryFolder extends Comman implements Interfaces.ICommands {
 		return this.conditions;
 	}
 	
-	public Replies.QueryFolder getReply() {
-		return (Replies.QueryFolder)super.getReply();
+	public Replies.QueryInvitation getReply() {
+		return (Replies.QueryInvitation)super.getReply();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public QueryFolder() {
+	public QueryInvitation() {
 		initThis();
 	}
-	public QueryFolder(String command) {
+	public QueryInvitation(String command) {
 		initThis();
 		this.input(command);
 	}
 	private void initThis() {
 		this.conditions = new DataBaseManager.QueryConditions();
-		super.setReply(new Replies.QueryFolder());
+		super.setReply(new Replies.QueryInvitation());
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -78,12 +78,12 @@ public class QueryFolder extends Comman implements Interfaces.ICommands {
 		return this.conditions.input(in);
 	}
 	public void copyReference(Object o) {
-		QueryFolder qf = (QueryFolder)o;
+		QueryInvitation qf = (QueryInvitation)o;
 		super.copyReference(o);
 		this.conditions = qf.conditions;
 	}
 	public void copyValue(Object o) {
-		QueryFolder qf = (QueryFolder)o;
+		QueryInvitation qf = (QueryInvitation)o;
 		super.copyValue(o);
 		this.conditions.copyValue(qf.conditions);
 	}
@@ -117,77 +117,19 @@ public class QueryFolder extends Comman implements Interfaces.ICommands {
 			this.reply();
 			return false;
 		}
-		if(!this.isExistDest_MachineIndex_DepotIndex()) {
+		
+		BasicModels.Invitation d = Globals.Datas.DBManager.QueryInvitation(conditions);
+		if(d == null) {
+			this.getReply().setOK(false);
+			this.getReply().setFailedReason("Not Exist");
 			this.reply();
 			return false;
 		}
 		
-		if(this.isArriveTargetMachine()) {
-			Interfaces.IDBManager dbm = Globals.Datas.DBManagers.searchDepotIndex(
-					this.getBasicMessagePackage().getDestDepotIndex());
-			if(dbm == null) {
-				this.getReply().setFailedReason("Not Found DBManager");
-				this.getReply().setOK(false);
-				this.reply();
-				return false;
-			}
-			
-			BasicModels.Folder f = dbm.QueryFolder(conditions);
-			if(f == null) {
-				this.getReply().setOK(false);
-				this.getReply().setFailedReason("Not Exist");
-				this.reply();
-				return false;
-			}
-			
-			Replies.QueryFolder qd = this.getReply();
-			qd.setFolder(f);
-			this.reply();
-			return true;
-		}
-		else {
-			if(this.isSelfToSelf()) {
-				this.reply();
-				return false;
-			}
-			
-			Interfaces.ICommandConnector cc = Factories.CommunicatorFactory.createCommandConnector();
-			cc.setIsExecuteCommand(true);
-			cc.setDestMachineIndex(this.getBasicMessagePackage().getDestMachineIndex());
-			cc.setSendCommand(this.output());
-			cc.setSourConnection(this.getConnection());
-			Interfaces.ICommandsManager cm = cc.execute();
-			if(cm == null) {
-				this.getReply().setFailedReason("The Reply from CommandsManager is NULL, Connection is Closed");
-				this.getReply().setOK(false);
-				this.reply();
-				return false;
-			}
-			
-			BasicModels.Folder folder = cm.queryFolder(
-					this.getBasicMessagePackage().getDestMachineIndex(),
-					this.getBasicMessagePackage().getDestDepotIndex(),
-					this.conditions
-					);
-			Replies.QueryFolder rep = (Replies.QueryFolder)cm.getReply();
-			if(rep == null) {
-				this.getReply().setFailedReason("The Reply from CommandsManager is NULL, Execute Failed");
-				this.getReply().setOK(false);
-				return false;
-			}
-			
-			if(folder == null) {
-				this.getReply().setFailedReason("QueryFolder Failed");
-				this.getReply().setOK(false);
-				this.reply();
-				return false;
-			}
-			
-			Replies.QueryFolder qd = this.getReply();
-			qd.setFolder(folder);
-			this.reply();
-			return true;
-		}
+		Replies.QueryInvitation qd = this.getReply();
+		qd.setInvitation(d);
+		this.reply();
+		return true;
 	}
 	public void reply() {
 		this.setBasicMessagePackageToReply();

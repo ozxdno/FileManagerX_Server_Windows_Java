@@ -61,6 +61,11 @@ public class Executor implements Interfaces.ICommandExecutor {
 			qc.setConnection(connection);
 			return qc.input(connection.getReceiveString()) != null && qc.execute();
 		}
+		if(c.getField().equals("QueryMachines")) {
+			Commands.QueryMachines qm = new Commands.QueryMachines();
+			qm.setConnection(connection);
+			return qm.input(connection.getReceiveString()) != null && qm.execute();
+		}
 		if(c.getField().equals("QueryDepots")) {
 			Commands.QueryDepots qd = new Commands.QueryDepots();
 			qd.setConnection(connection);
@@ -110,6 +115,21 @@ public class Executor implements Interfaces.ICommandExecutor {
 			Commands.QueryUser qu = new Commands.QueryUser();
 			qu.setConnection(connection);
 			return qu.input(connection.getReceiveString()) != null && qu.execute();
+		}
+		if(c.getField().equals("QueryInvitation")) {
+			Commands.QueryInvitation qi = new Commands.QueryInvitation();
+			qi.setConnection(connection);
+			return qi.input(connection.getReceiveString()) != null && qi.execute();
+		}
+		if(c.getField().equals("QueryFolder")) {
+			Commands.QueryFolder qf = new Commands.QueryFolder();
+			qf.setConnection(connection);
+			return qf.input(connection.getReceiveString()) != null && qf.execute();
+		}
+		if(c.getField().equals("QueryFile")) {
+			Commands.QueryFile qf = new Commands.QueryFile();
+			qf.setConnection(connection);
+			return qf.input(connection.getReceiveString()) != null && qf.execute();
 		}
 		if(c.getField().equals("UpdateMachine")) {
 			Commands.UpdateMachine um = new Commands.UpdateMachine();

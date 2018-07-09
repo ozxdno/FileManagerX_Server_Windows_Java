@@ -71,6 +71,55 @@ public class Manager implements Interfaces.ICommandsManager {
 		return (Replies.QueryConfigurations)this.reply;
 		
 	}
+	public BasicCollections.MachineInfos queryMachines(Object conditions) {
+		this.reply = null;
+		
+		if(Globals.Configurations.IsServer) {
+			BasicCollections.MachineInfos machines = Globals.Datas.DBManager.QueryMachineInfos(conditions);
+			if(machines == null) { machines = new BasicCollections.MachineInfos(); }
+			this.reply = new Replies.QueryMachines();
+			((Replies.QueryMachines)this.reply).setAmount(machines.size());
+			((Replies.QueryMachines)this.reply).setMachineInfos(machines);
+			this.reply.setOK(machines != null);
+			return machines;
+		}
+		else {
+			if(!this.isConnectionRunning()) {
+				return null;
+			}
+			if(this.isDirectConnection()) {
+				return this.directlyQueryMachines(conditions);
+			}
+			
+			Commands.QueryMachines cmd = new Commands.QueryMachines();
+			cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+			cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+			if(conditions instanceof String) {
+				cmd.setQueryConditions((String)conditions);
+			}
+			else if(conditions instanceof DataBaseManager.QueryCondition) {
+				cmd.setQueryCondition((DataBaseManager.QueryCondition)conditions);
+			}
+			else if(conditions instanceof  DataBaseManager.QueryConditions) {
+				cmd.setQueryConditions((DataBaseManager.QueryConditions)conditions);
+			}
+			else {
+				BasicEnums.ErrorType.OTHERS.register("Type of conditions is Wrong", conditions.toString());
+				return null;
+			}
+			
+			reply = swre.execute(cmd.output());
+			if(this.reply != null && !(reply instanceof Replies.QueryMachines)) {
+				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+				this.reply = null;
+				return null;
+			}
+			if(reply == null || !reply.isOK()) {
+				return null;
+			}
+			return ((Replies.QueryMachines)reply).getMachineInfos();
+		}
+	}
 	public BasicCollections.DepotInfos queryDepots(Object conditions) {
 		this.reply = null;
 		
@@ -380,7 +429,7 @@ public class Manager implements Interfaces.ICommandsManager {
 		}
 	}
 	
-	public BasicModels.User qeuryUser(Object conditions) {
+	public BasicModels.User queryUser(Object conditions) {
 		this.reply = null;
 		
 		if(Globals.Configurations.IsServer) {
@@ -395,7 +444,7 @@ public class Manager implements Interfaces.ICommandsManager {
 				return null;
 			}
 			if(this.isDirectConnection()) {
-				return this.directlyQeuryUser(conditions);
+				return this.directlyQueryUser(conditions);
 			}
 			
 			Commands.QueryUser cmd = new Commands.QueryUser();
@@ -428,7 +477,55 @@ public class Manager implements Interfaces.ICommandsManager {
 			return ((Replies.QueryUser)reply).getUser();
 		}
 	}
-	public BasicModels.MachineInfo qeuryMachine(Object conditions) {
+	public BasicModels.Invitation queryInvitation(Object conditions) {
+		this.reply = null;
+		
+		if(Globals.Configurations.IsServer) {
+			BasicModels.Invitation invitation = Globals.Datas.DBManager.QueryInvitation(conditions);
+			this.reply = new Replies.QueryInvitation();
+			((Replies.QueryInvitation)this.reply).setInvitation(invitation);
+			this.reply.setOK(invitation != null);
+			return invitation;
+		}
+		else {
+			if(!this.isConnectionRunning()) {
+				return null;
+			}
+			if(this.isDirectConnection()) {
+				return this.directlyQueryInvitation(conditions);
+			}
+			
+			Commands.QueryInvitation cmd = new Commands.QueryInvitation();
+			cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+			cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+			if(conditions instanceof String) {
+				cmd.setQueryConditions((String)conditions);
+			}
+			else if(conditions instanceof  DataBaseManager.QueryCondition) {
+				cmd.setQueryCondition(( DataBaseManager.QueryCondition)conditions);
+			}
+			else if(conditions instanceof  DataBaseManager.QueryConditions) {
+				cmd.setQueryConditions((DataBaseManager.QueryConditions)conditions);
+			}
+			else {
+				BasicEnums.ErrorType.OTHERS.register("Type of conditions is Wrong");
+				return null;
+			}
+			
+			reply = swre.execute(cmd.output());
+			if(this.reply != null && !(reply instanceof Replies.QueryInvitation)) {
+				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+				this.reply = null;
+				return null;
+			}
+			if(reply == null || !reply.isOK()) {
+				return null;
+			}
+			
+			return ((Replies.QueryInvitation)reply).getInvitation();
+		}
+	}
+	public BasicModels.MachineInfo queryMachine(Object conditions) {
 		this.reply = null;
 		
 		if(Globals.Configurations.IsServer) {
@@ -443,7 +540,7 @@ public class Manager implements Interfaces.ICommandsManager {
 				return null;
 			}
 			if(this.isDirectConnection()) {
-				return this.directlyQeuryMachine(conditions);
+				return this.directlyQueryMachine(conditions);
 			}
 			
 			Commands.QueryMachine cmd = new Commands.QueryMachine();
@@ -569,6 +666,118 @@ public class Manager implements Interfaces.ICommandsManager {
 				return null;
 			}
 			return ((Replies.QueryDataBase)reply).getDataBaseInfo();
+		}
+	}
+	
+	public BasicModels.Folder queryFolder(long depotIndex, Object conditions) {
+		return this.queryFolder(
+				this.connection.getServerMachineInfo().getIndex(),
+				depotIndex,
+				conditions
+				);
+	}
+	public BasicModels.Folder queryFolder(long machineIndex, long depotIndex, Object conditions) {
+		this.reply = null;
+		
+		if(machineIndex == Globals.Configurations.This_MachineIndex) {
+			Interfaces.IDBManager dbm = Globals.Datas.DBManagers.searchDepotIndex(depotIndex);
+			if(dbm == null) {
+				return null;
+			}
+			BasicModels.Folder folder = dbm.QueryFolder(conditions);
+			if(folder == null) {
+				return null;
+			}
+			this.reply = new Replies.QueryFolder();
+			((Replies.QueryFolder)this.reply).setFolder(folder);
+			return folder;
+		}
+		else {
+			Commands.QueryFolder cmd = new Commands.QueryFolder();
+			cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+			cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+			cmd.getBasicMessagePackage().setDestMachineIndex(machineIndex);
+			cmd.getBasicMessagePackage().setDestDepotIndex(depotIndex);
+			if(conditions instanceof String) {
+				cmd.setQueryConditions((String)conditions);
+			}
+			else if(conditions instanceof  DataBaseManager.QueryCondition) {
+				cmd.setQueryCondition((DataBaseManager.QueryCondition)conditions);
+			}
+			else if(conditions instanceof  DataBaseManager.QueryConditions) {
+				cmd.setQueryConditions((DataBaseManager.QueryConditions)conditions);
+			}
+			else {
+				BasicEnums.ErrorType.OTHERS.register("Type of conditions is Wrong", conditions.toString());
+				return null;
+			}
+			
+			reply = swre.execute(cmd.output());
+			if(this.reply != null && !(reply instanceof Replies.QueryFolder)) {
+				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+				this.reply = null;
+				return null;
+			}
+			if(reply == null || !reply.isOK()) {
+				return null;
+			}
+			return ((Replies.QueryFolder)reply).getFolder();
+		}
+	}
+	
+	public BasicModels.BaseFile queryFile(long depotIndex, Object conditions) {
+		return this.queryFile(
+				this.connection.getServerMachineInfo().getIndex(),
+				depotIndex,
+				conditions
+				);
+	}
+	public BasicModels.BaseFile queryFile(long machineIndex, long depotIndex, Object conditions) {
+		this.reply = null;
+		
+		if(machineIndex == Globals.Configurations.This_MachineIndex) {
+			Interfaces.IDBManager dbm = Globals.Datas.DBManagers.searchDepotIndex(depotIndex);
+			if(dbm == null) {
+				return null;
+			}
+			BasicModels.BaseFile file = dbm.QueryFile(conditions);
+			if(file == null) {
+				return null;
+			}
+			this.reply = new Replies.QueryFile();
+			((Replies.QueryFile)this.reply).setFile(file);
+			return file;
+		}
+		else {
+			Commands.QueryFile cmd = new Commands.QueryFile();
+			cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+			cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+			cmd.getBasicMessagePackage().setDestMachineIndex(machineIndex);
+			cmd.getBasicMessagePackage().setDestDepotIndex(depotIndex);
+			if(conditions instanceof String) {
+				cmd.setQueryConditions((String)conditions);
+			}
+			else if(conditions instanceof  DataBaseManager.QueryCondition) {
+				cmd.setQueryCondition((DataBaseManager.QueryCondition)conditions);
+			}
+			else if(conditions instanceof  DataBaseManager.QueryConditions) {
+				cmd.setQueryConditions((DataBaseManager.QueryConditions)conditions);
+			}
+			else {
+				BasicEnums.ErrorType.OTHERS.register("Type of conditions is Wrong", conditions.toString());
+				return null;
+			}
+			
+			reply = swre.execute(cmd.output());
+			if(this.reply != null && !(reply instanceof Replies.QueryFile)) {
+				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+				this.reply = null;
+				return null;
+			}
+			if(reply == null || !reply.isOK()) {
+				return null;
+			}
+			return ((Replies.QueryFile)reply).getFile();
 		}
 	}
 	
@@ -918,7 +1127,7 @@ public class Manager implements Interfaces.ICommandsManager {
 		long userIndex = ((Replies.LoginUser)this.reply).getBasicMessagePackage().getSourUserIndex();
 		this.connection.getUser().setIndex(userIndex);
 		
-		BasicModels.User user = this.qeuryUser("[&] Index = " + userIndex);
+		BasicModels.User user = this.queryUser("[&] Index = " + userIndex);
 		this.reply = replu;
 		if(user == null) {
 			this.reply.setFailedReason("QueryUser Failed");
@@ -936,7 +1145,7 @@ public class Manager implements Interfaces.ICommandsManager {
 			return false;
 		}
 		
-		BasicModels.MachineInfo machine = this.qeuryMachine("[&] Name = '" + this.connection.getClientMachineInfo().getName() + "'");
+		BasicModels.MachineInfo machine = this.queryMachine("[&] Name = '" + this.connection.getClientMachineInfo().getName() + "'");
 		if(machine != null) {
 			if(machine.getIndex() != this.connection.getClientMachineInfo().getIndex()) {
 				BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register(
@@ -1348,6 +1557,12 @@ public class Manager implements Interfaces.ICommandsManager {
 		this.reply = cm.getReply();
 		return res;
 	}
+	private BasicCollections.MachineInfos directlyQueryMachines(Object conditions) {
+		Interfaces.ICommandsManager cm = Globals.Datas.ServerConnection.getCommandsManager();
+		BasicCollections.MachineInfos res = cm.queryMachines(conditions);
+		this.reply = cm.getReply();
+		return res;
+	}
 	private BasicCollections.DepotInfos directlyQueryDepots(Object conditions) {
 		Interfaces.ICommandsManager cm = Globals.Datas.ServerConnection.getCommandsManager();
 		BasicCollections.DepotInfos res = cm.queryDepots(conditions);
@@ -1373,15 +1588,21 @@ public class Manager implements Interfaces.ICommandsManager {
 		return res;
 	}
 	
-	private BasicModels.User directlyQeuryUser(Object conditions) {
+	private BasicModels.User directlyQueryUser(Object conditions) {
 		Interfaces.ICommandsManager cm = Globals.Datas.ServerConnection.getCommandsManager();
-		BasicModels.User res = cm.qeuryUser(conditions);
+		BasicModels.User res = cm.queryUser(conditions);
 		this.reply = cm.getReply();
 		return res;
 	}
-	private BasicModels.MachineInfo directlyQeuryMachine(Object conditions) {
+	private BasicModels.Invitation directlyQueryInvitation(Object conditions) {
 		Interfaces.ICommandsManager cm = Globals.Datas.ServerConnection.getCommandsManager();
-		BasicModels.MachineInfo res = cm.qeuryMachine(conditions);
+		BasicModels.Invitation res = cm.queryInvitation(conditions);
+		this.reply = cm.getReply();
+		return res;
+	}
+	private BasicModels.MachineInfo directlyQueryMachine(Object conditions) {
+		Interfaces.ICommandsManager cm = Globals.Datas.ServerConnection.getCommandsManager();
+		BasicModels.MachineInfo res = cm.queryMachine(conditions);
 		this.reply = cm.getReply();
 		return res;
 	}

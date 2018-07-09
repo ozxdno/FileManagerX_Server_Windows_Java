@@ -1,3 +1,29 @@
 01:05:15 = OTHERS|1531155915576|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:954]<-loadCFG[CFGFile.java:57]<-run[MainProcess.java:75]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
 01:07:45 = OTHERS|1531156065894|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:954]<-loadCFG[CFGFile.java:57]<-run[MainProcess.java:75]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
 01:19:03 = OTHERS|1531156743483|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:954]<-loadCFG[CFGFile.java:57]<-run[MainProcess.java:75]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
+02:36:27 = COMMUNICATOR_BUILD_SOCKED_FAILED|1531161387382|Warning|Build Socked Failed|setSocket[ClientConnection.java:229]<-loadDepotCFG[CFGFile.java:880]<-loadCFG[CFGFile.java:57]<-run[MainProcess.java:75]|java.net.ConnectException: Connection refused: connect
+02:36:38 = OTHERS|1531161398629|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:954]<-loadCFG[CFGFile.java:57]<-run[MainProcess.java:75]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
+02:48:46 = OTHERS|1531162126859|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:954]<-loadCFG[CFGFile.java:57]<-run[MainProcess.java:75]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
+02:50:48 = OTHERS|1531162248041|Warning|Unknow Reason Type|stringToThis[QueryCondition.java:188]<-stringToThis[QueryConditions.java:103]<-setQueryConditions[QueryInvitation.java:18]<-queryInvitation[Manager.java:502]<-actionPerformed[MainForm.java:1061]|java.lang.StringIndexOutOfBoundsException: String index out of range: -1
+02:53:49 = COMMON_TIME_OUT|1531162429386|Warning|Time Out|waitUntilConnectionIdle[Time.java:93]<-execute[SWRE.java:89]<-execute[SWRE.java:105]<-queryFile[Manager.java:771]<-queryFile[Manager.java:729]<-actionPerformed[MainForm.java:1086]|waitTicks = 2000
+02:53:49 = COMMUNICATOR_RECEIVE_FAILED|1531162429386|Warning|Receive Data Failed|execute[SWRE.java:90]<-execute[SWRE.java:105]<-queryFile[Manager.java:771]<-queryFile[Manager.java:729]<-actionPerformed[MainForm.java:1086]|Time out
+02:55:05 = NORMAL|1531162505434|Normal||run[ClientConnection.java:549]|
+02:55:06 = COMMUNICATOR_CONNECTION_CLOSED|1531162506279|Warning|Connection Already has been Closed|run[MainProcess.java:150]|Server[Remote Machine] Closed
+02:55:27 = OTHERS|1531162527247|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:954]<-loadCFG[CFGFile.java:57]<-run[MainProcess.java:75]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
+02:56:09 = COMMON_TIME_OUT|1531162569533|Warning|Time Out|waitUntilConnectionIdle[Time.java:93]<-execute[SWRE.java:89]<-execute[SWRE.java:105]<-queryFile[Manager.java:771]<-queryFile[Manager.java:729]<-actionPerformed[MainForm.java:1086]|waitTicks = 2000
+02:56:09 = COMMUNICATOR_RECEIVE_FAILED|1531162569533|Warning|Receive Data Failed|execute[SWRE.java:90]<-execute[SWRE.java:105]<-queryFile[Manager.java:771]<-queryFile[Manager.java:729]<-actionPerformed[MainForm.java:1086]|Time out
+02:58:28 = NORMAL|1531162708596|Normal||run[ClientConnection.java:549]|
+02:58:29 = COMMUNICATOR_CONNECTION_CLOSED|1531162709540|Warning|Connection Already has been Closed|run[MainProcess.java:150]|Server[Remote Machine] Closed
+02:59:09 = OTHERS|1531162749138|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:954]<-loadCFG[CFGFile.java:57]<-run[MainProcess.java:75]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
+03:02:12 = OTHERS|1531162932554|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:954]<-loadCFG[CFGFile.java:57]<-run[MainProcess.java:75]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
+03:04:56 = NORMAL|1531163096814|Normal||run[ClientConnection.java:549]|
+03:04:56 = COMMUNICATOR_CONNECTION_CLOSED|1531163096818|Warning|Connection Already has been Closed|run[MainProcess.java:150]|Server[Remote Machine] Closed
+03:08:19 = OTHERS|1531163299721|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:954]<-loadCFG[CFGFile.java:57]<-run[MainProcess.java:75]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
+03:08:52 = NORMAL|1531163332112|Normal||run[ClientConnection.java:549]|
+03:08:52 = COMMUNICATOR_CONNECTION_CLOSED|1531163332931|Warning|Connection Already has been Closed|run[MainProcess.java:150]|Server[Remote Machine] Closed
+03:08:58 = OTHERS|1531163338500|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:954]<-loadCFG[CFGFile.java:57]<-run[MainProcess.java:75]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
+03:09:29 = COMMON_TIME_OUT|1531163369332|Warning|Time Out|waitUntilConnectionIdle[Time.java:93]<-execute[SWRE.java:89]<-execute[SWRE.java:105]<-queryFile[Manager.java:771]<-actionPerformed[MainForm.java:1093]|waitTicks = 2000
+03:09:29 = COMMUNICATOR_RECEIVE_FAILED|1531163369332|Warning|Receive Data Failed|execute[SWRE.java:90]<-execute[SWRE.java:105]<-queryFile[Manager.java:771]<-actionPerformed[MainForm.java:1093]|Time out
+03:10:05 = NORMAL|1531163405832|Normal||run[ClientConnection.java:549]|
+03:10:06 = COMMUNICATOR_CONNECTION_CLOSED|1531163406736|Warning|Connection Already has been Closed|run[MainProcess.java:150]|Server[Remote Machine] Closed
+03:11:59 = OTHERS|1531163519032|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:954]<-loadCFG[CFGFile.java:57]<-run[MainProcess.java:75]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.

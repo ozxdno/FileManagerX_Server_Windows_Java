@@ -87,6 +87,17 @@ public class Executor implements Interfaces.IReplyExecutor {
 			return qc.input(connection.getReceiveString()) != null &&
 					qc.execute(connection);
 		}
+		if(c.getField().equals("QueryMachines")) {
+			Replies.QueryMachines qm = new Replies.QueryMachines();
+			this.reply = qm;
+			Interfaces.ICommunicatorSendTotal st = Factories.CommunicatorFactory.createSendTotal();
+			st.input(connection.getReceiveString());
+			for(String item : st.getLines()) {
+				qm.input(item);
+				qm.execute(connection);
+			}
+			return true;
+		}
 		if(c.getField().equals("QueryDepots")) {
 			Replies.QueryDepots qd = new Replies.QueryDepots();
 			this.reply = qd;
@@ -176,6 +187,24 @@ public class Executor implements Interfaces.IReplyExecutor {
 			this.reply = qu;
 			return qu.input(connection.getReceiveString()) != null &&
 					qu.execute(connection);
+		}
+		if(c.getField().equals("QueryInvitation")) {
+			Replies.QueryInvitation qi = new Replies.QueryInvitation();
+			this.reply = qi;
+			return qi.input(connection.getReceiveString()) != null &&
+					qi.execute(connection);
+		}
+		if(c.getField().equals("QueryFolder")) {
+			Replies.QueryFolder qf = new Replies.QueryFolder();
+			this.reply = qf;
+			return qf.input(connection.getReceiveString()) != null &&
+					qf.execute(connection);
+		}
+		if(c.getField().equals("QueryFile")) {
+			Replies.QueryFile qf = new Replies.QueryFile();
+			this.reply = qf;
+			return qf.input(connection.getReceiveString()) != null &&
+					qf.execute(connection);
 		}
 		if(c.getField().equals("UpdateMachine")) {
 			Replies.UpdateMachine um = new Replies.UpdateMachine();

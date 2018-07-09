@@ -50,13 +50,13 @@ public class CommunicatorFactory {
 		BasicModels.MachineInfo ce = Globals.Datas.ThisMachine;
 		
 		if(serverMachine != sv.getIndex()) {
-			sv = Globals.Datas.ServerConnection.getCommandsManager().qeuryMachine("[&] Index = " + serverMachine);
+			sv = Globals.Datas.ServerConnection.getCommandsManager().queryMachine("[&] Index = " + serverMachine);
 			if(sv == null) {
 				return null;
 			}
 		}
 		if(clientMachine != ce.getIndex()) {
-			ce = Globals.Datas.ServerConnection.getCommandsManager().qeuryMachine("[&] Index = " + clientMachine);
+			ce = Globals.Datas.ServerConnection.getCommandsManager().queryMachine("[&] Index = " + clientMachine);
 			if(ce == null) {
 				return null;
 			}
