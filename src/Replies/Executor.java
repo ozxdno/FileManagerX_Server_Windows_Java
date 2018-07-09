@@ -109,6 +109,50 @@ public class Executor implements Interfaces.IReplyExecutor {
 			}
 			return true;
 		}
+		if(c.getField().equals("QueryUsers")) {
+			Replies.QueryUsers qd = new Replies.QueryUsers();
+			this.reply = qd;
+			Interfaces.ICommunicatorSendTotal st = Factories.CommunicatorFactory.createSendTotal();
+			st.input(connection.getReceiveString());
+			for(String item : st.getLines()) {
+				qd.input(item);
+				qd.execute(connection);
+			}
+			return true;
+		}
+		if(c.getField().equals("QueryInvitations")) {
+			Replies.QueryInvitations qi = new Replies.QueryInvitations();
+			this.reply = qi;
+			Interfaces.ICommunicatorSendTotal st = Factories.CommunicatorFactory.createSendTotal();
+			st.input(connection.getReceiveString());
+			for(String item : st.getLines()) {
+				qi.input(item);
+				qi.execute(connection);
+			}
+			return true;
+		}
+		if(c.getField().equals("QueryFolders")) {
+			Replies.QueryFolders qf = new Replies.QueryFolders();
+			this.reply = qf;
+			Interfaces.ICommunicatorSendTotal st = Factories.CommunicatorFactory.createSendTotal();
+			st.input(connection.getReceiveString());
+			for(String item : st.getLines()) {
+				qf.input(item);
+				qf.execute(connection);
+			}
+			return true;
+		}
+		if(c.getField().equals("QueryFiles")) {
+			Replies.QueryFiles qf = new Replies.QueryFiles();
+			this.reply = qf;
+			Interfaces.ICommunicatorSendTotal st = Factories.CommunicatorFactory.createSendTotal();
+			st.input(connection.getReceiveString());
+			for(String item : st.getLines()) {
+				qf.input(item);
+				qf.execute(connection);
+			}
+			return true;
+		}
 		if(c.getField().equals("QueryMachine")) {
 			Replies.QueryMachine qm = new Replies.QueryMachine();
 			this.reply = qm;

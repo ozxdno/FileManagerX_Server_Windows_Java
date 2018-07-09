@@ -1,12 +1,12 @@
 package Replies;
 
-public class QueryDepots extends Comman implements Interfaces.IReplies {
+public class QueryFiles extends Comman implements Interfaces.IReplies {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	private int amount;
-	private BasicModels.DepotInfo depotInfo;
-	private BasicCollections.DepotInfos depotInfos;
+	private BasicModels.BaseFile file;
+	private BasicCollections.BaseFiles files;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -17,18 +17,18 @@ public class QueryDepots extends Comman implements Interfaces.IReplies {
 		this.amount = amount;
 		return true;
 	}
-	public boolean setDepotInfo(BasicModels.DepotInfo depotInfo) {
-		if(depotInfo == null) {
+	public boolean setFile(BasicModels.BaseFile file) {
+		if(file == null) {
 			return false;
 		}
-		this.depotInfo = depotInfo;
+		this.file = file;
 		return true;
 	}
-	public boolean setDepotInfos(BasicCollections.DepotInfos depotInfos) {
-		if(depotInfos == null) {
+	public boolean setFiles(BasicCollections.BaseFiles files) {
+		if(files == null) {
 			return false;
 		}
-		this.depotInfos = depotInfos;
+		this.files = files;
 		return true;
 	}
 	
@@ -37,22 +37,22 @@ public class QueryDepots extends Comman implements Interfaces.IReplies {
 	public int getAmount() {
 		return this.amount;
 	}
-	public BasicModels.DepotInfo getDepotInfo() {
-		return this.depotInfo;
+	public BasicModels.BaseFile getFile() {
+		return this.file;
 	}
-	public BasicCollections.DepotInfos getDepotInfos() {
-		return this.depotInfos;
+	public BasicCollections.BaseFiles getFiles() {
+		return this.files;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public QueryDepots() {
+	public QueryFiles() {
 		initThis();
 	}
 	private void initThis() {
 		this.amount = 0;
-		this.depotInfo = new BasicModels.DepotInfo();
-		this.depotInfos = new BasicCollections.DepotInfos();
+		this.file = new BasicModels.BaseFile();
+		this.files = new BasicCollections.BaseFiles();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -69,7 +69,7 @@ public class QueryDepots extends Comman implements Interfaces.IReplies {
 		c.setField(this.getClass().getSimpleName());
 		c.addToBottom(new BasicModels.Config(super.output()));
 		c.addToBottom(this.amount);
-		c.addToBottom(new BasicModels.Config(this.depotInfo.output()));
+		c.addToBottom(new BasicModels.Config(this.file.output()));
 		return c.output();
 	}
 	public String input(String in) {
@@ -82,21 +82,21 @@ public class QueryDepots extends Comman implements Interfaces.IReplies {
 		this.amount = c.fetchFirstInt();
 		if(!c.getIsOK()) { return null; }
 		
-		return this.depotInfo.input(c.output());
+		return this.file.input(c.output());
 	}
 	public void copyReference(Object o) {
 		super.copyReference(o);
-		QueryDepots qf = (QueryDepots)o;
+		QueryFiles qf = (QueryFiles)o;
 		this.amount = qf.amount;
-		this.depotInfo = qf.depotInfo;
-		this.depotInfos = qf.depotInfos;
+		this.file = qf.file;
+		this.files = qf.files;
 	}
 	public void copyValue(Object o) {
 		super.copyValue(o);
-		QueryDepots qf = (QueryDepots)o;
+		QueryFiles qf = (QueryFiles)o;
 		this.amount = qf.amount;
-		this.depotInfo.copyValue(qf.depotInfo);
-		this.depotInfos.copyValue(qf.depotInfos);
+		this.file.copyValue(qf.file);
+		this.files.copyValue(qf.files);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -105,13 +105,13 @@ public class QueryDepots extends Comman implements Interfaces.IReplies {
 		if(!this.isOK()) {
 			return false;
 		}
-		if(this.depotInfos.size() >= this.amount) {
+		if(this.files.size() >= this.amount) {
 			return true;
 		}
 		
-		BasicModels.DepotInfo newDepot = new BasicModels.DepotInfo();
-		newDepot.copyValue(depotInfo);
-		this.depotInfos.add(newDepot);
+		BasicModels.BaseFile newFile = new BasicModels.BaseFile();
+		newFile.copyValue(this.file);
+		this.files.add(newFile);
 		return true;
 	}
 	

@@ -50,6 +50,7 @@ public class QueryFolders extends Comman implements Interfaces.IReplies {
 		initThis();
 	}
 	private void initThis() {
+		this.amount = 0;
 		this.folder = new BasicModels.Folder();
 		this.folders = new BasicCollections.Folders();
 	}
@@ -67,6 +68,7 @@ public class QueryFolders extends Comman implements Interfaces.IReplies {
 		BasicModels.Config c = new BasicModels.Config();
 		c.setField(this.getClass().getSimpleName());
 		c.addToBottom(new BasicModels.Config(super.output()));
+		c.addToBottom(this.amount);
 		c.addToBottom(new BasicModels.Config(this.folder.output()));
 		return c.output();
 	}
@@ -75,19 +77,42 @@ public class QueryFolders extends Comman implements Interfaces.IReplies {
 		if(in == null) {
 			return null;
 		}
-		return this.folder.input(in);
+		
+		BasicModels.Config c = new BasicModels.Config(in);
+		this.amount = c.fetchFirstInt();
+		if(!c.getIsOK()) { return null; }
+		
+		return this.folder.input(c.output());
 	}
 	public void copyReference(Object o) {
 		super.copyReference(o);
 		QueryFolders qf = (QueryFolders)o;
+		this.amount = qf.amount;
 		this.folder = qf.folder;
 		this.folders = qf.folders;
 	}
 	public void copyValue(Object o) {
 		super.copyValue(o);
 		QueryFolders qf = (QueryFolders)o;
+		this.amount = qf.amount;
 		this.folder.copyValue(qf.folder);
 		this.folders.copyValue(qf.folders);
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public boolean execute(Interfaces.IConnection connection) {
+		if(!this.isOK()) {
+			return false;
+		}
+		if(this.folders.size() >= this.amount) {
+			return true;
+		}
+		
+		BasicModels.Folder newFolder = new BasicModels.Folder();
+		newFolder.copyValue(this.folder);
+		this.folders.add(newFolder);
+		return true;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -71,6 +71,26 @@ public class Executor implements Interfaces.ICommandExecutor {
 			qd.setConnection(connection);
 			return qd.input(connection.getReceiveString()) != null && qd.execute();
 		}
+		if(c.getField().equals("QueryUsers")) {
+			Commands.QueryUsers qu = new Commands.QueryUsers();
+			qu.setConnection(connection);
+			return qu.input(connection.getReceiveString()) != null && qu.execute();
+		}
+		if(c.getField().equals("QueryInvitations")) {
+			Commands.QueryInvitations qi = new Commands.QueryInvitations();
+			qi.setConnection(connection);
+			return qi.input(connection.getReceiveString()) != null && qi.execute();
+		}
+		if(c.getField().equals("QueryFolders")) {
+			Commands.QueryFolders qf = new Commands.QueryFolders();
+			qf.setConnection(connection);
+			return qf.input(connection.getReceiveString()) != null && qf.execute();
+		}
+		if(c.getField().equals("QueryFiles")) {
+			Commands.QueryFiles qf = new Commands.QueryFiles();
+			qf.setConnection(connection);
+			return qf.input(connection.getReceiveString()) != null && qf.execute();
+		}
 		if(c.getField().equals("QueryMachine")) {
 			Commands.QueryMachine qm = new Commands.QueryMachine();
 			qm.setConnection(connection);
@@ -129,7 +149,6 @@ public class Executor implements Interfaces.ICommandExecutor {
 		
 		return this.executeUnsupport(connection);
 	}
-	
 	
 	private boolean executeUnsupport(Interfaces.IConnection connection) {
 		String rece = new String(connection.getReceiveString());

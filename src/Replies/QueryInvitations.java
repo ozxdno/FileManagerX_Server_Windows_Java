@@ -1,12 +1,12 @@
 package Replies;
 
-public class QueryDepots extends Comman implements Interfaces.IReplies {
+public class QueryInvitations extends Comman implements Interfaces.IReplies {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	private int amount;
-	private BasicModels.DepotInfo depotInfo;
-	private BasicCollections.DepotInfos depotInfos;
+	private BasicModels.Invitation invitation;
+	private BasicCollections.Invitations invitations;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -17,18 +17,18 @@ public class QueryDepots extends Comman implements Interfaces.IReplies {
 		this.amount = amount;
 		return true;
 	}
-	public boolean setDepotInfo(BasicModels.DepotInfo depotInfo) {
-		if(depotInfo == null) {
+	public boolean setInvitation(BasicModels.Invitation invitation) {
+		if(invitation == null) {
 			return false;
 		}
-		this.depotInfo = depotInfo;
+		this.invitation = invitation;
 		return true;
 	}
-	public boolean setDepotInfos(BasicCollections.DepotInfos depotInfos) {
-		if(depotInfos == null) {
+	public boolean setInvitations(BasicCollections.Invitations invitations) {
+		if(invitations == null) {
 			return false;
 		}
-		this.depotInfos = depotInfos;
+		this.invitations = invitations;
 		return true;
 	}
 	
@@ -37,22 +37,22 @@ public class QueryDepots extends Comman implements Interfaces.IReplies {
 	public int getAmount() {
 		return this.amount;
 	}
-	public BasicModels.DepotInfo getDepotInfo() {
-		return this.depotInfo;
+	public BasicModels.Invitation getInvitation() {
+		return this.invitation;
 	}
-	public BasicCollections.DepotInfos getDepotInfos() {
-		return this.depotInfos;
+	public BasicCollections.Invitations getInvitations() {
+		return this.invitations;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public QueryDepots() {
+	public QueryInvitations() {
 		initThis();
 	}
 	private void initThis() {
 		this.amount = 0;
-		this.depotInfo = new BasicModels.DepotInfo();
-		this.depotInfos = new BasicCollections.DepotInfos();
+		this.invitation = new BasicModels.Invitation();
+		this.invitations = new BasicCollections.Invitations();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -69,7 +69,7 @@ public class QueryDepots extends Comman implements Interfaces.IReplies {
 		c.setField(this.getClass().getSimpleName());
 		c.addToBottom(new BasicModels.Config(super.output()));
 		c.addToBottom(this.amount);
-		c.addToBottom(new BasicModels.Config(this.depotInfo.output()));
+		c.addToBottom(new BasicModels.Config(this.invitation.output()));
 		return c.output();
 	}
 	public String input(String in) {
@@ -82,21 +82,21 @@ public class QueryDepots extends Comman implements Interfaces.IReplies {
 		this.amount = c.fetchFirstInt();
 		if(!c.getIsOK()) { return null; }
 		
-		return this.depotInfo.input(c.output());
+		return this.invitation.input(c.output());
 	}
 	public void copyReference(Object o) {
 		super.copyReference(o);
-		QueryDepots qf = (QueryDepots)o;
+		QueryInvitations qf = (QueryInvitations)o;
 		this.amount = qf.amount;
-		this.depotInfo = qf.depotInfo;
-		this.depotInfos = qf.depotInfos;
+		this.invitation = qf.invitation;
+		this.invitations = qf.invitations;
 	}
 	public void copyValue(Object o) {
 		super.copyValue(o);
-		QueryDepots qf = (QueryDepots)o;
+		QueryInvitations qf = (QueryInvitations)o;
 		this.amount = qf.amount;
-		this.depotInfo.copyValue(qf.depotInfo);
-		this.depotInfos.copyValue(qf.depotInfos);
+		this.invitation.copyValue(qf.invitation);
+		this.invitations.copyValue(qf.invitations);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -105,13 +105,13 @@ public class QueryDepots extends Comman implements Interfaces.IReplies {
 		if(!this.isOK()) {
 			return false;
 		}
-		if(this.depotInfos.size() >= this.amount) {
+		if(this.invitations.size() >= this.amount) {
 			return true;
 		}
 		
-		BasicModels.DepotInfo newDepot = new BasicModels.DepotInfo();
-		newDepot.copyValue(depotInfo);
-		this.depotInfos.add(newDepot);
+		BasicModels.Invitation newInvitation = new BasicModels.Invitation();
+		newInvitation.copyValue(this.invitation);
+		this.invitations.add(newInvitation);
 		return true;
 	}
 	

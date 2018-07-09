@@ -1,6 +1,6 @@
 package Commands;
 
-public class QueryUsers extends Comman implements Interfaces.ICommands {
+public class QueryInvitations extends Comman implements Interfaces.ICommands {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -35,22 +35,22 @@ public class QueryUsers extends Comman implements Interfaces.ICommands {
 		return this.conditions;
 	}
 	
-	public Replies.QueryUsers getReply() {
-		return (Replies.QueryUsers)super.getReply();
+	public Replies.QueryInvitations getReply() {
+		return (Replies.QueryInvitations)super.getReply();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public QueryUsers() {
+	public QueryInvitations() {
 		initThis();
 	}
-	public QueryUsers(String command) {
+	public QueryInvitations(String command) {
 		initThis();
 		this.input(command);
 	}
 	private void initThis() {
 		this.conditions = new DataBaseManager.QueryConditions();
-		super.setReply(new Replies.QueryUsers());
+		super.setReply(new Replies.QueryInvitations());
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -78,12 +78,12 @@ public class QueryUsers extends Comman implements Interfaces.ICommands {
 		return this.conditions.input(in);
 	}
 	public void copyReference(Object o) {
-		QueryUsers qf = (QueryUsers)o;
+		QueryInvitations qf = (QueryInvitations)o;
 		super.copyReference(o);
 		this.conditions = qf.conditions;
 	}
 	public void copyValue(Object o) {
-		QueryUsers qf = (QueryUsers)o;
+		QueryInvitations qf = (QueryInvitations)o;
 		super.copyValue(o);
 		this.conditions.copyValue(qf.conditions);
 	}
@@ -118,31 +118,39 @@ public class QueryUsers extends Comman implements Interfaces.ICommands {
 			return false;
 		}
 		
-		Replies.QueryUsers qu = this.getReply();
-		qu.setUsers(Globals.Datas.DBManager.QueryUsers(conditions));
-		qu.setAmount(qu.getUsers().size());
-		qu.setOK(qu.getUsers() != null);
-		if(!qu.isOK()) {
-			super.getReply().setOK(false);
-			super.getReply().setFailedReason("Query Failed");
+		if(this.isArriveDestMachine() && Globals.Configurations.IsServer) {
+			Replies.QueryInvitations qi = this.getReply();
+			qi.setInvitations(Globals.Datas.DBManager.QueryInvitations(conditions));
+			qi.setAmount(qi.getInvitations().size());
+			qi.setOK(qi.getInvitations() != null);
+			if(!qi.isOK()) {
+				super.getReply().setOK(false);
+				super.getReply().setFailedReason("Query Failed");
+				this.reply();
+				return false;
+			}
+			
+			if(qi.getAmount() == 0) {
+				qi.setInvitation(new BasicModels.Invitation());
+				this.reply();
+				return qi.isOK();
+			}
+			
+			Interfaces.ICommunicatorSendTotal st = Factories.CommunicatorFactory.createSendTotal();
+			for(int i=0; i<qi.getInvitations().size(); i++) {
+				qi.setInvitation(qi.getInvitations().getContent().get(i));
+				st.inputNextItem(qi.output());
+			}
+			
+			this.replyTotal(st);
+			return qi.isOK();
+		}
+		else {
+			this.getReply().setFailedReason("Unsupport Command in This Machine");
+			this.getReply().setOK(false);
 			this.reply();
 			return false;
 		}
-		
-		if(qu.getAmount() == 0) {
-			qu.setUser(new BasicModels.User());
-			this.reply();
-			return qu.isOK();
-		}
-		
-		Interfaces.ICommunicatorSendTotal st = Factories.CommunicatorFactory.createSendTotal();
-		for(int i=0; i<qu.getUsers().size(); i++) {
-			qu.setUser(qu.getUsers().getContent().get(i));
-			st.inputNextItem(qu.output());
-		}
-		
-		this.replyTotal(st);
-		return qu.isOK();
 	}
 	public void reply() {
 		this.setBasicMessagePackageToReply();

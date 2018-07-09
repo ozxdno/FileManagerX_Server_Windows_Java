@@ -17,6 +17,14 @@ public interface ICommandsManager {
 	public Replies.QueryConfigurations queryConfigurations();
 	public BasicCollections.DepotInfos queryDepots(Object conditions);
 	public BasicCollections.DataBaseInfos queryDataBases(Object conditions);
+	public BasicCollections.Users queryUsers(Object conditions);
+	public BasicCollections.Invitations queryInvitations(Object conditions);
+	
+	public BasicCollections.Folders queryFolders(long depotIndex, Object conditions);
+	public BasicCollections.Folders queryFolders(long machineIndex, long depotIndex, Object conditions);
+	
+	public BasicCollections.BaseFiles queryFiles(long depotIndex, Object conditions);
+	public BasicCollections.BaseFiles queryFiles(long machineIndex, long depotIndex, Object conditions);
 	
 	public BasicModels.User qeuryUser(Object conditions);
 	public BasicModels.MachineInfo qeuryMachine(Object conditions);

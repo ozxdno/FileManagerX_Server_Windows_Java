@@ -132,7 +132,7 @@ public class DepotInfo implements Interfaces.IPublic {
 		return "[" + name + "] " + url;
 	}
 	public String output() {
-		Config c = new Config("DataBaseInfo = ");
+		Config c = new Config("DepotInfo = ");
 		c.addToBottom(index);
 		c.addToBottom(new Config(this.machineInfo.output()));
 		c.addToBottom(url);

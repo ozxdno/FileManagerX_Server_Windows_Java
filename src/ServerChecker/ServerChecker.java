@@ -75,6 +75,18 @@ public class ServerChecker implements Interfaces.IServerChecker {
 		if(this.dbmanager == null) {
 			return false;
 		}
+		
+		BasicCollections.MachineInfos ms = this.dbmanager.QueryMachineInfos("");
+		long maxIndex = 0;
+		for(BasicModels.MachineInfo item : ms.getContent()) {
+			if(item.getIndex() > maxIndex) {
+				maxIndex = item.getIndex();
+			}
+		}
+		if(maxIndex > Globals.Configurations.Next_MachineIndex) {
+			Globals.Configurations.Next_MachineIndex = maxIndex;
+		}
+		
 		return true;
 	}
 	public boolean checkDepots() {

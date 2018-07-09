@@ -86,13 +86,117 @@ public class QueryFolders extends Comman implements Interfaces.ICommands {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean execute() {
-		if(!super.execute()) {
+		if(!this.isConnected_Login_UserIndexRigth_PasswordRight_PriorityEnough(BasicEnums.UserPriority.Member)) {
 			this.reply();
 			return false;
 		}
-		return true;
+		if(!this.isExistDest_MachineIndex_DepotIndex()) {
+			this.reply();
+			return false;
+		}
+		if(this.conditions == null) {
+			super.getReply().setOK(false);
+			super.getReply().setFailedReason("Wrong Query Conditions");
+			this.reply();
+			return false;
+		}
 		
+		if(this.isArriveTargetMachine()) {
+			Interfaces.IDBManager dbm = Globals.Datas.DBManagers.searchDepotIndex(
+					this.getBasicMessagePackage().getDestDepotIndex());
+			if(dbm == null) {
+				this.getReply().setFailedReason("Not Found DBManager");
+				this.getReply().setOK(false);
+				this.reply();
+				return false;
+			}
+			
+			BasicCollections.Folders folders = dbm.QueryFolders(conditions);
+			if(folders == null) {
+				this.getReply().setFailedReason("QueryFolders Failed");
+				this.getReply().setOK(false);
+				this.reply();
+				return false;
+			}
+			
+			if(folders.size() == 0) {
+				this.getReply().setFolder(new BasicModels.Folder());
+				this.getReply().setFolders(folders);
+				this.getReply().setAmount(0);
+				this.reply();
+				return true;
+			}
+			
+			this.getReply().setFolders(folders);
+			this.getReply().setAmount(folders.size());
+			this.getReply().setOK(true);
+			Interfaces.ICommunicatorSendTotal st = Factories.CommunicatorFactory.createSendTotal();
+			for(int i=0; i<folders.size(); i++) {
+				this.getReply().setFolder(folders.getContent().get(i));
+				st.inputNextItem(this.getReply().output());
+			}
+			this.replyTotal(st);
+			return true;
+		}
+		else {
+			if(this.isSelfToSelf()) {
+				this.reply();
+				return false;
+			}
+			
+			Interfaces.ICommandConnector cc = Factories.CommunicatorFactory.createCommandConnector();
+			cc.setIsExecuteCommand(true);
+			cc.setDestMachineIndex(this.getBasicMessagePackage().getDestMachineIndex());
+			cc.setSendCommand(this.output());
+			cc.setSourConnection(this.getConnection());
+			Interfaces.ICommandsManager cm = cc.execute();
+			if(cm == null) {
+				this.getReply().setFailedReason("The Reply from CommandsManager is NULL, Connection is Closed");
+				this.getReply().setOK(false);
+				this.reply();
+				return false;
+			}
+			
+			BasicCollections.Folders folders = cm.queryFolders(
+					this.getBasicMessagePackage().getDestMachineIndex(),
+					this.getBasicMessagePackage().getDestDepotIndex(),
+					this.conditions
+					);
+			Replies.QueryFolders rep = (Replies.QueryFolders)cm.getReply();
+			if(rep == null) {
+				this.getReply().setFailedReason("The Reply from CommandsManager is NULL, Execute Failed");
+				this.getReply().setOK(false);
+				return false;
+			}
+			
+			if(folders == null) {
+				this.getReply().setFailedReason("QueryFolders Failed");
+				this.getReply().setOK(false);
+				this.reply();
+				return false;
+			}
+			if(folders.size() == 0) {
+				this.getReply().setFolder(new BasicModels.Folder());
+				this.getReply().setFolders(folders);
+				this.getReply().setAmount(0);
+				this.reply();
+				return true;
+			}
+			this.getReply().setFolders(folders);
+			this.getReply().setAmount(folders.size());
+			this.getReply().setOK(true);
+			Interfaces.ICommunicatorSendTotal st = Factories.CommunicatorFactory.createSendTotal();
+			for(int i=0; i<folders.size(); i++) {
+				this.getReply().setFolder(folders.getContent().get(i));
+				st.inputNextItem(this.getReply().output());
+			}
+			this.replyTotal(st);
+			return true;
+		}
 	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public void reply() {
 		this.getConnection().setSendString(this.getReply().output());
 		this.getConnection().setSendLength(this.getConnection().getSendString().length());
@@ -100,7 +204,5 @@ public class QueryFolders extends Comman implements Interfaces.ICommands {
 		this.getConnection().notify();
 	}
 	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

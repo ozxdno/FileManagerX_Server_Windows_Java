@@ -118,7 +118,6 @@ public class DepotChecker2 implements Interfaces.IDepotChecker{
 			}
 		}
 		
-		
 		boolean ok = true;
 		
 		for(int i=0; i<checkedDBFolders.length; i++) {

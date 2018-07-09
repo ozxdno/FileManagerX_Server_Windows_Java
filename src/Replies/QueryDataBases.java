@@ -86,12 +86,14 @@ public class QueryDataBases extends Comman implements Interfaces.IReplies {
 	public void copyReference(Object o) {
 		super.copyReference(o);
 		QueryDataBases qf = (QueryDataBases)o;
+		this.amount = qf.amount;
 		this.dbInfo = qf.dbInfo;
 		this.dbInfos = qf.dbInfos;
 	}
 	public void copyValue(Object o) {
 		super.copyValue(o);
 		QueryDataBases qf = (QueryDataBases)o;
+		this.amount = qf.amount;
 		this.dbInfo.copyValue(qf.dbInfo);
 		this.dbInfos.copyValue(qf.dbInfos);
 	}

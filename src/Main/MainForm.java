@@ -161,6 +161,34 @@ public class MainForm extends JFrame {
 	            	jResult.setText(List.get(ListIndex));
 	            	return;
 	            }
+	            if(f.equals("tip")) {
+	            	List.clear();
+	            	
+	            	List.add("    tip");
+	            	List.add("    prev");
+	            	List.add("    next");
+	            	List.add("    direct    d    @");
+	            	List.add("    CloseServer    cs");
+	            	List.add("    test    t");
+	            	List.add("    input    i");
+	            	List.add("    output    o");
+	            	List.add("    QueryConfigurations    qcs");
+	            	List.add("    QueryDepots    qds");
+	            	List.add("    QueryDataBases    qdbs");
+	            	List.add("    QueryUsers    qus");
+	            	List.add("    QueryInvitations    qis");
+	            	List.add("    QueryFolders    qfds");
+	            	List.add("    QueryFiles    qfs");
+	            	
+	            	for(int i=0; i<List.size(); i++) {
+	            		List.set(i, "[" + (i+1) + "/" + List.size() + "]" + List.get(i));
+	            	}
+	            	
+	            	jInput.setText("Tip = next");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
 	            if(f.equals("direct") || f.equals("d") || f.equals("@")) {
 	            	String tip = "";
 	            	List.clear();
@@ -198,7 +226,7 @@ public class MainForm extends JFrame {
 	            	tip = "[3/3][destMachineIndex][testString]";
 	            	List.add(tip);
 	            	
-	            	jInput.setText("Test = next");
+	            	jInput.setText("Test = This is a Test String.");
 	            	jResult.setText(List.get(0));
 	            	ListIndex = 0;
 	            	return;
@@ -239,6 +267,103 @@ public class MainForm extends JFrame {
 	            	ListIndex = 0;
 	            	return;
 	            }
+	            if(f.equals("queryconfigurations") || f.equals("qcs")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/1][No Args]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("QueryConfigurations = next");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("querydepots") || f.equals("qds")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/2][No Args]";
+	            	List.add(tip);
+	            	tip = "[2/2][conditions]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("QueryDepots = [&] Index = 1");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("querydatabases") || f.equals("qdbs")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/2][No Args]";
+	            	List.add(tip);
+	            	tip = "[2/2][conditions]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("QueryDataBases = [&] Index = 1");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("queryusers") || f.equals("qus")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/2][No Args]";
+	            	List.add(tip);
+	            	tip = "[2/2][conditions]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("QueryUsers = [&] Index = 1");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("queryinvitations") || f.equals("qis")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/2][No Args]";
+	            	List.add(tip);
+	            	tip = "[2/2][conditions]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("QueryInvitations = [&] Index = 1");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("queryfolders") || f.equals("qfds")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/2][destDepot][conditions]";
+	            	List.add(tip);
+	            	tip = "[2/2][destMachine][destDepot][conditions]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("QueryFolders = next");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("queryfiles") || f.equals("qfs")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/2][destDepot][conditions]";
+	            	List.add(tip);
+	            	tip = "[2/2][destMachine][destDepot][conditions]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("QueryFiles = next");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            
 	            jResult.setText("[Unsupport]");
 	        }
 	    }
@@ -405,7 +530,337 @@ public class MainForm extends JFrame {
 	 	            		return;
 	 	            	}
 	 	            }
-	 	        	
+	 	           	if(CmdName.equals("QueryConfigurations")) {
+	 	           		if(cmdcfg.getItemsSize() == 0) {
+	 	           			Replies.QueryConfigurations rep = cm.queryConfigurations();
+	 	           			if(rep == null) {
+	 	           				jResult.setText("Failed: NULL");
+	 	           				return;
+	 	           			}
+	 	           			if(!rep.isOK()) {
+	 	           				jResult.setText("Failed: " + rep.getFailedReason());
+	 	           				return;
+	 	           			}
+	 	           			List.clear();
+	 	           			ListIndex = 0;
+	 	           			String item = "";
+	 	           			
+	 	           			item = "[1/9]Next_FileIndex = " + rep.getNext_FileIndex();
+	 	           			List.add(item);
+		 	           		item = "[2/9]Next_UserIndex = " + rep.getNext_UserIndex();
+	 	           			List.add(item);
+	 	           			item = "[3/9]Next_MachineIndex = " + rep.getNext_MachineIndex();
+	 	           			List.add(item);
+	 	           			item = "[4/9]Next_DepotIndex = " + rep.getNext_DepotIndex();
+		           			List.add(item);
+		           			item = "[5/9]Next_DataBaseIndex = " + rep.getNext_DataBaseIndex();
+	 	           			List.add(item);
+	 	           			item = "[6/9]This_MachineIndex = " + rep.getThis_MachineIndex();
+		           			List.add(item);
+		           			item = "[7/9]This_UserIndex = " + rep.getThis_UserIndex();
+	 	           			List.add(item);
+	 	           			item = "[8/9]Server_MachineIndex = " + rep.getServer_MachineIndex();
+		           			List.add(item);
+		           			item = "[9/9]Server_UserIndex = " + rep.getServer_UserIndex();
+	 	           			List.add(item);
+	 	           			
+	 	           			jInput.setText("QueryConfigurations = next");
+	 	           			jResult.setText(List.get(ListIndex));
+	 	           			return;
+	 	           		}
+	 	           	}
+	 	            if(CmdName.equals("QueryDepots")) {
+	 	            	if(cmdcfg.getItemsSize() == 0) {
+	 	           			BasicCollections.DepotInfos ds = cm.queryDepots("");
+	 	           			if(ds == null) {
+	 	           				jResult.setText("Failed: NULL");
+	 	           				return;
+	 	           			}
+	 	           			if(ds.size() == 0) {
+	 	           				jResult.setText("Successed: Empty");
+	 	           				return;
+	 	           			}
+	 	           			
+	 	           			List.clear();
+	 	           			ListIndex = 0;
+	 	           			String item = "";
+	 	           			
+	 	           			for(int i=0; i<ds.size(); i++) {
+	 	           				item = "[" + (i+1) + "/" + ds.size() + "]" + ds.getContent().get(i).output();
+	 	           				List.add(item);
+	 	           			}
+	 	           			
+	 	           			jInput.setText("QueryDepots = next");
+	 	           			jResult.setText(List.get(ListIndex));
+	 	           			return;
+	 	           		}
+	 	            	if(cmdcfg.getItemsSize() == 1) {
+	 	           			BasicCollections.DepotInfos ds = cm.queryDepots(cmdcfg.getString(0));
+	 	           			if(ds == null) {
+	 	           				jResult.setText("Failed: NULL");
+	 	           				return;
+	 	           			}
+	 	           			if(ds.size() == 0) {
+	 	           				jResult.setText("Successed: Empty");
+	 	           				return;
+	 	           			}
+	 	           			
+	 	           			List.clear();
+	 	           			ListIndex = 0;
+	 	           			String item = "";
+	 	           			
+	 	           			for(int i=0; i<ds.size(); i++) {
+	 	           				item = "[" + (i+1) + "/" + ds.size() + "]" + ds.getContent().get(i).output();
+	 	           				List.add(item);
+	 	           			}
+	 	           			
+	 	           			jResult.setText(List.get(ListIndex));
+	 	           			return;
+	 	           		}
+	 	            }
+	 	           if(CmdName.equals("QueryDataBases")) {
+	 	            	if(cmdcfg.getItemsSize() == 0) {
+	 	           			BasicCollections.DataBaseInfos dbs = cm.queryDataBases("");
+	 	           			if(dbs == null) {
+	 	           				jResult.setText("Failed: NULL");
+	 	           				return;
+	 	           			}
+	 	           			if(dbs.size() == 0) {
+	 	           				jResult.setText("Successed: Empty");
+	 	           				return;
+	 	           			}
+	 	           			
+	 	           			List.clear();
+	 	           			ListIndex = 0;
+	 	           			String item = "";
+	 	           			
+	 	           			for(int i=0; i<dbs.size(); i++) {
+	 	           				item = "[" + (i+1) + "/" + dbs.size() + "]" + dbs.getContent().get(i).output();
+	 	           				List.add(item);
+	 	           			}
+	 	           			
+	 	           			jInput.setText("QueryDataBases = next");
+	 	           			jResult.setText(List.get(ListIndex));
+	 	           			return;
+	 	           		}
+	 	            	if(cmdcfg.getItemsSize() == 1) {
+	 	           			BasicCollections.DataBaseInfos dbs = cm.queryDataBases(cmdcfg.getString(0));
+	 	           			if(dbs == null) {
+	 	           				jResult.setText("Failed: NULL");
+	 	           				return;
+	 	           			}
+	 	           			if(dbs.size() == 0) {
+	 	           				jResult.setText("Successed: Empty");
+	 	           				return;
+	 	           			}
+	 	           			
+	 	           			List.clear();
+	 	           			ListIndex = 0;
+	 	           			String item = "";
+	 	           			
+	 	           			for(int i=0; i<dbs.size(); i++) {
+	 	           				item = "[" + (i+1) + "/" + dbs.size() + "]" + dbs.getContent().get(i).output();
+	 	           				List.add(item);
+	 	           			}
+	 	           			
+	 	           			jResult.setText(List.get(ListIndex));
+	 	           			return;
+	 	           		}
+	 	            }
+	 	           if(CmdName.equals("QueryUsers")) {
+	 	            	if(cmdcfg.getItemsSize() == 0) {
+	 	           			BasicCollections.Users users = cm.queryUsers("");
+	 	           			if(users == null) {
+	 	           				jResult.setText("Failed: NULL");
+	 	           				return;
+	 	           			}
+	 	           			if(users.size() == 0) {
+	 	           				jResult.setText("Successed: Empty");
+	 	           				return;
+	 	           			}
+	 	           			
+	 	           			List.clear();
+	 	           			ListIndex = 0;
+	 	           			String item = "";
+	 	           			
+	 	           			for(int i=0; i<users.size(); i++) {
+	 	           				item = "[" + (i+1) + "/" + users.size() + "]" + users.getContent().get(i).output();
+	 	           				List.add(item);
+	 	           			}
+	 	           			
+	 	           			jInput.setText("QueryUsers = next");
+	 	           			jResult.setText(List.get(ListIndex));
+	 	           			return;
+	 	           		}
+	 	            	if(cmdcfg.getItemsSize() == 1) {
+	 	           			BasicCollections.Users users = cm.queryUsers(cmdcfg.getString(0));
+	 	           			if(users == null) {
+	 	           				jResult.setText("Failed: NULL");
+	 	           				return;
+	 	           			}
+	 	           			if(users.size() == 0) {
+	 	           				jResult.setText("Successed: Empty");
+	 	           				return;
+	 	           			}
+	 	           			
+	 	           			List.clear();
+	 	           			ListIndex = 0;
+	 	           			String item = "";
+	 	           			
+	 	           			for(int i=0; i<users.size(); i++) {
+	 	           				item = "[" + (i+1) + "/" + users.size() + "]" + users.getContent().get(i).output();
+	 	           				List.add(item);
+	 	           			}
+	 	           			
+	 	           			jResult.setText(List.get(ListIndex));
+	 	           			return;
+	 	           		}
+	 	            }
+	 	           if(CmdName.equals("QueryInvitations")) {
+	 	            	if(cmdcfg.getItemsSize() == 0) {
+	 	           			BasicCollections.Invitations invitations = cm.queryInvitations("");
+	 	           			if(invitations == null) {
+	 	           				jResult.setText("Failed: NULL");
+	 	           				return;
+	 	           			}
+	 	           			if(invitations.size() == 0) {
+	 	           				jResult.setText("Successed: Empty");
+	 	           				return;
+	 	           			}
+	 	           			
+	 	           			List.clear();
+	 	           			ListIndex = 0;
+	 	           			String item = "";
+	 	           			
+	 	           			for(int i=0; i<invitations.size(); i++) {
+	 	           				item = "[" + (i+1) + "/" + invitations.size() + "]" + invitations.getContent().get(i).output();
+	 	           				List.add(item);
+	 	           			}
+	 	           			
+	 	           			jInput.setText("QueryInvitations = next");
+	 	           			jResult.setText(List.get(ListIndex));
+	 	           			return;
+	 	           		}
+	 	            	if(cmdcfg.getItemsSize() == 1) {
+	 	            		BasicCollections.Invitations invitations = cm.queryInvitations(cmdcfg.getString(0));
+	 	           			if(invitations == null) {
+	 	           				jResult.setText("Failed: NULL");
+	 	           				return;
+	 	           			}
+	 	           			if(invitations.size() == 0) {
+	 	           				jResult.setText("Successed: Empty");
+	 	           				return;
+	 	           			}
+	 	           			
+	 	           			List.clear();
+	 	           			ListIndex = 0;
+	 	           			String item = "";
+	 	           			
+	 	           			for(int i=0; i<invitations.size(); i++) {
+	 	           				item = "[" + (i+1) + "/" + invitations.size() + "]" + invitations.getContent().get(i).output();
+	 	           				List.add(item);
+	 	           			}
+	 	           			
+	 	           			jResult.setText(List.get(ListIndex));
+	 	           			return;
+	 	           		}
+	 	            }
+	 	            if(CmdName.equals("QueryFolders")) {
+	 	            	if(cmdcfg.getItemsSize() == 2) {
+	 	           			BasicCollections.Folders folders = cm.queryFolders(cmdcfg.getLong(0), cmdcfg.getString(1));
+	 	           			if(folders == null) {
+	 	           				jResult.setText("Failed: NULL");
+	 	           				return;
+	 	           			}
+	 	           			if(folders.size() == 0) {
+	 	           				jResult.setText("Successed: Empty");
+	 	           				return;
+	 	           			}
+	 	           			
+	 	           			List.clear();
+	 	           			ListIndex = 0;
+	 	           			String item = "";
+	 	           			
+	 	           			for(int i=0; i<folders.size(); i++) {
+	 	           				item = "[" + (i+1) + "/" + folders.size() + "]" + folders.getContent().get(i).output();
+	 	           				List.add(item);
+	 	           			}
+	 	           			
+	 	           			jResult.setText(List.get(ListIndex));
+	 	           			return;
+	 	           		}
+	 	            	if(cmdcfg.getItemsSize() == 3) {
+	 	            		BasicCollections.Folders folders = cm.queryFolders(cmdcfg.getLong(0), cmdcfg.getLong(1), cmdcfg.getString(1));
+	 	           			if(folders == null) {
+	 	           				jResult.setText("Failed: NULL");
+	 	           				return;
+	 	           			}
+	 	           			if(folders.size() == 0) {
+	 	           				jResult.setText("Successed: Empty");
+	 	           				return;
+	 	           			}
+	 	           			
+	 	           			List.clear();
+	 	           			ListIndex = 0;
+	 	           			String item = "";
+	 	           			
+	 	           			for(int i=0; i<folders.size(); i++) {
+	 	           				item = "[" + (i+1) + "/" + folders.size() + "]" + folders.getContent().get(i).output();
+	 	           				List.add(item);
+	 	           			}
+	 	           			
+	 	           			jResult.setText(List.get(ListIndex));
+	 	           			return;
+	 	           		}
+	 	            }
+	 	           if(CmdName.equals("QueryFiles")) {
+	 	            	if(cmdcfg.getItemsSize() == 2) {
+	 	           			BasicCollections.BaseFiles files = cm.queryFiles(cmdcfg.getLong(0), cmdcfg.getString(1));
+	 	           			if(files == null) {
+	 	           				jResult.setText("Failed: NULL");
+	 	           				return;
+	 	           			}
+	 	           			if(files.size() == 0) {
+	 	           				jResult.setText("Successed: Empty");
+	 	           				return;
+	 	           			}
+	 	           			
+	 	           			List.clear();
+	 	           			ListIndex = 0;
+	 	           			String item = "";
+	 	           			
+	 	           			for(int i=0; i<files.size(); i++) {
+	 	           				item = "[" + (i+1) + "/" + files.size() + "]" + files.getContent().get(i).output();
+	 	           				List.add(item);
+	 	           			}
+	 	           			
+	 	           			jResult.setText(List.get(ListIndex));
+	 	           			return;
+	 	           		}
+	 	            	if(cmdcfg.getItemsSize() == 3) {
+	 	            		BasicCollections.BaseFiles files = cm.queryFiles(cmdcfg.getLong(0), cmdcfg.getLong(1), cmdcfg.getString(1));
+	 	           			if(files == null) {
+	 	           				jResult.setText("Failed: NULL");
+	 	           				return;
+	 	           			}
+	 	           			if(files.size() == 0) {
+	 	           				jResult.setText("Successed: Empty");
+	 	           				return;
+	 	           			}
+	 	           			
+	 	           			List.clear();
+	 	           			ListIndex = 0;
+	 	           			String item = "";
+	 	           			
+	 	           			for(int i=0; i<files.size(); i++) {
+	 	           				item = "[" + (i+1) + "/" + files.size() + "]" + files.getContent().get(i).output();
+	 	           				List.add(item);
+	 	           			}
+	 	           			
+	 	           			jResult.setText(List.get(ListIndex));
+	 	           			return;
+	 	           		}
+	 	            }
 	 	            jResult.setText("Unsupport Command");
 	        	} catch(Exception ex) {
 	        		jResult.setText(ex.toString());
