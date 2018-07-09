@@ -8,6 +8,7 @@ import javax.swing.*;
 // errors
 // tip
 
+// @Input = 5|6|D:\Space_For_Media\Pictures\FMX_Test_Depot_E\a2.jpg|D:\Space_For_Media\Pictures\FMX_Test_Depot_C\a15.jpg
 // Input = 5|6|D:\Space_For_Media\Pictures\FMX_Test_Depot_E\a2.jpg|D:\Space_For_Media\Pictures\FMX_Test_Depot_C\a10.jpg
 // Input = D:\Space_For_Media\Pictures\FMX_Test_Depot_A\阿九\a2.jpg|D:\Space_For_Media\Pictures\FMX_Test_Depot_C\a2.jpg
 // Input = D:\Space_For_Media\Pictures\FMX_Test_Depot_A\新建文件夹\a1.rar|D:\Space_For_Media\Pictures\FMX_Test_Depot_C\a4.rar
@@ -158,6 +159,18 @@ public class MainForm extends JFrame {
 	            		return;
 	            	}
 	            	jResult.setText(List.get(ListIndex));
+	            	return;
+	            }
+	            if(f.equals("direct") || f.equals("d") || f.equals("@")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/1][sourMachineIndex][destMachineIndex][Other Args]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("@ = ");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
 	            	return;
 	            }
 	            if(f.equals("closeserver") || f.equals("cs")) {

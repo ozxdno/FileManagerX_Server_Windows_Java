@@ -54,6 +54,9 @@ public class Manager implements Interfaces.ICommandsManager {
 		if(!this.isConnectionRunning()) {
 			return null;
 		}
+		if(this.isDirectConnection()) {
+			return this.directlyQueryConfigurations();
+		}
 		
 		Commands.QueryConfigurations cmd = new Commands.QueryConfigurations();
 		reply = swre.execute(cmd.output());
@@ -83,6 +86,9 @@ public class Manager implements Interfaces.ICommandsManager {
 		else {
 			if(!this.isConnectionRunning()) {
 				return null;
+			}
+			if(this.isDirectConnection()) {
+				return this.directlyQueryDepots(conditions);
 			}
 			
 			Commands.QueryDepots cmd = new Commands.QueryDepots();
@@ -130,6 +136,9 @@ public class Manager implements Interfaces.ICommandsManager {
 			if(!this.isConnectionRunning()) {
 				return null;
 			}
+			if(this.isDirectConnection()) {
+				return this.directlyQueryDataBases(conditions);
+			}
 			
 			Commands.QueryDataBases cmd = new Commands.QueryDataBases();
 			cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
@@ -174,6 +183,9 @@ public class Manager implements Interfaces.ICommandsManager {
 		else {
 			if(!this.isConnectionRunning()) {
 				return null;
+			}
+			if(this.isDirectConnection()) {
+				return this.directlyQeuryUser(conditions);
 			}
 			
 			Commands.QueryUser cmd = new Commands.QueryUser();
@@ -220,6 +232,9 @@ public class Manager implements Interfaces.ICommandsManager {
 			if(!this.isConnectionRunning()) {
 				return null;
 			}
+			if(this.isDirectConnection()) {
+				return this.directlyQeuryMachine(conditions);
+			}
 			
 			Commands.QueryMachine cmd = new Commands.QueryMachine();
 			cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
@@ -265,6 +280,9 @@ public class Manager implements Interfaces.ICommandsManager {
 			if(!this.isConnectionRunning()) {
 				return null;
 			}
+			if(this.isDirectConnection()) {
+				return this.directlyQueryDepot(conditions);
+			}
 			
 			Commands.QueryDepot cmd = new Commands.QueryDepot();
 			cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
@@ -309,6 +327,9 @@ public class Manager implements Interfaces.ICommandsManager {
 		else {
 			if(!this.isConnectionRunning()) {
 				return null;
+			}
+			if(this.isDirectConnection()) {
+				return this.directlyQueryDataBase(conditions);
 			}
 			
 			Commands.QueryDataBase cmd = new Commands.QueryDataBase();
@@ -358,6 +379,9 @@ public class Manager implements Interfaces.ICommandsManager {
 			if(!this.isConnectionRunning()) {
 				return false;
 			}
+			if(this.isDirectConnection()) {
+				return this.directlyRemoveDepot(conditions);
+			}
 			
 			Commands.RemoveDepot cmd = new Commands.RemoveDepot();
 			cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
@@ -404,6 +428,9 @@ public class Manager implements Interfaces.ICommandsManager {
 		else {
 			if(!this.isConnectionRunning()) {
 				return false;
+			}
+			if(this.isDirectConnection()) {
+				return this.directlyRemoveDataBase(conditions);
 			}
 			
 			Commands.RemoveDataBase cmd = new Commands.RemoveDataBase();
@@ -453,6 +480,9 @@ public class Manager implements Interfaces.ICommandsManager {
 			if(!this.isConnectionRunning()) {
 				return false;
 			}
+			if(this.isDirectConnection()) {
+				return this.directlyRemoveDepots(conditions);
+			}
 			
 			Commands.RemoveDepots cmd = new Commands.RemoveDepots();
 			cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
@@ -500,6 +530,9 @@ public class Manager implements Interfaces.ICommandsManager {
 			if(!this.isConnectionRunning()) {
 				return false;
 			}
+			if(this.isDirectConnection()) {
+				return this.directlyRemoveDataBases(conditions);
+			}
 			
 			Commands.RemoveDataBase cmd = new Commands.RemoveDataBase();
 			cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
@@ -545,6 +578,9 @@ public class Manager implements Interfaces.ICommandsManager {
 			if(!this.isConnectionRunning()) {
 				return false;
 			}
+			if(this.isDirectConnection()) {
+				return this.directlyUpdateMachine(machine);
+			}
 			
 			Commands.UpdateMachine cmd = new Commands.UpdateMachine();
 			cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
@@ -577,6 +613,9 @@ public class Manager implements Interfaces.ICommandsManager {
 			if(!this.isConnectionRunning()) {
 				return false;
 			}
+			if(this.isDirectConnection()) {
+				return this.directlyUpdateDepot(depot);
+			}
 			
 			Commands.UpdateDepot cmd = new Commands.UpdateDepot();
 			cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
@@ -608,6 +647,9 @@ public class Manager implements Interfaces.ICommandsManager {
 		else {
 			if(!this.isConnectionRunning()) {
 				return false;
+			}
+			if(this.isDirectConnection()) {
+				return this.directlyUpdateDataBase(database);
 			}
 			
 			Commands.UpdateDataBase cmd = new Commands.UpdateDataBase();
@@ -1090,6 +1132,97 @@ public class Manager implements Interfaces.ICommandsManager {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	private Replies.QueryConfigurations directlyQueryConfigurations() {
+		Interfaces.ICommandsManager cm = Globals.Datas.ServerConnection.getCommandsManager();
+		Replies.QueryConfigurations res = cm.queryConfigurations();
+		this.reply = cm.getReply();
+		return res;
+	}
+	private BasicCollections.DepotInfos directlyQueryDepots(Object conditions) {
+		Interfaces.ICommandsManager cm = Globals.Datas.ServerConnection.getCommandsManager();
+		BasicCollections.DepotInfos res = cm.queryDepots(conditions);
+		this.reply = cm.getReply();
+		return res;
+	}
+	private BasicCollections.DataBaseInfos directlyQueryDataBases(Object conditions) {
+		Interfaces.ICommandsManager cm = Globals.Datas.ServerConnection.getCommandsManager();
+		BasicCollections.DataBaseInfos res = cm.queryDataBases(conditions);
+		this.reply = cm.getReply();
+		return res;
+	}
+	
+	private BasicModels.User directlyQeuryUser(Object conditions) {
+		Interfaces.ICommandsManager cm = Globals.Datas.ServerConnection.getCommandsManager();
+		BasicModels.User res = cm.qeuryUser(conditions);
+		this.reply = cm.getReply();
+		return res;
+	}
+	private BasicModels.MachineInfo directlyQeuryMachine(Object conditions) {
+		Interfaces.ICommandsManager cm = Globals.Datas.ServerConnection.getCommandsManager();
+		BasicModels.MachineInfo res = cm.qeuryMachine(conditions);
+		this.reply = cm.getReply();
+		return res;
+	}
+	private BasicModels.DepotInfo directlyQueryDepot(Object conditions) {
+		Interfaces.ICommandsManager cm = Globals.Datas.ServerConnection.getCommandsManager();
+		BasicModels.DepotInfo res = cm.queryDepot(conditions);
+		this.reply = cm.getReply();
+		return res;
+	}
+	private BasicModels.DataBaseInfo directlyQueryDataBase(Object conditions) {
+		Interfaces.ICommandsManager cm = Globals.Datas.ServerConnection.getCommandsManager();
+		BasicModels.DataBaseInfo res = cm.queryDataBase(conditions);
+		this.reply = cm.getReply();
+		return res;
+	}
+	
+	private boolean directlyRemoveDepots(Object conditions) {
+		Interfaces.ICommandsManager cm = Globals.Datas.ServerConnection.getCommandsManager();
+		boolean res = cm.removeDepots(conditions);
+		this.reply = cm.getReply();
+		return res;
+	}
+	private boolean directlyRemoveDataBases(Object conditions) {
+		Interfaces.ICommandsManager cm = Globals.Datas.ServerConnection.getCommandsManager();
+		boolean res = cm.removeDataBases(conditions);
+		this.reply = cm.getReply();
+		return res;
+	}
+	
+	private boolean directlyRemoveDepot(Object conditions) {
+		Interfaces.ICommandsManager cm = Globals.Datas.ServerConnection.getCommandsManager();
+		boolean res = cm.removeDepot(conditions);
+		this.reply = cm.getReply();
+		return res;
+	}
+	private boolean directlyRemoveDataBase(Object conditions) {
+		Interfaces.ICommandsManager cm = Globals.Datas.ServerConnection.getCommandsManager();
+		boolean res = cm.removeDataBase(conditions);
+		this.reply = cm.getReply();
+		return res;
+	}
+	
+	private boolean directlyUpdateMachine(BasicModels.MachineInfo machine) {
+		Interfaces.ICommandsManager cm = Globals.Datas.ServerConnection.getCommandsManager();
+		boolean res = cm.updateMachine(machine);
+		this.reply = cm.getReply();
+		return res;
+	}
+	private boolean directlyUpdateDepot(BasicModels.DepotInfo depot) {
+		Interfaces.ICommandsManager cm = Globals.Datas.ServerConnection.getCommandsManager();
+		boolean res = cm.updateDepot(depot);
+		this.reply = cm.getReply();
+		return res;
+	}
+	private boolean directlyUpdateDataBase(BasicModels.DataBaseInfo database) {
+		Interfaces.ICommandsManager cm = Globals.Datas.ServerConnection.getCommandsManager();
+		boolean res = cm.updateDataBase(database);
+		this.reply = cm.getReply();
+		return res;
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	private boolean isConnectionRunning() {
 		if(this.connection == null) {
 			BasicEnums.ErrorType.COMMON_NULL.register("connection is NULL");
@@ -1100,6 +1233,12 @@ public class Manager implements Interfaces.ICommandsManager {
 			return false;
 		}
 		return true;
+	}
+	
+	private boolean isDirectConnection() {
+		return this.connection.getServerMachineInfo().getIndex() != Globals.Configurations.Server_MachineIndex &&
+				this.connection.getClientMachineInfo().getIndex() != Globals.Configurations.Server_MachineIndex &&
+						!Globals.Configurations.IsServer;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
