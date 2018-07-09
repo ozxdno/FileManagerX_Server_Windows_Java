@@ -131,6 +131,11 @@ public class Executor implements Interfaces.ICommandExecutor {
 			qf.setConnection(connection);
 			return qf.input(connection.getReceiveString()) != null && qf.execute();
 		}
+		if(c.getField().equals("QuerySize")) {
+			Commands.QuerySize qsz = new Commands.QuerySize();
+			qsz.setConnection(connection);
+			return qsz.input(connection.getReceiveString()) != null && qsz.execute();
+		}
 		if(c.getField().equals("UpdateMachine")) {
 			Commands.UpdateMachine um = new Commands.UpdateMachine();
 			um.setConnection(connection);

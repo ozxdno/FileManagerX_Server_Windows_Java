@@ -187,6 +187,7 @@ public class MainForm extends JFrame {
 	            	List.add("    QueryInvitation    qi");
 	            	List.add("    QueryFolder    qfd");
 	            	List.add("    QueryFile    qf");
+	            	List.add("    QuerySize    qsz");
 	            	
 	            	for(int i=0; i<List.size(); i++) {
 	            		List.set(i, "[" + (i+1) + "/" + List.size() + "]" + List.get(i));
@@ -473,7 +474,22 @@ public class MainForm extends JFrame {
 	            	ListIndex = 0;
 	            	return;
 	            }
-	            
+	            if(f.equals("querysize") || f.equals("qsz")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/3][queryItem]";
+	            	List.add(tip);
+	            	tip = "[2/3][destDepot][queryItem]";
+	            	List.add(tip);
+	            	tip = "[2/3][destMachine][destDepot][queryItem]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("QuerySize = next");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
 	            jResult.setText("[Unsupport]");
 	        }
 	    }
@@ -1094,6 +1110,29 @@ public class MainForm extends JFrame {
 		 	        		 String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
 		 	        		 
 		 	        		 jResult.setText(res == null ? "Failed: " + reason : res.output());
+		 	        		 return;
+		 	        	 }
+		 	          }
+			 	   	if(CmdName.equals("QuerySize")) {
+				 	   	 if(cmdcfg.getItemsSize() == 1) {
+		 	        		 int res = cm.querySize(cmdcfg.getString(0));
+		 	        		 String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+		 	        		 
+		 	        		 jResult.setText(res < 0 ? "Failed: " + reason : "Size: " + res);
+		 	        		 return;
+		 	        	 }
+		 	        	 if(cmdcfg.getItemsSize() == 2) {
+		 	        		 int res = cm.querySize(cmdcfg.getLong(0), cmdcfg.getString(1));
+		 	        		 String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+		 	        		 
+		 	        		 jResult.setText(res < 0 ? "Failed: " + reason : "Size: " + res);
+		 	        		 return;
+		 	        	 }
+		 	        	if(cmdcfg.getItemsSize() == 3) {
+		 	        		int res = cm.querySize(cmdcfg.getLong(0), cmdcfg.getLong(1), cmdcfg.getString(2));
+		 	        		 String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+		 	        		 
+		 	        		 jResult.setText(res < 0 ? "Failed: " + reason : "Size: " + res);
 		 	        		 return;
 		 	        	 }
 		 	          }

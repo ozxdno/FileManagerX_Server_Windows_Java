@@ -39,6 +39,10 @@ public interface ICommandsManager {
 	public BasicModels.BaseFile queryFile(long depotIndex, Object conditions);
 	public BasicModels.BaseFile queryFile(long machineIndex, long depotIndex, Object conditions);
 	
+	public int querySize(String queryItem);
+	public int querySize(long depotIndex, String queryItem);
+	public int querySize(long machineIndex, long depotIndex, String queryItem);
+	
 	public boolean removeDepots(Object conditions);
 	public boolean removeDataBases(Object conditions);
 	

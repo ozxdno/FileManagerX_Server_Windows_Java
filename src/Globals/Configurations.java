@@ -8,6 +8,7 @@ public final class Configurations {
 	public static boolean IsClient = false;
 	
 	public static boolean ErrorOccurs = false;
+	public static boolean Restart = false;
 	
 	public static long Next_FileIndex = 0;
 	public static long Next_MachineIndex = 0;

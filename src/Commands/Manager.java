@@ -781,6 +781,43 @@ public class Manager implements Interfaces.ICommandsManager {
 		}
 	}
 	
+	public int querySize(String queryItem) {
+		return this.querySize(
+				this.connection.getServerMachineInfo().getIndex(),
+				0,
+				queryItem);
+	}
+	public int querySize(long depotIndex, String queryItem) {
+		return this.querySize(
+				this.connection.getServerMachineInfo().getIndex(),
+				depotIndex,
+				queryItem);
+	}
+	public int querySize(long machineIndex, long depotIndex, String queryItem) {
+		this.reply = null;
+		if(!this.isConnectionRunning()) {
+			return -1;
+		}
+		
+		Commands.QuerySize cmd = new Commands.QuerySize();
+		cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+		cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+		cmd.getBasicMessagePackage().setDestMachineIndex(machineIndex);
+		cmd.getBasicMessagePackage().setDestDepotIndex(depotIndex);
+		cmd.setQueryItem(queryItem);
+		
+		this.reply = swre.execute(cmd.output());
+		if(this.reply != null && !(reply instanceof Replies.QuerySize)) {
+			BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+			this.reply = null;
+			return -1;
+		}
+		if(reply == null || !reply.isOK()) {
+			return -1;
+		}
+		return ((Replies.QuerySize)reply).getSize();
+	}
+	
 	public boolean removeDepot(Object conditions) {
 		this.reply = null;
 		

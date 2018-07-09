@@ -27,3 +27,6 @@
 03:10:05 = NORMAL|1531163405832|Normal||run[ClientConnection.java:549]|
 03:10:06 = COMMUNICATOR_CONNECTION_CLOSED|1531163406736|Warning|Connection Already has been Closed|run[MainProcess.java:150]|Server[Remote Machine] Closed
 03:11:59 = OTHERS|1531163519032|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:954]<-loadCFG[CFGFile.java:57]<-run[MainProcess.java:75]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
+03:58:37 = OTHERS|1531166317531|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:954]<-loadCFG[CFGFile.java:57]<-run[MainProcess.java:75]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
+04:00:04 = OTHERS|1531166404744|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:954]<-loadCFG[CFGFile.java:57]<-run[MainProcess.java:75]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
+04:03:26 = OTHERS|1531166606854|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:954]<-loadCFG[CFGFile.java:57]<-run[MainProcess.java:75]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.

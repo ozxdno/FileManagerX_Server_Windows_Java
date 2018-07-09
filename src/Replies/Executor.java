@@ -206,6 +206,12 @@ public class Executor implements Interfaces.IReplyExecutor {
 			return qf.input(connection.getReceiveString()) != null &&
 					qf.execute(connection);
 		}
+		if(c.getField().equals("QuerySize")) {
+			Replies.QuerySize qsz = new Replies.QuerySize();
+			this.reply = qsz;
+			return qsz.input(connection.getReceiveString()) != null &&
+					qsz.execute(connection);
+		}
 		if(c.getField().equals("UpdateMachine")) {
 			Replies.UpdateMachine um = new Replies.UpdateMachine();
 			this.reply = um;
