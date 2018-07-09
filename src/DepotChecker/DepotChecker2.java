@@ -28,6 +28,13 @@ public class DepotChecker2 implements Interfaces.IDepotChecker{
 		return this.dbmanager;
 	}
 	
+	public Interfaces.IServerChecker getServerChecker() {
+		if(this.dbmanager == null) {
+			return null;
+		}
+		return this.dbmanager.getServerChecker();
+	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public DepotChecker2() {

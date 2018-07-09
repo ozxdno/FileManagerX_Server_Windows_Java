@@ -28,10 +28,20 @@ public class CFGFile {
 		}
 		BasicEnums.StartType type = BasicEnums.StartType.Server;
 		try {
-			type = BasicEnums.StartType.valueOf(c.getValue());
+			type = BasicEnums.StartType.valueOf(c.fetchFirstString());
 		} catch(Exception e) {
 			BasicEnums.ErrorType.CFG_WRONG_CONTENT.register("Wrong StartType, No such StartType: " + c.getValue());
 			return false;
+		}
+		try {
+			for(int i=0; i<c.getItems().length; i++) {
+				if(c.getString(i).equals("ShowForm")) {
+					Globals.Datas.Form_Main.setVisible(true);
+					break;
+				}
+			}
+		} catch(Exception e) {
+			;
 		}
 		
 		Globals.Configurations.StartType = type;
@@ -39,17 +49,29 @@ public class CFGFile {
 		Globals.Configurations.IsDepot = type.equals(BasicEnums.StartType.Depot);
 		Globals.Configurations.IsClient = type.equals(BasicEnums.StartType.Client);
 		
+		boolean ok = true;
 		if(type.equals(BasicEnums.StartType.Server)) {
-			return loadServerCFG(cs);
+			ok &= loadServerCFG(cs);
 		}
 		if(type.equals(BasicEnums.StartType.Depot)) {
-			return loadDepotCFG(cs);
+			ok &= loadDepotCFG(cs);
 		}
 		if(type.equals(BasicEnums.StartType.Client)) {
-			return loadClientCFG(cs);
+			ok &= loadClientCFG(cs);
 		}
 		
-		return false;
+		try {
+			for(int i=0; i<c.getItems().length; i++) {
+				if(c.getString(i).equals("Reset")) {
+					ok &= resetCFG();
+					ok = false;
+					break;
+				}
+			}
+		} catch(Exception e) {
+			;
+		}
+		return ok;
 	}
 	public final static boolean saveCFG() {
 		if(Globals.Configurations.StartType.equals(BasicEnums.StartType.Server)) {
@@ -363,26 +385,30 @@ public class CFGFile {
 			if(c == null) {
 				break;
 			}
-			BasicModels.Support s = new BasicModels.Support();
-			s.setType(BasicEnums.FileType.valueOf(c.fetchFirstString()));
-			if(!c.getIsOK()) { continue; }
-			s.setExtension(c.fetchFirstString());
-			if(!c.getIsOK()) { continue; }
-			s.setShowExtension(new java.lang.String(s.getExtension()));
-			if(!c.getIsOK()) { continue; }
-			s.setHideExtension(c.fetchFirstString());
-			if(!c.getIsOK()) { continue; }
-			s.setIsSupport(true);
-			Globals.Datas.Supports.add(s);
-			
-			BasicModels.Support s2 = new BasicModels.Support();
-			s2.setExtension(new java.lang.String(s.getHideExtension()));
-			s2.setType(s.getType());
-			s2.setShowExtension(new java.lang.String(s.getShowExtension()));
-			s2.setHideExtension(new java.lang.String(s.getHideExtension()));
-			s2.setIsSupport(false);
-			if(s2.getExtension() != null && s2.getExtension().length() > 0) {
-				Globals.Datas.Supports.add(s2);
+			try {
+				BasicModels.Support s = new BasicModels.Support();
+				s.setType(BasicEnums.FileType.valueOf(c.fetchFirstString()));
+				if(!c.getIsOK()) { continue; }
+				s.setExtension(c.fetchFirstString());
+				if(!c.getIsOK()) { continue; }
+				s.setShowExtension(new java.lang.String(s.getExtension()));
+				if(!c.getIsOK()) { continue; }
+				s.setHideExtension(c.fetchFirstString());
+				if(!c.getIsOK()) { continue; }
+				s.setIsSupport(true);
+				Globals.Datas.Supports.add(s);
+				
+				BasicModels.Support s2 = new BasicModels.Support();
+				s2.setExtension(new java.lang.String(s.getHideExtension()));
+				s2.setType(s.getType());
+				s2.setShowExtension(new java.lang.String(s.getShowExtension()));
+				s2.setHideExtension(new java.lang.String(s.getHideExtension()));
+				s2.setIsSupport(false);
+				if(s2.getExtension() != null && s2.getExtension().length() > 0) {
+					Globals.Datas.Supports.add(s2);
+				}
+			} catch(Exception e) {
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
 			}
 		}
 		
@@ -607,173 +633,7 @@ public class CFGFile {
 		return true;
 	}
 	private final static boolean saveServerCFG() {
-		FileModels.Text txt = new FileModels.Text(Tools.Pathes.getFile_CFG());
-		
-		java.lang.String line = "";
-		txt.getContent().add(line);
-		line = "/**************************************** This File Is VERY IMPORTANT ********************************************/";
-		txt.getContent().add(line);
-		txt.getContent().add(line);
-		txt.getContent().add(line);
-		
-		line = "";
-		txt.getContent().add(line);
-		line = "StartType = " + Globals.Configurations.StartType.toString();
-		txt.getContent().add(line);
-		
-		line = "";
-		txt.getContent().add(line);
-		line = "/************************************** A List of Current Depots & DataBases *************************************/";
-		txt.getContent().add(line);
-		line = "";
-		txt.getContent().add(line);
-		
-		for(Interfaces.IDBManager dbm : Globals.Datas.DBManagers.getContent()) {
-			line = "Depot = " + dbm.getDBInfo().getDepotInfo().getName() + "|" + dbm.getDBInfo().getDepotInfo().getUrl();
-			txt.getContent().add(line);
-			line = "DataBase = " + dbm.getDBInfo().getName() + "|" + dbm.getDBInfo().getType().toString() + "|" + dbm.getDBInfo().getUrl();
-			txt.getContent().add(line);
-		}
-		
-		line = "";
-		txt.getContent().add(line);
-		line = "/*************************************************** All Indexes *****************************************************/";
-		txt.getContent().add(line);
-		line = "";
-		txt.getContent().add(line);
-		
-		line = "Next_FileIndex = " + java.lang.String.valueOf(Globals.Configurations.Next_FileIndex);
-		txt.getContent().add(line);
-		line = "Next_UserIndex = " + java.lang.String.valueOf(Globals.Configurations.Next_UserIndex);
-		txt.getContent().add(line);
-		line = "Next_MachineIndex = " + java.lang.String.valueOf(Globals.Configurations.Next_MachineIndex);
-		txt.getContent().add(line);
-		line = "Next_DepotIndex = " + java.lang.String.valueOf(Globals.Configurations.Next_DepotIndex);
-		txt.getContent().add(line);
-		line = "Next_DataBaseIndex = " + java.lang.String.valueOf(Globals.Configurations.Next_DataBaseIndex);
-		txt.getContent().add(line);
-		line = "This_MachineIndex = " + java.lang.String.valueOf(Globals.Configurations.This_MachineIndex);
-		txt.getContent().add(line);
-		line = "This_UserIndex = " + java.lang.String.valueOf(Globals.Configurations.This_UserIndex);
-		txt.getContent().add(line);
-		line = "Server_MachineIndex = " + java.lang.String.valueOf(Globals.Configurations.Server_MachineIndex);
-		txt.getContent().add(line);
-		line = "Server_UserIndex = " + java.lang.String.valueOf(Globals.Configurations.Server_UserIndex);
-		txt.getContent().add(line);
-		
-		line = "";
-		txt.getContent().add(line);
-		line = "/************************************************** Machine Info ***************************************************/";
-		txt.getContent().add(line);
-		line = "";
-		txt.getContent().add(line);
-		
-		line = "MachineIndex = " + Globals.Datas.ThisMachine.getIndex();
-		txt.getContent().add(line);
-		line = "MachineName = " + Globals.Datas.ThisMachine.getName();
-		txt.getContent().add(line);
-		line = "MachineIP = " + Globals.Datas.ThisMachine.getIp();
-		txt.getContent().add(line);
-		line = "MachinePort = " + Globals.Datas.ThisMachine.getPort();
-		txt.getContent().add(line);
-		
-		line = "";
-		txt.getContent().add(line);
-		line = "/*************************************************** Server Info *****************************************************/";
-		txt.getContent().add(line);
-		line = "";
-		txt.getContent().add(line);
-		
-		line = "ServerDepotIndex = " + Globals.Datas.DBManager.getDBInfo().getDepotInfo().getIndex();
-		txt.getContent().add(line);
-		line = "ServerDepotName = " + Globals.Datas.DBManager.getDBInfo().getDepotInfo().getName();
-		txt.getContent().add(line);
-		line = "ServerDepotUrl = " + Globals.Datas.DBManager.getDBInfo().getDepotInfo().getUrl();
-		txt.getContent().add(line);
-		
-		line = "ServerDataBaseIndex = " + Globals.Datas.DBManager.getDBInfo().getIndex();
-		txt.getContent().add(line);
-		line = "ServerDataBaseName = " + Globals.Datas.DBManager.getDBInfo().getName();
-		txt.getContent().add(line);
-		line = "ServerDataBaseType = " + Globals.Datas.DBManager.getDBInfo().getType().toString();
-		txt.getContent().add(line);
-		line = "ServerDataBaseUrl = " + Globals.Datas.DBManager.getDBInfo().getUrl();
-		txt.getContent().add(line);
-		
-		line = "";
-		txt.getContent().add(line);
-		line = "/************************************************** Supports Info **************************************************/";
-		txt.getContent().add(line);
-		line = "";
-		txt.getContent().add(line);
-		line = "Example: Support = Picture|.jpg|.pv1";
-		txt.getContent().add(line);
-		line = "";
-		txt.getContent().add(line);
-		
-		for(BasicModels.Support s : Globals.Datas.Supports.getContent()) {
-			if(s.isHideExtension()) {
-				continue;
-			}
-			line = "Support = " + s.getType().toString() + "|" + s.getShowExtension() + "|" + s.getHideExtension();
-			txt.getContent().add(line);
-		}
-		
-		line = "";
-		txt.getContent().add(line);
-		line = "/************************************************** LAN Machines **************************************************/";
-		txt.getContent().add(line);
-		line = "";
-		txt.getContent().add(line);
-		if(Globals.Datas.LANMachineIndexes.size() > 0) {
-			for(int i=0; i<Globals.Datas.LANMachineIndexes.size(); i++) {
-				line = "LANMachineIndex = " + Globals.Datas.LANMachineIndexes.get(i);
-				txt.getContent().add(line);
-			}
-		} else {
-			line = "LANMachineIndex = ";
-			txt.getContent().add(line);
-		}
-		
-		line = "";
-		txt.getContent().add(line);
-		line = "/******************************************* Add Local Depot & DataBase ****************************************/";
-		txt.getContent().add(line);
-		line = "";
-		txt.getContent().add(line);
-		line = "Example: +Depot = DepotA|D:\\Space_For_Media\\Pictures\\FMX_Test_Depot_A";
-		txt.getContent().add(line);
-		line = "Example: +DataBase = DepotA|SQL|127.0.0.1:3306\\root\\ani1357658uiu\\Depot_A";
-		txt.getContent().add(line);
-		line = "";
-		txt.getContent().add(line);
-		line = "Example: +Depot = DepotB|D:\\Space_For_Media\\Pictures\\FMX_Test_Depot_B";
-		txt.getContent().add(line);
-		line = "Example: +DataBase = DepotB|TXT|D:\\Space_For_Media\\Pictures\\FMX_Test_Depot_B";
-		txt.getContent().add(line);
-		
-		line = "";
-		txt.getContent().add(line);
-		line = "/******************************************* Add Local Depot & DataBase ****************************************/";
-		txt.getContent().add(line);
-		line = "";
-		txt.getContent().add(line);
-		line = "Example: -Depot = DepotA";
-		txt.getContent().add(line);
-		line = "Example: -DataBase = DepotA";
-		txt.getContent().add(line);
-		line = "";
-		txt.getContent().add(line);
-		line = "Example: -Depot = DepotB";
-		txt.getContent().add(line);
-		line = "Example: -DataBase = DepotB";
-		txt.getContent().add(line);
-		line = "";
-		txt.getContent().add(line);
-		txt.getContent().add(line);
-		txt.getContent().add(line);
-		
-		return txt.save();
+		return CFGFile.saveCFGCore(BasicEnums.StartType.Server, false);
 	}
 	private final static boolean resetServerCFG() {
 		// delete all depots
@@ -794,6 +654,20 @@ public class CFGFile {
 		Globals.Configurations.This_UserIndex = 0;
 		Globals.Configurations.Server_MachineIndex = 0;
 		Globals.Configurations.Server_UserIndex = 0;
+		
+		Globals.Datas.ThisMachine.setIndex(0);
+		Globals.Datas.ThisUser.setIndex(0);
+		Globals.Datas.ServerMachine.setIndex(0);
+		Globals.Datas.ServerUser.setIndex(0);
+		
+		if(Globals.Datas.DBManager.getDBInfo() != null) {
+			Globals.Datas.DBManager.getDBInfo().setIndex(0);
+			Globals.Datas.DBManager.getDBInfo().setDepotIndex(0);
+			if(Globals.Datas.DBManager.getDBInfo().getDepotInfo() != null) {
+				Globals.Datas.DBManager.getDBInfo().getDepotInfo().setIndex(0);
+				Globals.Datas.DBManager.getDBInfo().getDepotInfo().setDBIndex(0);
+			}
+		}
 		
 		// save to file
 		return saveServerCFG();
@@ -1009,93 +883,42 @@ public class CFGFile {
 				return false;
 			}
 			
-			// Login
-			// to get right user index.
-			Commands.LoginUser lu = new Commands.LoginUser();
-			lu.setLoginName(Globals.Datas.ThisUser.getLoginName());
-			Replies.LoginUser replu = (Replies.LoginUser)swre.execute(lu.output());
-			if(replu == null) { return false; }
-			if(!replu.isOK()) {
-				BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register("Login Failed");
+			Globals.Datas.ServerConnection.setUser(Globals.Datas.ThisUser);
+			Globals.Datas.ServerConnection.setType(BasicEnums.ConnectionType.TRANSPORT_COMMAND);
+			
+			boolean ok = Globals.Datas.ServerConnection.getCommandsManager().loginConnection();
+			if(!ok) {
+				BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register("loginConnection Failed");
 				return false;
 			}
-			
-			Globals.Configurations.This_UserIndex = replu.getBasicMessagePackage().getSourUserIndex();
-			Globals.Datas.ThisUser.setIndex(replu.getBasicMessagePackage().getSourUserIndex());
-			
-			// QueryConfigurations[To Get Server Index]
-			Commands.QueryConfigurations qcfg = new Commands.QueryConfigurations();
-			Replies.QueryConfigurations repqcfg = (Replies.QueryConfigurations)swre.execute(qcfg.output());
-			if(repqcfg == null) { return false; }
-			if(!repqcfg.isOK()) {
-				BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register("QueryConfigurations Failed");
-				return false;
-			}
-			Globals.Configurations.Server_MachineIndex = repqcfg.getServer_MachineIndex();
-			Globals.Configurations.Server_UserIndex = repqcfg.getServer_UserIndex();
-			Globals.Datas.ServerMachine.setIndex(repqcfg.getServer_MachineIndex());
-			Globals.Datas.ServerUser.setIndex(repqcfg.getServer_UserIndex());
-			
-			// QueryUser[This]
-			// to get self info
-			Commands.QueryUser qtu = new Commands.QueryUser();
-			dbqcs.stringToThis("[&] Index = " + Globals.Configurations.This_UserIndex);
-			qtu.setQueryConditions(dbqcs);
-			Replies.QueryUser repqtu = (Replies.QueryUser)swre.execute(qtu.output());
-			if(repqtu == null) { return false; }
-			if(!repqtu.isOK()) {
-				BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register("QueryUser[This] Failed");
-				return false;
-			}
-			Globals.Datas.ThisUser.copyReference(repqtu.getUser());
-			Globals.Configurations.This_UserIndex = repqtu.getUser().getIndex();
-			
-			//QueryUser[Server]
-			Commands.QueryUser qsu = new Commands.QueryUser();
-			dbqcs.stringToThis("[&] Index = " + Globals.Configurations.Server_UserIndex);
-			qsu.setQueryConditions(dbqcs);
-			Replies.QueryUser repqsu = (Replies.QueryUser)swre.execute(qsu.output());
-			if(repqsu == null) { return false; }
-			if(!repqsu.isOK()) {
-				BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register("QueryUser[Server] Failed");
-				return false;
-			}
-			Globals.Datas.ServerUser.copyReference(repqsu.getUser());
-			Globals.Configurations.Server_UserIndex = repqsu.getUser().getIndex();
-			
-			// UpdateMachine[This]
-			Commands.UpdateMachine utm = new Commands.UpdateMachine();
-			utm.setMachineInfo(Globals.Datas.ThisMachine);
-			Replies.UpdateMachine reputm = (Replies.UpdateMachine)swre.execute(utm.output());
-			if(reputm == null) { return false; }
-			if(!reputm.isOK()) {
-				BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register("QueryMachine and UpdateMachine[This] Failed");
-				return false;
-			}
-			Globals.Datas.ThisMachine.copyReference(reputm.getMachineInfo());
+			Globals.Datas.ThisMachine.copyValue(Globals.Datas.ServerConnection.getClientMachineInfo());
+			Globals.Datas.ThisUser.copyValue(Globals.Datas.ServerConnection.getUser());
 			Globals.Configurations.This_MachineIndex = Globals.Datas.ThisMachine.getIndex();
+			Globals.Configurations.This_UserIndex = Globals.Datas.ThisUser.getIndex();
 			
-			// QueryMachine[Server]
-			Commands.QueryMachine qsm = new Commands.QueryMachine();
-			dbqcs.stringToThis("[&] Index = " + Globals.Configurations.Server_MachineIndex);
-			qsm.setQueryConditions(dbqcs);
-			Replies.QueryMachine repqsm = (Replies.QueryMachine)swre.execute(qsm.output());
-			if(repqsm == null) { return false; }
-			if(!repqsm.isOK()) {
-				BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register("QueryMachine[Server] Failed");
+			Replies.QueryConfigurations repqc = Globals.Datas.ServerConnection.getCommandsManager().queryConfigurations();
+			if(repqc == null) {
+				BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register("queryConfigurations Failed");
 				return false;
 			}
-			Globals.Datas.ServerMachine.copyReference(repqsm.getMachineInfo());
-			Globals.Configurations.Server_MachineIndex = Globals.Datas.ServerMachine.getIndex();
+			Globals.Configurations.Server_MachineIndex = repqc.getServer_MachineIndex();
+			Globals.Configurations.Server_UserIndex = repqc.getServer_UserIndex();
 			
-			// LoginMachine
-			Commands.LoginMachine lm = new Commands.LoginMachine();
-			Replies.LoginMachine replm = (Replies.LoginMachine)swre.execute(lm.output());
-			if(replm == null) { return false; }
-			if(!replm.isOK()) {
-				BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register("LoginMachine Failed");
+			BasicModels.MachineInfo sm = Globals.Datas.ServerConnection.getCommandsManager().qeuryMachine(
+					"[&] Index = " + Globals.Configurations.Server_MachineIndex);
+			if(sm == null) {
+				BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register("qeuryMachine Failed");
 				return false;
 			}
+			Globals.Datas.ServerMachine.copyValue(sm);
+			
+			BasicModels.User user = Globals.Datas.ServerConnection.getCommandsManager().qeuryUser(
+					"[&] Index = " + Globals.Configurations.Server_UserIndex);
+			if(user == null) {
+				BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register("qeuryUser Failed");
+				return false;
+			}
+			Globals.Datas.ServerUser.copyValue(user);
 		}
 		
 		// Supports
@@ -1105,26 +928,30 @@ public class CFGFile {
 			if(c == null) {
 				break;
 			}
-			BasicModels.Support s = new BasicModels.Support();
-			s.setType(BasicEnums.FileType.valueOf(c.fetchFirstString()));
-			if(!c.getIsOK()) { continue; }
-			s.setExtension(c.fetchFirstString());
-			if(!c.getIsOK()) { continue; }
-			s.setShowExtension(new java.lang.String(s.getExtension()));
-			if(!c.getIsOK()) { continue; }
-			s.setHideExtension(c.fetchFirstString());
-			if(!c.getIsOK()) { continue; }
-			s.setIsSupport(true);
-			Globals.Datas.Supports.add(s);
-			
-			BasicModels.Support s2 = new BasicModels.Support();
-			s2.setExtension(new java.lang.String(s.getHideExtension()));
-			s2.setType(s.getType());
-			s2.setShowExtension(new java.lang.String(s.getShowExtension()));
-			s2.setHideExtension(new java.lang.String(s.getHideExtension()));
-			s2.setIsSupport(false);
-			if(s2.getExtension() != null && s2.getExtension().length() > 0) {
-				Globals.Datas.Supports.add(s2);
+			try {
+				BasicModels.Support s = new BasicModels.Support();
+				s.setType(BasicEnums.FileType.valueOf(c.fetchFirstString()));
+				if(!c.getIsOK()) { continue; }
+				s.setExtension(c.fetchFirstString());
+				if(!c.getIsOK()) { continue; }
+				s.setShowExtension(new java.lang.String(s.getExtension()));
+				if(!c.getIsOK()) { continue; }
+				s.setHideExtension(c.fetchFirstString());
+				if(!c.getIsOK()) { continue; }
+				s.setIsSupport(true);
+				Globals.Datas.Supports.add(s);
+				
+				BasicModels.Support s2 = new BasicModels.Support();
+				s2.setExtension(new java.lang.String(s.getHideExtension()));
+				s2.setType(s.getType());
+				s2.setShowExtension(new java.lang.String(s.getShowExtension()));
+				s2.setHideExtension(new java.lang.String(s.getHideExtension()));
+				s2.setIsSupport(false);
+				if(s2.getExtension() != null && s2.getExtension().length() > 0) {
+					Globals.Datas.Supports.add(s2);
+				}
+			} catch(Exception e) {
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
 			}
 		}
 		
@@ -1389,183 +1216,38 @@ public class CFGFile {
 		return true;
 	}
 	private final static boolean saveDepotCFG() {
-		
-		FileModels.Text txt = new FileModels.Text(Tools.Pathes.getFile_CFG());
-		
-		java.lang.String line = "";
-		txt.getContent().add(line);
-		line = "/**************************************** This File Is VERY IMPORTANT ********************************************/";
-		txt.getContent().add(line);
-		txt.getContent().add(line);
-		txt.getContent().add(line);
-		
-		line = "";
-		txt.getContent().add(line);
-		line = "StartType = " + Globals.Configurations.StartType.toString();
-		txt.getContent().add(line);
-		
-		line = "";
-		txt.getContent().add(line);
-		line = "/************************************** A List of Current Depots & DataBases *************************************/";
-		txt.getContent().add(line);
-		line = "";
-		txt.getContent().add(line);
-		
-		for(Interfaces.IDBManager dbm : Globals.Datas.DBManagers.getContent()) {
-			line = "Depot = " + dbm.getDBInfo().getDepotInfo().getName() + "|" + dbm.getDBInfo().getDepotInfo().getUrl();
-			txt.getContent().add(line);
-			line = "DataBase = " + dbm.getDBInfo().getName() + "|" + dbm.getDBInfo().getType().toString() + "|" + dbm.getDBInfo().getUrl();
-			txt.getContent().add(line);
-		}
-		
-		line = "";
-		txt.getContent().add(line);
-		line = "/*************************************************** All Indexes *****************************************************/";
-		txt.getContent().add(line);
-		line = "";
-		txt.getContent().add(line);
-		
-		line = "Next_FileIndex = " + java.lang.String.valueOf(Globals.Configurations.Next_FileIndex);
-		txt.getContent().add(line);
-		line = "Next_UserIndex = " + java.lang.String.valueOf(Globals.Configurations.Next_UserIndex);
-		txt.getContent().add(line);
-		line = "Next_MachineIndex = " + java.lang.String.valueOf(Globals.Configurations.Next_MachineIndex);
-		txt.getContent().add(line);
-		line = "Next_DepotIndex = " + java.lang.String.valueOf(Globals.Configurations.Next_DepotIndex);
-		txt.getContent().add(line);
-		line = "Next_DataBaseIndex = " + java.lang.String.valueOf(Globals.Configurations.Next_DataBaseIndex);
-		txt.getContent().add(line);
-		line = "This_MachineIndex = " + java.lang.String.valueOf(Globals.Configurations.This_MachineIndex);
-		txt.getContent().add(line);
-		line = "This_UserIndex = " + java.lang.String.valueOf(Globals.Configurations.This_UserIndex);
-		txt.getContent().add(line);
-		line = "Server_MachineIndex = " + java.lang.String.valueOf(Globals.Configurations.Server_MachineIndex);
-		txt.getContent().add(line);
-		line = "Server_UserIndex = " + java.lang.String.valueOf(Globals.Configurations.Server_UserIndex);
-		txt.getContent().add(line);
-		
-		line = "";
-		txt.getContent().add(line);
-		line = "/************************************************** Machine Info ***************************************************/";
-		txt.getContent().add(line);
-		line = "";
-		txt.getContent().add(line);
-		
-		line = "MachineIndex = " + Globals.Datas.ThisMachine.getIndex();
-		txt.getContent().add(line);
-		line = "MachineName = " + Globals.Datas.ThisMachine.getName();
-		txt.getContent().add(line);
-		line = "MachineIP = " + Globals.Datas.ThisMachine.getIp();
-		txt.getContent().add(line);
-		line = "MachinePort = " + Globals.Datas.ThisMachine.getPort();
-		txt.getContent().add(line);
-		
-		line = "";
-		txt.getContent().add(line);
-		line = "/*************************************************** Server Info *****************************************************/";
-		txt.getContent().add(line);
-		line = "";
-		txt.getContent().add(line);
-		
-		line = "ServerMachineIndex = " + Globals.Datas.ServerMachine.getIndex();
-		txt.getContent().add(line);
-		line = "ServerMachineName = " + Globals.Datas.ServerMachine.getName();
-		txt.getContent().add(line);
-		line = "ServerMachineIP = " + Globals.Datas.ServerMachine.getIp();
-		txt.getContent().add(line);
-		line = "ServerMachinePort = " + Globals.Datas.ServerMachine.getPort();
-		txt.getContent().add(line);
-		
-		line = "";
-		txt.getContent().add(line);
-		line = "/**************************************************** User Info *****************************************************/";
-		txt.getContent().add(line);
-		line = "";
-		txt.getContent().add(line);
-		
-		line = "UserLoginName = " + Globals.Datas.ThisUser.getLoginName();
-		txt.getContent().add(line);
-		line = "UserPassword = " + Globals.Datas.ThisUser.getPassword();
-		txt.getContent().add(line);
-		
-		line = "";
-		txt.getContent().add(line);
-		line = "/************************************************** Supports Info **************************************************/";
-		txt.getContent().add(line);
-		line = "";
-		txt.getContent().add(line);
-		line = "Example: Support = Picture|.jpg|.pv1";
-		txt.getContent().add(line);
-		line = "";
-		txt.getContent().add(line);
-		
-		for(BasicModels.Support s : Globals.Datas.Supports.getContent()) {
-			if(s.isHideExtension()) {
-				continue;
-			}
-			line = "Support = " + s.getType().toString() + "|" + s.getShowExtension() + "|" + s.getHideExtension();
-			txt.getContent().add(line);
-		}
-		
-		line = "";
-		txt.getContent().add(line);
-		line = "/************************************************** LAN Machines **************************************************/";
-		txt.getContent().add(line);
-		line = "";
-		txt.getContent().add(line);
-		if(Globals.Datas.LANMachineIndexes.size() > 0) {
-			for(int i=0; i<Globals.Datas.LANMachineIndexes.size(); i++) {
-				line = "LANMachineIndex = " + Globals.Datas.LANMachineIndexes.get(i);
-				txt.getContent().add(line);
-			}
-		} else {
-			line = "LANMachineIndex = ";
-			txt.getContent().add(line);
-		}
-		
-		line = "";
-		txt.getContent().add(line);
-		line = "/******************************************* Add Local Depot & DataBase ****************************************/";
-		txt.getContent().add(line);
-		line = "";
-		txt.getContent().add(line);
-		line = "Example: +Depot = DepotC|D:\\Space_For_Media\\Pictures\\FMX_Test_Depot_C";
-		txt.getContent().add(line);
-		line = "Example: +DataBase = DepotC|SQL|127.0.0.1:3306\\root\\ani1357658uiu\\Depot_C";
-		txt.getContent().add(line);
-		line = "";
-		txt.getContent().add(line);
-		line = "Example: +Depot = DepotD|D:\\Space_For_Media\\Pictures\\FMX_Test_Depot_D";
-		txt.getContent().add(line);
-		line = "Example: +DataBase = DepotD|TXT|D:\\Space_For_Media\\Pictures\\FMX_Test_Depot_D";
-		txt.getContent().add(line);
-		
-		line = "";
-		txt.getContent().add(line);
-		line = "/******************************************* Add Local Depot & DataBase ****************************************/";
-		txt.getContent().add(line);
-		line = "";
-		txt.getContent().add(line);
-		line = "Example: -Depot = DepotC";
-		txt.getContent().add(line);
-		line = "Example: -DataBase = DepotC";
-		txt.getContent().add(line);
-		line = "";
-		txt.getContent().add(line);
-		line = "Example: -Depot = DepotD";
-		txt.getContent().add(line);
-		line = "Example: -DataBase = DepotD";
-		txt.getContent().add(line);
-		line = "";
-		txt.getContent().add(line);
-		txt.getContent().add(line);
-		txt.getContent().add(line);
-		
-		return txt.save();
+		return CFGFile.saveCFGCore(BasicEnums.StartType.Depot, false);
 	}
 	private final static boolean resetDepotCFG() {
 		// delete all depots
+		for(Interfaces.IDBManager dbm : Globals.Datas.DBManagers.getContent()) {
+			dbm.deleteDepotTables();
+		}
 		
+		// clear Indexes
+		Globals.Configurations.Next_FileIndex = 0;
+		Globals.Configurations.Next_UserIndex = 0;
+		Globals.Configurations.Next_MachineIndex = 0;
+		Globals.Configurations.Next_DepotIndex = 0;
+		Globals.Configurations.Next_DataBaseIndex = 0;
+		Globals.Configurations.This_MachineIndex = 0;
+		Globals.Configurations.This_UserIndex = 0;
+		Globals.Configurations.Server_MachineIndex = 0;
+		Globals.Configurations.Server_UserIndex = 0;
+		
+		Globals.Datas.ThisMachine.setIndex(0);
+		Globals.Datas.ThisUser.setIndex(0);
+		Globals.Datas.ServerMachine.setIndex(0);
+		Globals.Datas.ServerUser.setIndex(0);
+		
+		if(Globals.Datas.DBManager.getDBInfo() != null) {
+			Globals.Datas.DBManager.getDBInfo().setIndex(0);
+			Globals.Datas.DBManager.getDBInfo().setDepotIndex(0);
+			if(Globals.Datas.DBManager.getDBInfo().getDepotInfo() != null) {
+				Globals.Datas.DBManager.getDBInfo().getDepotInfo().setIndex(0);
+				Globals.Datas.DBManager.getDBInfo().getDepotInfo().setDBIndex(0);
+			}
+		}
 		
 		// save to file
 		return saveDepotCFG();
@@ -1575,33 +1257,50 @@ public class CFGFile {
 		return CFGFile.loadDepotCFG(cs);
 	}
 	private final static boolean saveClientCFG() {
+		return CFGFile.saveCFGCore(BasicEnums.StartType.Client, false);
+	}
+	private final static boolean resetClientCFG() {
+		return CFGFile.resetDepotCFG();
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public final static boolean saveCFGCore(BasicEnums.StartType type, boolean createNew) {
 		FileModels.Text txt = new FileModels.Text(Tools.Pathes.getFile_CFG());
 		
 		java.lang.String line = "";
 		txt.getContent().add(line);
-		line = "/**************************************** This File Is VERY IMPORTANT ********************************************/";
+		line = "/****************************************** This File Is VERY IMPORTANT **********************************************/";
 		txt.getContent().add(line);
 		txt.getContent().add(line);
 		txt.getContent().add(line);
 		
 		line = "";
 		txt.getContent().add(line);
-		line = "StartType = " + Globals.Configurations.StartType.toString();
+		line = "StartType = " + Globals.Configurations.StartType.toString() + 
+				(Globals.Datas.Form_Main.isVisible() ? "|ShowForm" : "");
 		txt.getContent().add(line);
 		
 		line = "";
 		txt.getContent().add(line);
-		line = "/************************************** A List of Current Depots & DataBases *************************************/";
+		line = "/**************************************** A List of Current Depots & DataBases ***************************************/";
 		txt.getContent().add(line);
 		line = "";
 		txt.getContent().add(line);
 		
-		for(Interfaces.IDBManager dbm : Globals.Datas.DBManagers.getContent()) {
-			line = "Depot = " + dbm.getDBInfo().getDepotInfo().getName() + "|" + dbm.getDBInfo().getDepotInfo().getUrl();
-			txt.getContent().add(line);
-			line = "DataBase = " + dbm.getDBInfo().getName() + "|" + dbm.getDBInfo().getType().toString() + "|" + dbm.getDBInfo().getUrl();
-			txt.getContent().add(line);
+		if(createNew) {
+			;
 		}
+		else {
+			for(Interfaces.IDBManager dbm : Globals.Datas.DBManagers.getContent()) {
+				line = "Depot = " + dbm.getDBInfo().getDepotInfo().getName() + "|" + dbm.getDBInfo().getDepotInfo().getUrl();
+				txt.getContent().add(line);
+				line = "DataBase = " + dbm.getDBInfo().getName() + "|" + dbm.getDBInfo().getType().toString() + "|" + dbm.getDBInfo().getUrl();
+				txt.getContent().add(line);
+			}
+		}
+		
+		
 		
 		line = "";
 		txt.getContent().add(line);
@@ -1610,40 +1309,76 @@ public class CFGFile {
 		line = "";
 		txt.getContent().add(line);
 		
-		line = "Next_FileIndex = " + java.lang.String.valueOf(Globals.Configurations.Next_FileIndex);
-		txt.getContent().add(line);
-		line = "Next_UserIndex = " + java.lang.String.valueOf(Globals.Configurations.Next_UserIndex);
-		txt.getContent().add(line);
-		line = "Next_MachineIndex = " + java.lang.String.valueOf(Globals.Configurations.Next_MachineIndex);
-		txt.getContent().add(line);
-		line = "Next_DepotIndex = " + java.lang.String.valueOf(Globals.Configurations.Next_DepotIndex);
-		txt.getContent().add(line);
-		line = "Next_DataBaseIndex = " + java.lang.String.valueOf(Globals.Configurations.Next_DataBaseIndex);
-		txt.getContent().add(line);
-		line = "This_MachineIndex = " + java.lang.String.valueOf(Globals.Configurations.This_MachineIndex);
-		txt.getContent().add(line);
-		line = "This_UserIndex = " + java.lang.String.valueOf(Globals.Configurations.This_UserIndex);
-		txt.getContent().add(line);
-		line = "Server_MachineIndex = " + java.lang.String.valueOf(Globals.Configurations.Server_MachineIndex);
-		txt.getContent().add(line);
-		line = "Server_UserIndex = " + java.lang.String.valueOf(Globals.Configurations.Server_UserIndex);
-		txt.getContent().add(line);
+		if(createNew) {
+			line = "Next_FileIndex = 0";
+			txt.getContent().add(line);
+			line = "Next_UserIndex = 0";
+			txt.getContent().add(line);
+			line = "Next_MachineIndex = 0";
+			txt.getContent().add(line);
+			line = "Next_DepotIndex = 0";
+			txt.getContent().add(line);
+			line = "Next_DataBaseIndex = 0";
+			txt.getContent().add(line);
+			line = "This_MachineIndex = 0";
+			txt.getContent().add(line);
+			line = "This_UserIndex = 0";
+			txt.getContent().add(line);
+			line = "Server_MachineIndex = 0";
+			txt.getContent().add(line);
+			line = "Server_UserIndex = 0";
+			txt.getContent().add(line);
+		}
+		else {
+			line = "Next_FileIndex = " + java.lang.String.valueOf(Globals.Configurations.Next_FileIndex);
+			txt.getContent().add(line);
+			line = "Next_UserIndex = " + java.lang.String.valueOf(Globals.Configurations.Next_UserIndex);
+			txt.getContent().add(line);
+			line = "Next_MachineIndex = " + java.lang.String.valueOf(Globals.Configurations.Next_MachineIndex);
+			txt.getContent().add(line);
+			line = "Next_DepotIndex = " + java.lang.String.valueOf(Globals.Configurations.Next_DepotIndex);
+			txt.getContent().add(line);
+			line = "Next_DataBaseIndex = " + java.lang.String.valueOf(Globals.Configurations.Next_DataBaseIndex);
+			txt.getContent().add(line);
+			line = "This_MachineIndex = " + java.lang.String.valueOf(Globals.Configurations.This_MachineIndex);
+			txt.getContent().add(line);
+			line = "This_UserIndex = " + java.lang.String.valueOf(Globals.Configurations.This_UserIndex);
+			txt.getContent().add(line);
+			line = "Server_MachineIndex = " + java.lang.String.valueOf(Globals.Configurations.Server_MachineIndex);
+			txt.getContent().add(line);
+			line = "Server_UserIndex = " + java.lang.String.valueOf(Globals.Configurations.Server_UserIndex);
+			txt.getContent().add(line);
+		}
+		
+		
 		
 		line = "";
 		txt.getContent().add(line);
-		line = "/************************************************** Machine Info ***************************************************/";
+		line = "/*************************************************** Machine Info ****************************************************/";
 		txt.getContent().add(line);
 		line = "";
 		txt.getContent().add(line);
 		
-		line = "MachineIndex = " + Globals.Datas.ThisMachine.getIndex();
-		txt.getContent().add(line);
-		line = "MachineName = " + Globals.Datas.ThisMachine.getName();
-		txt.getContent().add(line);
-		line = "MachineIP = " + Globals.Datas.ThisMachine.getIp();
-		txt.getContent().add(line);
-		line = "MachinePort = " + Globals.Datas.ThisMachine.getPort();
-		txt.getContent().add(line);
+		if(createNew) {
+			line = "MachineIndex = ";
+			txt.getContent().add(line);
+			line = "MachineName = ";
+			txt.getContent().add(line);
+			line = "MachineIP = ";
+			txt.getContent().add(line);
+			line = "MachinePort = ";
+			txt.getContent().add(line);
+		}
+		else {
+			line = "MachineIndex = " + Globals.Datas.ThisMachine.getIndex();
+			txt.getContent().add(line);
+			line = "MachineName = " + Globals.Datas.ThisMachine.getName();
+			txt.getContent().add(line);
+			line = "MachineIP = " + Globals.Datas.ThisMachine.getIp();
+			txt.getContent().add(line);
+			line = "MachinePort = " + Globals.Datas.ThisMachine.getPort();
+			txt.getContent().add(line);
+		}
 		
 		line = "";
 		txt.getContent().add(line);
@@ -1652,30 +1387,82 @@ public class CFGFile {
 		line = "";
 		txt.getContent().add(line);
 		
-		line = "ServerMachineIndex = " + Globals.Datas.ServerMachine.getIndex();
-		txt.getContent().add(line);
-		line = "ServerMachineName = " + Globals.Datas.ServerMachine.getName();
-		txt.getContent().add(line);
-		line = "ServerMachineIP = " + Globals.Datas.ServerMachine.getIp();
-		txt.getContent().add(line);
-		line = "ServerMachinePort = " + Globals.Datas.ServerMachine.getPort();
-		txt.getContent().add(line);
+		if(createNew) {
+			if(BasicEnums.StartType.Server.equals(type)) {
+				line = "ServerDepotIndex = ";
+				txt.getContent().add(line);
+				line = "ServerDepotName = ";
+				txt.getContent().add(line);
+				line = "ServerDepotUrl = ";
+				txt.getContent().add(line);
+				
+				line = "ServerDataBaseIndex = ";
+				txt.getContent().add(line);
+				line = "ServerDataBaseName = ";
+				txt.getContent().add(line);
+				line = "ServerDataBaseType = [You Must Fill]";
+				txt.getContent().add(line);
+				line = "ServerDataBaseUrl = [You Must Fill]";
+				txt.getContent().add(line);
+			}
+			if(BasicEnums.StartType.Depot.equals(type) || BasicEnums.StartType.Client.equals(type)) {
+				line = "ServerMachineIndex = ";
+				txt.getContent().add(line);
+				line = "ServerMachineName = ";
+				txt.getContent().add(line);
+				line = "ServerMachineIP = [You Must Fill]";
+				txt.getContent().add(line);
+				line = "ServerMachinePort = [You Must Fill]";
+				txt.getContent().add(line);
+			}
+		}
+		else {
+			if(BasicEnums.StartType.Server.equals(type)) {
+				line = "ServerDepotIndex = " + Globals.Datas.DBManager.getDBInfo().getDepotInfo().getIndex();
+				txt.getContent().add(line);
+				line = "ServerDepotName = " + Globals.Datas.DBManager.getDBInfo().getDepotInfo().getName();
+				txt.getContent().add(line);
+				line = "ServerDepotUrl = " + Globals.Datas.DBManager.getDBInfo().getDepotInfo().getUrl();
+				txt.getContent().add(line);
+				
+				line = "ServerDataBaseIndex = " + Globals.Datas.DBManager.getDBInfo().getIndex();
+				txt.getContent().add(line);
+				line = "ServerDataBaseName = " + Globals.Datas.DBManager.getDBInfo().getName();
+				txt.getContent().add(line);
+				line = "ServerDataBaseType = " + Globals.Datas.DBManager.getDBInfo().getType().toString();
+				txt.getContent().add(line);
+				line = "ServerDataBaseUrl = " + Globals.Datas.DBManager.getDBInfo().getUrl();
+				txt.getContent().add(line);
+			}
+			if(BasicEnums.StartType.Depot.equals(type) || BasicEnums.StartType.Client.equals(type)) {
+				line = "ServerMachineIndex = " + Globals.Datas.ServerMachine.getIndex();
+				txt.getContent().add(line);
+				line = "ServerMachineName = " + Globals.Datas.ServerMachine.getName();
+				txt.getContent().add(line);
+				line = "ServerMachineIP = " + Globals.Datas.ServerMachine.getIp();
+				txt.getContent().add(line);
+				line = "ServerMachinePort = " + Globals.Datas.ServerMachine.getPort();
+				txt.getContent().add(line);
+			}
+		}
+		
+		if(!BasicEnums.StartType.Server.equals(type)) {
+			line = "";
+			txt.getContent().add(line);
+			line = "/***************************************************** User Info *****************************************************/";
+			txt.getContent().add(line);
+			line = "";
+			txt.getContent().add(line);
+			
+			line = "UserLoginName = " + Globals.Datas.ThisUser.getLoginName();
+			txt.getContent().add(line);
+			line = "UserPassword = " + Globals.Datas.ThisUser.getPassword();
+			txt.getContent().add(line);
+		}
 		
 		line = "";
 		txt.getContent().add(line);
-		line = "/**************************************************** User Info *****************************************************/";
-		txt.getContent().add(line);
-		line = "";
-		txt.getContent().add(line);
-		
-		line = "UserLoginName = " + Globals.Datas.ThisUser.getLoginName();
-		txt.getContent().add(line);
-		line = "UserPassword = " + Globals.Datas.ThisUser.getPassword();
-		txt.getContent().add(line);
-		
-		line = "";
-		txt.getContent().add(line);
-		line = "/************************************************** Supports Info **************************************************/";
+		line = "/*************************************************** Supports Info ***************************************************/";
 		txt.getContent().add(line);
 		line = "";
 		txt.getContent().add(line);
@@ -1684,71 +1471,107 @@ public class CFGFile {
 		line = "";
 		txt.getContent().add(line);
 		
-		for(BasicModels.Support s : Globals.Datas.Supports.getContent()) {
-			if(s.isHideExtension()) {
-				continue;
-			}
-			line = "Support = " + s.getType().toString() + "|" + s.getShowExtension() + "|" + s.getHideExtension();
+		if(createNew) {
+			line = "Support = ";
 			txt.getContent().add(line);
+		}
+		else {
+			for(BasicModels.Support s : Globals.Datas.Supports.getContent()) {
+				if(s.isHideExtension()) {
+					continue;
+				}
+				line = "Support = " + s.getType().toString() + "|" + s.getShowExtension() + "|" + s.getHideExtension();
+				txt.getContent().add(line);
+			}
+			if(Globals.Datas.Supports.size() == 0) {
+				line = "Support = ";
+				txt.getContent().add(line);
+			}
 		}
 		
 		line = "";
 		txt.getContent().add(line);
-		line = "/************************************************** LAN Machines **************************************************/";
+		line = "/*************************************************** LAN Machines ****************************************************/";
 		txt.getContent().add(line);
 		line = "";
 		txt.getContent().add(line);
-		if(Globals.Datas.LANMachineIndexes.size() > 0) {
-			for(int i=0; i<Globals.Datas.LANMachineIndexes.size(); i++) {
-				line = "LANMachineIndex = " + Globals.Datas.LANMachineIndexes.get(i);
-				txt.getContent().add(line);
-			}
-		} else {
+		
+		if(createNew) {
 			line = "LANMachineIndex = ";
 			txt.getContent().add(line);
 		}
+		else {
+			if(Globals.Datas.LANMachineIndexes.size() > 0) {
+				for(int i=0; i<Globals.Datas.LANMachineIndexes.size(); i++) {
+					line = "LANMachineIndex = " + Globals.Datas.LANMachineIndexes.get(i);
+					txt.getContent().add(line);
+				}
+			} else {
+				line = "LANMachineIndex = ";
+				txt.getContent().add(line);
+			}
+		}
 		
 		line = "";
 		txt.getContent().add(line);
-		line = "/******************************************* Add Local Depot & DataBase ****************************************/";
+		line = "/********************************************** Add Local Depot & DataBase *******************************************/";
 		txt.getContent().add(line);
 		line = "";
 		txt.getContent().add(line);
-		line = "Example: +Depot = DepotE|D:\\Space_For_Media\\Pictures\\FMX_Test_Depot_E";
-		txt.getContent().add(line);
-		line = "Example: +DataBase = DepotE|SQL|127.0.0.1:3306\\root\\ani1357658uiu\\Depot_E";
+		
+		line = "[Attention]: At Each Add Operation, You Should add Depot and DataBase Two Items, Otherwise add will Failed.";
 		txt.getContent().add(line);
 		line = "";
 		txt.getContent().add(line);
-		line = "Example: +Depot = DepotF|D:\\Space_For_Media\\Pictures\\FMX_Test_Depot_F";
+		
+		line = "Example: +Depot = [DepotName1]|[DepotFolderAbsolutePath]";
 		txt.getContent().add(line);
-		line = "Example: +DataBase = DepotF|TXT|D:\\Space_For_Media\\Pictures\\FMX_Test_Depot_F";
+		line = "Example: +DataBase = [DataBaseName1]|SQL|[LoginIP]:[LoginPort]\\[LoginName]\\[Password]\\[DataBaseNameInSQL]";
+		txt.getContent().add(line);
+		line = "";
+		txt.getContent().add(line);
+		line = "Example: +Depot = [DepotName2]|[DepotFolderAbsolutePath]";
+		txt.getContent().add(line);
+		line = "Example: +DataBase = [DataBaseName2]|TXT|[DataBaseFolderAbsolutePath]";
+		txt.getContent().add(line);
+		
+		
+		line = "";
+		txt.getContent().add(line);
+		line = "/********************************************** Del Local Depot & DataBase *******************************************/";
+		txt.getContent().add(line);
+		line = "";
+		txt.getContent().add(line);
+		
+		line = "[Attention]: At Each Del Operation, You should delete Depot and DataBase Two Items, ";
+		txt.getContent().add(line);
+		line = "             Otherwise some Errors will happen in Running.";
+		txt.getContent().add(line);
+		line = "";
+		txt.getContent().add(line);
+		
+		line = "Example: -Depot = [DepotName1]";
+		txt.getContent().add(line);
+		line = "Example: -DataBase = [DataBaseName1]";
 		txt.getContent().add(line);
 		
 		line = "";
 		txt.getContent().add(line);
-		line = "/******************************************* Add Local Depot & DataBase ****************************************/";
+		
+		line = "Example: -Depot = [DepotName2]";
 		txt.getContent().add(line);
+		line = "Example: -DataBase = [DataBaseName2]";
+		txt.getContent().add(line);
+		
 		line = "";
 		txt.getContent().add(line);
-		line = "Example: -Depot = DepotE";
-		txt.getContent().add(line);
-		line = "Example: -DataBase = DepotE";
+		line = "/******************************************************* END *********************************************************/";
 		txt.getContent().add(line);
 		line = "";
-		txt.getContent().add(line);
-		line = "Example: -Depot = DepotF";
-		txt.getContent().add(line);
-		line = "Example: -DataBase = DepotF";
-		txt.getContent().add(line);
-		line = "";
-		txt.getContent().add(line);
-		txt.getContent().add(line);
 		txt.getContent().add(line);
 		
 		return txt.save();
 	}
-	private final static boolean resetClientCFG() {
-		return CFGFile.resetDepotCFG();
-	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

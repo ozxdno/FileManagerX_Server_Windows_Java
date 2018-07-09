@@ -436,6 +436,7 @@ public class Config implements Interfaces.IPublic {
 	}
 	public String fetchFirstString() {
 		if(value != null && value.length() == 0) {
+			ok = true;
 			return "";
 		}
 		String res = "";
@@ -516,6 +517,7 @@ public class Config implements Interfaces.IPublic {
 	}
 	public String fetchLastString() {
 		if(value != null && value.length() == 0) {
+			ok = true;
 			return "";
 		}
 		String res = "";

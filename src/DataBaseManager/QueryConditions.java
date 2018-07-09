@@ -90,18 +90,24 @@ public class QueryConditions implements Interfaces.IPublic, Interfaces.ICollecti
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public void stringToThis(String str) {
+	public boolean stringToThis(String str) {
 		this.clear();
 		if(str == null || str.length() == 0) {
-			return;
+			return true;
 		}
 		
 		String[] items = Tools.String.split(str, ',');
+		boolean ok = true;
 		for(int i=0; i<items.length; i++) {
 			QueryCondition qc = new QueryCondition();
-			qc.stringToThis(items[i]);
-			this.content.add(qc);
+			if(qc.stringToThis(items[i])) {
+				this.content.add(qc);
+			}
+			else {
+				ok = false;
+			}
 		}
+		return ok;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -125,7 +131,7 @@ public class QueryConditions implements Interfaces.IPublic, Interfaces.ICollecti
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
-	public void sortIncrease() {
+	public boolean sortIncrease() {
 		@SuppressWarnings("rawtypes")
 		Comparator c = new Comparator<QueryCondition>() {
 			public int compare(QueryCondition e1, QueryCondition e2) {
@@ -143,7 +149,13 @@ public class QueryConditions implements Interfaces.IPublic, Interfaces.ICollecti
 			}
 		};
 		
-		Collections.sort(this.getContent(), c);
+		try {
+			Collections.sort(this.getContent(), c);
+			return true;
+		} catch(Exception e) {
+			BasicEnums.ErrorType.OTHERS.register(BasicEnums.ErrorLevel.Error,"Error in Compare",e.toString());
+			return false;
+		}
 	}
 	
 	/**
@@ -151,7 +163,7 @@ public class QueryConditions implements Interfaces.IPublic, Interfaces.ICollecti
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
-	public void sortDecrease() {
+	public boolean sortDecrease() {
 		@SuppressWarnings("rawtypes")
 		Comparator c = new Comparator<QueryCondition>() {
 			public int compare(QueryCondition e1, QueryCondition e2) {
@@ -169,7 +181,13 @@ public class QueryConditions implements Interfaces.IPublic, Interfaces.ICollecti
 			}
 		};
 		
-		Collections.sort(this.getContent(), c);
+		try {
+			Collections.sort(this.getContent(), c);
+			return true;
+		} catch(Exception e) {
+			BasicEnums.ErrorType.OTHERS.register(BasicEnums.ErrorLevel.Error,"Error in Compare",e.toString());
+			return false;
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

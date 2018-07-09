@@ -85,6 +85,10 @@ public class Test extends Comman implements Interfaces.ICommands {
 			this.reply();
 			return false;
 		}
+		if(!this.isDestMachineIndexExist()) {
+			this.reply();
+			return false;
+		}
 		
 		if(this.isArriveTargetMachine()) {
 			Replies.Test rep = this.getReply();
@@ -103,11 +107,22 @@ public class Test extends Comman implements Interfaces.ICommands {
 			cc.setDestMachineIndex(this.getBasicMessagePackage().getDestMachineIndex());
 			cc.setSendCommand(this.output());
 			cc.setSourConnection(this.getConnection());
-			Replies.Test rep = (Replies.Test)cc.execute();
-			if(rep == null) { 
-				this.replyNULL();
+			Interfaces.ICommandsManager cm = cc.execute();
+			if(cm == null) {
+				this.getReply().setFailedReason("The Reply from CommandsManager is NULL, Connection is Closed");
+				this.getReply().setOK(false);
+				this.reply();
 				return false;
 			}
+			
+			cm.test(this.getBasicMessagePackage().getDestMachineIndex(), this.test);
+			Replies.Test rep = (Replies.Test)cm.getReply();
+			if(rep == null) {
+				this.getReply().setFailedReason("The Reply from CommandsManager is NULL, Execute Failed");
+				this.getReply().setOK(false);
+				return false;
+			}
+			
 			this.setReply(rep);
 			this.reply();
 			return true;
@@ -118,11 +133,6 @@ public class Test extends Comman implements Interfaces.ICommands {
 		this.getConnection().setSendString(this.getReply().output());
 		this.getConnection().setSendLength(this.getConnection().getSendString().length());
 		this.getConnection().setContinueSendString();
-	}
-	public void replyNULL() {
-		this.getReply().setOK(false);
-		this.getReply().setFailedReason("The Reply from other Connection is NULL");
-		this.reply();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

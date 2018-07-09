@@ -142,21 +142,26 @@ public class DepotInfo implements Interfaces.IPublic {
 		return c.output();
 	}
 	public String input(String in) {
-		Config c = new Config(in);
-		this.index = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		in = this.machineInfo.input(c.output());
-		if(in == null) { return null; }
-		c.setLine(in);
-		this.url = c.fetchFirstString();
-		if(!c.getIsOK()) { return null; }
-		this.dbIndex = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		this.name = c.fetchFirstString();
-		if(!c.getIsOK()) { return null; }
-		this.state = BasicEnums.DepotState.valueOf(c.fetchFirstString());
-		if(!c.getIsOK()) { return null; }
-		return c.output();
+		try {
+			Config c = new Config(in);
+			this.index = c.fetchFirstLong();
+			if(!c.getIsOK()) { return null; }
+			in = this.machineInfo.input(c.output());
+			if(in == null) { return null; }
+			c.setLine(in);
+			this.url = c.fetchFirstString();
+			if(!c.getIsOK()) { return null; }
+			this.dbIndex = c.fetchFirstLong();
+			if(!c.getIsOK()) { return null; }
+			this.name = c.fetchFirstString();
+			if(!c.getIsOK()) { return null; }
+			this.state = BasicEnums.DepotState.valueOf(c.fetchFirstString());
+			if(!c.getIsOK()) { return null; }
+			return c.output();
+		} catch(Exception e) {
+			BasicEnums.ErrorType.OTHERS.register(e.toString());
+			return null;
+		}
 	}
 	public void copyReference(Object o) {
 		DepotInfo d = (DepotInfo)o;

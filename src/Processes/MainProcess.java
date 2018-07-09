@@ -63,6 +63,9 @@ public class MainProcess extends Thread implements Interfaces.IProcess {
 		
 		//////////////////////////////////////////// INIT ///////////////////////////////////////////////
 		
+		// create other folders and files
+		Tools.Pathes.createAll(Globals.Configurations.StartType);
+		
 		// create and load CFG file
 		if(operateOK) {
 			cfgOK &= Tools.CFGFile.createCFG();
@@ -70,7 +73,6 @@ public class MainProcess extends Thread implements Interfaces.IProcess {
 		}
 		if(operateOK) {
 			cfgOK &= Tools.CFGFile.loadCFG();
-			//cfgOK = Tools.CFGFile.resetCFG() & false;
 			operateOK &= cfgOK;
 		}
 		
@@ -150,6 +152,7 @@ public class MainProcess extends Thread implements Interfaces.IProcess {
 				}
 				
 				Tools.Time.sleepUntil(1000);
+				Globals.Datas.Errors.save(100);
 			}
 		}
 		

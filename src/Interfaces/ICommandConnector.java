@@ -46,5 +46,5 @@ public interface ICommandConnector extends IPublic {
 	public Interfaces.IConnection getSourConnection();
 	public Interfaces.IConnection getDestConnection();
 	
-	public Interfaces.IReplies execute();
+	public Interfaces.ICommandsManager execute();
 }

@@ -1,6 +1,6 @@
 package Commands;
 
-public class LoginConnection extends Comman implements Interfaces.ICommands {
+public class LoginType extends Comman implements Interfaces.ICommands {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -12,8 +12,8 @@ public class LoginConnection extends Comman implements Interfaces.ICommands {
 		return this.type;
 	}
 	
-	public Replies.LoginConnection getReply() {
-		return (Replies.LoginConnection)super.getReply();
+	public Replies.LoginType getReply() {
+		return (Replies.LoginType)super.getReply();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -28,11 +28,11 @@ public class LoginConnection extends Comman implements Interfaces.ICommands {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public LoginConnection() {
+	public LoginType() {
 		initThis();
 	}
 	private void initThis() {
-		this.setReply(new Replies.LoginConnection());
+		this.setReply(new Replies.LoginType());
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -68,12 +68,12 @@ public class LoginConnection extends Comman implements Interfaces.ICommands {
 	}
 	public void copyReference(Object o) {
 		super.copyReference(o);
-		LoginConnection t = (LoginConnection)o;
+		LoginType t = (LoginType)o;
 		this.type = t.type;
 	}
 	public void copyValue(Object o) {
 		super.copyValue(o);
-		LoginConnection t = (LoginConnection)o;
+		LoginType t = (LoginType)o;
 		this.type = t.type;
 	}
 	
@@ -81,10 +81,6 @@ public class LoginConnection extends Comman implements Interfaces.ICommands {
 
 	public boolean execute() {
 		if(!this.isConnected_Login_UserIndexRigth_PasswordRight()) {
-			this.reply();
-			return false;
-		}
-		if(!this.isSourMachineIndexExist()) {
 			this.reply();
 			return false;
 		}

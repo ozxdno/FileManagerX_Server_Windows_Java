@@ -110,7 +110,7 @@ public class BaseFiles implements Interfaces.IPublic, Interfaces.ICollection {
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
-	public void sortIncrease() {
+	public boolean sortIncrease() {
 		@SuppressWarnings("rawtypes")
 		Comparator c = new Comparator<BasicModels.BaseFile>() {
 			public int compare(BasicModels.BaseFile e1, BasicModels.BaseFile e2) {
@@ -124,8 +124,10 @@ public class BaseFiles implements Interfaces.IPublic, Interfaces.ICollection {
 		
 		try {
 			Collections.sort(this.getContent(), c);
+			return true;
 		} catch(Exception e) {
-			BasicEnums.ErrorType.OTHERS.register(BasicEnums.ErrorLevel.Error,"Error in Compare",e.toString());
+			BasicEnums.ErrorType.OTHERS.register("Error in Compare",e.toString());
+			return false;
 		}
 	}
 	
@@ -134,7 +136,7 @@ public class BaseFiles implements Interfaces.IPublic, Interfaces.ICollection {
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
-	public void sortDecrease() {
+	public boolean sortDecrease() {
 		@SuppressWarnings("rawtypes")
 		Comparator c = new Comparator<BasicModels.BaseFile>() {
 			public int compare(BasicModels.BaseFile e1, BasicModels.BaseFile e2) {
@@ -148,8 +150,10 @@ public class BaseFiles implements Interfaces.IPublic, Interfaces.ICollection {
 		
 		try {
 			Collections.sort(this.getContent(), c);
+			return true;
 		} catch(Exception e) {
 			BasicEnums.ErrorType.OTHERS.register(BasicEnums.ErrorLevel.Error,"Error in Compare",e.toString());
+			return false;
 		}
 	}
 	

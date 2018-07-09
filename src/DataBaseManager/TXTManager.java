@@ -43,6 +43,17 @@ public class TXTManager implements Interfaces.IDBManager {
 		return this.isUpdataOK;
 	}
 	
+	public Interfaces.IDepotChecker getChecker() {
+		Interfaces.IDepotChecker dc = Factories.DepotCheckerFactory.createDepotChecker();
+		dc.setDBManager(this);
+		return dc;
+	}
+	public Interfaces.IServerChecker getServerChecker() {
+		Interfaces.IServerChecker sc = Factories.ServerCheckerFactory.createServerChecker();
+		sc.setDBManager(this);
+		return sc;
+	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public TXTManager() {
@@ -244,24 +255,45 @@ public class TXTManager implements Interfaces.IDBManager {
 		}
 	}
 	public boolean deleteTable_Files() {
+		if(this.files != null) {
+			this.files.clear();
+		}
 		return this.deleteTable("Files");
 	}
 	public boolean deleteTable_Folders() {
+		if(this.folders != null) {
+			this.folders.clear();
+		}
 		return this.deleteTable("Folders");
 	}
 	public boolean deleteTable_MachineInfo() {
+		if(this.machineInfos != null) {
+			this.machineInfos.clear();
+		}
 		return this.deleteTable("MachineInfo");
 	}
 	public boolean deleteTable_DepotInfo() {
+		if(this.depotInfos != null) {
+			this.depotInfos.clear();
+		}
 		return this.deleteTable("DepotInfo");
 	}
 	public boolean deleteTable_DataBaseInfo() {
+		if(this.dbInfos != null) {
+			this.dbInfos.clear();
+		}
 		return this.deleteTable("DataBaseInfo");
 	}
 	public boolean deleteTable_Users() {
+		if(this.users != null) {
+			this.users.clear();
+		}
 		return this.deleteTable("Users");
 	}
 	public boolean deleteTable_Invitations() {
+		if(this.invitations != null) {
+			this.invitations.clear();
+		}
 		return this.deleteTable("Invitations");
 	}
 	

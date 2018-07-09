@@ -110,7 +110,7 @@ public class Errors implements Interfaces.IPublic, Interfaces.ICollection {
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
-	public void sortIncrease() {
+	public boolean sortIncrease() {
 		@SuppressWarnings("rawtypes")
 		Comparator c = new Comparator<BasicModels.Error>() {
 			public int compare(BasicModels.Error e1, BasicModels.Error e2) {
@@ -122,7 +122,13 @@ public class Errors implements Interfaces.IPublic, Interfaces.ICollection {
 			}
 		};
 		
-		Collections.sort(this.getContent(), c);
+		try {
+			Collections.sort(this.getContent(), c);
+			return true;
+		} catch(Exception e) {
+			BasicEnums.ErrorType.OTHERS.register(BasicEnums.ErrorLevel.Error,"Error in Compare",e.toString());
+			return false;
+		}
 	}
 	
 	/**
@@ -130,7 +136,7 @@ public class Errors implements Interfaces.IPublic, Interfaces.ICollection {
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
-	public void sortDecrease() {
+	public boolean sortDecrease() {
 		@SuppressWarnings("rawtypes")
 		Comparator c = new Comparator<BasicModels.Error>() {
 			public int compare(BasicModels.Error e1, BasicModels.Error e2) {
@@ -142,7 +148,13 @@ public class Errors implements Interfaces.IPublic, Interfaces.ICollection {
 			}
 		};
 		
-		Collections.sort(this.getContent(), c);
+		try {
+			Collections.sort(this.getContent(), c);
+			return true;
+		} catch(Exception e) {
+			BasicEnums.ErrorType.OTHERS.register(BasicEnums.ErrorLevel.Error,"Error in Compare",e.toString());
+			return false;
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -312,6 +324,7 @@ public class Errors implements Interfaces.IPublic, Interfaces.ICollection {
 
 	public boolean save() {
 		Errors newErrors = new Errors();
+		boolean ok = true;
 		
 		for(BasicModels.Error e : this.content) {
 			String url = Tools.Pathes.getFolder_LOG() + "\\" + e.getShortTime_Date() + ".log";
@@ -327,6 +340,7 @@ public class Errors implements Interfaces.IPublic, Interfaces.ICollection {
 				bw.close();
 				
 			} catch(Exception exception) {
+				ok = false;
 				BasicModels.Error ie = BasicEnums.ErrorType.COMMON_FILE_WRITE_FAILED.getError(exception.toString());
 				newErrors.add(ie);
 				continue;
@@ -334,7 +348,37 @@ public class Errors implements Interfaces.IPublic, Interfaces.ICollection {
 		}
 		
 		this.content = newErrors.content;
-		return true;
+		return ok;
+	}
+	public boolean save(int amount) {
+		if(this.content.size() < amount) {
+			return true;
+		}
+		
+		boolean ok = true;
+		for(int i=0; i<amount; i++) {
+			BasicModels.Error e = this.content.get(0);
+			this.content.remove(0);
+			String url = Tools.Pathes.getFolder_LOG() + "\\" + e.getShortTime_Date() + ".log";
+			java.io.File log = new java.io.File(url);
+			try {
+				if(!log.exists()) {
+					log.createNewFile();
+				}
+				BufferedWriter bw = new BufferedWriter(new FileWriter(log, true));
+				bw.write(e.output());
+				bw.newLine();
+				bw.flush();
+				bw.close();
+				
+			} catch(Exception exception) {
+				ok = false;
+				BasicModels.Error ie = BasicEnums.ErrorType.COMMON_FILE_WRITE_FAILED.getError(exception.toString());
+				this.content.add(ie);
+				continue;
+			}
+		}
+		return ok;
 	}
 	public boolean deleteAgoLogs(int permitLogAmount) {
 		boolean ok = true;

@@ -84,14 +84,21 @@ public class ClientTCP implements IClientLinker{
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
-	public void sortIncrease() {
+	public boolean sortIncrease() {
 		@SuppressWarnings("rawtypes")
 		Comparator c = new Comparator<Interfaces.IClientConnection>() {
 			public int compare(Interfaces.IClientConnection e1, Interfaces.IClientConnection e2) {
 				return e1.getIndex() > e2.getIndex() ? 1 : -1;
 			}
 		};
-		Collections.sort(this.connections, c);
+		
+		try {
+			Collections.sort(this.connections, c);
+			return true;
+		} catch(Exception e) {
+			BasicEnums.ErrorType.OTHERS.register(BasicEnums.ErrorLevel.Error,"Error in Compare",e.toString());
+			return false;
+		}
 	}
 	
 	/**
@@ -99,14 +106,21 @@ public class ClientTCP implements IClientLinker{
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
-	public void sortDecrease() {
+	public boolean sortDecrease() {
 		@SuppressWarnings("rawtypes")
 		Comparator c = new Comparator<Interfaces.IClientConnection>() {
 			public int compare(Interfaces.IClientConnection e1, Interfaces.IClientConnection e2) {
 				return e1.getIndex() > e2.getIndex() ? -1 : 1;
 			}
 		};
-		Collections.sort(this.connections, c);
+		
+		try {
+			Collections.sort(this.connections, c);
+			return true;
+		} catch(Exception e) {
+			BasicEnums.ErrorType.OTHERS.register(BasicEnums.ErrorLevel.Error,"Error in Compare",e.toString());
+			return false;
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -165,6 +179,80 @@ public class ClientTCP implements IClientLinker{
 	}
 	public void delete(int index) {
 		int idx = indexOf(index);
+		if(idx == -1) {
+			return;
+		}
+		this.connections.get(idx).disconnect();
+		this.connections.remove(idx);
+	}
+	
+	public int indexOf(long serverMachineIndex) {
+		if(this.connections == null) {
+			return -1;
+		}
+		for(int i=0; i<this.connections.size(); i++) {
+			if(this.connections.get(i).getServerMachineInfo().getIndex() == serverMachineIndex &&
+				BasicEnums.ConnectionType.TRANSPORT_COMMAND.equals(this.connections.get(i).getType())) {
+				return i;
+			}
+		}
+		return -1;
+	}
+	public Interfaces.IClientConnection search(long serverMachineIndex) {
+		int idx = indexOf(serverMachineIndex);
+		if(idx == -1) {
+			return null;
+		}
+		return this.connections.get(idx);
+	}
+	public Interfaces.IClientConnection fetch(long serverMachineIndex) {
+		int idx = indexOf(serverMachineIndex);
+		if(idx == -1) {
+			return null;
+		}
+		Interfaces.IClientConnection res = this.connections.get(idx);
+		this.connections.remove(idx);
+		return res;
+	}
+	public void delete(long serverMachineIndex) {
+		int idx = indexOf(serverMachineIndex);
+		if(idx == -1) {
+			return;
+		}
+		this.connections.get(idx).disconnect();
+		this.connections.remove(idx);
+	}
+	
+	public int indexOf(String name) {
+		if(this.connections == null) {
+			return -1;
+		}
+		for(int i=0; i<this.connections.size(); i++) {
+			if(this.connections.get(i).getConnectionName().equals(name) &&
+				BasicEnums.ConnectionType.TRANSPORT_COMMAND.equals(this.connections.get(i).getType())) {
+				return i;
+			}
+		}
+		return -1;
+	}
+	public Interfaces.IClientConnection search(String name) {
+		int idx = indexOf(name);
+		if(idx == -1) {
+			return null;
+		}
+		return this.connections.get(idx);
+	}
+	public Interfaces.IClientConnection fetch(String name) {
+		int idx = indexOf(name);
+		if(idx == -1) {
+			return null;
+		}
+		Interfaces.IClientConnection res = this.connections.get(idx);
+		this.connections.remove(idx);
+		return res;
+	}
+	public void delete(String name) {
+		int idx = indexOf(name);
 		if(idx == -1) {
 			return;
 		}

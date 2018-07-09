@@ -41,6 +41,17 @@ public class SQLManager implements Interfaces.IDBManager{
 		return this.isUpdataOK;
 	}
 	
+	public Interfaces.IDepotChecker getChecker() {
+		Interfaces.IDepotChecker dc = Factories.DepotCheckerFactory.createDepotChecker();
+		dc.setDBManager(this);
+		return dc;
+	}
+	public Interfaces.IServerChecker getServerChecker() {
+		Interfaces.IServerChecker sc = Factories.ServerCheckerFactory.createServerChecker();
+		sc.setDBManager(this);
+		return sc;
+	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public SQLManager() {
@@ -195,7 +206,7 @@ public class SQLManager implements Interfaces.IDBManager{
 				"Tags"
 		};
 		String[] types = new String[] {
-				"BIGINT PRIMARY KEY",
+				"BIGINT UNIQUE",
 				"BIGINT",
 				"BIGINT",
 				"BIGINT",
@@ -227,7 +238,7 @@ public class SQLManager implements Interfaces.IDBManager{
 				"Tags"
 		};
 		String[] types = new String[] {
-				"BIGINT PRIMARY KEY",
+				"BIGINT UNIQUE",
 				"BIGINT",
 				"BIGINT",
 				"BIGINT",
@@ -251,7 +262,7 @@ public class SQLManager implements Interfaces.IDBManager{
 				"Port"
 		};
 		String[] types = new String[] {
-				"BIGINT PRIMARY KEY",
+				"BIGINT UNIQUE",
 				"VARCHAR(100) UNIQUE",
 				"VARCHAR(16)",
 				"INT"
@@ -269,7 +280,7 @@ public class SQLManager implements Interfaces.IDBManager{
 				"Url"
 		};
 		String[] types = new String[] {
-				"BIGINT PRIMARY KEY",
+				"BIGINT UNIQUE",
 				"VARCHAR(100) UNIQUE",
 				"BIGINT",
 				"BIGINT",
@@ -289,7 +300,7 @@ public class SQLManager implements Interfaces.IDBManager{
 				"Url"
 		};
 		String[] types = new String[] {
-				"BIGINT PRIMARY KEY",
+				"BIGINT UNIQUE",
 				"VARCHAR(100) UNIQUE",
 				"BIGINT",
 				"BIGINT",
@@ -316,7 +327,7 @@ public class SQLManager implements Interfaces.IDBManager{
 				"Money"
 		};
 		String[] types = new String[] {
-				"BIGINT PRIMARY KEY",
+				"BIGINT UNIQUE",
 				"VARCHAR(100) UNIQUE",
 				"VARCHAR(100)",
 				"VARCHAR(100)",
@@ -343,7 +354,7 @@ public class SQLManager implements Interfaces.IDBManager{
 				"Money"
 		};
 		String[] types = new String[] {
-				"VARCHAR(100) PRIMARY KEY",
+				"VARCHAR(100) UNIQUE",
 				"VARCHAR(100)",
 				"VARCHAR(100)",
 				"BIGINT",
@@ -1205,7 +1216,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			statement.executeUpdate(exp);
 			return true;
 		}catch(Exception e) {
-			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString(), "exp = " + exp);
 			return false;
 		}
 	}
@@ -1261,7 +1272,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			statement.executeUpdate(exp);
 			return true;
 		}catch(Exception e) {
-			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString(), "exp = " + exp);
 			return false;
 		}
 	}
@@ -1318,7 +1329,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			statement.executeUpdate(exp);
 			return true;
 		}catch(Exception e) {
-			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString(), "exp = " + exp);
 			return false;
 		}
 	}
@@ -1361,7 +1372,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			statement.executeUpdate(exp);
 			return true;
 		}catch(Exception e) {
-			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString(), "exp = " + exp);
 			return false;
 		}
 	}
@@ -1401,7 +1412,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			statement.executeUpdate(exp);
 			return true;
 		}catch(Exception e) {
-			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString(), "exp = " + exp);
 			return false;
 		}
 	}
@@ -1445,7 +1456,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			statement.executeUpdate(exp);
 			return true;
 		}catch(Exception e) {
-			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString(), "exp = " + exp);
 			return false;
 		}
 	}
@@ -1489,7 +1500,7 @@ public class SQLManager implements Interfaces.IDBManager{
 			statement.executeUpdate(exp);
 			return true;
 		}catch(Exception e) {
-			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString(), "exp = " + exp);
 			return false;
 		}
 	}

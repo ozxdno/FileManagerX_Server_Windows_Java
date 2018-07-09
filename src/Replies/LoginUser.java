@@ -15,7 +15,6 @@ public class LoginUser extends Comman implements Interfaces.IReplies {
 			return false;
 		}
 		
-		connection.setUser(Globals.Datas.ThisUser);
 		return true;
 	}
 	

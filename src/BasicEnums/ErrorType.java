@@ -6,10 +6,16 @@ public enum ErrorType {
 	COMMON_FILE_READ_FAILED,
 	COMMON_FILE_WRITE_FAILED,
 	COMMON_FILE_OPERATE_FAILED,
+	COMMON_FILE_EXISTED,
+	COMMON_FILE_NOT_EXIST,
 	COMMON_STREAM_BUILD_FAILED,
 	COMMON_STREAM_CLOSE_FAILED,
 	COMMON_SET_WRONG_VALUE,
 	COMMON_NULL,
+	COMMON_EMPTY,
+	COMMON_TIME_OUT,
+	COMMON_NOT_EXIST,
+	COMMON_EXISTED,
 	
 	COMMANDS_EXECUTE_FAILED,
 	
@@ -88,6 +94,18 @@ public enum ErrorType {
 			e.setReason(reason.length() == 0 ? "Operate File Failed" : reason);
 			e.setDetail(detail);
 		}
+		if(this.equals(ErrorType.COMMON_FILE_EXISTED)) {
+			e.setType(this);
+			e.setLevel(level);
+			e.setReason(reason.length() == 0 ? "File Existed" : reason);
+			e.setDetail(detail);
+		}
+		if(this.equals(ErrorType.COMMON_FILE_NOT_EXIST)) {
+			e.setType(this);
+			e.setLevel(level);
+			e.setReason(reason.length() == 0 ? "File Not Exist" : reason);
+			e.setDetail(detail);
+		}
 		if(this.equals(ErrorType.COMMON_SET_WRONG_VALUE)) {
 			e.setType(this);
 			e.setLevel(level);
@@ -110,6 +128,30 @@ public enum ErrorType {
 			e.setType(this);
 			e.setLevel(level);
 			e.setReason(reason.length() == 0 ? "Close Stream Failed" : reason);
+			e.setDetail(detail);
+		}
+		if(this.equals(ErrorType.COMMON_TIME_OUT)) {
+			e.setType(this);
+			e.setLevel(level);
+			e.setReason(reason.length() == 0 ? "Time Out" : reason);
+			e.setDetail(detail);
+		}
+		if(this.equals(ErrorType.COMMON_EMPTY)) {
+			e.setType(this);
+			e.setLevel(level);
+			e.setReason(reason.length() == 0 ? "Value is Empty" : reason);
+			e.setDetail(detail);
+		}
+		if(this.equals(ErrorType.COMMON_EXISTED)) {
+			e.setType(this);
+			e.setLevel(level);
+			e.setReason(reason.length() == 0 ? "Existed" : reason);
+			e.setDetail(detail);
+		}
+		if(this.equals(ErrorType.COMMON_NOT_EXIST)) {
+			e.setType(this);
+			e.setLevel(level);
+			e.setReason(reason.length() == 0 ? "Not Exist" : reason);
 			e.setDetail(detail);
 		}
 		
@@ -196,6 +238,10 @@ public enum ErrorType {
 			e.setDetail(detail);
 		}
 		
+		if(BasicEnums.ErrorLevel.Error.equals(e.getLevel())) {
+			Globals.Configurations.ErrorOccurs = true;
+			Globals.Datas.Error.copyValue(e);
+		}
 		return e;
 	}
 	

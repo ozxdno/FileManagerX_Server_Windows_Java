@@ -1,6 +1,6 @@
 package Replies;
 
-public class LoginConnection extends Comman implements Interfaces.IReplies {
+public class LoginType extends Comman implements Interfaces.IReplies {
 
 	public String toString() {
 		return this.output();
@@ -15,7 +15,6 @@ public class LoginConnection extends Comman implements Interfaces.IReplies {
 			return false;
 		}
 		
-		connection.setClientMachineInfo(Globals.Datas.ThisMachine);
 		return true;
 	}
 	

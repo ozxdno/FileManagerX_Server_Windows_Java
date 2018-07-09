@@ -56,6 +56,10 @@ public class Error implements Interfaces.IPublic {
 		return true;
 	}
 	public boolean setLevel(BasicEnums.ErrorLevel level) {
+		if(level == null) {
+			BasicEnums.ErrorType.COMMON_NULL.register();
+			return false;
+		}
 		this.level = level;
 		return true;
 	}
@@ -120,20 +124,25 @@ public class Error implements Interfaces.IPublic {
 		return c.output();
 	}
 	public String input(String in) {
-		BasicModels.Config c = new BasicModels.Config(in);
-		type = BasicEnums.ErrorType.valueOf(c.fetchFirstString());
-		if(!c.getIsOK()) { return null; }
-		time = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		level = BasicEnums.ErrorLevel.valueOf(c.fetchFirstString());
-		if(!c.getIsOK()) { return null; }
-		reason = c.fetchFirstString();
-		if(!c.getIsOK()) { return null; }
-		tip = c.fetchFirstString();
-		if(!c.getIsOK()) { return null; }
-		detail = c.fetchFirstString();
-		if(!c.getIsOK()) { return null; }
-		return c.output();
+		try {
+			BasicModels.Config c = new BasicModels.Config(in);
+			type = BasicEnums.ErrorType.valueOf(c.fetchFirstString());
+			if(!c.getIsOK()) { return null; }
+			time = c.fetchFirstLong();
+			if(!c.getIsOK()) { return null; }
+			level = BasicEnums.ErrorLevel.valueOf(c.fetchFirstString());
+			if(!c.getIsOK()) { return null; }
+			reason = c.fetchFirstString();
+			if(!c.getIsOK()) { return null; }
+			tip = c.fetchFirstString();
+			if(!c.getIsOK()) { return null; }
+			detail = c.fetchFirstString();
+			if(!c.getIsOK()) { return null; }
+			return c.output();
+		} catch(Exception e) {
+			BasicEnums.ErrorType.OTHERS.register(e.toString());
+			return null;
+		}
 	}
 	public void copyReference(Object o) {
 		Error e = (Error)o;

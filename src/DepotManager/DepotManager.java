@@ -41,6 +41,24 @@ public class DepotManager implements Interfaces.IDepotManager{
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public boolean openInSystem(String targetUrl) {
+		if(!this.isDepotRight()) {
+			return false;
+		}
+		if(!this.isInDepot(targetUrl)) {
+			return false;
+		}
+		
+		try {
+			java.io.File f = new java.io.File(targetUrl);
+			java.awt.Desktop.getDesktop().open(f);
+			return true;
+		} catch(Exception e) {
+			BasicEnums.ErrorType.COMMON_FILE_OPERATE_FAILED.register(e.toString());
+			return false;
+		}
+	}
 
 	public boolean renameFile(String sourUrl, String targetName) {
 		if(!this.isDepotRight()) {

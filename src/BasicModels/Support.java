@@ -104,18 +104,23 @@ public class Support implements Interfaces.IPublic {
 		return c.output();
 	}
 	public String input(String in) {
-		BasicModels.Config c = new BasicModels.Config(in);
-		extension = c.fetchFirstString();
-		if(!c.getIsOK()) { return null; }
-		type = BasicEnums.FileType.valueOf(c.fetchFirstString());
-		if(!c.getIsOK()) { return null; }
-		show = c.fetchFirstString();
-		if(!c.getIsOK()) { return null; }
-		hide = c.fetchFirstString();
-		if(!c.getIsOK()) { return null; }
-		isSupport = c.fetchFirstBoolean();
-		if(!c.getIsOK()) { return null; }
-		return c.output();
+		try {
+			BasicModels.Config c = new BasicModels.Config(in);
+			extension = c.fetchFirstString();
+			if(!c.getIsOK()) { return null; }
+			type = BasicEnums.FileType.valueOf(c.fetchFirstString());
+			if(!c.getIsOK()) { return null; }
+			show = c.fetchFirstString();
+			if(!c.getIsOK()) { return null; }
+			hide = c.fetchFirstString();
+			if(!c.getIsOK()) { return null; }
+			isSupport = c.fetchFirstBoolean();
+			if(!c.getIsOK()) { return null; }
+			return c.output();
+		} catch(Exception e) {
+			BasicEnums.ErrorType.OTHERS.register(e.toString());
+			return null;
+		}
 	}
 	public void copyReference(Object o) {
 		Support s = (Support)o;

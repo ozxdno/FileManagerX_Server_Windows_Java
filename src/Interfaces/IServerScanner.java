@@ -27,6 +27,16 @@ public interface IServerScanner extends ICollection {
 	public Interfaces.IServerConnection fetch(int index);
 	public void delete(int index);
 	
+	public int indexOf(long clientMachineIndex);
+	public Interfaces.IServerConnection search(long clientMachineIndex);
+	public Interfaces.IServerConnection fetch(long clientMachineIndex);
+	public void delete(long clientMachineIndex);
+	
+	public int indexOf(String name);
+	public Interfaces.IServerConnection search(String name);
+	public Interfaces.IServerConnection fetch(String name);
+	public void delete(String name);
+	
 	public int indexOf(String ip, int port);
 	public Interfaces.IServerConnection search(String ip, int port);
 	public Interfaces.IServerConnection fetch(String ip, int port);

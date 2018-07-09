@@ -79,7 +79,12 @@ public class BasicMessagePackage implements Interfaces.IBasicMessagePackage {
 	}
 	
 	public boolean setPassword(String password) {
-		if(password == null || password.length() == 0) {
+		if(password == null) {
+			BasicEnums.ErrorType.COMMON_NULL.register();
+			return false;
+		}
+		if(password.length() == 0) {
+			BasicEnums.ErrorType.COMMON_EMPTY.register();
 			return false;
 		}
 		this.password = password;

@@ -12,9 +12,11 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 	private BasicModels.User user;
 	private BasicEnums.ConnectionType type;
 	private int index;
+	private String name;
 	
 	private Interfaces.IReplyExecutor executor;
 	private Interfaces.IFileConnector fileConnector;
+	private Interfaces.ICommandsManager cmdManager;
 	
 	private Socket socket;
 	private volatile boolean abort;
@@ -78,6 +80,26 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 		}
 		return true;
 	}
+	public boolean setConnectionName(String name) {
+		if(name == null) {
+			BasicEnums.ErrorType.COMMON_SET_WRONG_VALUE.register("name = NULL");
+			return false;
+		}
+		if(name.length() == 0) {
+			BasicEnums.ErrorType.COMMON_SET_WRONG_VALUE.register("name is Empty");
+			return false;
+		}
+		this.name = name;
+		super.setName("TCP Client: " + name);
+		return true;
+	}
+	public boolean setConnectionName() {
+		String name = this.clientMachineInfo.getName();
+		if(name.length() == 0) {
+			name = "No Name";
+		}
+		return this.setConnectionName(name);
+	}
 	
 	public boolean setExecutor(Interfaces.IExecutor executor) {
 		if(executor == null) {
@@ -101,6 +123,13 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 			return false;
 		}
 		this.fileConnector = fileConnector;
+		return true;
+	}
+	public boolean setCommandsManager(Interfaces.ICommandsManager cmdManager) {
+		if(cmdManager == null) {
+			return false;
+		}
+		this.cmdManager = cmdManager;
 		return true;
 	}
 	
@@ -239,12 +268,24 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 	public int getIndex() {
 		return this.index;
 	}
+	public String getConnectionName() {
+		return this.name;
+	}
 	
 	public Interfaces.IReplyExecutor getExecutor() {
 		return this.executor;
 	}
 	public Interfaces.IFileConnector getFileConnector() {
 		return this.fileConnector;
+	}
+	public Interfaces.ICommandsManager getCommandsManager() {
+		if(this.cmdManager.getConnection() == null) {
+			this.cmdManager.setConnection(this);
+		}
+		if(this.cmdManager.getConnection() != this) {
+			this.cmdManager.setConnection(this);
+		}
+		return this.cmdManager;
 	}
 
 	public Socket getSocket() {
@@ -310,7 +351,6 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 	
 	public ClientConnection() {
 		initThis();
-		this.setIndex();
 	}
 	public ClientConnection(Socket socket,
 			BasicModels.MachineInfo serverMachineInfo, 
@@ -319,7 +359,6 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 		this.setSocket(socket);
 		this.setServerMachineInfo(serverMachineInfo);
 		this.setClientMachineInfo(clientMachineInfo);
-		this.setIndex();
 	}
 	private void initThis() {
 		serverMachineInfo = new BasicModels.MachineInfo();
@@ -327,9 +366,11 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 		user = null;
 		type = BasicEnums.ConnectionType.TRANSPORT_COMMAND;
 		index = 0;
+		name = "";
 		
 		executor = Factories.CommunicatorFactory.createClientExcutor();
 		fileConnector = Factories.CommunicatorFactory.createFileConnector();
+		cmdManager = Factories.CommandFactory.createCommandsManager(this);
 		
 		this.socket = null;
 		this.abort = false;
@@ -351,7 +392,6 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 		this.sendLength = 0;
 		
 		this.setLastOperationTime();
-		
 		this.setName("TCP Client Connection");
 	}
 	public void run() {
@@ -376,11 +416,10 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 			return;
 		}
 		
-		//Input = 2|1|1|1|0|0|1|1|172.24.136.41|172.24.136.41|40001|40000|**********|0|D:\Space_For_Media\Pictures\FMX_Test_Depot_H\阿九\a0.jpg|D:\Space_For_Media\Pictures\FMX_Test_Depot_H\阿九\a10.jpg|1044220|0
-		
 		while(!abort && !socket.isClosed() && !closeServer) {
 			try {
 				if(this.continueSendString) {
+					this.setLastOperationTime();
 					this.busy = true;
 					if(this.sendString == null) {
 						this.continueSendString = false;
@@ -393,6 +432,7 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 					this.continueSendString = false;
 				}
 				if(this.continueReceiveString) {
+					this.setLastOperationTime();
 					this.busy = true;
 					this.receiveLength = 0;
 					int partId = 1;
@@ -426,13 +466,13 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 				if(!this.continueReceiveString && !this.continueSendString && this.fileConnector.isActive() && 
 						this.fileConnector.isInputCommand()) { // save data to file
 					
+					this.setLastOperationTime();
+					
 					// 缓冲区不能为空。
 					if(this.receiveBuffer == null || this.receiveBuffer.length == 0) {
 						this.busy = false;
 						continue;
 					}
-					
-					java.util.List<Integer> cnt = new java.util.ArrayList<Integer>();
 					
 					// 初始化
 					this.fileConnector.setState_Busy(true);
@@ -443,9 +483,6 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 					// 接收
 					while(!this.fileConnector.isFinished()) {
 						this.receiveLength = dis.read(receiveBuffer, 0, receiveBuffer.length);
-
-						cnt.add(this.receiveLength);
-						
 						if(this.receiveLength < 0) {
 							break;
 						}
@@ -455,6 +492,9 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 							break;
 						}
 					}
+					
+					// 延迟关闭，等待接收完毕。
+					Tools.Time.sleepUntil(Globals.Configurations.TimeForInputFileWait);
 					
 					// 结束
 					this.fileConnector.setState_Busy(false);
@@ -466,6 +506,8 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 				}
 				if(!this.continueReceiveString && !this.continueSendString && this.fileConnector.isActive() &&
 						this.fileConnector.isOutputCommand()) { // load data to send
+					
+					this.setLastOperationTime();
 					
 					// 缓冲区不能为空。
 					if(this.sendBuffer == null || this.sendBuffer.length == 0) {
@@ -485,7 +527,6 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 					this.fileConnector.setSendBytes(this.sendBuffer);
 					while(!this.fileConnector.isFinished()) {
 						if(!this.fileConnector.load()) {
-							this.fileConnector.close();
 							break;
 						}
 						this.sendLength = this.fileConnector.getSendLength();
@@ -513,9 +554,9 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 			}
 		}
 		running = false;
+		this.fileConnector.close();
 		this.disconnect();
 		Globals.Datas.Client.removeIdleConnections();
-		
 		if(closeServer) {
 			Globals.Datas.Server.disconnect();
 		}
@@ -524,6 +565,7 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean connect() {
+		if(this.socket == null || this.socket.isClosed()) { return false; }
 		this.start();
 		Tools.Time.waitUntil(100);
 		return this.running;

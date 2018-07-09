@@ -109,7 +109,7 @@ public class DataBaseInfos implements Interfaces.IPublic, Interfaces.ICollection
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
-	public void sortIncrease() {
+	public boolean sortIncrease() {
 		@SuppressWarnings("rawtypes")
 		Comparator c = new Comparator<BasicModels.DataBaseInfo>() {
 			public int compare(BasicModels.DataBaseInfo e1, BasicModels.DataBaseInfo e2) {
@@ -121,7 +121,13 @@ public class DataBaseInfos implements Interfaces.IPublic, Interfaces.ICollection
 			}
 		};
 		
-		Collections.sort(this.getContent(), c);
+		try {
+			Collections.sort(this.getContent(), c);
+			return true;
+		} catch(Exception e) {
+			BasicEnums.ErrorType.OTHERS.register(BasicEnums.ErrorLevel.Error,"Error in Compare",e.toString());
+			return false;
+		}
 	}
 	
 	/**
@@ -129,7 +135,7 @@ public class DataBaseInfos implements Interfaces.IPublic, Interfaces.ICollection
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
-	public void sortDecrease() {
+	public boolean sortDecrease() {
 		@SuppressWarnings("rawtypes")
 		Comparator c = new Comparator<BasicModels.DataBaseInfo>() {
 			public int compare(BasicModels.DataBaseInfo e1, BasicModels.DataBaseInfo e2) {
@@ -141,7 +147,13 @@ public class DataBaseInfos implements Interfaces.IPublic, Interfaces.ICollection
 			}
 		};
 		
-		Collections.sort(this.getContent(), c);
+		try {
+			Collections.sort(this.getContent(), c);
+			return true;
+		} catch(Exception e) {
+			BasicEnums.ErrorType.OTHERS.register(BasicEnums.ErrorLevel.Error,"Error in Compare",e.toString());
+			return false;
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -79,22 +79,27 @@ public class QueryCondition implements Interfaces.IPublic {
 	public String output() {
 		BasicModels.Config c = new BasicModels.Config("Query Condition = ");
 		c.addToBottom(this.itemName);
-		c.addToBottom(this.sign.ordinal());
+		c.addToBottom(this.sign.toString());
 		c.addToBottom(this.value);
-		c.addToBottom(this.relation.ordinal());
+		c.addToBottom(this.relation.toString());
 		return c.output();
 	}
 	public String input(String in) {
-		BasicModels.Config c = new BasicModels.Config(in);
-		this.itemName = c.fetchFirstString();
-		if(!c.getIsOK()) { return null; }
-		this.sign = Sign.values()[c.fetchFirstInt()];
-		if(!c.getIsOK()) { return null; }
-		this.value = c.fetchFirstString();
-		if(!c.getIsOK()) { return null; }
-		this.relation = Relation.values()[c.fetchFirstInt()];
-		if(!c.getIsOK()) { return null; }
-		return c.output();
+		try {
+			BasicModels.Config c = new BasicModels.Config(in);
+			this.itemName = c.fetchFirstString();
+			if(!c.getIsOK()) { return null; }
+			this.sign = Sign.valueOf(c.fetchFirstString());
+			if(!c.getIsOK()) { return null; }
+			this.value = c.fetchFirstString();
+			if(!c.getIsOK()) { return null; }
+			this.relation = Relation.valueOf(c.fetchFirstString());
+			if(!c.getIsOK()) { return null; }
+			return c.output();
+		} catch(Exception e) {
+			BasicEnums.ErrorType.OTHERS.register(e.toString());
+			return null;
+		}
 	}
 	public void copyReference(Object o) {
 		QueryCondition q = (QueryCondition)o;
@@ -118,58 +123,71 @@ public class QueryCondition implements Interfaces.IPublic {
 	 * 
 	 * @param str µ¼Èë×Ö·û´®
 	 */
-	public void stringToThis(String str) {
-		if(str == null || str.length() == 0) {
-			return;
+	public boolean stringToThis(String str) {
+		this.clear();
+		try {
+			if(str == null || str.length() == 0) {
+				return true;
+			}
+			str = Tools.String.clearLRSpace(str);
+			
+			int idx = str.indexOf(' ');
+			String r = str.substring(0, idx);
+			str = str.substring(idx+1);
+			idx = str.indexOf(' ');
+			String n = str.substring(0, idx);
+			str = str.substring(idx+1);
+			idx = str.indexOf(' ');
+			String s = str.substring(0, idx);
+			str = str.substring(idx+1);
+			String v = str;
+			
+			if(r.equals("[&]")) {
+				this.relation = Relation.AND;
+			}
+			else if(r.equals("[|]")) {
+				this.relation = Relation.OR;
+			}
+			else {
+				return false;
+			}
+			
+			this.itemName = n;
+			
+			if(s.equals("=")) {
+				this.sign = Sign.EQUAL;
+			}
+			else if(s.equals("!=")) {
+				this.sign = Sign.NOT_EQUAL;
+			}
+			else if(s.equals(">")) {
+				this.sign = Sign.GREATER;
+			}
+			else if(s.equals(">=")) {
+				this.sign = Sign.GREATER_OR_EQUAL;
+			}
+			else if(s.equals("<")) {
+				this.sign = Sign.LESS;
+			}
+			else if(s.equals("<=")) {
+				this.sign = Sign.LESS_OR_EQUAL;
+			}
+			else if(s.equals("LIKE")) {
+				this.sign = Sign.LIKE;
+			}
+			else if(s.equals("CONTAIN")) {
+				this.sign = Sign.CONTAIN;
+			}
+			else {
+				return false;
+			}
+			
+			this.value = v;
+			return true;
+		} catch(Exception e) {
+			BasicEnums.ErrorType.OTHERS.register(e.toString());
+			return false;
 		}
-		str = Tools.String.clearLRSpace(str);
-		
-		int idx = str.indexOf(' ');
-		String r = str.substring(0, idx);
-		str = str.substring(idx+1);
-		idx = str.indexOf(' ');
-		String n = str.substring(0, idx);
-		str = str.substring(idx+1);
-		idx = str.indexOf(' ');
-		String s = str.substring(0, idx);
-		str = str.substring(idx+1);
-		String v = str;
-		
-		if(r.equals("[&]")) {
-			this.relation = Relation.AND;
-		}
-		if(r.equals("[|]")) {
-			this.relation = Relation.OR;
-		}
-		
-		this.itemName = n;
-		
-		if(s.equals("=")) {
-			this.sign = Sign.EQUAL;
-		}
-		if(s.equals("!=")) {
-			this.sign = Sign.NOT_EQUAL;
-		}
-		if(s.equals(">")) {
-			this.sign = Sign.GREATER;
-		}
-		if(s.equals(">=")) {
-			this.sign = Sign.GREATER_OR_EQUAL;
-		}
-		if(s.equals("<")) {
-			this.sign = Sign.LESS;
-		}
-		if(s.equals("<=")) {
-			this.sign = Sign.LESS_OR_EQUAL;
-		}
-		if(s.equals("LIKE")) {
-			this.sign = Sign.LIKE;
-		}
-		if(s.equals("CONTAIN")) {
-			this.sign = Sign.CONTAIN;
-		}
-		
-		this.value = v;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

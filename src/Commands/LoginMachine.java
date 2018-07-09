@@ -37,13 +37,16 @@ public class LoginMachine extends Comman implements Interfaces.ICommands {
 			this.reply();
 			return false;
 		}
+		
 		if(!Globals.Configurations.IsServer) {
 			this.getConnection().setClientMachineInfo(this.getSourMachineInfo());
+			this.getConnection().setConnectionName();
 			this.reply();
 			return this.getReply().isOK();
 		}
 		else {
 			this.getConnection().setClientMachineInfo(this.getSourMachineInfo());
+			this.getConnection().setConnectionName();
 			this.reply();
 			return this.getReply().isOK();
 		}

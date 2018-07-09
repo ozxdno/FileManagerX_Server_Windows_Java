@@ -6,6 +6,6 @@ public interface ICollection {
 	public void clear();
 	public boolean add(Object item);
 	
-	public void sortIncrease();
-	public void sortDecrease();
+	public boolean sortIncrease();
+	public boolean sortDecrease();
 }

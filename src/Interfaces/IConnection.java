@@ -12,6 +12,8 @@ public interface IConnection {
 	public boolean setType(BasicEnums.ConnectionType type);
 	public boolean setIndex(int index);
 	public boolean setIndex(); 
+	public boolean setConnectionName(String name);
+	public boolean setConnectionName();
 	
 	public boolean setExecutor(Interfaces.IExecutor executor);
 	public boolean setFileConnector(Interfaces.IFileConnector fileConnector);
@@ -46,6 +48,7 @@ public interface IConnection {
 	public BasicModels.User getUser();
 	public BasicEnums.ConnectionType getType();
 	public int getIndex();
+	public String getConnectionName();
 	
 	public Interfaces.IExecutor getExecutor();
 	public Interfaces.IFileConnector getFileConnector();

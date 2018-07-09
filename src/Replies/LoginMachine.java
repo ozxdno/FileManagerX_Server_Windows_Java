@@ -15,7 +15,6 @@ public class LoginMachine extends Comman implements Interfaces.IReplies {
 			return false;
 		}
 		
-		connection.setClientMachineInfo(Globals.Datas.ThisMachine);
 		return true;
 	}
 }

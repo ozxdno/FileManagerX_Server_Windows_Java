@@ -100,9 +100,9 @@ public class ServerTCP implements Interfaces.IServerScanner {
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
-	public void sortIncrease() {
+	public boolean sortIncrease() {
 		if(this.scanner == null || this.scanner.getConnections() == null) {
-			return;
+			return true;
 		}
 		@SuppressWarnings("rawtypes")
 		Comparator c = new Comparator<Interfaces.IServerConnection>() {
@@ -110,7 +110,13 @@ public class ServerTCP implements Interfaces.IServerScanner {
 				return e1.getIndex() > e2.getIndex() ? 1 : -1;
 			}
 		};
-		Collections.sort(this.scanner.getConnections(), c);
+		try {
+			Collections.sort(this.scanner.getConnections(), c);
+			return true;
+		} catch(Exception e) {
+			BasicEnums.ErrorType.OTHERS.register(BasicEnums.ErrorLevel.Error,"Error in Compare",e.toString());
+			return false;
+		}
 	}
 	
 	/**
@@ -118,9 +124,9 @@ public class ServerTCP implements Interfaces.IServerScanner {
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
-	public void sortDecrease() {
+	public boolean sortDecrease() {
 		if(this.scanner == null || this.scanner.getConnections() == null) {
-			return;
+			return true;
 		}
 		@SuppressWarnings("rawtypes")
 		Comparator c = new Comparator<Interfaces.IServerConnection>() {
@@ -128,7 +134,13 @@ public class ServerTCP implements Interfaces.IServerScanner {
 				return e1.getIndex() > e2.getIndex() ? -1 : 1;
 			}
 		};
-		Collections.sort(this.scanner.getConnections(), c);
+		try {
+			Collections.sort(this.scanner.getConnections(), c);
+			return true;
+		} catch(Exception e) {
+			BasicEnums.ErrorType.OTHERS.register(BasicEnums.ErrorLevel.Error,"Error in Compare",e.toString());
+			return false;
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -188,6 +200,80 @@ public class ServerTCP implements Interfaces.IServerScanner {
 	}
 	public void delete(int index) {
 		int idx = indexOf(index);
+		if(idx == -1) {
+			return;
+		}
+		this.scanner.getConnections().get(idx).disconnect();
+		this.scanner.getConnections().remove(idx);
+	}
+	
+	public int indexOf(long clientMachineIndex) {
+		if(this.scanner == null) {
+			return -1;
+		}
+		for(int i=0; i<this.scanner.getConnections().size(); i++) {
+			if(this.scanner.getConnections().get(i).getClientMachineInfo().getIndex() == clientMachineIndex &&
+					this.scanner.getConnections().get(i).getType().equals(BasicEnums.ConnectionType.TRANSPORT_COMMAND)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+	public Interfaces.IServerConnection search(long clientMachineIndex) {
+		int idx = indexOf(clientMachineIndex);
+		if(idx == -1) {
+			return null;
+		}
+		return this.scanner.getConnections().get(idx);
+	}
+	public Interfaces.IServerConnection fetch(long clientMachineIndex) {
+		int idx = indexOf(clientMachineIndex);
+		if(idx == -1) {
+			return null;
+		}
+		Interfaces.IServerConnection res = this.scanner.getConnections().get(idx);
+		this.scanner.getConnections().remove(idx);
+		return res;
+	}
+	public void delete(long clientMachineIndex) {
+		int idx = indexOf(clientMachineIndex);
+		if(idx == -1) {
+			return;
+		}
+		this.scanner.getConnections().get(idx).disconnect();
+		this.scanner.getConnections().remove(idx);
+	}
+	
+	public int indexOf(String name) {
+		if(this.scanner == null) {
+			return -1;
+		}
+		for(int i=0; i<this.scanner.getConnections().size(); i++) {
+			if(this.scanner.getConnections().get(i).getConnectionName().equals(name) &&
+					this.scanner.getConnections().get(i).getType().equals(BasicEnums.ConnectionType.TRANSPORT_COMMAND)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+	public Interfaces.IServerConnection search(String name) {
+		int idx = indexOf(name);
+		if(idx == -1) {
+			return null;
+		}
+		return this.scanner.getConnections().get(idx);
+	}
+	public Interfaces.IServerConnection fetch(String name) {
+		int idx = indexOf(name);
+		if(idx == -1) {
+			return null;
+		}
+		Interfaces.IServerConnection res = this.scanner.getConnections().get(idx);
+		this.scanner.getConnections().remove(idx);
+		return res;
+	}
+	public void delete(String name) {
+		int idx = indexOf(name);
 		if(idx == -1) {
 			return;
 		}
@@ -360,10 +446,9 @@ class Scanner extends Thread {
 				Interfaces.IServerConnection connection = Factories.CommunicatorFactory.createServerConnection();
 				connection.setSocket(clientSocket);
 				connection.setServerMachineInfo(serverMachineInfo);
-				connections.add(connection);
 				connection.connect();
 			}catch(Exception e) {
-				;
+				BasicEnums.ErrorType.COMMUNICATOR_RUNNING_FAILED.register("Server Scanner Running Failed", e.toString());
 			}
 			this.removeIdleConnections();
 		}

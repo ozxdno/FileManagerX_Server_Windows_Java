@@ -412,7 +412,11 @@ public class FileConnector implements Interfaces.IFileConnector {
 		if(this.writeToLocal) {
 			try {
 				if(fos == null) {
-					fos = new java.io.FileOutputStream(new java.io.File(this.destUrl));
+					java.io.File destFile = new java.io.File(this.destUrl);
+					if(!destFile.exists() || destFile.isDirectory()) {
+						destFile.createNewFile();
+					}
+					fos = new java.io.FileOutputStream(destFile, this.finishedBytes > 0);
 				}
 				fos.write(this.receiveBytes, 0, this.receiveLength);
 				fos.flush();
@@ -461,6 +465,7 @@ public class FileConnector implements Interfaces.IFileConnector {
 			try {
 				if(fis == null) {
 					fis = new java.io.FileInputStream(new java.io.File(this.sourUrl));
+					fis.skip(finishedBytes);
 				}
 				this.sendLength = fis.read(sendBytes);
 				if(this.sendLength < 0) {

@@ -85,7 +85,7 @@ public class Input extends Comman implements Interfaces.ICommands {
 		this.input(command);
 	}
 	private void initThis() {
-		this.cover = false;
+		this.cover = true;
 		this.sourUrl = "";
 		this.destUrl = "";
 		this.totalBytes = 0;
@@ -162,15 +162,39 @@ public class Input extends Comman implements Interfaces.ICommands {
 			return false;
 		}
 		
+		if(this.getBasicMessagePackage().getSourMachineIndex() == Globals.Configurations.This_MachineIndex) { // Never Run
+			java.io.File destFile = new java.io.File(this.destUrl);
+			if(destFile.exists() && !this.cover && destFile.isDirectory()) {
+				this.getReply().setFailedReason("Dest File Existed");
+				this.getReply().setOK(false);
+				this.reply();
+				return false;
+			}
+		}
+		if(this.getBasicMessagePackage().getDestMachineIndex() == Globals.Configurations.This_MachineIndex) {
+			java.io.File sourFile = new java.io.File(this.sourUrl);
+			if(!sourFile.exists()) {
+				this.getReply().setFailedReason("Sour File Not Exist");
+				this.getReply().setOK(false);
+				this.reply();
+				return false;
+			}
+			if(sourFile.isDirectory()) {
+				this.getReply().setFailedReason("Sour File is a Directory");
+				this.getReply().setOK(false);
+				this.reply();
+				return false;
+			}
+			this.totalBytes = sourFile.length();
+		}
+		
 		if(this.isArriveTargetMachine()) {
 			this.fillFileConnector(this.getConnection().getFileConnector());
-			Replies.Input rep = this.getReply();
-			rep.setSourUrl(this.sourUrl);
-			rep.setDestUrl(this.destUrl);
-			rep.setCover(this.cover);
-			rep.setTotalBytes(this.totalBytes);
-			rep.setFinishedBytes(finishedBytes);
-			rep.setOK(true);
+			this.getReply().setSourUrl(sourUrl);
+			this.getReply().setDestUrl(destUrl);
+			this.getReply().setFinishedBytes(finishedBytes);
+			this.getReply().setTotalBytes(totalBytes);
+			this.getReply().setCover(cover);
 			this.reply();
 			return true;
 		}
@@ -180,26 +204,67 @@ public class Input extends Comman implements Interfaces.ICommands {
 				return false;
 			}
 			
-			Interfaces.IFSWRE fswre = Factories.CommunicatorFactory.createFSWRE();
-			fswre.setServerMachineIndex(this.getBasicMessagePackage().getDestMachineIndex());
-			fswre.setClientMachineIndex(Globals.Configurations.This_MachineIndex);
-			fswre.setUserIndex(this.getBasicMessagePackage().getSourUserIndex());
-			fswre.setConnection();
-			fswre.getConnection().getFileConnector().setConnection(this.getConnection());
-			this.getConnection().getFileConnector().setConnection(fswre.getConnection());
-			
-			Replies.Input rep = (Replies.Input)fswre.execute(this.output());
-			if(rep == null) {
-				this.getReply().setFailedReason("Reply of FSWRE is NULL");
+			Interfaces.IClientConnection con = Factories.CommunicatorFactory.createRunningClientConnection(
+					this.getBasicMessagePackage().getDestMachineIndex(),
+					Globals.Configurations.This_MachineIndex);
+			if(con == null) {
+				this.getReply().setFailedReason("Create Client Connection Failed");
 				this.getReply().setOK(false);
 				this.reply();
 				return true;
 			}
 			
+			con.setType(BasicEnums.ConnectionType.TRANSPORT_FILE);
+			con.setUser(Globals.Datas.ThisUser);
+			boolean ok = con.getCommandsManager().loginConnection();
+			if(!ok) {
+				this.getReply().setFailedReason("Login Connection Failed");
+				this.getReply().setOK(false);
+				this.reply();
+				return true;
+			}
+			
+			con.getFileConnector().setConnection(this.getConnection());
+			this.getConnection().getFileConnector().setConnection(con);
+			
+			ok = con.getCommandsManager().input(
+					this.getBasicMessagePackage().getSourMachineIndex(),
+					this.getBasicMessagePackage().getDestMachineIndex(),
+					this.getBasicMessagePackage().getSourDepotIndex(),
+					this.getBasicMessagePackage().getDestDepotIndex(),
+					this.sourUrl,
+					this.destUrl,
+					this.finishedBytes,
+					this.cover);
+			
+			Replies.Input rep = (Replies.Input)con.getCommandsManager().getReply();
+			if(!ok) {
+				if(rep == null) {
+					this.getReply().setFailedReason("Reply of Input is NULL");
+					this.getReply().setOK(false);
+					this.reply();
+					return false;
+				}
+				else {
+					this.getReply().setFailedReason(rep.getFailedReason());
+					this.getReply().setOK(false);
+					this.reply();
+					return false;
+				}
+			}
+			if(rep == null) {
+				this.getReply().setFailedReason("Reply of Input is NULL");
+				this.getReply().setOK(false);
+				this.reply();
+				return false;
+			}
+			
+			this.totalBytes = rep.getTotalBytes();
 			this.fillFileConnector(this.getConnection().getFileConnector());
+			//this.fillFileConnector(con.getFileConnector()); // con ÔÚ Reply ÖÐ¿ªÆô
 			this.setReply(rep);
 			this.reply();
-			return false;
+			return rep.isOK();
 		}
 	}
 	public void reply() {
@@ -207,11 +272,6 @@ public class Input extends Comman implements Interfaces.ICommands {
 		this.getConnection().setSendString(this.getReply().output());
 		this.getConnection().setSendLength(this.getConnection().getSendString().length());
 		this.getConnection().setContinueSendString();
-	}
-	public void replyNULL() {
-		this.getReply().setOK(false);
-		this.getReply().setFailedReason("The Reply from other Connection is NULL");
-		this.reply();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

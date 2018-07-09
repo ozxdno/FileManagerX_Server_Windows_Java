@@ -12,6 +12,7 @@ public class ServerConnection extends Thread implements Interfaces.IServerConnec
 	private BasicModels.User user;
 	private BasicEnums.ConnectionType type;
 	private int index;
+	private String name;
 	
 	private Interfaces.ICommandExecutor executor;
 	private Interfaces.IFileConnector fileConnector;
@@ -77,6 +78,26 @@ public class ServerConnection extends Thread implements Interfaces.IServerConnec
 			Globals.Datas.Server.setNext_ConnectionIndex(index);
 		}
 		return true;
+	}
+	public boolean setConnectionName(String name) {
+		if(name == null) {
+			BasicEnums.ErrorType.COMMON_SET_WRONG_VALUE.register("name = NULL");
+			return false;
+		}
+		if(name.length() == 0) {
+			BasicEnums.ErrorType.COMMON_SET_WRONG_VALUE.register("name is Empty");
+			return false;
+		}
+		this.name = name;
+		super.setName("TCP Server: " + name);
+		return true;
+	}
+	public boolean setConnectionName() {
+		String name = this.clientMachineInfo.getName();
+		if(name.length() == 0) {
+			name = "No Name";
+		}
+		return this.setConnectionName(name);
 	}
 	
 	public boolean setExecutor(Interfaces.IExecutor executor) {
@@ -239,6 +260,9 @@ public class ServerConnection extends Thread implements Interfaces.IServerConnec
 	public int getIndex() {
 		return this.index;
 	}
+	public String getConnectionName() {
+		return this.name;
+	}
 	
 	public Interfaces.ICommandExecutor getExecutor() {
 		return this.executor;
@@ -304,13 +328,11 @@ public class ServerConnection extends Thread implements Interfaces.IServerConnec
 	
 	public ServerConnection() {
 		initThis();
-		this.setIndex();
 	}
 	public ServerConnection(Socket socket, BasicModels.MachineInfo serverMachineInfo) {
 		initThis();
 		this.setSocket(socket);
 		this.setServerMachineInfo(serverMachineInfo);
-		this.setIndex();
 	}
 	private void initThis() {
 		serverMachineInfo = new BasicModels.MachineInfo();
@@ -318,6 +340,7 @@ public class ServerConnection extends Thread implements Interfaces.IServerConnec
 		user = null;
 		type = BasicEnums.ConnectionType.TRANSPORT_COMMAND;
 		index = 0;
+		name = "";
 		
 		executor = Factories.CommunicatorFactory.createServerExcutor();
 		fileConnector = Factories.CommunicatorFactory.createFileConnector();
@@ -342,7 +365,6 @@ public class ServerConnection extends Thread implements Interfaces.IServerConnec
 		this.sendLength = 0;
 		
 		this.setLastOperationTime();
-		
 		this.setName("TCP Server Connection");
 	}
 	public void run() {
@@ -370,6 +392,7 @@ public class ServerConnection extends Thread implements Interfaces.IServerConnec
 		while(!abort && !socket.isClosed() && !closeServer) {
 			try {
 				if(this.continueReceiveString) {
+					this.setLastOperationTime();
 					this.busy = true;
 					this.receiveString = br.readLine();
 					this.receiveLength = this.receiveString.length();
@@ -380,6 +403,7 @@ public class ServerConnection extends Thread implements Interfaces.IServerConnec
 					this.busy = false;
 				}
 				if(this.continueSendString) {
+					this.setLastOperationTime();
 					this.busy = true;
 					if(this.sendString == null) {
 						this.continueSendString = false;
@@ -399,6 +423,8 @@ public class ServerConnection extends Thread implements Interfaces.IServerConnec
 				}
 				if(!this.continueReceiveString && !this.continueSendString && this.fileConnector.isActive() &&
 						this.fileConnector.isOutputCommand()) { // save data to file
+					
+					this.setLastOperationTime();
 					
 					// 缓冲区不能为空。
 					if(this.receiveBuffer == null || this.receiveBuffer.length == 0) {
@@ -425,6 +451,9 @@ public class ServerConnection extends Thread implements Interfaces.IServerConnec
 						}
 					}
 					
+					// 不着急关，等待一段时间
+					Tools.Time.sleepUntil(Globals.Configurations.TimeForInputFileWait);
+					
 					// 结束
 					this.fileConnector.setState_Busy(false);
 					this.fileConnector.close();
@@ -435,6 +464,8 @@ public class ServerConnection extends Thread implements Interfaces.IServerConnec
 				}
 				if(!this.continueReceiveString && !this.continueSendString && this.fileConnector.isActive() && 
 						this.fileConnector.isInputCommand()) { // load data to send
+					
+					this.setLastOperationTime();
 					
 					// 缓冲区不能为空。
 					if(this.sendBuffer == null || this.sendBuffer.length == 0) {
@@ -457,7 +488,6 @@ public class ServerConnection extends Thread implements Interfaces.IServerConnec
 					this.fileConnector.setSendBytes(this.sendBuffer);
 					while(!this.fileConnector.isFinished()) {
 						if(!this.fileConnector.load()) {
-							this.fileConnector.close();
 							break;
 						}
 						this.sendLength = this.fileConnector.getSendLength();
@@ -482,8 +512,16 @@ public class ServerConnection extends Thread implements Interfaces.IServerConnec
 			}
 		}
 		running = false;
+		try {
+			this.fileConnector.close();
+			br.close();
+			pw.close();
+			dis.close();
+			dos.close();
+		} catch(Exception e) {
+			;
+		}
 		Globals.Datas.Server.removeIdleConnections();
-		
 		if(closeServer) {
 			Globals.Datas.Server.disconnect();
 		}
@@ -492,6 +530,7 @@ public class ServerConnection extends Thread implements Interfaces.IServerConnec
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public boolean connect() {
+		if(this.socket == null || this.socket.isClosed()) { return false; }
 		this.start();
 		Tools.Time.waitUntil(100);
 		return this.running;

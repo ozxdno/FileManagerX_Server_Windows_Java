@@ -34,6 +34,17 @@ public class DBManager implements Interfaces.IDBManager {
 		return this.manager.isUpdataOK();
 	}
 	
+	public Interfaces.IDepotChecker getChecker() {
+		Interfaces.IDepotChecker dc = Factories.DepotCheckerFactory.createDepotChecker();
+		dc.setDBManager(manager);
+		return dc;
+	}
+	public Interfaces.IServerChecker getServerChecker() {
+		Interfaces.IServerChecker sc = Factories.ServerCheckerFactory.createServerChecker();
+		sc.setDBManager(manager);
+		return sc;
+	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public DBManager() {

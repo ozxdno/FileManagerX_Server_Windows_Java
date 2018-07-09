@@ -70,7 +70,7 @@ public class Output extends Comman implements Interfaces.IReplies {
 		initThis();
 	}
 	private void initThis() {
-		cover = false;
+		cover = true;
 		this.sourUrl = "";
 		this.destUrl = "";
 		totalBytes = 0;
@@ -140,9 +140,7 @@ public class Output extends Comman implements Interfaces.IReplies {
 
 	public boolean execute(Interfaces.IConnection connection) {
 		if(!this.isOK()) {
-			return false;
-		}
-		if(connection == null) {
+			connection.disconnect();
 			return false;
 		}
 		

@@ -109,7 +109,7 @@ public class Invitations implements Interfaces.IPublic, Interfaces.ICollection {
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
-	public void sortIncrease() {
+	public boolean sortIncrease() {
 		@SuppressWarnings("rawtypes")
 		Comparator c = new Comparator<BasicModels.Invitation>() {
 			public int compare(BasicModels.Invitation e1, BasicModels.Invitation e2) {
@@ -127,7 +127,13 @@ public class Invitations implements Interfaces.IPublic, Interfaces.ICollection {
 			}
 		};
 		
-		Collections.sort(this.getContent(), c);
+		try {
+			Collections.sort(this.getContent(), c);
+			return true;
+		} catch(Exception e) {
+			BasicEnums.ErrorType.OTHERS.register(BasicEnums.ErrorLevel.Error,"Error in Compare",e.toString());
+			return false;
+		}
 	}
 	
 	/**
@@ -135,7 +141,7 @@ public class Invitations implements Interfaces.IPublic, Interfaces.ICollection {
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
-	public void sortDecrease() {
+	public boolean sortDecrease() {
 		@SuppressWarnings("rawtypes")
 		Comparator c = new Comparator<BasicModels.Invitation>() {
 			public int compare(BasicModels.Invitation e1, BasicModels.Invitation e2) {
@@ -153,7 +159,13 @@ public class Invitations implements Interfaces.IPublic, Interfaces.ICollection {
 			}
 		};
 		
-		Collections.sort(this.getContent(), c);
+		try {
+			Collections.sort(this.getContent(), c);
+			return true;
+		} catch(Exception e) {
+			BasicEnums.ErrorType.OTHERS.register(BasicEnums.ErrorLevel.Error,"Error in Compare",e.toString());
+			return false;
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

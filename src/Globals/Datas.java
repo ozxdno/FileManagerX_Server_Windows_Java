@@ -9,6 +9,12 @@ public class Datas {
 	 */
 	public final static BasicCollections.Errors Errors = 
 			new BasicCollections.Errors();
+	/**
+	 * 导致程序崩溃的错误
+	 * 
+	 */
+	public final static BasicModels.Error Error = 
+			new BasicModels.Error();
 	
 	/**
 	 * 所支持类型，放于 Globals 中方便读取
@@ -58,13 +64,6 @@ public class Datas {
 			Factories.DBManagerFactory.createDBManager();
 	
 	/**
-	 * DBManager 的一个扩展，实现跨电脑数据访问。以及一些与服务器通信时命令的缩写形式。
-	 * 
-	 * 
-	 */
-	public final static Interfaces.IGAPManager GAPManager = 
-			Factories.DBManagerFactory.createGAPManager();
-	/**
 	 * 一条专用于连接服务器的通信通道，功能与 DBManager 相似。
 	 * 通过各类命令（Interfaces.ICommands）可以访问：
 	 * 
@@ -85,7 +84,6 @@ public class Datas {
 	 */
 	public final static Interfaces.IClientConnection ServerConnection = 
 			Factories.CommunicatorFactory.createClientConnection();
-	
 	/**
 	 * 所有的本地 Depot 的管理器，Depot 包含如下信息：
 	 * 

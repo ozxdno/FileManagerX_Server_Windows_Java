@@ -235,10 +235,21 @@ public class BaseFile implements Interfaces.IPublic {
 		if(!c.getIsOK()) { return null; }
 		this.url = c.fetchFirstString();
 		if(!c.getIsOK()) { return null; }
-		this.type = BasicEnums.FileType.valueOf(c.fetchFirstString());
-		if(!c.getIsOK()) { return null; }
-		this.state = BasicEnums.FileState.valueOf(c.fetchFirstString());
-		if(!c.getIsOK()) { return null; }
+		try {
+			this.type = BasicEnums.FileType.valueOf(c.fetchFirstString());
+			if(!c.getIsOK()) { return null; }
+		} catch(Exception e) {
+			BasicEnums.ErrorType.OTHERS.register(e.toString());
+			return null;
+		}
+		try {
+			this.state = BasicEnums.FileState.valueOf(c.fetchFirstString());
+			if(!c.getIsOK()) { return null; }
+		} catch(Exception e) {
+			BasicEnums.ErrorType.OTHERS.register(e.toString());
+			return null;
+		}
+		
 		this.modify = c.fetchFirstLong();
 		if(!c.getIsOK()) { return null; }
 		this.length = c.fetchFirstLong();
@@ -246,7 +257,8 @@ public class BaseFile implements Interfaces.IPublic {
 		this.score = c.fetchFirstInt();
 		if(!c.getIsOK()) { return null; }
 		this.tags = c.fetchFirstString();
-		//if(!c.getIsOK()) { return null; }
+		if(!c.getIsOK()) { return null; }
+		
 		return c.output();
 	}
 	public void copyReference(Object o) {

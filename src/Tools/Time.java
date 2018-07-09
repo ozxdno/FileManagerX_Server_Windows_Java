@@ -89,7 +89,12 @@ public class Time {
 			}
 			sleepUntil(1);
 		}
-		return !connection.isBusy();
+		if(connection.isBusy()) {
+			BasicEnums.ErrorType.COMMON_TIME_OUT.register("waitTicks = " + ticks);
+			return false;
+		}
+		
+		return true;
 	}
 	public final static boolean waitUntilFileConnectorSave(long ticks, Interfaces.IFileConnector fc) {
 		Interfaces.IFileConnector opponentFC = fc.getConnection().getFileConnector();

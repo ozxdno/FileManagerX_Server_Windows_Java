@@ -196,34 +196,39 @@ public class User implements Interfaces.IPublic {
 		return c.output();
 	}
 	public String input(String in) {
-		BasicModels.Config c = new BasicModels.Config(in);
-		index = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		loginName = c.fetchFirstString();
-		if(!c.getIsOK()) { return null; }
-		nickName = c.fetchFirstString();
-		if(!c.getIsOK()) { return null; }
-		password = c.fetchFirstString();
-		if(!c.getIsOK()) { return null; }
-		email = c.fetchFirstString();
-		if(!c.getIsOK()) { return null; }
-		phone = c.fetchFirstString();
-		if(!c.getIsOK()) { return null; }
-		state = BasicEnums.UserState.valueOf(c.fetchFirstString());
-		if(!c.getIsOK()) { return null; }
-		priority = BasicEnums.UserPriority.valueOf(c.fetchFirstString());
-		if(!c.getIsOK()) { return null; }
-		level = BasicEnums.UserLevel.valueOf(c.fetchFirstString());
-		if(!c.getIsOK()) { return null; }
-		experience = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		photoUrl = c.fetchFirstString();
-		if(!c.getIsOK()) { return null; }
-		coins = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		money = c.fetchFirstDouble();
-		if(!c.getIsOK()) { return null; }
-		return c.output();
+		try {
+			BasicModels.Config c = new BasicModels.Config(in);
+			index = c.fetchFirstLong();
+			if(!c.getIsOK()) { return null; }
+			loginName = c.fetchFirstString();
+			if(!c.getIsOK()) { return null; }
+			nickName = c.fetchFirstString();
+			if(!c.getIsOK()) { return null; }
+			password = c.fetchFirstString();
+			if(!c.getIsOK()) { return null; }
+			email = c.fetchFirstString();
+			if(!c.getIsOK()) { return null; }
+			phone = c.fetchFirstString();
+			if(!c.getIsOK()) { return null; }
+			state = BasicEnums.UserState.valueOf(c.fetchFirstString());
+			if(!c.getIsOK()) { return null; }
+			priority = BasicEnums.UserPriority.valueOf(c.fetchFirstString());
+			if(!c.getIsOK()) { return null; }
+			level = BasicEnums.UserLevel.valueOf(c.fetchFirstString());
+			if(!c.getIsOK()) { return null; }
+			experience = c.fetchFirstLong();
+			if(!c.getIsOK()) { return null; }
+			photoUrl = c.fetchFirstString();
+			if(!c.getIsOK()) { return null; }
+			coins = c.fetchFirstLong();
+			if(!c.getIsOK()) { return null; }
+			money = c.fetchFirstDouble();
+			if(!c.getIsOK()) { return null; }
+			return c.output();
+		} catch(Exception e) {
+			BasicEnums.ErrorType.OTHERS.register(e.toString());
+			return null;
+		}
 	}
 	public void copyReference(Object o) {
 		User u = (User)o;

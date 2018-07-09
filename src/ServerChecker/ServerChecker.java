@@ -22,6 +22,13 @@ public class ServerChecker implements Interfaces.IServerChecker {
 		return this.dbmanager;
 	}
 	
+	public Interfaces.IDepotChecker getDepotChecker() {
+		if(this.dbmanager == null) {
+			return null;
+		}
+		return this.dbmanager.getChecker();
+	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public ServerChecker() {

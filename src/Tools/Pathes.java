@@ -1,12 +1,38 @@
 package Tools;
 
 public class Pathes {
+	
+	private static java.lang.String exePath = "";
 
-	public final static java.lang.String getExePath() {
-		java.util.Properties properties = System.getProperties();
-		return properties.getProperty("user.dir");
+	public final static boolean setExePath(java.lang.String exePath) {
+		if(exePath == null || exePath.length() == 0) {
+			BasicEnums.ErrorType.COMMON_SET_WRONG_VALUE.register("exePath = " + (exePath == null ? "NULL" : ""));
+			return false;
+		}
+		
+		java.io.File f = new java.io.File(exePath);
+		if(!f.exists()) {
+			BasicEnums.ErrorType.COMMON_SET_WRONG_VALUE.register("exePath Existed", "exePath = " + exePath);
+			return false;
+		}
+		if(!f.isDirectory()) {
+			BasicEnums.ErrorType.COMMON_SET_WRONG_VALUE.register("exePath is NOT a Folder", "exePath = " + exePath);
+			return false;
+		}
+		
+		Pathes.exePath = exePath;
+		return true;
 	}
 	
+	public final static java.lang.String getExePath() {
+		if(exePath == null || exePath.length() == 0) {
+			java.util.Properties properties = System.getProperties();
+			return properties.getProperty("user.dir");
+		}
+		else {
+			return exePath;
+		}
+	}
 	public final static java.lang.String getJarPath() {
 		BasicModels.BaseFile f = new BasicModels.BaseFile();
 		return f.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
@@ -28,28 +54,53 @@ public class Pathes {
 	public final static java.lang.String getFile_CFG() {
 		//return getFolder_CFG() + "\\FileManagerX_Server_TXT.cfg";
 		//return getFolder_CFG() + "\\FileManagerX_Server_SQL.cfg";
-		return getFolder_CFG() + "\\FileManagerX_Depot.cfg";
+		//return getFolder_CFG() + "\\FileManagerX_Depot.cfg";
 		//return getFolder_CFG() + "\\FileManagerX_Client.cfg";
+		return getFolder_CFG() + "\\FileManagerX.cfg";
 	}
 	
 	
 	public final static boolean createServerCFG() {
+		java.io.File cfg = new java.io.File(getFile_CFG());
+		if(cfg.exists() && cfg.isFile()) {
+			return true;
+		}
+		
 		Interfaces.IDepotManager dm = Factories.DepotManagerFactory.createDepotManager();
 		dm.setUncheck(true);
-		
 		if(!dm.createFile(Tools.Pathes.getFile_CFG())) {
 			return false;
 		}
 		
-		
-		
-		return true;
+		return Tools.CFGFile.saveCFGCore(BasicEnums.StartType.Server, true);
 	}
 	public final static boolean createDepotCFG() {
-		return false;
+		java.io.File cfg = new java.io.File(getFile_CFG());
+		if(cfg.exists() && cfg.isFile()) {
+			return true;
+		}
+		
+		Interfaces.IDepotManager dm = Factories.DepotManagerFactory.createDepotManager();
+		dm.setUncheck(true);
+		if(!dm.createFile(Tools.Pathes.getFile_CFG())) {
+			return false;
+		}
+		
+		return Tools.CFGFile.saveCFGCore(BasicEnums.StartType.Depot, true);
 	}
 	public final static boolean createClientCFG() {
-		return false;
+		java.io.File cfg = new java.io.File(getFile_CFG());
+		if(cfg.exists() && cfg.isFile()) {
+			return true;
+		}
+		
+		Interfaces.IDepotManager dm = Factories.DepotManagerFactory.createDepotManager();
+		dm.setUncheck(true);
+		if(!dm.createFile(Tools.Pathes.getFile_CFG())) {
+			return false;
+		}
+		
+		return Tools.CFGFile.saveCFGCore(BasicEnums.StartType.Client, true);
 	}
 	
 	public final static boolean createFolder_CFG() {

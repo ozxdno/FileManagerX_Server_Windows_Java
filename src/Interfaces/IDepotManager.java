@@ -14,6 +14,8 @@ public interface IDepotManager {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
+	public boolean openInSystem(String targetUrl);
+	
 	public boolean renameFile(String sourUrl, String targetName);
 	public boolean renameFileWithoutExtension(String sourUrl, String targetNameWithoutExtension);
 	public boolean deleteFile(String targetFile);

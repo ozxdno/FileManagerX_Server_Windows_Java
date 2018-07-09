@@ -3,8 +3,17 @@ package Main;
 import java.awt.event.*;
 import javax.swing.*;
 
-// Output = 1|**********|1|2|-1|1|1|1|D:\Space_For_Media\Pictures\FMX_Test_Depot_F\a.jpg|D:\Space_For_Media\Pictures\FMX_Test_Depot_F\b.jpg|980911|0
-// Input = 1|**********|1|2|-1|1|1|1|D:\Space_For_Media\Pictures\FMX_Test_Depot_F\d.jpg|D:\Space_For_Media\Pictures\FMX_Test_Depot_F\a.jpg|980911|0
+// reset
+// path
+// errors
+// tip
+
+// Input = 5|6|D:\Space_For_Media\Pictures\FMX_Test_Depot_E\a2.jpg|D:\Space_For_Media\Pictures\FMX_Test_Depot_C\a10.jpg
+// Input = D:\Space_For_Media\Pictures\FMX_Test_Depot_A\阿九\a2.jpg|D:\Space_For_Media\Pictures\FMX_Test_Depot_C\a2.jpg
+// Input = D:\Space_For_Media\Pictures\FMX_Test_Depot_A\新建文件夹\a1.rar|D:\Space_For_Media\Pictures\FMX_Test_Depot_C\a4.rar
+// Input = D:\Space_For_Media\Pictures\FMX_Test_Depot_A\新建文件夹\a1.rar|D:\Space_For_Media\Pictures\FMX_Test_Depot_C\a5.rar|2366464
+// Output = 5|6|D:\Space_For_Media\Pictures\FMX_Test_Depot_C\a2.jpg|D:\Space_For_Media\Pictures\FMX_Test_Depot_E\a2.jpg
+// Output = D:\Space_For_Media\Pictures\FMX_Test_Depot_C\a2.jpg|D:\Space_For_Media\Pictures\FMX_Test_Depot_A\a3.jpg
 
 @SuppressWarnings("serial")
 public class MainForm extends JFrame {
@@ -17,9 +26,9 @@ public class MainForm extends JFrame {
 	public JButton jExecute = new JButton("execute");
 	
 	public String CmdName = "";
-	public Interfaces.ICommands Command = null;
-	public Interfaces.IReplies Reply = null;
-	public Interfaces.ISWRE SWRE = Factories.CommunicatorFactory.createSWRE();
+	public java.util.ArrayList<String> List = new java.util.ArrayList<String>();
+	public String ListType = "";
+	public int ListIndex = 0;
 	 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -67,7 +76,7 @@ public class MainForm extends JFrame {
 		this.setSize(600, 180);
 		this.setLocationRelativeTo(null);//窗口居中
 		this.setDefaultCloseOperation(HIDE_ON_CLOSE);
-		this.setVisible(true);//窗口可见
+		this.setVisible(false);//窗口可见
 		this.addComponentListener(listenFrameResize);
 		
 	}
@@ -121,104 +130,103 @@ public class MainForm extends JFrame {
 	            if(q == null || q.length() == 0) {
 	            	return;
 	            }
-	            
 	            q = q.toLowerCase();
+	            String f = Tools.String.clearLRSpace(Tools.String.getField(q));
+	            String v = Tools.String.clearLRSpace(Tools.String.getValue(q));
+	            if(f.isEmpty()) {
+	            	f = v;
+	            	v = "";
+	            }
 	            
-	            if(q.equals("closeserver") || q.equals("cs")) {
-	            	CmdName = "CloseServer";
-	            	Command = new Commands.CloseServer();
-	            	jInput.setText(((Commands.CloseServer)Command).output());
-	            	
-	            	String tip = CmdName + " = " +
-	            			"[01-sourMachineIndex]" +
-	            			"[02-destMachineIndex]" +
-	            			"[03-ourDepotIndex]" +
-	            			"[04-destDepotIndex]" +
-	            			"[05-sourDataBaseIndex]" + 
-	            			"[06-destDataBaseIndex]" +
-	            			"[07-sourUserIndex]" +
-	            			"[08-destUserIndex]" +
-	            			"[09-ip1]" + 
-	            			"[10-ip2]" +
-	            			"[11-port1]" +
-	            			"[12-port2]" +
-	            			"[13-password]";
-	            	jResult.setText(tip);
+	            if(f.equals("prev") || v.equals("prev")) {
+	            	ListIndex -= 1;
+	            	if(ListIndex < 0) {
+	            		ListIndex = List.size() - 1;
+	            	}
+	            	if(List.size() == 0) {
+	            		return;
+	            	}
+	            	jResult.setText(List.get(ListIndex));
+	            	return;
 	            }
-	            if(q.equals("test") || q.equals("t")) {
-	            	CmdName = "Test";
-	            	Command = new Commands.Test();
-	            	jInput.setText(((Commands.Test)Command).output());
-	            	
-	            	String tip = CmdName + " = " +
-	            			"[01-sourMachineIndex]" +
-	            			"[02-destMachineIndex]" +
-	            			"[03-ourDepotIndex]" +
-	            			"[04-destDepotIndex]" +
-	            			"[05-sourDataBaseIndex]" + 
-	            			"[06-destDataBaseIndex]" +
-	            			"[07-sourUserIndex]" +
-	            			"[08-destUserIndex]" +
-	            			"[09-ip1]" + 
-	            			"[10-ip2]" +
-	            			"[11-port1]" +
-	            			"[12-port2]" +
-	            			"[13-password]" +
-	            			"[14-testString]";
-	            	jResult.setText(tip);
+	            if(f.equals("next") || v.equals("next")) {
+	            	ListIndex += 1;
+	            	if(ListIndex >= List.size()) {
+	            		ListIndex = 0;
+	            	}
+	            	if(List.size() == 0) {
+	            		return;
+	            	}
+	            	jResult.setText(List.get(ListIndex));
+	            	return;
 	            }
-	            if(q.equals("input") || q.equals("i")) {
-	            	CmdName = "Input";
-	            	Command = new Commands.Input();
-	            	jInput.setText(Command.output());
+	            if(f.equals("closeserver") || f.equals("cs")) {
+	            	String tip = "";
+	            	List.clear();
 	            	
-	            	String tip = CmdName + " = " +
-	            			"[01-sourMachineIndex]" +
-	            			"[02-destMachineIndex]" +
-	            			"[03-ourDepotIndex]" +
-	            			"[04-destDepotIndex]" +
-	            			"[05-sourDataBaseIndex]" + 
-	            			"[06-destDataBaseIndex]" +
-	            			"[07-sourUserIndex]" +
-	            			"[08-destUserIndex]" +
-	            			"[09-ip1]" + 
-	            			"[10-ip2]" +
-	            			"[11-port1]" +
-	            			"[12-port2]" +
-	            			"[13-password]" +
-	            			"[14-cover]" +
-	            			"[15-sourUrl]" +
-	            			"[16-destUrl]" +
-	            			"[17-totalBytes]" +
-	            			"[18-finishedBytes]";
-	            	jResult.setText(tip);
-	            }
-	            if(q.equals("output") || q.equals("o")) {
-	            	CmdName = "Output";
-	            	Command = new Commands.Output();
-	            	jInput.setText(Command.output());
+	            	tip = "[1/2][No Args]";
+	            	List.add(tip);
+	            	tip = "[2/2][destMachineIndex]";
+	            	List.add(tip);
 	            	
-	            	String tip = CmdName + " = " +
-	            			"[01-sourMachineIndex]" +
-	            			"[02-destMachineIndex]" +
-	            			"[03-ourDepotIndex]" +
-	            			"[04-destDepotIndex]" +
-	            			"[05-sourDataBaseIndex]" + 
-	            			"[06-destDataBaseIndex]" +
-	            			"[07-sourUserIndex]" +
-	            			"[08-destUserIndex]" +
-	            			"[09-ip1]" + 
-	            			"[10-ip2]" +
-	            			"[11-port1]" +
-	            			"[12-port2]" +
-	            			"[13-password]" +
-	            			"[14-cover]" +
-	            			"[15-sourUrl]" +
-	            			"[16-destUrl]" +
-	            			"[17-totalBytes]" +
-	            			"[18-finishedBytes]";
-	            	jResult.setText(tip);
+	            	jInput.setText("CloseServer = next");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
 	            }
+	            if(f.equals("test") || f.equals("t")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/3][No Args]";
+	            	List.add(tip);
+	            	tip = "[2/3][testString]";
+	            	List.add(tip);
+	            	tip = "[3/3][destMachineIndex][testString]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("Test = next");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("input") || f.equals("i")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/4][sourUrl][destUrl]";
+	            	List.add(tip);
+	            	tip = "[2/4][sourUrl][destUrl][finishedBytes]";
+	            	List.add(tip);
+	            	tip = "[3/4][sourMachine][destMachine][sourUrl][destUrl]";
+	            	List.add(tip);
+	            	tip = "[4/4][sourMachine][destMachine][sourUrl][destUrl][finishedBytes]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("Input = next");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("output") || f.equals("o")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/4][sourUrl][destUrl]";
+	            	List.add(tip);
+	            	tip = "[2/4][sourUrl][destUrl][finishedBytes]";
+	            	List.add(tip);
+	            	tip = "[3/4][sourMachine][destMachine][sourUrl][destUrl]";
+	            	List.add(tip);
+	            	tip = "[4/4][sourMachine][destMachine][sourUrl][destUrl][finishedBytes]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("Output = next");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            jResult.setText("[Unsupport]");
 	        }
 	    }
 	};
@@ -228,50 +236,167 @@ public class MainForm extends JFrame {
 	        if (jExecute == e.getSource()) {//如果是jBtn这个按钮被点击了,
 	        	
 	        	String cmd = jInput.getText();
-	        	boolean directAccess = cmd.length() > 2 && cmd.substring(0, 2).equals("d ");
-	        	if(directAccess) {
-	        		cmd = cmd.substring(2);
-	        		cmd = Tools.String.clearLRSpace(cmd);
-	        	}
-	        	
+	        	boolean directAccess = cmd.length() > 1 && cmd.charAt(0) == '@';
+	        	if(directAccess) { cmd = cmd.substring(1); }
 	        	CmdName = Tools.String.clearLRSpace(Tools.String.getField(cmd));
+	        	Interfaces.ICommandsManager cm = Globals.Datas.ServerConnection.getCommandsManager();
+	        	BasicModels.Config cmdcfg = new BasicModels.Config(cmd);
 	        	
-	        	if(CmdName.equals("Input") || CmdName.equals("Output")) {
-	        		Interfaces.IFSWRE fswre = Factories.CommunicatorFactory.createFSWRE();
-	        		if(directAccess) {
-	        			Reply = fswre.executeDirectly(cmd);
-	        		} else {
-	        			fswre.setConnection();
-	        			Reply = fswre.execute(cmd);
+	        	if(directAccess) {
+	        		long sourMachine = -1;
+	        		long destMachine = -1;
+	        		try {
+	        			sourMachine = cmdcfg.fetchFirstLong();
+	        			destMachine = cmdcfg.fetchFirstLong();
+	        		} catch(Exception exception) {
+	        			;
+	        		}
+	        		
+	        		if(CmdName.equals("Input") || CmdName.equals("Output")) {
+	        			Interfaces.IClientConnection con = Factories.CommunicatorFactory.createRunningClientConnection(
+	        					destMachine,
+	        					sourMachine
+	        					);
+	        			if(con == null) {
+        					jResult.setText("Create Connection Failed");
+		        			return;
+        				}
+	        			con.setUser(Globals.Datas.ThisUser);
+	        			con.setType(BasicEnums.ConnectionType.TRANSPORT_FILE);
+	        			if(!con.getCommandsManager().loginConnection()) {
+	        				jResult.setText("Login Failed");
+		        			return;
+	        			}
+	        			cm = con.getCommandsManager();
+	        		}
+	        		else {
+	        			Interfaces.IClientConnection con = Globals.Datas.Client.search(destMachine);
+	        			if(con == null) {
+	        				con = Factories.CommunicatorFactory.createRunningClientConnection(
+	        						destMachine,
+	            					sourMachine
+		        					);
+	        				if(con == null) {
+	        					jResult.setText("Create Connection Failed");
+			        			return;
+	        				}
+		        			con.setUser(Globals.Datas.ThisUser);
+		        			con.setType(BasicEnums.ConnectionType.TRANSPORT_COMMAND);
+		        			if(!con.getCommandsManager().loginConnection()) {
+		        				jResult.setText("Login Failed");
+			        			return;
+		        			}
+	        			}
+	        			cm = con.getCommandsManager();
 	        		}
 	        	}
-	        	else if(directAccess) {
-	        		Interfaces.IDSWRE dswre = Factories.CommunicatorFactory.createDSWRE();
-	        		Reply = dswre.execute(cmd);
-	        	}
-	        	else {
-	        		Reply = SWRE.execute(cmd);
+	        	else if(CmdName.equals("Input") || CmdName.equals("Output")) {
+	        		Interfaces.IClientConnection con = Factories.CommunicatorFactory.createRunningClientConnection();
+        			if(con == null) {
+    					jResult.setText("Create Connection Failed");
+	        			return;
+    				}
+        			con.setUser(Globals.Datas.ThisUser);
+        			con.setType(BasicEnums.ConnectionType.TRANSPORT_FILE);
+        			if(!con.getCommandsManager().loginConnection()) {
+        				jResult.setText("Login Failed");
+	        			return;
+        			}
+        			cm = con.getCommandsManager();
 	        	}
 	        	
-	            if(Reply == null) {
-	            	jResult.setText("NULL");
-	            	return;
-	            }
-	            
-	            /*
-	            if(Reply instanceof Replies.CloseServer) {
-	            	Replies.CloseServer reply = (Replies.CloseServer)Reply;
-	            	jResult.setText(reply.toString());
-	            	return;
-	            }
-	            if(Reply instanceof Replies.Unsupport) {
-	            	Replies.Unsupport reply = (Replies.Unsupport)Reply;
-	            	jResult.setText(reply.toString());
-	            	return;
-	            }
-	            */
-	            
-	            jResult.setText(Reply.output());
+	        	try {
+	        		 if(CmdName.equals("CloseServer")) {
+	        			if(cmdcfg.getItemsSize() == 0) {
+	 	        			boolean ok = cm.closeServer();
+	 	        			String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+	 	        			jResult.setText(ok ? "Successed" : "Failed: " + reason);
+	 	        			return;
+	 	        		}
+	        			if(cmdcfg.getItemsSize() == 1) {
+	 	        			boolean ok = cm.closeServer(cmdcfg.getLong(0));
+	 	        			String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+	 	        			jResult.setText(ok ? "Successed" : "Failed: " + reason);
+	 	        			return;
+	 	        		}
+	 	            }
+	 	            if(CmdName.equals("Test")) {
+	 	            	if(cmdcfg.getItemsSize() == 0) {
+	 	        			boolean res = cm.test();
+	 	        			String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+	 	        			jResult.setText(res ? "Successed" : "Failed: " + reason);
+	 	        			return;
+	 	        		}
+	 	        		if(cmdcfg.getItemsSize() == 1) {
+	 	        			String res = cm.test(cmdcfg.getString(0));
+	 	        			String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+	 	        			jResult.setText(res == null ? "Failed: " + reason : "Receive = " + res);
+	 	        			return;
+	 	        		}
+	 	        		if(cmdcfg.getItemsSize() == 2) {
+	 	        			String res = cm.test(cmdcfg.getLong(0), cmdcfg.getString(1));
+	 	        			String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+	 	        			jResult.setText(res == null ? "Failed: " + reason : "Receive = " + res);
+	 	        			return;
+	 	        		}
+	 	        	}
+	 	            if(CmdName.equals("Input")) {
+	 	            	if(cmdcfg.getItemsSize() == 2) {
+	 	            		boolean ok = cm.input(cmdcfg.getString(0), cmdcfg.getString(1));
+	 	            		String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+	 	            		jResult.setText(ok ? "Successed" : "Failed: " + reason);
+	 	            		return;
+	 	            	}
+	 	            	if(cmdcfg.getItemsSize() == 3) {
+	 	            		boolean ok = cm.input(cmdcfg.getString(0), cmdcfg.getString(1), cmdcfg.getLong(2));
+	 	            		String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+	 	            		jResult.setText(ok ? "Successed" : "Failed: " + reason);
+	 	            		return;
+	 	            	}
+	 	            	if(cmdcfg.getItemsSize() == 4) {
+	 	            		boolean ok = cm.input(cmdcfg.getLong(0), cmdcfg.getLong(1), cmdcfg.getString(2), cmdcfg.getString(3));
+	 	            		String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+	 	            		jResult.setText(ok ? "Successed" : "Failed: " + reason);
+	 	            		return;
+	 	            	}
+	 	            	if(cmdcfg.getItemsSize() == 5) {
+	 	            		boolean ok = cm.input(cmdcfg.getLong(0), cmdcfg.getLong(1), cmdcfg.getString(2), cmdcfg.getString(3), cmdcfg.getLong(4));
+	 	            		String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+	 	            		jResult.setText(ok ? "Successed" : "Failed: " + reason);
+	 	            		return;
+	 	            	}
+	 	            }
+	 	           if(CmdName.equals("Output")) {
+	 	            	if(cmdcfg.getItemsSize() == 2) {
+	 	            		boolean ok = cm.output(cmdcfg.getString(0), cmdcfg.getString(1));
+	 	            		String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+	 	            		jResult.setText(ok ? "Successed" : "Failed: " + reason);
+	 	            		return;
+	 	            	}
+	 	            	if(cmdcfg.getItemsSize() == 3) {
+	 	            		boolean ok = cm.output(cmdcfg.getString(0), cmdcfg.getString(1), cmdcfg.getLong(2));
+	 	            		String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+	 	            		jResult.setText(ok ? "Successed" : "Failed: " + reason);
+	 	            		return;
+	 	            	}
+	 	            	if(cmdcfg.getItemsSize() == 4) {
+	 	            		boolean ok = cm.output(cmdcfg.getLong(0), cmdcfg.getLong(1), cmdcfg.getString(2), cmdcfg.getString(3));
+	 	            		String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+	 	            		jResult.setText(ok ? "Successed" : "Failed: " + reason);
+	 	            		return;
+	 	            	}
+	 	            	if(cmdcfg.getItemsSize() == 5) {
+	 	            		boolean ok = cm.output(cmdcfg.getLong(0), cmdcfg.getLong(1), cmdcfg.getString(2), cmdcfg.getString(3), cmdcfg.getLong(4));
+	 	            		String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+	 	            		jResult.setText(ok ? "Successed" : "Failed: " + reason);
+	 	            		return;
+	 	            	}
+	 	            }
+	 	        	
+	 	            jResult.setText("Unsupport Command");
+	        	} catch(Exception ex) {
+	        		jResult.setText(ex.toString());
+	        	}
 	        }
 	    }
 	};

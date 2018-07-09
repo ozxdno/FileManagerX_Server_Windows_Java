@@ -60,7 +60,7 @@ public class DBManagers implements Interfaces.IDBManagers {
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
-	public void sortIncrease() {
+	public boolean sortIncrease() {
 		@SuppressWarnings("rawtypes")
 		Comparator c = new Comparator<Interfaces.IDBManager>() {
 			public int compare(Interfaces.IDBManager e1, Interfaces.IDBManager e2) {
@@ -72,7 +72,13 @@ public class DBManagers implements Interfaces.IDBManagers {
 			}
 		};
 		
-		Collections.sort(this.getContent(), c);
+		try {
+			Collections.sort(this.getContent(), c);
+			return true;
+		} catch(Exception e) {
+			BasicEnums.ErrorType.OTHERS.register(BasicEnums.ErrorLevel.Error,"Error in Compare",e.toString());
+			return false;
+		}
 	}
 	
 	/**
@@ -80,7 +86,7 @@ public class DBManagers implements Interfaces.IDBManagers {
 	 * 
 	 */
 	@SuppressWarnings("unchecked")
-	public void sortDecrease() {
+	public boolean sortDecrease() {
 		@SuppressWarnings("rawtypes")
 		Comparator c = new Comparator<Interfaces.IDBManager>() {
 			public int compare(Interfaces.IDBManager e1, Interfaces.IDBManager e2) {
@@ -92,7 +98,13 @@ public class DBManagers implements Interfaces.IDBManagers {
 			}
 		};
 		
-		Collections.sort(this.getContent(), c);
+		try {
+			Collections.sort(this.getContent(), c);
+			return true;
+		} catch(Exception e) {
+			BasicEnums.ErrorType.OTHERS.register(BasicEnums.ErrorLevel.Error,"Error in Compare",e.toString());
+			return false;
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

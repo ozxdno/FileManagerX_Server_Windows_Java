@@ -4,6 +4,7 @@ public interface IServerChecker {
 
 	public boolean setDBManager(Interfaces.IDBManager dbmanager);
 	public Interfaces.IDBManager getDBManager();
+	public Interfaces.IDepotChecker getDepotChecker();
 	
 	public boolean initialize(Object infos);
 	public boolean check();

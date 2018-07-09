@@ -218,7 +218,7 @@ public class CommandConnector implements Interfaces.ICommandConnector {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public Interfaces.IReplies execute() {
+	public Interfaces.ICommandsManager execute() {
 		
 		if(this.sourMachineInfo == null || this.sourMachine != this.sourMachineInfo.getIndex()) {
 			this.setSourMachineInfo(); }
@@ -238,25 +238,33 @@ public class CommandConnector implements Interfaces.ICommandConnector {
 			return null;
 		}
 		if(this.destConnection == null) {
-			for(int i=0; i<Globals.Datas.Client.getConnections().size(); i++) {
-				Interfaces.IConnection con = Globals.Datas.Client.getConnections().get(i);
-				if(con.getServerMachineInfo().getName().equals(this.destMachineInfo.getName()) &&
-						con.getType().equals(BasicEnums.ConnectionType.TRANSPORT_COMMAND)) {
-					this.destConnection = con;
-					break;
+			this.destConnection = Globals.Datas.Client.search(destMachine);
+			if(this.destConnection != null) {
+				boolean ok = ((Interfaces.IClientConnection)this.destConnection).getCommandsManager().test();
+				if(!ok) {
+					BasicEnums.ErrorType.COMMUNICATOR_CONNECTION_CLOSED.register("destConnection is Closed");
+					Globals.Datas.Client.delete(destMachine);
+					this.destConnection = null;
 				}
 			}
 			if(this.destConnection == null) {
 				Interfaces.IConnection con = Factories.CommunicatorFactory.createRunningClientConnection(
 						destMachineInfo, 
-						sourMachineInfo,
-						this.sourConnection.getUser()
+						sourMachineInfo
 						);
 				if(con == null) {
+					BasicEnums.ErrorType.COMMON_NULL.register("Build Client Connection Failed", "con = NULL");
 					return null;
 				}
-				Globals.Datas.Client.add(con);
+				
+				con.setUser(this.sourConnection.getUser());
+				con.setType(BasicEnums.ConnectionType.TRANSPORT_COMMAND);
 				this.destConnection = con;
+				boolean ok = ((Interfaces.IClientConnection)this.destConnection).getCommandsManager().loginConnection();
+				if(!ok) {
+					BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register("Login destConnection Failed");
+					return null;
+				}
 			}
 		}
 		if(this.destConnection  == null) {
@@ -268,9 +276,7 @@ public class CommandConnector implements Interfaces.ICommandConnector {
 			return null;
 		}
 		
-		Interfaces.ISWRE swre = Factories.CommunicatorFactory.createSWRE();
-		swre.setConnection(this.destConnection);
-		return swre.execute(sendCommand);
+		return ((Interfaces.IClientConnection)this.destConnection).getCommandsManager();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

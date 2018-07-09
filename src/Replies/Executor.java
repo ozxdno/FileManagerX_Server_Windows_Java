@@ -75,11 +75,11 @@ public class Executor implements Interfaces.IReplyExecutor {
 			return lm.input(connection.getReceiveString()) != null &&
 					lm.execute(connection);
 		}
-		if(c.getField().equals("LoginConnection")) {
-			Replies.LoginConnection lc = new Replies.LoginConnection();
-			this.reply = lc;
-			return lc.input(connection.getReceiveString()) != null &&
-					lc.execute(connection);
+		if(c.getField().equals("LoginType")) {
+			Replies.LoginType lt = new Replies.LoginType();
+			this.reply = lt;
+			return lt.input(connection.getReceiveString()) != null &&
+					lt.execute(connection);
 		}
 		if(c.getField().equals("QueryConfigurations")) {
 			Replies.QueryConfigurations qc = new Replies.QueryConfigurations();

@@ -11,6 +11,9 @@ public interface IDBManager {
 	public boolean setDBInfo(BasicModels.DataBaseInfo dbInfo);
 	public BasicModels.DataBaseInfo getDBInfo();
 	
+	public Interfaces.IDepotChecker getChecker();
+	public Interfaces.IServerChecker getServerChecker();
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 
 	public boolean initialize(Object infos);
