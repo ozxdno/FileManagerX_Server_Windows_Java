@@ -95,21 +95,6 @@ public class RemoveDataBases extends Comman implements Interfaces.ICommands {
 			this.reply();
 			return false;
 		}
-		
-		return Globals.Configurations.StartType.equals(BasicEnums.StartType.Server) ?
-				this.executeInServer() :
-				this.executeInDepot();
-	}
-	public void reply() {
-		this.setBasicMessagePackageToReply();
-		this.getConnection().setSendString(this.getReply().output());
-		this.getConnection().setSendLength(this.getConnection().getSendString().length());
-		this.getConnection().setContinueSendString();
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	private boolean executeInServer() {
 		if(!this.isLogin()) {
 			this.reply();
 			return false;
@@ -133,20 +118,59 @@ public class RemoveDataBases extends Comman implements Interfaces.ICommands {
 			return false;
 		}
 		
-		BasicCollections.DataBaseInfos d = Globals.Datas.DBManager.QueryDataBaseInfos(conditions);
-		if(d == null) {
-			this.reply();
+		if(this.isArriveTargetMachine()) {
+			if(!this.remove()) {
+				this.reply();
+				return false;
+			}
+			if(this.getReply().getAmount() == 0) {
+				this.reply();
+				return true;
+			}
+			
+			Interfaces.ICommunicatorSendTotal st = Factories.CommunicatorFactory.createSendTotal();
+			for(int i=0; i<this.getReply().getDBInfos().size(); i++) {
+				this.getReply().setDBtInfo(this.getReply().getDBInfos().getContent().get(i));
+				st.inputNextItem(this.getReply().output());
+			}
+			
+			this.replyTotal(st);
 			return true;
 		}
-		
-		boolean ok = Globals.Datas.DBManager.removeDataBaseInfos(d);
-		this.getReply().setOK(ok);
-		this.reply();
-		return true;
+		else {
+			this.getReply().setFailedReason("Unsupport Command at This Machine");
+			this.getReply().setOK(false);
+			this.reply();
+			return false;
+		}
+	}
+	public void reply() {
+		this.setBasicMessagePackageToReply();
+		this.getConnection().setSendString(this.getReply().output());
+		this.getConnection().setSendLength(this.getConnection().getSendString().length());
+		this.getConnection().setContinueSendString();
 	}
 	
-	private boolean executeInDepot() {
-		return false;
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public boolean remove() {
+		
+		BasicCollections.DataBaseInfos res = Globals.Datas.DBManager.QueryDataBaseInfos(conditions);
+		if(res == null) {
+			this.getReply().setFailedReason("Remove from DataBase Failed");
+			this.getReply().setOK(false);
+			return false;
+		}
+		
+		this.getReply().getDBInfos().clear();
+		for(BasicModels.DataBaseInfo i : res.getContent()) {
+			boolean ok = Globals.Datas.DBManager.removeDataBaseInfo(i);
+			if(!ok) {
+				this.getReply().getDBInfos().add(i);
+			}
+		}
+		this.getReply().setAmount(this.getReply().getDBInfos().size());
+		return true;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

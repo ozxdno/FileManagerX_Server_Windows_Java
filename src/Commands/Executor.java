@@ -31,6 +31,11 @@ public class Executor implements Interfaces.ICommandExecutor {
 			r.setConnection(connection);
 			return r.input(connection.getReceiveString()) != null && r.execute();
 		}
+		if(c.getField().equals("TimeForExecute")) {
+			Commands.TimeForExecute t = new Commands.TimeForExecute();
+			t.setConnection(connection);
+			return t.input(connection.getReceiveString()) != null && t.execute();
+		}
 		if(c.getField().equals("Input")) {
 			Commands.Input i = new Commands.Input();
 			i.setConnection(connection);
@@ -221,6 +226,31 @@ public class Executor implements Interfaces.ICommandExecutor {
 			rd.setConnection(connection);
 			return rd.input(connection.getReceiveString()) != null && rd.execute();
 		}
+		if(c.getField().equals("RemoveMachines")) {
+			Commands.RemoveMachines rm = new Commands.RemoveMachines();
+			rm.setConnection(connection);
+			return rm.input(connection.getReceiveString()) != null && rm.execute();
+		}
+		if(c.getField().equals("RemoveUsers")) {
+			Commands.RemoveUsers ru = new Commands.RemoveUsers();
+			ru.setConnection(connection);
+			return ru.input(connection.getReceiveString()) != null && ru.execute();
+		}
+		if(c.getField().equals("RemoveInvitations")) {
+			Commands.RemoveInvitations ri = new Commands.RemoveInvitations();
+			ri.setConnection(connection);
+			return ri.input(connection.getReceiveString()) != null && ri.execute();
+		}
+		if(c.getField().equals("RemoveFolders")) {
+			Commands.RemoveFolders rf = new Commands.RemoveFolders();
+			rf.setConnection(connection);
+			return rf.input(connection.getReceiveString()) != null && rf.execute();
+		}
+		if(c.getField().equals("RemoveFiles")) {
+			Commands.RemoveFiles rf = new Commands.RemoveFiles();
+			rf.setConnection(connection);
+			return rf.input(connection.getReceiveString()) != null && rf.execute();
+		}
 		if(c.getField().equals("RemoveDepot")) {
 			Commands.RemoveDepot rd = new Commands.RemoveDepot();
 			rd.setConnection(connection);
@@ -230,6 +260,31 @@ public class Executor implements Interfaces.ICommandExecutor {
 			Commands.RemoveDataBase rd = new Commands.RemoveDataBase();
 			rd.setConnection(connection);
 			return rd.input(connection.getReceiveString()) != null && rd.execute();
+		}
+		if(c.getField().equals("RemoveMachine")) {
+			Commands.RemoveMachine rm = new Commands.RemoveMachine();
+			rm.setConnection(connection);
+			return rm.input(connection.getReceiveString()) != null && rm.execute();
+		}
+		if(c.getField().equals("RemoveUser")) {
+			Commands.RemoveUser ru = new Commands.RemoveUser();
+			ru.setConnection(connection);
+			return ru.input(connection.getReceiveString()) != null && ru.execute();
+		}
+		if(c.getField().equals("RemoveInvitation")) {
+			Commands.RemoveInvitation ri = new Commands.RemoveInvitation();
+			ri.setConnection(connection);
+			return ri.input(connection.getReceiveString()) != null && ri.execute();
+		}
+		if(c.getField().equals("RemoveFolder")) {
+			Commands.RemoveFolder rf = new Commands.RemoveFolder();
+			rf.setConnection(connection);
+			return rf.input(connection.getReceiveString()) != null && rf.execute();
+		}
+		if(c.getField().equals("RemoveFile")) {
+			Commands.RemoveFile rf = new Commands.RemoveFile();
+			rf.setConnection(connection);
+			return rf.input(connection.getReceiveString()) != null && rf.execute();
 		}
 		
 		return this.executeUnsupport(connection);

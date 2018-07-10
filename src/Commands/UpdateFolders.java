@@ -261,7 +261,7 @@ public class UpdateFolders extends Comman implements Interfaces.ICommands {
 		
 		BasicCollections.Folders res = dbm.QueryFolders(conditions);
 		if(res == null) {
-			this.getReply().setFailedReason("Query BaseFiles in DataBase Failed");
+			this.getReply().setFailedReason("Query Folders in DataBase Failed");
 			this.getReply().setOK(false);
 			return false;
 		}

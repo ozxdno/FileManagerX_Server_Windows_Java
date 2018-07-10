@@ -70,4 +70,8 @@ public final class Configurations {
 	 * Client Connection 允许空闲时间
 	 */
 	public static long TimeForClientPermitIdle = Long.MAX_VALUE;
+	/**
+	 * 操作的存储时间
+	 */
+	public static long TimeForOperatorIdle = 1*60*1000;
 }

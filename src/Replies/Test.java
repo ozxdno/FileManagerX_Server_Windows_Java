@@ -1,5 +1,11 @@
 package Replies;
 
+/**
+ * 测试命令，传输  test 字符串。在此类中表示为接收到的值。
+ * 
+ * @author ozxdno
+ *
+ */
 public class Test extends Comman implements Interfaces.IReplies {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -115,6 +115,12 @@ public class Datas {
 			Factories.CommunicatorFactory.createClient();
 	
 	/**
+	 * 所有操作的列表
+	 */
+	public final static DepotManager.Operators Operators =
+			new DepotManager.Operators();
+	
+	/**
 	 * 一个简易窗体，用于测试各个命令。
 	 * 
 	 */

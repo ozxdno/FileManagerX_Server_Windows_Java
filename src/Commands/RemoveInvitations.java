@@ -119,18 +119,26 @@ public class RemoveInvitations extends Comman implements Interfaces.ICommands {
 		}
 		
 		if(this.isArriveTargetMachine()) {
-			BasicCollections.Invitations res = Globals.Datas.DBManager.QueryInvitations(conditions);
-			if(res == null) {
+			if(!this.remove()) {
+				this.reply();
+				return false;
+			}
+			if(this.getReply().getAmount() == 0) {
 				this.reply();
 				return true;
 			}
-			boolean ok = Globals.Datas.DBManager.removeInvitations(res);
-			this.getReply().setOK(ok);
-			this.reply();
+			
+			Interfaces.ICommunicatorSendTotal st = Factories.CommunicatorFactory.createSendTotal();
+			for(int i=0; i<this.getReply().getAmount(); i++) {
+				this.getReply().setInvitation(this.getReply().getInvitations().getContent().get(i));
+				st.inputNextItem(this.getReply().output());
+			}
+			
+			this.replyTotal(st);
 			return true;
 		}
 		else {
-			this.getReply().setFailedReason("");
+			this.getReply().setFailedReason("Unsupport Command at This Machine");
 			this.getReply().setOK(false);
 			this.reply();
 			return false;
@@ -141,6 +149,28 @@ public class RemoveInvitations extends Comman implements Interfaces.ICommands {
 		this.getConnection().setSendString(this.getReply().output());
 		this.getConnection().setSendLength(this.getConnection().getSendString().length());
 		this.getConnection().setContinueSendString();
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public boolean remove() {
+		
+		BasicCollections.Invitations res = Globals.Datas.DBManager.QueryInvitations(conditions);
+		if(res == null) {
+			this.getReply().setFailedReason("Remove from DataBase Failed");
+			this.getReply().setOK(false);
+			return false;
+		}
+		
+		this.getReply().getInvitations().clear();
+		for(BasicModels.Invitation i : res.getContent()) {
+			boolean ok = Globals.Datas.DBManager.removeInvitation(i);
+			if(!ok) {
+				this.getReply().getInvitations().add(i);
+			}
+		}
+		this.getReply().setAmount(this.getReply().getInvitations().size());
+		return true;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

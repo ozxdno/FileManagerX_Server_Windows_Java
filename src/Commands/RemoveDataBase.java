@@ -133,20 +133,45 @@ public class RemoveDataBase extends Comman implements Interfaces.ICommands {
 			return false;
 		}
 		
-		BasicModels.DataBaseInfo d = Globals.Datas.DBManager.QueryDataBaseInfo(conditions);
-		if(d == null) {
+		if(this.isArriveTargetMachine()) {
+			if(!this.remove()) {
+				this.reply();
+				return false;
+			}
+			
 			this.reply();
 			return true;
 		}
-		
-		boolean ok = Globals.Datas.DBManager.removeDataBaseInfo(d);
-		this.getReply().setOK(ok);
-		this.reply();
-		return true;
+		else {
+			this.getReply().setFailedReason("Unsupport Command at This Machine");
+			this.getReply().setOK(false);
+			this.reply();
+			return false;
+		}
 	}
 	
 	private boolean executeInDepot() {
 		return false;
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public boolean remove() {
+		BasicModels.DataBaseInfo res = Globals.Datas.DBManager.QueryDataBaseInfo(conditions);
+		if(res == null) {
+			this.getReply().setFailedReason("Query from DataBase Failed");
+			this.getReply().setOK(false);
+			return false;
+		}
+		
+		boolean ok = Globals.Datas.DBManager.removeDataBaseInfo(res);
+		if(!ok) {
+			this.getReply().setFailedReason("Remove from DataBase Failed");
+			this.getReply().setOK(false);
+			return false;
+		}
+		
+		return true;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

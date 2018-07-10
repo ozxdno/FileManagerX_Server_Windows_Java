@@ -9,6 +9,7 @@ public interface IServerChecker {
 	public boolean initialize(Object infos);
 	public boolean check();
 	
+	public boolean checkIndex();
 	public boolean checkMachines();
 	public boolean checkDepots();
 	public boolean checkDataBases();

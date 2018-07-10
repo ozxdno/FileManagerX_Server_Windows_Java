@@ -51,6 +51,12 @@ public class Executor implements Interfaces.IReplyExecutor {
 			return r.input(connection.getReceiveString()) != null &&
 					r.execute(connection);
 		}
+		if(c.getField().equals("TimeForExecute")) {
+			Replies.TimeForExecute t = new Replies.TimeForExecute();
+			this.reply = t;
+			return t.input(connection.getReceiveString()) != null &&
+					t.execute(connection);
+		}
 		if(c.getField().equals("Input")) {
 			Replies.Input i = new Replies.Input();
 			this.reply = i;
@@ -337,29 +343,124 @@ public class Executor implements Interfaces.IReplyExecutor {
 			return uf.input(connection.getReceiveString()) != null &&
 					uf.execute(connection);
 		}
+		if(c.getField().equals("RemoveMachines")) {
+			Replies.RemoveMachines um = new Replies.RemoveMachines();
+			this.reply = um;
+			Interfaces.ICommunicatorSendTotal st = Factories.CommunicatorFactory.createSendTotal();
+			st.input(connection.getReceiveString());
+			for(String item : st.getLines()) {
+				um.input(item);
+				um.execute(connection);
+			}
+			return true;
+		}
 		if(c.getField().equals("RemoveDepots")) {
-			Replies.RemoveDepots rd = new Replies.RemoveDepots();
-			this.reply = rd;
-			return rd.input(connection.getReceiveString()) != null &&
-					rd.execute(connection);
+			Replies.RemoveDepots ud = new Replies.RemoveDepots();
+			this.reply = ud;
+			Interfaces.ICommunicatorSendTotal st = Factories.CommunicatorFactory.createSendTotal();
+			st.input(connection.getReceiveString());
+			for(String item : st.getLines()) {
+				ud.input(item);
+				ud.execute(connection);
+			}
+			return true;
 		}
 		if(c.getField().equals("RemoveDataBases")) {
-			Replies.RemoveDataBases rd = new Replies.RemoveDataBases();
-			this.reply = rd;
-			return rd.input(connection.getReceiveString()) != null &&
-					rd.execute(connection);
+			Replies.RemoveDataBases ud = new Replies.RemoveDataBases();
+			this.reply = ud;
+			Interfaces.ICommunicatorSendTotal st = Factories.CommunicatorFactory.createSendTotal();
+			st.input(connection.getReceiveString());
+			for(String item : st.getLines()) {
+				ud.input(item);
+				ud.execute(connection);
+			}
+			return true;
+		}
+		if(c.getField().equals("RemoveUsers")) {
+			Replies.RemoveUsers ud = new Replies.RemoveUsers();
+			this.reply = ud;
+			Interfaces.ICommunicatorSendTotal st = Factories.CommunicatorFactory.createSendTotal();
+			st.input(connection.getReceiveString());
+			for(String item : st.getLines()) {
+				ud.input(item);
+				ud.execute(connection);
+			}
+			return true;
+		}
+		if(c.getField().equals("RemoveInvitations")) {
+			Replies.RemoveInvitations ui = new Replies.RemoveInvitations();
+			this.reply = ui;
+			Interfaces.ICommunicatorSendTotal st = Factories.CommunicatorFactory.createSendTotal();
+			st.input(connection.getReceiveString());
+			for(String item : st.getLines()) {
+				ui.input(item);
+				ui.execute(connection);
+			}
+			return true;
+		}
+		if(c.getField().equals("RemoveFolders")) {
+			Replies.RemoveFolders uf = new Replies.RemoveFolders();
+			this.reply = uf;
+			Interfaces.ICommunicatorSendTotal st = Factories.CommunicatorFactory.createSendTotal();
+			st.input(connection.getReceiveString());
+			for(String item : st.getLines()) {
+				uf.input(item);
+				uf.execute(connection);
+			}
+			return true;
+		}
+		if(c.getField().equals("RemoveFiles")) {
+			Replies.RemoveFiles uf = new Replies.RemoveFiles();
+			this.reply = uf;
+			Interfaces.ICommunicatorSendTotal st = Factories.CommunicatorFactory.createSendTotal();
+			st.input(connection.getReceiveString());
+			for(String item : st.getLines()) {
+				uf.input(item);
+				uf.execute(connection);
+			}
+			return true;
+		}
+		if(c.getField().equals("RemoveMachine")) {
+			Replies.RemoveMachine um = new Replies.RemoveMachine();
+			this.reply = um;
+			return um.input(connection.getReceiveString()) != null &&
+					um.execute(connection);
 		}
 		if(c.getField().equals("RemoveDepot")) {
-			Replies.RemoveDepot rd = new Replies.RemoveDepot();
-			this.reply = rd;
-			return rd.input(connection.getReceiveString()) != null &&
-					rd.execute(connection);
+			Replies.RemoveDepot ud = new Replies.RemoveDepot();
+			this.reply = ud;
+			return ud.input(connection.getReceiveString()) != null &&
+					ud.execute(connection);
 		}
 		if(c.getField().equals("RemoveDataBase")) {
-			Replies.RemoveDataBase rd = new Replies.RemoveDataBase();
-			this.reply = rd;
-			return rd.input(connection.getReceiveString()) != null &&
-					rd.execute(connection);
+			Replies.RemoveDataBase ud = new Replies.RemoveDataBase();
+			this.reply = ud;
+			return ud.input(connection.getReceiveString()) != null &&
+					ud.execute(connection);
+		}
+		if(c.getField().equals("RemoveUser")) {
+			Replies.RemoveUser uu = new Replies.RemoveUser();
+			this.reply = uu;
+			return uu.input(connection.getReceiveString()) != null &&
+					uu.execute(connection);
+		}
+		if(c.getField().equals("RemoveInvitation")) {
+			Replies.RemoveInvitation ui = new Replies.RemoveInvitation();
+			this.reply = ui;
+			return ui.input(connection.getReceiveString()) != null &&
+					ui.execute(connection);
+		}
+		if(c.getField().equals("RemoveFolder")) {
+			Replies.RemoveFolder uf = new Replies.RemoveFolder();
+			this.reply = uf;
+			return uf.input(connection.getReceiveString()) != null &&
+					uf.execute(connection);
+		}
+		if(c.getField().equals("RemoveFile")) {
+			Replies.RemoveFile uf = new Replies.RemoveFile();
+			this.reply = uf;
+			return uf.input(connection.getReceiveString()) != null &&
+					uf.execute(connection);
 		}
 		
 		

@@ -150,19 +150,10 @@ public class Comman implements Interfaces.ICommands {
 			return this.getReply().isOK();
 		}
 		else {
-			Interfaces.ICommandConnector cc = Factories.CommunicatorFactory.createCommandConnector();
-			cc.setIsExecuteCommand(true);
-			cc.setDestMachineIndex(this.bmp.getDestMachineIndex());
-			cc.setSendCommand(this.output());
-			cc.setSourConnection(this.getConnection());
-			Replies.Comman rep = (Replies.Comman)cc.execute();
-			if(rep == null) { 
-				this.replyNULL();
-				return false;
-			}
-			this.setReply(rep);
+			this.getReply().setFailedReason("Unsupport Command at This Machine");
+			this.getReply().setOK(false);
 			this.reply();
-			return true;
+			return false;
 		}
 	}
 	public void reply() {
@@ -176,11 +167,6 @@ public class Comman implements Interfaces.ICommands {
 		this.connection.setSendString(sendTotal.output());
 		this.connection.setSendLength(this.getConnection().getSendString().length());
 		this.connection.setContinueSendString();
-	}
-	public void replyNULL() {
-		this.getReply().setOK(false);
-		this.getReply().setFailedReason("The Reply from other Connection is NULL");
-		this.reply();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

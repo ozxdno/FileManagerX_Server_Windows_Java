@@ -136,12 +136,13 @@ public class RegisterUser extends Comman implements Interfaces.ICommands {
 			return false;
 		}
 		
+		user.setIndex(Globals.Configurations.Next_UserIndex + 1);
 		user.setPriority(i.getUser().getPriority());
 		user.setLevel(i.getUser().getLevel());
 		user.setExperience(i.getUser().getExperience());
 		user.setCoins(i.getUser().getCoins());
 		user.setMoney(i.getUser().getMoney());
-		if(!Globals.Datas.DBManager.updataUser(u)) {
+		if(!Globals.Datas.DBManager.updataUser(user)) {
 			this.getReply().setOK(false);
 			this.getReply().setFailedReason("Register User to DataBase Failed");
 			this.reply();
@@ -150,6 +151,7 @@ public class RegisterUser extends Comman implements Interfaces.ICommands {
 		
 		Globals.Datas.DBManager.removeInvitation(i);
 		this.getConnection().setUser(user);
+		this.getReply().setUser(user);
 		this.reply();
 		return true;
 	}

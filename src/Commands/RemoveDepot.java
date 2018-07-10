@@ -95,21 +95,6 @@ public class RemoveDepot extends Comman implements Interfaces.ICommands {
 			this.reply();
 			return false;
 		}
-		
-		return Globals.Configurations.StartType.equals(BasicEnums.StartType.Server) ?
-				this.executeInServer() :
-				this.executeInDepot();
-	}
-	public void reply() {
-		this.setBasicMessagePackageToReply();
-		this.getConnection().setSendString(this.getReply().output());
-		this.getConnection().setSendLength(this.getConnection().getSendString().length());
-		this.getConnection().setContinueSendString();
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	private boolean executeInServer() {
 		if(!this.isLogin()) {
 			this.reply();
 			return false;
@@ -122,7 +107,7 @@ public class RemoveDepot extends Comman implements Interfaces.ICommands {
 			this.reply();
 			return false;
 		}
-		if(!this.isPriorityEnough(BasicEnums.UserPriority.Depot)) {
+		if(!this.isPriorityEnough(BasicEnums.UserPriority.Member)) {
 			this.reply();
 			return false;
 		}
@@ -133,20 +118,47 @@ public class RemoveDepot extends Comman implements Interfaces.ICommands {
 			return false;
 		}
 		
-		BasicModels.DepotInfo d = Globals.Datas.DBManager.QueryDepotInfo(conditions);
-		if(d == null) {
+		if(this.isArriveTargetMachine()) {
+			if(!this.remove()) {
+				this.reply();
+				return false;
+			}
+			
 			this.reply();
 			return true;
 		}
-		
-		boolean ok = Globals.Datas.DBManager.removeDepotInfo(d);
-		this.getReply().setOK(ok);
-		this.reply();
-		return true;
+		else {
+			this.getReply().setFailedReason("Unsupport Command at This Machine");
+			this.getReply().setOK(false);
+			this.reply();
+			return false;
+		}
+	}
+	public void reply() {
+		this.setBasicMessagePackageToReply();
+		this.getConnection().setSendString(this.getReply().output());
+		this.getConnection().setSendLength(this.getConnection().getSendString().length());
+		this.getConnection().setContinueSendString();
 	}
 	
-	private boolean executeInDepot() {
-		return false;
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public boolean remove() {
+		BasicModels.DepotInfo res = Globals.Datas.DBManager.QueryDepotInfo(conditions);
+		if(res == null) {
+			this.getReply().setFailedReason("Query from DataBase Failed");
+			this.getReply().setOK(false);
+			return false;
+		}
+		
+		boolean ok = Globals.Datas.DBManager.removeDepotInfo(res);
+		if(!ok) {
+			this.getReply().setFailedReason("Remove from DataBase Failed");
+			this.getReply().setOK(false);
+			return false;
+		}
+		
+		return true;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -49,10 +49,10 @@ public class ServerChecker implements Interfaces.IServerChecker {
 	}
 	
 	public boolean check() {
-		if(this.dbmanager == null) {
+		
+		if(!this.checkIndex()) {
 			return false;
 		}
-		
 		if(!this.checkMachines()) {
 			return false;
 		}
@@ -71,20 +71,86 @@ public class ServerChecker implements Interfaces.IServerChecker {
 		
 		return true;
 	}
-	public boolean checkMachines() {
+	public boolean checkIndex() {
 		if(this.dbmanager == null) {
 			return false;
 		}
-		
-		BasicCollections.MachineInfos ms = this.dbmanager.QueryMachineInfos("");
 		long maxIndex = 0;
-		for(BasicModels.MachineInfo item : ms.getContent()) {
-			if(item.getIndex() > maxIndex) {
-				maxIndex = item.getIndex();
+		
+		// Next_FileIndex
+		maxIndex = 0;
+		for(Interfaces.IDBManager dbm : Globals.Datas.DBManagers.getContent()) {
+			BasicCollections.Folders fds = dbm.QueryFolders("");
+			BasicCollections.BaseFiles fs = dbm.QueryFiles("");
+			for(BasicModels.Folder f : fds.getContent()) {
+				if(f.getIndex() > maxIndex) {
+					maxIndex = f.getIndex();
+				}
+			}
+			for(BasicModels.BaseFile f : fs.getContent()) {
+				if(f.getIndex() > maxIndex) {
+					maxIndex = f.getIndex();
+				}
+			}
+		}
+		if(maxIndex > Globals.Configurations.Next_FileIndex) {
+			Globals.Configurations.Next_FileIndex = maxIndex;
+		}
+		
+		// Next_MachineIndex
+		maxIndex = 0;
+		BasicCollections.MachineInfos ms = Globals.Datas.DBManager.QueryMachineInfos("");
+		for(BasicModels.MachineInfo m : ms.getContent()) {
+			if(m.getIndex() > maxIndex) {
+				maxIndex = m.getIndex();
 			}
 		}
 		if(maxIndex > Globals.Configurations.Next_MachineIndex) {
-			Globals.Configurations.Next_MachineIndex = maxIndex;
+			 Globals.Configurations.Next_MachineIndex = maxIndex;
+		}
+		
+		// Next_DepotIndex
+		maxIndex = 0;
+		BasicCollections.DepotInfos ds = Globals.Datas.DBManager.QueryDepotInfos("");
+		for(BasicModels.DepotInfo d : ds.getContent()) {
+			if(d.getIndex() > maxIndex) {
+				maxIndex = d.getIndex();
+			}
+		}
+		if(maxIndex > Globals.Configurations.Next_DepotIndex) {
+			 Globals.Configurations.Next_DepotIndex = maxIndex;
+		}
+		
+		// Next_DataBaseIndex
+		maxIndex = 0;
+		BasicCollections.DataBaseInfos dbs = Globals.Datas.DBManager.QueryDataBaseInfos("");
+		for(BasicModels.DataBaseInfo db : dbs.getContent()) {
+			if(db.getIndex() > maxIndex) {
+				maxIndex = db.getIndex();
+			}
+		}
+		if(maxIndex > Globals.Configurations.Next_DataBaseIndex) {
+			 Globals.Configurations.Next_DataBaseIndex = maxIndex;
+		}
+		
+		// Next_UserIndex
+		maxIndex = 0;
+		BasicCollections.Users us = Globals.Datas.DBManager.QueryUsers("");
+		for(BasicModels.User u : us.getContent()) {
+			if(u.getIndex() > maxIndex) {
+				maxIndex = u.getIndex();
+			}
+		}
+		if(maxIndex > Globals.Configurations.Next_UserIndex) {
+			 Globals.Configurations.Next_UserIndex = maxIndex;
+		}
+		
+		return true;
+	}
+	
+	public boolean checkMachines() {
+		if(this.dbmanager == null) {
+			return false;
 		}
 		
 		return true;

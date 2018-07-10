@@ -167,15 +167,21 @@ public class MainForm extends JFrame {
 	            if(f.equals("tip")) {
 	            	List.clear();
 	            	
-	            	List.add("    tip");
-	            	List.add("    prev");
-	            	List.add("    next");
-	            	List.add("    direct    d    @");
+	            	List.add("    Tip");
+	            	List.add("    Prev");
+	            	List.add("    Next");
+	            	List.add("    Direct    d    @");
 	            	List.add("    CloseServer    cs");
 	            	List.add("    Restart    r");
-	            	List.add("    test    t");
-	            	List.add("    input    i");
-	            	List.add("    output    o");
+	            	List.add("    Test    t");
+	            	List.add("    TimeForExecute    tfe");
+	            	List.add("    OperateDepot    od");
+	            	List.add("    Input    i");
+	            	List.add("    Output    o");
+	            	List.add("    RegisterUser    rgu");
+	            	List.add("    LoginUser    lu");
+	            	List.add("    LoginMachine    lm");
+	            	List.add("    LoginType    lt");
 	            	List.add("    QueryConfigurations    qcs");
 	            	List.add("    QueryMachines    qms");
 	            	List.add("    QueryDepots    qds");
@@ -206,6 +212,21 @@ public class MainForm extends JFrame {
 	            	List.add("    UpdateInvitations    uis");
 	            	List.add("    UpdateFolders    ufds");
 	            	List.add("    UpdateFiles    ufs");
+	            	List.add("    RemoveMachines    rms");
+	            	List.add("    RemoveDepots    rds");
+	            	List.add("    RemoveDataBases    rdbs");
+	            	List.add("    RemoveUsers    rus");
+	            	List.add("    RemoveInvitations    ris");
+	            	List.add("    RemoveFolders    rfds");
+	            	List.add("    RemoveFiles    rfs");
+	            	List.add("    RemoveMachine    rm");
+	            	List.add("    RemoveDepot    rd");
+	            	List.add("    RemoveDataBase    rdb");
+	            	List.add("    RemoveUser    ru");
+	            	List.add("    RemoveInvitation    ri");
+	            	List.add("    RemoveFolder    rfd");
+	            	List.add("    RemoveFile    rf");
+	            	List.add("    MatchPicture    mpic");
 	            	
 	            	for(int i=0; i<List.size(); i++) {
 	            		List.set(i, "[" + (i+1) + "/" + List.size() + "]" + List.get(i));
@@ -252,6 +273,18 @@ public class MainForm extends JFrame {
 	            	List.add(tip);
 	            	
 	            	jInput.setText("Restart = next");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("timeforexecute") || f.equals("tfe")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/1][destMachineIndex][receiveWaitTicks][sendWaitTicks]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("TimeForExecute = ");
 	            	jResult.setText(List.get(0));
 	            	ListIndex = 0;
 	            	return;
@@ -304,6 +337,54 @@ public class MainForm extends JFrame {
 	            	List.add(tip);
 	            	
 	            	jInput.setText("Output = next");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("registeruser") || f.equals("rgu")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/1][invitationCode][user]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("RegisterUser = ");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("loginuser") || f.equals("lu")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/1][loginName][password]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("LoginUser = ");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("loginmachine") || f.equals("lu")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/1][machineInfo]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("LoginMachine = ");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("logintype") || f.equals("lt")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/1][type]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("LoginType = ");
 	            	jResult.setText(List.get(0));
 	            	ListIndex = 0;
 	            	return;
@@ -385,7 +466,7 @@ public class MainForm extends JFrame {
 	            	tip = "[2/2][conditions]";
 	            	List.add(tip);
 	            	
-	            	jInput.setText("QueryInvitations = [&] Index = 1");
+	            	jInput.setText("QueryInvitations = [&] Code = '1'");
 	            	jResult.setText(List.get(0));
 	            	ListIndex = 0;
 	            	return;
@@ -473,7 +554,7 @@ public class MainForm extends JFrame {
 	            	tip = "[1/1][conditions]";
 	            	List.add(tip);
 	            	
-	            	jInput.setText("QueryInvitation = [&] Index = 1");
+	            	jInput.setText("QueryInvitation = [&] Code = '1'");
 	            	jResult.setText(List.get(0));
 	            	ListIndex = 0;
 	            	return;
@@ -698,6 +779,182 @@ public class MainForm extends JFrame {
 	            	ListIndex = 0;
 	            	return;
 	            }
+	            if(f.equals("removemachines") || f.equals("rms")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/1][conditions]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("RemoveMachines = [&] Index = 1");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("removedepots") || f.equals("rds")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/1][conditions]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("RemoveDepots = [&] Index = 1");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("removedatabases") || f.equals("rdbs")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/1][conditions]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("RemoveDataBases = [&] Index = 1");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("removeusers") || f.equals("rus")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/1][conditions]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("RemoveUsers = [&] Index = 1");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("removeinvitations") || f.equals("ris")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/1][conditions]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("RemoveInvitations = [&] Code = '1'");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("removefolders") || f.equals("rfds")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/2][destDepot][conditions]";
+	            	List.add(tip);
+	            	tip = "[2/2][destMachine][destDepot][conditions]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("RemoveFolders = next");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("removefiles") || f.equals("rfs")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/2][destDepot][conditions]";
+	            	List.add(tip);
+	            	tip = "[2/2][destMachine][destDepot][conditions]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("RemoveFiles = next");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("removemachine") || f.equals("rm")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/1][conditions]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("RemoveMachine = [&] Index = 1");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("removedepot") || f.equals("rd")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/1][conditions]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("RemoveDepot = [&] Index = 1");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("removedatabase") || f.equals("rdb")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/1][conditions]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("RemoveDataBase = [&] Index = 1");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("removeuser") || f.equals("ru")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/1][conditions]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("RemoveUser = [&] Index = 1");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("removeinvitation") || f.equals("ri")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/1][conditions]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("RemoveInvitation = [&] Code = '1'");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("removefolder") || f.equals("rfd")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/2][destDepot][conditions]";
+	            	List.add(tip);
+	            	tip = "[2/2][destMachine][destDepot][conditions]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("RemoveFolder = next");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("removefile") || f.equals("rf")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/2][destDepot][conditions]";
+	            	List.add(tip);
+	            	tip = "[2/2][destMachine][destDepot][conditions]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("RemoveFile = next");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
 	            jResult.setText("[Unsupport]");
 	        }
 	    }
@@ -806,6 +1063,14 @@ public class MainForm extends JFrame {
 		 	        			return;
 		 	        		}
 		 	            }
+	        		 if(CmdName.equals("TimeForExecute")) {
+		        			if(cmdcfg.getItemsSize() == 3) {
+		 	        			boolean ok = cm.timeForExecute(cmdcfg.getLong(0), cmdcfg.getLong(1), cmdcfg.getLong(2));
+		 	        			String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+		 	        			jResult.setText(ok ? "Successed" : "Failed: " + reason);
+		 	        			return;
+		 	        		}
+		 	            }
 	 	            if(CmdName.equals("Test")) {
 	 	            	if(cmdcfg.getItemsSize() == 0) {
 	 	        			boolean res = cm.test();
@@ -851,6 +1116,47 @@ public class MainForm extends JFrame {
 	 	            		jResult.setText(ok ? "Successed" : "Failed: " + reason);
 	 	            		return;
 	 	            	}
+	 	            }
+	 	           if(CmdName.equals("RegisterUser")) {
+	 	        	   	String code = cmdcfg.fetchFirstString();
+	 	        	   	BasicModels.User user = new BasicModels.User();
+	 	        	   	String res = user.input(cmdcfg.output());
+	        			if(res != null) {
+	 	        			boolean ok = cm.registerUser(code, user);
+	 	        			String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+	 	        			jResult.setText(ok ? "Successed" : "Failed: " + reason);
+	 	        			return;
+	 	        		}
+	 	            }
+	 	           if(CmdName.equals("LoginUser")) {
+	        			if(cmdcfg.getItemsSize() == 2) {
+	        				cm.getConnection().getUser().setLoginName(cmdcfg.getString(0));
+	        				cm.getConnection().getUser().setPassword(cmdcfg.getString(1));
+	 	        			boolean ok = cm.loginUser();
+	 	        			String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+	 	        			jResult.setText(ok ? "Successed" : "Failed: " + reason);
+	 	        			return;
+	 	        		}
+	 	            }
+	 	           if(CmdName.equals("LoginMachine")) {
+	 	        	   	BasicModels.MachineInfo machine = new BasicModels.MachineInfo();
+	 	        	   	String res = machine.input(cmdcfg.output());
+	        			if(res != null) {
+	        				cm.getConnection().setClientMachineInfo(machine);
+	 	        			boolean ok = cm.loginMachine();
+	 	        			String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+	 	        			jResult.setText(ok ? "Successed" : "Failed: " + reason);
+	 	        			return;
+	 	        		}
+	 	            }
+	 	           if(CmdName.equals("LoginType")) {
+	        			if(cmdcfg.getItemsSize() == 1) {
+	        				cm.getConnection().setType(BasicEnums.ConnectionType.valueOf(cmdcfg.getString(0)));
+	 	        			boolean ok = cm.loginType();
+	 	        			String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+	 	        			jResult.setText(ok ? "Successed" : "Failed: " + reason);
+	 	        			return;
+	 	        		}
 	 	            }
 	 	           if(CmdName.equals("Output")) {
 	 	            	if(cmdcfg.getItemsSize() == 2) {
@@ -1712,6 +2018,341 @@ public class MainForm extends JFrame {
 				 			return;
 				 		}
 				 	}
+				 	if(CmdName.equals("RemoveMachines")) {
+	 	            	if(cmdcfg.getItemsSize() == 1) {
+	 	           			boolean ok = cm.removeMachines(cmdcfg.getString(0));
+	 	           			String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+	 	           			if(!ok) {
+	 	           				jResult.setText("Failed: " + reason);
+	 	           				return;
+	 	           			}
+	 	           			BasicCollections.MachineInfos ms = ((Replies.RemoveMachines)cm.getReply()).getMachineInfos();
+	 	           			if(ms.size() == 0) {
+	 	           				jResult.setText("Successed: Empty");
+	 	           				return;
+	 	           			}
+	 	           			
+	 	           			List.clear();
+	 	           			ListIndex = 0;
+	 	           			String item = "";
+	 	           			
+	 	           			for(int i=0; i<ms.size(); i++) {
+	 	           				item = "[" + (i+1) + "/" + ms.size() + "] Failed " + ms.getContent().get(i).output();
+	 	           				List.add(item);
+	 	           			}
+	 	           			
+	 	           			jResult.setText(List.get(ListIndex));
+	 	           			return;
+	 	           		}
+	 	            }
+	 	            if(CmdName.equals("RemoveDepots")) {
+	 	            	if(cmdcfg.getItemsSize() == 1) {
+	 	            		boolean ok = cm.removeDepots(cmdcfg.getString(0));
+	 	           			String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+	 	           			if(!ok) {
+	 	           				jResult.setText("Failed: " + reason);
+	 	           				return;
+	 	           			}
+	 	           			BasicCollections.DepotInfos ds = ((Replies.RemoveDepots)cm.getReply()).getDepotInfos();
+	 	           			if(ds.size() == 0) {
+	 	           				jResult.setText("Successed: Empty");
+	 	           				return;
+	 	           			}
+	 	           			
+	 	           			List.clear();
+	 	           			ListIndex = 0;
+	 	           			String item = "";
+	 	           			
+	 	           			for(int i=0; i<ds.size(); i++) {
+	 	           				item = "[" + (i+1) + "/" + ds.size() + "] Failed " + ds.getContent().get(i).output();
+	 	           				List.add(item);
+	 	           			}
+	 	           			
+	 	           			jResult.setText(List.get(ListIndex));
+	 	           			return;
+	 	           		}
+	 	            }
+	 	           if(CmdName.equals("RemoveDataBases")) {
+	 	            	if(cmdcfg.getItemsSize() == 1) {
+	 	            		boolean ok = cm.removeDataBases(cmdcfg.getString(0));
+	 	            		String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+	 	           			if(!ok) {
+	 	           				jResult.setText("Failed: " + reason);
+	 	           				return;
+	 	           			}
+	 	           			BasicCollections.DataBaseInfos dbs = ((Replies.RemoveDataBases)cm.getReply()).getDBInfos();
+	 	           			if(dbs == null) {
+	 	           				jResult.setText("Failed: NULL");
+	 	           				return;
+	 	           			}
+	 	           			if(dbs.size() == 0) {
+	 	           				jResult.setText("Successed: Empty");
+	 	           				return;
+	 	           			}
+	 	           			
+	 	           			List.clear();
+	 	           			ListIndex = 0;
+	 	           			String item = "";
+	 	           			
+	 	           			for(int i=0; i<dbs.size(); i++) {
+	 	           				item = "[" + (i+1) + "/" + dbs.size() + "] Failed " + dbs.getContent().get(i).output();
+	 	           				List.add(item);
+	 	           			}
+	 	           			
+	 	           			jResult.setText(List.get(ListIndex));
+	 	           			return;
+	 	           		}
+	 	            }
+	 	           if(CmdName.equals("RemoveUsers")) {
+	 	            	if(cmdcfg.getItemsSize() == 1) {
+	 	            		boolean ok = cm.removeUsers(cmdcfg.getString(0));
+	 	            		String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+	 	            		if(!ok) {
+	 	           				jResult.setText("Failed: " + reason);
+	 	           				return;
+	 	           			}
+	 	           			BasicCollections.Users users = ((Replies.RemoveUsers)cm.getReply()).getUsers();
+	 	           			if(users == null) {
+	 	           				jResult.setText("Failed: NULL");
+	 	           				return;
+	 	           			}
+	 	           			if(users.size() == 0) {
+	 	           				jResult.setText("Successed: Empty");
+	 	           				return;
+	 	           			}
+	 	           			
+	 	           			List.clear();
+	 	           			ListIndex = 0;
+	 	           			String item = "";
+	 	           			
+	 	           			for(int i=0; i<users.size(); i++) {
+	 	           				item = "[" + (i+1) + "/" + users.size() + "] Failed " + users.getContent().get(i).output();
+	 	           				List.add(item);
+	 	           			}
+	 	           			
+	 	           			jResult.setText(List.get(ListIndex));
+	 	           			return;
+	 	           		}
+	 	            }
+	 	           if(CmdName.equals("RemoveInvitations")) {
+	 	            	if(cmdcfg.getItemsSize() == 1) {
+	 	            		boolean ok = cm.removeInvitations(cmdcfg.getString(0));
+	 	            		String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+	 	            		if(!ok) {
+	 	           				jResult.setText("Failed: " + reason);
+	 	           				return;
+	 	           			}
+	 	            		BasicCollections.Invitations invitations = ((Replies.RemoveInvitations)cm.getReply()).getInvitations();
+	 	           			if(invitations == null) {
+	 	           				jResult.setText("Failed: NULL");
+	 	           				return;
+	 	           			}
+	 	           			if(invitations.size() == 0) {
+	 	           				jResult.setText("Successed: Empty");
+	 	           				return;
+	 	           			}
+	 	           			
+	 	           			List.clear();
+	 	           			ListIndex = 0;
+	 	           			String item = "";
+	 	           			
+	 	           			for(int i=0; i<invitations.size(); i++) {
+	 	           				item = "[" + (i+1) + "/" + invitations.size() + "]" + invitations.getContent().get(i).output();
+	 	           				List.add(item);
+	 	           			}
+	 	           			
+	 	           			jResult.setText(List.get(ListIndex));
+	 	           			return;
+	 	           		}
+	 	            }
+	 	            if(CmdName.equals("RemoveFolders")) {
+	 	            	if(cmdcfg.getItemsSize() == 2) {
+	 	            		boolean ok = cm.removeFolders(cmdcfg.getLong(0), cmdcfg.getString(1));
+	 	            		String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+	 	            		if(!ok) {
+	 	           				jResult.setText("Failed: " + reason);
+	 	           				return;
+	 	           			}
+	 	           			BasicCollections.Folders folders = ((Replies.RemoveFolders)cm.getReply()).getFolders();
+	 	           			if(folders == null) {
+	 	           				jResult.setText("Failed: NULL");
+	 	           				return;
+	 	           			}
+	 	           			if(folders.size() == 0) {
+	 	           				jResult.setText("Successed: Empty");
+	 	           				return;
+	 	           			}
+	 	           			
+	 	           			List.clear();
+	 	           			ListIndex = 0;
+	 	           			String item = "";
+	 	           			
+	 	           			for(int i=0; i<folders.size(); i++) {
+	 	           				item = "[" + (i+1) + "/" + folders.size() + "]" + folders.getContent().get(i).output();
+	 	           				List.add(item);
+	 	           			}
+	 	           			
+	 	           			jResult.setText(List.get(ListIndex));
+	 	           			return;
+	 	           		}
+	 	            	if(cmdcfg.getItemsSize() == 3) {
+	 	            		boolean ok = cm.removeFolders(cmdcfg.getLong(0), cmdcfg.getLong(1), cmdcfg.getString(1));
+	 	            		String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+	 	            		if(!ok) {
+	 	           				jResult.setText("Failed: " + reason);
+	 	           				return;
+	 	           			}
+	 	            		BasicCollections.Folders folders = ((Replies.RemoveFolders)cm.getReply()).getFolders();
+	 	           			if(folders == null) {
+	 	           				jResult.setText("Failed: NULL");
+	 	           				return;
+	 	           			}
+	 	           			if(folders.size() == 0) {
+	 	           				jResult.setText("Successed: Empty");
+	 	           				return;
+	 	           			}
+	 	           			
+	 	           			List.clear();
+	 	           			ListIndex = 0;
+	 	           			String item = "";
+	 	           			
+	 	           			for(int i=0; i<folders.size(); i++) {
+	 	           				item = "[" + (i+1) + "/" + folders.size() + "]" + folders.getContent().get(i).output();
+	 	           				List.add(item);
+	 	           			}
+	 	           			
+	 	           			jResult.setText(List.get(ListIndex));
+	 	           			return;
+	 	           		}
+	 	            }
+	 	           if(CmdName.equals("RemoveFiles")) {
+	 	            	if(cmdcfg.getItemsSize() == 2) {
+	 	            		boolean ok = cm.removeFiles(cmdcfg.getLong(0), cmdcfg.getString(1));
+	 	            		String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+	 	            		if(!ok) {
+	 	           				jResult.setText("Failed: " + reason);
+	 	           				return;
+	 	           			}
+	 	           			BasicCollections.BaseFiles files = ((Replies.RemoveFiles)cm.getReply()).getFiles();
+	 	           			if(files == null) {
+	 	           				jResult.setText("Failed: NULL");
+	 	           				return;
+	 	           			}
+	 	           			if(files.size() == 0) {
+	 	           				jResult.setText("Successed: Empty");
+	 	           				return;
+	 	           			}
+	 	           			
+	 	           			List.clear();
+	 	           			ListIndex = 0;
+	 	           			String item = "";
+	 	           			
+	 	           			for(int i=0; i<files.size(); i++) {
+	 	           				item = "[" + (i+1) + "/" + files.size() + "]" + files.getContent().get(i).output();
+	 	           				List.add(item);
+	 	           			}
+	 	           			
+	 	           			jResult.setText(List.get(ListIndex));
+	 	           			return;
+	 	           		}
+	 	            	if(cmdcfg.getItemsSize() == 3) {
+	 	            		boolean ok = cm.removeFiles(cmdcfg.getLong(0), cmdcfg.getLong(1), cmdcfg.getString(1));
+	 	            		String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+	 	            		if(!ok) {
+	 	           				jResult.setText("Failed: " + reason);
+	 	           				return;
+	 	           			}
+	 	           			BasicCollections.BaseFiles files = ((Replies.RemoveFiles)cm.getReply()).getFiles();
+	 	           			if(files == null) {
+	 	           				jResult.setText("Failed: NULL");
+	 	           				return;
+	 	           			}
+	 	           			if(files.size() == 0) {
+	 	           				jResult.setText("Successed: Empty");
+	 	           				return;
+	 	           			}
+	 	           			
+	 	           			List.clear();
+	 	           			ListIndex = 0;
+	 	           			String item = "";
+	 	           			
+	 	           			for(int i=0; i<files.size(); i++) {
+	 	           				item = "[" + (i+1) + "/" + files.size() + "]" + files.getContent().get(i).output();
+	 	           				List.add(item);
+	 	           			}
+	 	           			
+	 	           			jResult.setText(List.get(ListIndex));
+	 	           			return;
+	 	           		}
+	 	            }
+		 	          if(CmdName.equals("RemoveMachine")) {
+		 	        	 if(cmdcfg.getItemsSize() == 1) {
+		 	        		 boolean ok = cm.removeMachine(cmdcfg.getString(0));
+		 	        		 String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+		 	        		 jResult.setText(ok ? "Successed" : "Failed: " + reason);
+		 	        		 return;
+		 	        	 }
+		 	          }
+		 	         if(CmdName.equals("RemoveDepot")) {
+		 	        	if(cmdcfg.getItemsSize() == 1) {
+		 	        		 boolean ok = cm.removeDepot(cmdcfg.getString(0));
+		 	        		 String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+		 	        		 jResult.setText(ok ? "Successed" : "Failed: " + reason);
+		 	        		 return;
+		 	        	 }
+		 	          }
+		 	        if(CmdName.equals("RemoveDataBase")) {
+		 	        	if(cmdcfg.getItemsSize() == 1) {
+		 	        		 boolean ok = cm.removeDataBase(cmdcfg.getString(0));
+		 	        		 String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+		 	        		 jResult.setText(ok ? "Successed" : "Failed: " + reason);
+		 	        		 return;
+		 	        	 }
+		 	          }
+		 	        if(CmdName.equals("RemoveUser")) {
+		 	        	if(cmdcfg.getItemsSize() == 1) {
+		 	        		 boolean ok = cm.removeUser(cmdcfg.getString(0));
+		 	        		 String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+		 	        		 jResult.setText(ok ? "Successed" : "Failed: " + reason);
+		 	        		 return;
+		 	        	 }
+		 	          }
+		 	       	if(CmdName.equals("RemoveInvitation")) {
+				 	       	if(cmdcfg.getItemsSize() == 1) {
+			 	        		 boolean ok = cm.removeInvitation(cmdcfg.getString(0));
+			 	        		 String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+			 	        		 jResult.setText(ok ? "Successed" : "Failed: " + reason);
+			 	        		 return;
+			 	        	 }
+		 	          }
+		 	       	if(CmdName.equals("RemoveFolder")) {
+		 	        	 if(cmdcfg.getItemsSize() == 2) {
+		 	        		 boolean ok = cm.removeFolder(cmdcfg.getLong(0), cmdcfg.getString(1));
+		 	        		 String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+		 	        		jResult.setText(ok ? "Successed" : "Failed: " + reason);
+		 	        		 return;
+		 	        	 }
+		 	        	if(cmdcfg.getItemsSize() == 3) {
+		 	        		 boolean ok = cm.removeFolder(cmdcfg.getLong(0), cmdcfg.getLong(1), cmdcfg.getString(2));
+		 	        		 String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+		 	        		jResult.setText(ok ? "Successed" : "Failed: " + reason);
+		 	        		 return;
+		 	        	 }
+		 	          }
+			 	   	if(CmdName.equals("RemoveFile")) {
+		 	        	 if(cmdcfg.getItemsSize() == 2) {
+		 	        		 boolean ok = cm.removeFile(cmdcfg.getLong(0), cmdcfg.getString(1));
+		 	        		 String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+		 	        		jResult.setText(ok ? "Successed" : "Failed: " + reason);
+		 	        		 return;
+		 	        	 }
+		 	        	if(cmdcfg.getItemsSize() == 3) {
+		 	        		 boolean ok = cm.removeFile(cmdcfg.getLong(0), cmdcfg.getLong(1), cmdcfg.getString(2));
+		 	        		 String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+		 	        		jResult.setText(ok ? "Successed" : "Failed: " + reason);
+		 	        		 return;
+		 	        	 }
+		 	          }
 	 	            jResult.setText("Unsupport Command");
 	        	} catch(Exception ex) {
 	        		jResult.setText(ex.toString());

@@ -45,9 +45,27 @@ public interface ICommandsManager {
 	
 	public boolean removeDepots(Object conditions);
 	public boolean removeDataBases(Object conditions);
+	public boolean removeMachines(Object conditions);
+	public boolean removeUsers(Object conditions);
+	public boolean removeInvitations(Object conditions);
+	
+	public boolean removeFolders(long depotIndex, Object conditions);
+	public boolean removeFolders(long machineIndex, long depotIndex, Object conditions);
+	
+	public boolean removeFiles(long depotIndex, Object conditions);
+	public boolean removeFiles(long machineIndex, long depotIndex, Object conditions);
 	
 	public boolean removeDepot(Object conditions);
 	public boolean removeDataBase(Object conditions);
+	public boolean removeMachine(Object conditions);
+	public boolean removeUser(Object conditions);
+	public boolean removeInvitation(Object conditions);
+	
+	public boolean removeFolder(long depotIndex, Object conditions);
+	public boolean removeFolder(long machineIndex, long depotIndex, Object conditions);
+	
+	public boolean removeFile(long depotIndex, Object conditions);
+	public boolean removeFile(long machineIndex, long depotIndex, Object conditions);
 	
 	public boolean updateMachines(long machineIndex, String items, Object conditions);
 	public boolean updateMachines(BasicModels.MachineInfo model, String items, Object conditions);
@@ -86,6 +104,8 @@ public interface ICommandsManager {
 	public boolean updateFile(long depotIndex, BasicModels.BaseFile file);
 	public boolean updateFile(long machineIndex, long depotIndex, BasicModels.BaseFile file);
 	
+	public boolean registerUser(String invitationCode, BasicModels.User user);
+	
 	public boolean loginConnection();
 	public boolean loginUser();
 	public boolean loginMachine();
@@ -100,6 +120,8 @@ public interface ICommandsManager {
 	
 	public boolean restart();
 	public boolean restart(long destMachine);
+	
+	public boolean timeForExecute(long destMachine, long receiveWaitTicks, long sendWaitTicks);
 	
 	public boolean input(String sourUrl, String destUrl);
 	public boolean input(String sourUrl, String destUrl, boolean cover);

@@ -820,42 +820,36 @@ public class Manager implements Interfaces.ICommandsManager {
 	
 	public boolean removeDepot(Object conditions) {
 		this.reply = null;
+		if(!this.isConnectionRunning()) {
+			return false;
+		}
+		if(this.isDirectConnection()) {
+			return this.directlyRemoveDepot(conditions);
+		}
+		
+		Commands.RemoveDepot cmd = new Commands.RemoveDepot();
+		cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+		cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+		if(conditions instanceof String) {
+			cmd.setQueryConditions((String)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryCondition) {
+			cmd.setQueryCondition((DataBaseManager.QueryCondition)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryConditions) {
+			cmd.setQueryConditions((DataBaseManager.QueryConditions)conditions);
+		}
+		else {
+			BasicEnums.ErrorType.OTHERS.register("Type of conditions is Wrong");
+			return false;
+		}
 		
 		if(Globals.Configurations.IsServer) {
-			BasicModels.DepotInfo depot = Globals.Datas.DBManager.QueryDepotInfo(conditions);
-			boolean ok = true;
-			if(depot != null) {
-				ok = Globals.Datas.DBManager.removeDepotInfo(depot);
-			}
-			this.reply = new Replies.RemoveDepot();
-			this.reply.setOK(ok);
+			boolean ok = cmd.remove();
+			this.reply = cmd.getReply();
 			return ok;
 		}
 		else {
-			if(!this.isConnectionRunning()) {
-				return false;
-			}
-			if(this.isDirectConnection()) {
-				return this.directlyRemoveDepot(conditions);
-			}
-			
-			Commands.RemoveDepot cmd = new Commands.RemoveDepot();
-			cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
-			cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
-			if(conditions instanceof String) {
-				cmd.setQueryConditions((String)conditions);
-			}
-			else if(conditions instanceof DataBaseManager.QueryCondition) {
-				cmd.setQueryCondition((DataBaseManager.QueryCondition)conditions);
-			}
-			else if(conditions instanceof DataBaseManager.QueryConditions) {
-				cmd.setQueryConditions((DataBaseManager.QueryConditions)conditions);
-			}
-			else {
-				BasicEnums.ErrorType.OTHERS.register("Type of conditions is Wrong");
-				return false;
-			}
-			
 			reply = swre.execute(cmd.output());
 			if(this.reply != null && !(reply instanceof Replies.RemoveDepot)) {
 				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
@@ -870,44 +864,270 @@ public class Manager implements Interfaces.ICommandsManager {
 	}
 	public boolean removeDataBase(Object conditions) {
 		this.reply = null;
+		if(!this.isConnectionRunning()) {
+			return false;
+		}
+		if(this.isDirectConnection()) {
+			return this.directlyRemoveDataBase(conditions);
+		}
+		
+		Commands.RemoveDataBase cmd = new Commands.RemoveDataBase();
+		cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+		cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+		if(conditions instanceof String) {
+			cmd.setQueryConditions((String)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryCondition) {
+			cmd.setQueryCondition((DataBaseManager.QueryCondition)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryConditions) {
+			cmd.setQueryConditions((DataBaseManager.QueryConditions)conditions);
+		}
+		else {
+			BasicEnums.ErrorType.OTHERS.register("Type of conditions is Wrong");
+			return false;
+		}
 		
 		if(Globals.Configurations.IsServer) {
-			BasicModels.DataBaseInfo db = Globals.Datas.DBManager.QueryDataBaseInfo(conditions);
-			boolean ok = true;
-			if(db != null) {
-				ok = Globals.Datas.DBManager.removeDataBaseInfo(db);
-			}
-			this.reply = new Replies.RemoveDataBase();
-			this.reply.setOK(ok);
+			boolean ok = cmd.remove();
+			this.reply = cmd.getReply();
 			return ok;
 		}
 		else {
-			if(!this.isConnectionRunning()) {
-				return false;
-			}
-			if(this.isDirectConnection()) {
-				return this.directlyRemoveDataBase(conditions);
-			}
-			
-			Commands.RemoveDataBase cmd = new Commands.RemoveDataBase();
-			cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
-			cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
-			if(conditions instanceof String) {
-				cmd.setQueryConditions((String)conditions);
-			}
-			else if(conditions instanceof DataBaseManager.QueryCondition) {
-				cmd.setQueryCondition((DataBaseManager.QueryCondition)conditions);
-			}
-			else if(conditions instanceof DataBaseManager.QueryConditions) {
-				cmd.setQueryConditions((DataBaseManager.QueryConditions)conditions);
-			}
-			else {
-				BasicEnums.ErrorType.OTHERS.register("Type of conditions is Wrong");
-				return false;
-			}
-			
 			reply = swre.execute(cmd.output());
 			if(this.reply != null && !(reply instanceof Replies.RemoveDataBase)) {
+				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+				this.reply = null;
+				return false;
+			}
+			if(reply == null || !reply.isOK()) {
+				return false;
+			}
+			return true;
+		}
+	}
+	public boolean removeMachine(Object conditions) {
+		this.reply = null;
+		if(!this.isConnectionRunning()) {
+			return false;
+		}
+		if(this.isDirectConnection()) {
+			return this.directlyRemoveMachine(conditions);
+		}
+		
+		Commands.RemoveMachine cmd = new Commands.RemoveMachine();
+		cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+		cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+		if(conditions instanceof String) {
+			cmd.setQueryConditions((String)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryCondition) {
+			cmd.setQueryCondition((DataBaseManager.QueryCondition)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryConditions) {
+			cmd.setQueryConditions((DataBaseManager.QueryConditions)conditions);
+		}
+		else {
+			BasicEnums.ErrorType.OTHERS.register("Type of conditions is Wrong");
+			return false;
+		}
+		
+		if(Globals.Configurations.IsServer) {
+			boolean ok = cmd.remove();
+			this.reply = cmd.getReply();
+			return ok;
+		}
+		else {
+			reply = swre.execute(cmd.output());
+			if(this.reply != null && !(reply instanceof Replies.RemoveMachine)) {
+				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+				this.reply = null;
+				return false;
+			}
+			if(reply == null || !reply.isOK()) {
+				return false;
+			}
+			return true;
+		}
+	}
+	public boolean removeUser(Object conditions) {
+		this.reply = null;
+		if(!this.isConnectionRunning()) {
+			return false;
+		}
+		if(this.isDirectConnection()) {
+			return this.directlyRemoveUser(conditions);
+		}
+		
+		Commands.RemoveUser cmd = new Commands.RemoveUser();
+		cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+		cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+		if(conditions instanceof String) {
+			cmd.setQueryConditions((String)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryCondition) {
+			cmd.setQueryCondition((DataBaseManager.QueryCondition)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryConditions) {
+			cmd.setQueryConditions((DataBaseManager.QueryConditions)conditions);
+		}
+		else {
+			BasicEnums.ErrorType.OTHERS.register("Type of conditions is Wrong");
+			return false;
+		}
+		
+		if(Globals.Configurations.IsServer) {
+			boolean ok = cmd.remove();
+			this.reply = cmd.getReply();
+			return ok;
+		}
+		else {
+			reply = swre.execute(cmd.output());
+			if(this.reply != null && !(reply instanceof Replies.RemoveUser)) {
+				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+				this.reply = null;
+				return false;
+			}
+			if(reply == null || !reply.isOK()) {
+				return false;
+			}
+			return true;
+		}
+	}
+	public boolean removeInvitation(Object conditions) {
+		this.reply = null;
+		if(!this.isConnectionRunning()) {
+			return false;
+		}
+		if(this.isDirectConnection()) {
+			return this.directlyRemoveInvitation(conditions);
+		}
+		
+		Commands.RemoveInvitation cmd = new Commands.RemoveInvitation();
+		cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+		cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+		if(conditions instanceof String) {
+			cmd.setQueryConditions((String)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryCondition) {
+			cmd.setQueryCondition((DataBaseManager.QueryCondition)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryConditions) {
+			cmd.setQueryConditions((DataBaseManager.QueryConditions)conditions);
+		}
+		else {
+			BasicEnums.ErrorType.OTHERS.register("Type of conditions is Wrong");
+			return false;
+		}
+		
+		if(Globals.Configurations.IsServer) {
+			boolean ok = cmd.remove();
+			this.reply = cmd.getReply();
+			return ok;
+		}
+		else {
+			reply = swre.execute(cmd.output());
+			if(this.reply != null && !(reply instanceof Replies.RemoveInvitation)) {
+				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+				this.reply = null;
+				return false;
+			}
+			if(reply == null || !reply.isOK()) {
+				return false;
+			}
+			return true;
+		}
+	}
+	
+	public boolean removeFolder(long depotIndex, Object conditions) {
+		return this.removeFolder(
+				this.connection.getServerMachineInfo().getIndex(),
+				depotIndex,
+				conditions);
+	}
+	public boolean removeFolder(long machineIndex, long depotIndex, Object conditions) {
+		this.reply = null;
+		if(!this.isConnectionRunning()) {
+			return false;
+		}
+		
+		Commands.RemoveFolder cmd = new Commands.RemoveFolder();
+		cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+		cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+		cmd.getBasicMessagePackage().setDestMachineIndex(machineIndex);
+		cmd.getBasicMessagePackage().setDestDepotIndex(depotIndex);
+		if(conditions instanceof String) {
+			cmd.setQueryConditions((String)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryCondition) {
+			cmd.setQueryCondition((DataBaseManager.QueryCondition)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryConditions) {
+			cmd.setQueryConditions((DataBaseManager.QueryConditions)conditions);
+		}
+		else {
+			BasicEnums.ErrorType.OTHERS.register("Type of conditions is Wrong");
+			return false;
+		}
+		
+		if(Globals.Configurations.This_MachineIndex == machineIndex) {
+			boolean ok = cmd.remove();
+			this.reply = cmd.getReply();
+			return ok;
+		}
+		else {
+			reply = swre.execute(cmd.output());
+			if(this.reply != null && !(reply instanceof Replies.RemoveFolder)) {
+				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+				this.reply = null;
+				return false;
+			}
+			if(reply == null || !reply.isOK()) {
+				return false;
+			}
+			return true;
+		}
+	}
+	
+	public boolean removeFile(long depotIndex, Object conditions) {
+		return this.removeFile(
+				this.connection.getServerMachineInfo().getIndex(),
+				depotIndex,
+				conditions);
+	}
+	public boolean removeFile(long machineIndex, long depotIndex, Object conditions) {
+		this.reply = null;
+		if(!this.isConnectionRunning()) {
+			return false;
+		}
+		
+		Commands.RemoveFile cmd = new Commands.RemoveFile();
+		cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+		cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+		cmd.getBasicMessagePackage().setDestMachineIndex(machineIndex);
+		cmd.getBasicMessagePackage().setDestDepotIndex(depotIndex);
+		if(conditions instanceof String) {
+			cmd.setQueryConditions((String)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryCondition) {
+			cmd.setQueryCondition((DataBaseManager.QueryCondition)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryConditions) {
+			cmd.setQueryConditions((DataBaseManager.QueryConditions)conditions);
+		}
+		else {
+			BasicEnums.ErrorType.OTHERS.register("Type of conditions is Wrong");
+			return false;
+		}
+		
+		if(Globals.Configurations.This_MachineIndex == machineIndex) {
+			boolean ok = cmd.remove();
+			this.reply = cmd.getReply();
+			return ok;
+		}
+		else {
+			reply = swre.execute(cmd.output());
+			if(this.reply != null && !(reply instanceof Replies.RemoveFile)) {
 				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
 				this.reply = null;
 				return false;
@@ -922,14 +1142,26 @@ public class Manager implements Interfaces.ICommandsManager {
 	public boolean removeDepots(Object conditions) {
 		this.reply = null;
 		
+		Commands.RemoveDepots cmd = new Commands.RemoveDepots();
+		cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+		cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+		if(conditions instanceof String) {
+			cmd.setQueryConditions((String)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryCondition) {
+			cmd.setQueryCondition((DataBaseManager.QueryCondition)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryConditions) {
+			cmd.setQueryConditions((DataBaseManager.QueryConditions)conditions);
+		}
+		else {
+			BasicEnums.ErrorType.OTHERS.register("Type of conditions is Wrong");
+			return false;
+		}
+		
 		if(Globals.Configurations.IsServer) {
-			BasicCollections.DepotInfos depots = Globals.Datas.DBManager.QueryDepotInfos(conditions);
-			boolean ok = true;
-			if(depots != null) {
-				ok = Globals.Datas.DBManager.removeDepotInfos(depots);
-			}
-			this.reply = new Replies.RemoveDepots();
-			this.reply.setOK(ok);
+			boolean ok = cmd.remove();
+			this.reply = cmd.getReply();
 			return ok;
 		}
 		else {
@@ -938,23 +1170,6 @@ public class Manager implements Interfaces.ICommandsManager {
 			}
 			if(this.isDirectConnection()) {
 				return this.directlyRemoveDepots(conditions);
-			}
-			
-			Commands.RemoveDepots cmd = new Commands.RemoveDepots();
-			cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
-			cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
-			if(conditions instanceof String) {
-				cmd.setQueryConditions((String)conditions);
-			}
-			else if(conditions instanceof DataBaseManager.QueryCondition) {
-				cmd.setQueryCondition((DataBaseManager.QueryCondition)conditions);
-			}
-			else if(conditions instanceof DataBaseManager.QueryConditions) {
-				cmd.setQueryConditions((DataBaseManager.QueryConditions)conditions);
-			}
-			else {
-				BasicEnums.ErrorType.OTHERS.register("Type of conditions is Wrong");
-				return false;
 			}
 			
 			reply = swre.execute(cmd.output());
@@ -972,14 +1187,26 @@ public class Manager implements Interfaces.ICommandsManager {
 	public boolean removeDataBases(Object conditions) {
 		this.reply = null;
 		
+		Commands.RemoveDataBases cmd = new Commands.RemoveDataBases();
+		cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+		cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+		if(conditions instanceof String) {
+			cmd.setQueryConditions((String)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryCondition) {
+			cmd.setQueryCondition((DataBaseManager.QueryCondition)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryConditions) {
+			cmd.setQueryConditions((DataBaseManager.QueryConditions)conditions);
+		}
+		else {
+			BasicEnums.ErrorType.OTHERS.register("Type of conditions is Wrong");
+			return false;
+		}
+		
 		if(Globals.Configurations.IsServer) {
-			BasicCollections.DataBaseInfos dbs = Globals.Datas.DBManager.QueryDataBaseInfos(conditions);
-			boolean ok = true;
-			if(dbs != null) {
-				ok = Globals.Datas.DBManager.removeDataBaseInfos(dbs);
-			}
-			this.reply = new Replies.RemoveDataBases();
-			this.reply.setOK(ok);
+			boolean ok = cmd.remove();
+			this.reply = cmd.getReply();
 			return ok;
 		}
 		else {
@@ -990,25 +1217,245 @@ public class Manager implements Interfaces.ICommandsManager {
 				return this.directlyRemoveDataBases(conditions);
 			}
 			
-			Commands.RemoveDataBase cmd = new Commands.RemoveDataBase();
-			cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
-			cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
-			if(conditions instanceof String) {
-				cmd.setQueryConditions((String)conditions);
+			reply = swre.execute(cmd.output());
+			if(this.reply != null && !(reply instanceof Replies.RemoveDataBases)) {
+				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+				this.reply = null;
+				return false;
 			}
-			else if(conditions instanceof DataBaseManager.QueryCondition) {
-				cmd.setQueryCondition((DataBaseManager.QueryCondition)conditions);
+			if(reply == null || !reply.isOK()) {
+				return false;
 			}
-			else if(conditions instanceof DataBaseManager.QueryConditions) {
-				cmd.setQueryConditions((DataBaseManager.QueryConditions)conditions);
+			return true;
+		}
+	}
+	public boolean removeMachines(Object conditions) {
+		this.reply = null;
+		
+		Commands.RemoveMachines cmd = new Commands.RemoveMachines();
+		cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+		cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+		if(conditions instanceof String) {
+			cmd.setQueryConditions((String)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryCondition) {
+			cmd.setQueryCondition((DataBaseManager.QueryCondition)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryConditions) {
+			cmd.setQueryConditions((DataBaseManager.QueryConditions)conditions);
+		}
+		else {
+			BasicEnums.ErrorType.OTHERS.register("Type of conditions is Wrong");
+			return false;
+		}
+		
+		if(Globals.Configurations.IsServer) {
+			boolean ok = cmd.remove();
+			this.reply = cmd.getReply();
+			return ok;
+		}
+		else {
+			if(!this.isConnectionRunning()) {
+				return false;
 			}
-			else {
-				BasicEnums.ErrorType.OTHERS.register("Type of conditions is Wrong");
+			if(this.isDirectConnection()) {
+				return this.directlyRemoveMachines(conditions);
+			}
+			
+			reply = swre.execute(cmd.output());
+			if(this.reply != null && !(reply instanceof Replies.RemoveMachines)) {
+				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+				this.reply = null;
+				return false;
+			}
+			if(reply == null || !reply.isOK()) {
+				return false;
+			}
+			return true;
+		}
+	}
+	public boolean removeUsers(Object conditions) {
+		this.reply = null;
+		
+		Commands.RemoveUsers cmd = new Commands.RemoveUsers();
+		cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+		cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+		if(conditions instanceof String) {
+			cmd.setQueryConditions((String)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryCondition) {
+			cmd.setQueryCondition((DataBaseManager.QueryCondition)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryConditions) {
+			cmd.setQueryConditions((DataBaseManager.QueryConditions)conditions);
+		}
+		else {
+			BasicEnums.ErrorType.OTHERS.register("Type of conditions is Wrong");
+			return false;
+		}
+		
+		if(Globals.Configurations.IsServer) {
+			boolean ok = cmd.remove();
+			this.reply = cmd.getReply();
+			return ok;
+		}
+		else {
+			if(!this.isConnectionRunning()) {
+				return false;
+			}
+			if(this.isDirectConnection()) {
+				return this.directlyRemoveUsers(conditions);
+			}
+			
+			reply = swre.execute(cmd.output());
+			if(this.reply != null && !(reply instanceof Replies.RemoveUsers)) {
+				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+				this.reply = null;
+				return false;
+			}
+			if(reply == null || !reply.isOK()) {
+				return false;
+			}
+			return true;
+		}
+	}
+	public boolean removeInvitations(Object conditions) {
+		this.reply = null;
+		
+		Commands.RemoveInvitations cmd = new Commands.RemoveInvitations();
+		cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+		cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+		if(conditions instanceof String) {
+			cmd.setQueryConditions((String)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryCondition) {
+			cmd.setQueryCondition((DataBaseManager.QueryCondition)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryConditions) {
+			cmd.setQueryConditions((DataBaseManager.QueryConditions)conditions);
+		}
+		else {
+			BasicEnums.ErrorType.OTHERS.register("Type of conditions is Wrong");
+			return false;
+		}
+		
+		if(Globals.Configurations.IsServer) {
+			boolean ok = cmd.remove();
+			this.reply = cmd.getReply();
+			return ok;
+		}
+		else {
+			if(!this.isConnectionRunning()) {
+				return false;
+			}
+			if(this.isDirectConnection()) {
+				return this.directlyRemoveInvitations(conditions);
+			}
+			
+			reply = swre.execute(cmd.output());
+			if(this.reply != null && !(reply instanceof Replies.RemoveInvitations)) {
+				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+				this.reply = null;
+				return false;
+			}
+			if(reply == null || !reply.isOK()) {
+				return false;
+			}
+			return true;
+		}
+	}
+	
+	public boolean removeFolders(long depotIndex, Object conditions) {
+		return this.removeFolders(
+				this.connection.getServerMachineInfo().getIndex(),
+				depotIndex,
+				conditions);
+	}
+	public boolean removeFolders(long machineIndex, long depotIndex, Object conditions) {
+		this.reply = null;
+		
+		Commands.RemoveFolders cmd = new Commands.RemoveFolders();
+		cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+		cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+		cmd.getBasicMessagePackage().setDestMachineIndex(machineIndex);
+		cmd.getBasicMessagePackage().setDestDepotIndex(depotIndex);
+		if(conditions instanceof String) {
+			cmd.setQueryConditions((String)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryCondition) {
+			cmd.setQueryCondition((DataBaseManager.QueryCondition)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryConditions) {
+			cmd.setQueryConditions((DataBaseManager.QueryConditions)conditions);
+		}
+		else {
+			BasicEnums.ErrorType.OTHERS.register("Type of conditions is Wrong");
+			return false;
+		}
+		
+		if(Globals.Configurations.This_MachineIndex == machineIndex) {
+			boolean ok = cmd.remove();
+			this.reply = cmd.getReply();
+			return ok;
+		}
+		else {
+			if(!this.isConnectionRunning()) {
 				return false;
 			}
 			
 			reply = swre.execute(cmd.output());
-			if(this.reply != null && !(reply instanceof Replies.RemoveDataBases)) {
+			if(this.reply != null && !(reply instanceof Replies.RemoveFolders)) {
+				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+				this.reply = null;
+				return false;
+			}
+			if(reply == null || !reply.isOK()) {
+				return false;
+			}
+			return true;
+		}
+	}
+	
+	public boolean removeFiles(long depotIndex, Object conditions) {
+		return this.removeFiles(
+				this.connection.getServerMachineInfo().getIndex(),
+				depotIndex,
+				conditions);
+	}
+	public boolean removeFiles(long machineIndex, long depotIndex, Object conditions) {
+		this.reply = null;
+		
+		Commands.RemoveFiles cmd = new Commands.RemoveFiles();
+		cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+		cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+		cmd.getBasicMessagePackage().setDestMachineIndex(machineIndex);
+		cmd.getBasicMessagePackage().setDestDepotIndex(depotIndex);
+		if(conditions instanceof String) {
+			cmd.setQueryConditions((String)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryCondition) {
+			cmd.setQueryCondition((DataBaseManager.QueryCondition)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryConditions) {
+			cmd.setQueryConditions((DataBaseManager.QueryConditions)conditions);
+		}
+		else {
+			BasicEnums.ErrorType.OTHERS.register("Type of conditions is Wrong");
+			return false;
+		}
+		
+		if(Globals.Configurations.This_MachineIndex == machineIndex) {
+			boolean ok = cmd.remove();
+			this.reply = cmd.getReply();
+			return ok;
+		}
+		else {
+			if(!this.isConnectionRunning()) {
+				return false;
+			}
+			
+			reply = swre.execute(cmd.output());
+			if(this.reply != null && !(reply instanceof Replies.RemoveFiles)) {
 				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
 				this.reply = null;
 				return false;
@@ -1057,6 +1504,10 @@ public class Manager implements Interfaces.ICommandsManager {
 			return ok;
 		}
 		else {
+			if(this.isDirectConnection()) {
+				return this.directlyUpdateMachines(model, items, conditions);
+			}
+			
 			reply = swre.execute(cmd.output());
 			if(this.reply != null && !(reply instanceof Replies.UpdateMachines)) {
 				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
@@ -1107,6 +1558,10 @@ public class Manager implements Interfaces.ICommandsManager {
 			return ok;
 		}
 		else {
+			if(this.isDirectConnection()) {
+				return this.directlyUpdateDepots(model, items, conditions);
+			}
+			
 			reply = swre.execute(cmd.output());
 			if(this.reply != null && !(reply instanceof Replies.UpdateDepots)) {
 				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
@@ -1157,6 +1612,10 @@ public class Manager implements Interfaces.ICommandsManager {
 			return ok;
 		}
 		else {
+			if(this.isDirectConnection()) {
+				return this.directlyUpdateDataBases(model, items, conditions);
+			}
+			
 			reply = swre.execute(cmd.output());
 			if(this.reply != null && !(reply instanceof Replies.UpdateDataBases)) {
 				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
@@ -1207,6 +1666,10 @@ public class Manager implements Interfaces.ICommandsManager {
 			return ok;
 		}
 		else {
+			if(this.isDirectConnection()) {
+				return this.directlyUpdateUsers(model, items, conditions);
+			}
+			
 			reply = swre.execute(cmd.output());
 			if(this.reply != null && !(reply instanceof Replies.UpdateUsers)) {
 				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
@@ -1257,6 +1720,10 @@ public class Manager implements Interfaces.ICommandsManager {
 			return ok;
 		}
 		else {
+			if(this.isDirectConnection()) {
+				return this.directlyUpdateInvitations(model, items, conditions);
+			}
+			
 			reply = swre.execute(cmd.output());
 			if(this.reply != null && !(reply instanceof Replies.UpdateInvitations)) {
 				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
@@ -1678,6 +2145,28 @@ public class Manager implements Interfaces.ICommandsManager {
 		}
 	}
 	
+	public boolean registerUser(String invitationCode, BasicModels.User user) {
+		this.reply = null;
+		if(!this.isConnectionRunning()) {
+			return false;
+		}
+		
+		Commands.RegisterUser cmd = new Commands.RegisterUser();
+		cmd.setInvitationCode(invitationCode);
+		cmd.setUser(user);
+		
+		reply = swre.execute(cmd.output());
+		if(this.reply != null && !(reply instanceof Replies.RegisterUser)) {
+			BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+			this.reply = null;
+			return false;
+		}
+		if(reply == null || !reply.isOK()) {
+			return false;
+		}
+		return true;
+	}
+	
 	public boolean loginConnection() {
 		if(!this.loginUser()) {
 			return false;
@@ -1877,6 +2366,31 @@ public class Manager implements Interfaces.ICommandsManager {
 		
 		this.reply = swre.execute(cmd.output());
 		if(this.reply != null && !(reply instanceof Replies.Restart)) {
+			BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+			this.reply = null;
+			return false;
+		}
+		if(reply == null || !reply.isOK()) {
+			return false;
+		}
+		return true;
+	}
+	
+	public boolean timeForExecute(long destMachine, long receiveWaitTicks, long sendWaitTicks) {
+		this.reply = null;
+		if(!this.isConnectionRunning()) {
+			return false;
+		}
+		
+		Commands.TimeForExecute cmd = new Commands.TimeForExecute();
+		cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+		cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+		cmd.getBasicMessagePackage().setDestMachineIndex(destMachine);
+		cmd.setReceiveWaitTicks(receiveWaitTicks);
+		cmd.setSendWaitTicks(sendWaitTicks);
+		
+		this.reply = swre.execute(cmd.output());
+		if(this.reply != null && !(reply instanceof Replies.TimeForExecute)) {
 			BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
 			this.reply = null;
 			return false;
@@ -2246,6 +2760,24 @@ public class Manager implements Interfaces.ICommandsManager {
 		this.reply = cm.getReply();
 		return res;
 	}
+	private boolean directlyRemoveMachines(Object conditions) {
+		Interfaces.ICommandsManager cm = Globals.Datas.ServerConnection.getCommandsManager();
+		boolean res = cm.removeMachines(conditions);
+		this.reply = cm.getReply();
+		return res;
+	}
+	private boolean directlyRemoveUsers(Object conditions) {
+		Interfaces.ICommandsManager cm = Globals.Datas.ServerConnection.getCommandsManager();
+		boolean res = cm.removeUsers(conditions);
+		this.reply = cm.getReply();
+		return res;
+	}
+	private boolean directlyRemoveInvitations(Object conditions) {
+		Interfaces.ICommandsManager cm = Globals.Datas.ServerConnection.getCommandsManager();
+		boolean res = cm.removeInvitations(conditions);
+		this.reply = cm.getReply();
+		return res;
+	}
 	
 	private boolean directlyRemoveDepot(Object conditions) {
 		Interfaces.ICommandsManager cm = Globals.Datas.ServerConnection.getCommandsManager();
@@ -2256,6 +2788,55 @@ public class Manager implements Interfaces.ICommandsManager {
 	private boolean directlyRemoveDataBase(Object conditions) {
 		Interfaces.ICommandsManager cm = Globals.Datas.ServerConnection.getCommandsManager();
 		boolean res = cm.removeDataBase(conditions);
+		this.reply = cm.getReply();
+		return res;
+	}
+	private boolean directlyRemoveMachine(Object conditions) {
+		Interfaces.ICommandsManager cm = Globals.Datas.ServerConnection.getCommandsManager();
+		boolean res = cm.removeMachine(conditions);
+		this.reply = cm.getReply();
+		return res;
+	}
+	private boolean directlyRemoveUser(Object conditions) {
+		Interfaces.ICommandsManager cm = Globals.Datas.ServerConnection.getCommandsManager();
+		boolean res = cm.removeUser(conditions);
+		this.reply = cm.getReply();
+		return res;
+	}
+	private boolean directlyRemoveInvitation(Object conditions) {
+		Interfaces.ICommandsManager cm = Globals.Datas.ServerConnection.getCommandsManager();
+		boolean res = cm.removeInvitation(conditions);
+		this.reply = cm.getReply();
+		return res;
+	}
+	
+	private boolean directlyUpdateMachines(BasicModels.MachineInfo model, String items, Object conditions) {
+		Interfaces.ICommandsManager cm = Globals.Datas.ServerConnection.getCommandsManager();
+		boolean res = cm.updateMachines(model, items, conditions);
+		this.reply = cm.getReply();
+		return res;
+	}
+	private boolean directlyUpdateDepots(BasicModels.DepotInfo model, String items, Object conditions) {
+		Interfaces.ICommandsManager cm = Globals.Datas.ServerConnection.getCommandsManager();
+		boolean res = cm.updateDepots(model, items, conditions);
+		this.reply = cm.getReply();
+		return res;
+	}
+	private boolean directlyUpdateDataBases(BasicModels.DataBaseInfo model, String items, Object conditions) {
+		Interfaces.ICommandsManager cm = Globals.Datas.ServerConnection.getCommandsManager();
+		boolean res = cm.updateDataBases(model, items, conditions);
+		this.reply = cm.getReply();
+		return res;
+	}
+	private boolean directlyUpdateUsers(BasicModels.User model, String items, Object conditions) {
+		Interfaces.ICommandsManager cm = Globals.Datas.ServerConnection.getCommandsManager();
+		boolean res = cm.updateUsers(model, items, conditions);
+		this.reply = cm.getReply();
+		return res;
+	}
+	private boolean directlyUpdateInvitations(BasicModels.Invitation model, String items, Object conditions) {
+		Interfaces.ICommandsManager cm = Globals.Datas.ServerConnection.getCommandsManager();
+		boolean res = cm.updateInvitations(model, items, conditions);
 		this.reply = cm.getReply();
 		return res;
 	}
