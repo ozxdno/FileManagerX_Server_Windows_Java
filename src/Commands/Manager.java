@@ -1019,6 +1019,392 @@ public class Manager implements Interfaces.ICommandsManager {
 			return true;
 		}
 	}
+	
+	public boolean updateMachines(long machineIndex, String items, Object conditions) {
+		this.reply = null;
+		
+		BasicModels.MachineInfo model = this.queryMachine("[&] Index = " + machineIndex);
+		if(model == null) {
+			return false;
+		}
+		return this.updateMachines(model, items, conditions);
+	}
+	public boolean updateMachines(BasicModels.MachineInfo model, String items, Object conditions) {
+		this.reply = null;
+		
+		Commands.UpdateMachines cmd = new Commands.UpdateMachines();
+		cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+		cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+		cmd.setModel(model);
+		cmd.setItems(items);
+		if(conditions instanceof String) {
+			cmd.setQueryConditions((String)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryCondition) {
+			cmd.setQueryCondition((DataBaseManager.QueryCondition)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryConditions) {
+			cmd.setQueryConditions((DataBaseManager.QueryConditions)conditions);
+		}
+		else {
+			BasicEnums.ErrorType.OTHERS.register("Type of conditions is Wrong");
+			return false;
+		}
+		
+		if(Globals.Configurations.IsServer) {
+			boolean ok = cmd.update();
+			this.reply = cmd.getReply();
+			return ok;
+		}
+		else {
+			reply = swre.execute(cmd.output());
+			if(this.reply != null && !(reply instanceof Replies.UpdateMachines)) {
+				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+				this.reply = null;
+				return false;
+			}
+			if(reply == null || !reply.isOK()) {
+				return false;
+			}
+			return true;
+		}
+	}
+	
+	public boolean updateDepots(long depotIndex, String items, Object conditions) {
+		this.reply = null;
+		
+		BasicModels.DepotInfo model = this.queryDepot("[&] Index = " + depotIndex);
+		if(model == null) {
+			return false;
+		}
+		return this.updateDepots(model, items, conditions);
+	}
+	public boolean updateDepots(BasicModels.DepotInfo model, String items, Object conditions) {
+		this.reply = null;
+		
+		Commands.UpdateDepots cmd = new Commands.UpdateDepots();
+		cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+		cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+		cmd.setModel(model);
+		cmd.setItems(items);
+		if(conditions instanceof String) {
+			cmd.setQueryConditions((String)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryCondition) {
+			cmd.setQueryCondition((DataBaseManager.QueryCondition)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryConditions) {
+			cmd.setQueryConditions((DataBaseManager.QueryConditions)conditions);
+		}
+		else {
+			BasicEnums.ErrorType.OTHERS.register("Type of conditions is Wrong");
+			return false;
+		}
+		
+		if(Globals.Configurations.IsServer) {
+			boolean ok = cmd.update();
+			this.reply = cmd.getReply();
+			return ok;
+		}
+		else {
+			reply = swre.execute(cmd.output());
+			if(this.reply != null && !(reply instanceof Replies.UpdateDepots)) {
+				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+				this.reply = null;
+				return false;
+			}
+			if(reply == null || !reply.isOK()) {
+				return false;
+			}
+			return true;
+		}
+	}
+	
+	public boolean updateDataBases(long databaseIndex, String items, Object conditions) {
+		this.reply = null;
+		
+		BasicModels.DataBaseInfo model = this.queryDataBase("[&] Index = " + databaseIndex);
+		if(model == null) {
+			return false;
+		}
+		return this.updateDataBases(model, items, conditions);
+	}
+	public boolean updateDataBases(BasicModels.DataBaseInfo model, String items, Object conditions) {
+		this.reply = null;
+		
+		Commands.UpdateDataBases cmd = new Commands.UpdateDataBases();
+		cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+		cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+		cmd.setModel(model);
+		cmd.setItems(items);
+		if(conditions instanceof String) {
+			cmd.setQueryConditions((String)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryCondition) {
+			cmd.setQueryCondition((DataBaseManager.QueryCondition)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryConditions) {
+			cmd.setQueryConditions((DataBaseManager.QueryConditions)conditions);
+		}
+		else {
+			BasicEnums.ErrorType.OTHERS.register("Type of conditions is Wrong");
+			return false;
+		}
+		
+		if(Globals.Configurations.IsServer) {
+			boolean ok = cmd.update();
+			this.reply = cmd.getReply();
+			return ok;
+		}
+		else {
+			reply = swre.execute(cmd.output());
+			if(this.reply != null && !(reply instanceof Replies.UpdateDataBases)) {
+				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+				this.reply = null;
+				return false;
+			}
+			if(reply == null || !reply.isOK()) {
+				return false;
+			}
+			return true;
+		}
+	}
+	
+	public boolean updateUsers(long userIndex, String items, Object conditions) {
+		this.reply = null;
+		
+		BasicModels.User model = this.queryUser("[&] Index = " + userIndex);
+		if(model == null) {
+			return false;
+		}
+		return this.updateUsers(model, items, conditions);
+	}
+	public boolean updateUsers(BasicModels.User model, String items, Object conditions) {
+		this.reply = null;
+		
+		Commands.UpdateUsers cmd = new Commands.UpdateUsers();
+		cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+		cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+		cmd.setModel(model);
+		cmd.setItems(items);
+		if(conditions instanceof String) {
+			cmd.setQueryConditions((String)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryCondition) {
+			cmd.setQueryCondition((DataBaseManager.QueryCondition)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryConditions) {
+			cmd.setQueryConditions((DataBaseManager.QueryConditions)conditions);
+		}
+		else {
+			BasicEnums.ErrorType.OTHERS.register("Type of conditions is Wrong");
+			return false;
+		}
+		
+		if(Globals.Configurations.IsServer) {
+			boolean ok = cmd.update();
+			this.reply = cmd.getReply();
+			return ok;
+		}
+		else {
+			reply = swre.execute(cmd.output());
+			if(this.reply != null && !(reply instanceof Replies.UpdateUsers)) {
+				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+				this.reply = null;
+				return false;
+			}
+			if(reply == null || !reply.isOK()) {
+				return false;
+			}
+			return true;
+		}
+	}
+	
+	public boolean updateInvitations(String invitationCode, String items, Object conditions) {
+		this.reply = null;
+		
+		BasicModels.Invitation model = this.queryInvitation("[&] Code = '" + invitationCode + "'");
+		if(model == null) {
+			return false;
+		}
+		return this.updateInvitations(model, items, conditions);
+	}
+	public boolean updateInvitations(BasicModels.Invitation model, String items, Object conditions) {
+		this.reply = null;
+		
+		Commands.UpdateInvitations cmd = new Commands.UpdateInvitations();
+		cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+		cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+		cmd.setModel(model);
+		cmd.setItems(items);
+		if(conditions instanceof String) {
+			cmd.setQueryConditions((String)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryCondition) {
+			cmd.setQueryCondition((DataBaseManager.QueryCondition)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryConditions) {
+			cmd.setQueryConditions((DataBaseManager.QueryConditions)conditions);
+		}
+		else {
+			BasicEnums.ErrorType.OTHERS.register("Type of conditions is Wrong");
+			return false;
+		}
+		
+		if(Globals.Configurations.IsServer) {
+			boolean ok = cmd.update();
+			this.reply = cmd.getReply();
+			return ok;
+		}
+		else {
+			reply = swre.execute(cmd.output());
+			if(this.reply != null && !(reply instanceof Replies.UpdateInvitations)) {
+				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+				this.reply = null;
+				return false;
+			}
+			if(reply == null || !reply.isOK()) {
+				return false;
+			}
+			return true;
+		}
+	}
+	
+	public boolean updateFolders(long depotIndex, long folderIndex, String items, Object conditions) {
+		return this.updateFolders(
+				this.connection.getServerMachineInfo().getIndex(),
+				depotIndex,
+				folderIndex,
+				items,
+				conditions);
+	}
+	public boolean updateFolders(long depotIndex, BasicModels.Folder model, String items, Object conditions) {
+		return this.updateFolders(
+				this.connection.getServerMachineInfo().getIndex(),
+				depotIndex,
+				model,
+				items,
+				conditions);
+	}
+	public boolean updateFolders(long machineIndex, long depotIndex, long folderIndex, String items, Object conditions) {
+		this.reply = null;
+		
+		BasicModels.Folder model = this.queryFolder(machineIndex, depotIndex, "[&] Index = " + folderIndex);
+		if(model == null) {
+			return false;
+		}
+		return this.updateFolders(machineIndex, depotIndex, model, items, conditions);
+	}
+	public boolean updateFolders(long machineIndex, long depotIndex, BasicModels.Folder model, String items, Object conditions) {
+		this.reply = null;
+		
+		Commands.UpdateFolders cmd = new Commands.UpdateFolders();
+		cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+		cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+		cmd.getBasicMessagePackage().setDestMachineIndex(machineIndex);
+		cmd.getBasicMessagePackage().setDestDepotIndex(depotIndex);
+		cmd.setModel(model);
+		cmd.setItems(items);
+		if(conditions instanceof String) {
+			cmd.setQueryConditions((String)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryCondition) {
+			cmd.setQueryCondition((DataBaseManager.QueryCondition)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryConditions) {
+			cmd.setQueryConditions((DataBaseManager.QueryConditions)conditions);
+		}
+		else {
+			BasicEnums.ErrorType.OTHERS.register("Type of conditions is Wrong");
+			return false;
+		}
+		
+		if(Globals.Configurations.This_MachineIndex == machineIndex) {
+			boolean ok = cmd.update();
+			this.reply = cmd.getReply();
+			return ok;
+		}
+		else {
+			reply = swre.execute(cmd.output());
+			if(this.reply != null && !(reply instanceof Replies.UpdateFolders)) {
+				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+				this.reply = null;
+				return false;
+			}
+			if(reply == null || !reply.isOK()) {
+				return false;
+			}
+			return true;
+		}
+	}
+	
+	public boolean updateFiles(long depotIndex, long fileIndex, String items, Object conditions) {
+		return this.updateFiles(
+				this.connection.getServerMachineInfo().getIndex(),
+				depotIndex,
+				fileIndex,
+				items,
+				conditions);
+	}
+	public boolean updateFiles(long depotIndex, BasicModels.BaseFile model, String items, Object conditions) {
+		return this.updateFiles(
+				this.connection.getServerMachineInfo().getIndex(),
+				depotIndex,
+				model,
+				items,
+				conditions);
+	}
+	public boolean updateFiles(long machineIndex, long depotIndex, long fileIndex, String items, Object conditions) {
+		this.reply = null;
+		
+		BasicModels.BaseFile model = this.queryFile(machineIndex, depotIndex, "[&] Index = " + fileIndex);
+		if(model == null) {
+			return false;
+		}
+		return this.updateFiles(machineIndex, depotIndex, model, items, conditions);
+	}
+	public boolean updateFiles(long machineIndex, long depotIndex, BasicModels.BaseFile model, String items, Object conditions) {
+		this.reply = null;
+		
+		Commands.UpdateFiles cmd = new Commands.UpdateFiles();
+		cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+		cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+		cmd.getBasicMessagePackage().setDestMachineIndex(machineIndex);
+		cmd.getBasicMessagePackage().setDestDepotIndex(depotIndex);
+		cmd.setModel(model);
+		cmd.setItems(items);
+		if(conditions instanceof String) {
+			cmd.setQueryConditions((String)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryCondition) {
+			cmd.setQueryCondition((DataBaseManager.QueryCondition)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryConditions) {
+			cmd.setQueryConditions((DataBaseManager.QueryConditions)conditions);
+		}
+		else {
+			BasicEnums.ErrorType.OTHERS.register("Type of conditions is Wrong");
+			return false;
+		}
+		
+		if(Globals.Configurations.This_MachineIndex == machineIndex) {
+			boolean ok = cmd.update();
+			this.reply = cmd.getReply();
+			return ok;
+		}
+		else {
+			reply = swre.execute(cmd.output());
+			if(this.reply != null && !(reply instanceof Replies.UpdateFiles)) {
+				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+				this.reply = null;
+				return false;
+			}
+			if(reply == null || !reply.isOK()) {
+				return false;
+			}
+			return true;
+		}
+	}
 
 	public boolean updateMachine(BasicModels.MachineInfo machine) {
 		this.reply = null;

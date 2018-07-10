@@ -82,21 +82,6 @@ public class UpdateDepot extends Comman implements Interfaces.ICommands {
 			this.reply();
 			return false;
 		}
-		
-		return Globals.Configurations.StartType.equals(BasicEnums.StartType.Server) ?
-				this.executeInServer() :
-				this.executeInDepot();
-	}
-	public void reply() {
-		this.setBasicMessagePackageToReply();
-		this.getConnection().setSendString(this.getReply().output());
-		this.getConnection().setSendLength(this.getConnection().getSendString().length());
-		this.getConnection().setContinueSendString();
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	private boolean executeInServer() {
 		if(!super.isLogin()) {
 			this.reply();
 			return false;
@@ -114,19 +99,30 @@ public class UpdateDepot extends Comman implements Interfaces.ICommands {
 			return false;
 		}
 		
-		if(!Globals.Datas.DBManager.updataDepotInfo(depotInfo)) {
+		if(this.isArriveTargetMachine()) {
+			if(!Globals.Datas.DBManager.updataDepotInfo(depotInfo)) {
+				this.getReply().setOK(false);
+				this.getReply().setFailedReason("Update to Depot Failed");
+				this.reply();
+				return false;
+			}
+			
+			this.getReply().setDepotInfo(depotInfo);
+			this.reply();
+			return true;
+		}
+		else {
+			this.getReply().setFailedReason("Unsupport Command at This Machine");
 			this.getReply().setOK(false);
-			this.getReply().setFailedReason("Update to Depot Failed");
 			this.reply();
 			return false;
 		}
-		
-		this.getReply().setDepotInfo(depotInfo);
-		this.reply();
-		return true;
 	}
-	private boolean executeInDepot() {
-		return true;
+	public void reply() {
+		this.setBasicMessagePackageToReply();
+		this.getConnection().setSendString(this.getReply().output());
+		this.getConnection().setSendLength(this.getConnection().getSendString().length());
+		this.getConnection().setContinueSendString();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

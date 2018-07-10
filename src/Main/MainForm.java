@@ -16,6 +16,8 @@ import javax.swing.*;
 // Output = 5|6|D:\Space_For_Media\Pictures\FMX_Test_Depot_C\a2.jpg|D:\Space_For_Media\Pictures\FMX_Test_Depot_E\a2.jpg
 // Output = D:\Space_For_Media\Pictures\FMX_Test_Depot_C\a2.jpg|D:\Space_For_Media\Pictures\FMX_Test_Depot_A\a3.jpg
 // UpdateFile = 6|9|6|1|-1|-1|-1|D:\Space_For_Media\Pictures\FMX_Test_Depot_E\Konachan.com - 50234 sample.jpg|Unsupport|NotExistInRemote|1513230724366|2284384|0|a new Tag
+// UpdateInvitation = invitation01|2|FileManagerX|ozxdno|**********|ozxdno@126.com||Offline|Admin|Level9|0||0|0.0
+// UpdateInvitation = invitation01|0||||||Offline|Admin|Level9|0||9999|0.0
 
 @SuppressWarnings("serial")
 public class MainForm extends JFrame {
@@ -197,6 +199,13 @@ public class MainForm extends JFrame {
 	            	List.add("    UpdateInvitation    ui");
 	            	List.add("    UpdateFolder    ufd");
 	            	List.add("    UpdateFile    uf");
+	            	List.add("    UpdateMachines    ums");
+	            	List.add("    UpdateDepots    uds");
+	            	List.add("    UpdateDataBases    udbs");
+	            	List.add("    UpdateUsers    uus");
+	            	List.add("    UpdateInvitations    uis");
+	            	List.add("    UpdateFolders    ufds");
+	            	List.add("    UpdateFiles    ufs");
 	            	
 	            	for(int i=0; i<List.size(); i++) {
 	            		List.set(i, "[" + (i+1) + "/" + List.size() + "]" + List.get(i));
@@ -597,6 +606,94 @@ public class MainForm extends JFrame {
 	            	List.add(tip);
 	            	
 	            	jInput.setText("UpdateFile = next");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("updatemachines") || f.equals("ums")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/1][machineIndex][items][conditions]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("UpdateMachines = ");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("updatedepots") || f.equals("uds")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/1][depotIndex][items][conditions]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("UpdateDepots = ");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("updatedatabases") || f.equals("udbs")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/1][databaseIndex][items][conditions]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("UpdateDataBases = ");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("updateusers") || f.equals("uus")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/1][userIndex][items][conditions]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("UpdateUsers = ");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("updateinvitations") || f.equals("uis")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/1][invitationCode][items][conditions]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("UpdateInvitations = ");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("updatefolders") || f.equals("ufds")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/2][destDepot][folderIndex][items][conditions]";
+	            	List.add(tip);
+	            	tip = "[2/2][destMachine][destDepot][folderIndex][items][conditions]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("UpdateFolders = next");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("updatefiles") || f.equals("ufs")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/2][destDepot][fileIndex][items][conditions]";
+	            	List.add(tip);
+	            	tip = "[2/2][destMachine][destDepot][fileIndex][items][conditions]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("UpdateFiles = next");
 	            	jResult.setText(List.get(0));
 	            	ListIndex = 0;
 	            	return;
@@ -1398,6 +1495,223 @@ public class MainForm extends JFrame {
 		 	        		 return;
 				 	   	 }
 		 	          }
+				 	if(CmdName.equals("UpdateMachines")) {
+				 		if(cmdcfg.getItemsSize() == 3) {
+				 			boolean ok = cm.updateMachines(cmdcfg.getLong(0), cmdcfg.getString(1), cmdcfg.getString(2));
+				 			String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+				 			if(!ok) {
+				 				jResult.setText("Failed: " + reason);
+				 				return;
+				 			}
+				 			
+				 			BasicCollections.MachineInfos res = ((Replies.UpdateMachines)cm.getReply()).getMachineInfos();
+				 			if(res.size() == 0) {
+				 				jResult.setText("Successed: No Failed Item");
+				 				return;
+				 			}
+				 			
+				 			List.clear();
+				 			ListIndex = 0;
+				 			
+				 			for(int i=0; i<res.size(); i++) {
+				 				String str = "[" + (i+1) + "/" + res.size() + "] Failed " + res.getContent().get(i).output();
+				 				List.add(str);
+				 			}
+				 			
+				 			jResult.setText(List.get(ListIndex));
+				 			return;
+				 		}
+				 	}
+				 	if(CmdName.equals("UpdateDepots")) {
+				 		if(cmdcfg.getItemsSize() == 3) {
+				 			boolean ok = cm.updateDepots(cmdcfg.getLong(0), cmdcfg.getString(1), cmdcfg.getString(2));
+				 			String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+				 			if(!ok) {
+				 				jResult.setText("Failed: " + reason);
+				 				return;
+				 			}
+				 			
+				 			BasicCollections.DepotInfos res = ((Replies.UpdateDepots)cm.getReply()).getDepotInfos();
+				 			if(res.size() == 0) {
+				 				jResult.setText("Successed: No Failed Item");
+				 				return;
+				 			}
+				 			
+				 			List.clear();
+				 			ListIndex = 0;
+				 			
+				 			for(int i=0; i<res.size(); i++) {
+				 				String str = "[" + (i+1) + "/" + res.size() + "] Failed " + res.getContent().get(i).output();
+				 				List.add(str);
+				 			}
+				 			
+				 			jResult.setText(List.get(ListIndex));
+				 			return;
+				 		}
+				 	}
+				 	if(CmdName.equals("UpdateDataBases")) {
+				 		if(cmdcfg.getItemsSize() == 3) {
+				 			boolean ok = cm.updateDataBases(cmdcfg.getLong(0), cmdcfg.getString(1), cmdcfg.getString(2));
+				 			String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+				 			if(!ok) {
+				 				jResult.setText("Failed: " + reason);
+				 				return;
+				 			}
+				 			
+				 			BasicCollections.DataBaseInfos res = ((Replies.UpdateDataBases)cm.getReply()).getDBInfos();
+				 			if(res.size() == 0) {
+				 				jResult.setText("Successed: No Failed Item");
+				 				return;
+				 			}
+				 			
+				 			List.clear();
+				 			ListIndex = 0;
+				 			
+				 			for(int i=0; i<res.size(); i++) {
+				 				String str = "[" + (i+1) + "/" + res.size() + "] Failed " + res.getContent().get(i).output();
+				 				List.add(str);
+				 			}
+				 			
+				 			jResult.setText(List.get(ListIndex));
+				 			return;
+				 		}
+				 	}
+				 	if(CmdName.equals("UpdateUsers")) {
+				 		if(cmdcfg.getItemsSize() == 3) {
+				 			boolean ok = cm.updateUsers(cmdcfg.getLong(0), cmdcfg.getString(1), cmdcfg.getString(2));
+				 			String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+				 			if(!ok) {
+				 				jResult.setText("Failed: " + reason);
+				 				return;
+				 			}
+				 			
+				 			BasicCollections.Users res = ((Replies.UpdateUsers)cm.getReply()).getUsers();
+				 			if(res.size() == 0) {
+				 				jResult.setText("Successed: No Failed Item");
+				 				return;
+				 			}
+				 			
+				 			List.clear();
+				 			ListIndex = 0;
+				 			
+				 			for(int i=0; i<res.size(); i++) {
+				 				String str = "[" + (i+1) + "/" + res.size() + "] Failed " + res.getContent().get(i).output();
+				 				List.add(str);
+				 			}
+				 			
+				 			jResult.setText(List.get(ListIndex));
+				 			return;
+				 		}
+				 	}
+				 	if(CmdName.equals("UpdateInvitations")) {
+				 		if(cmdcfg.getItemsSize() == 3) {
+				 			boolean ok = cm.updateInvitations(cmdcfg.getString(0), cmdcfg.getString(1), cmdcfg.getString(2));
+				 			String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+				 			if(!ok) {
+				 				jResult.setText("Failed: " + reason);
+				 				return;
+				 			}
+				 			
+				 			BasicCollections.Invitations res = ((Replies.UpdateInvitations)cm.getReply()).getInvitations();
+				 			if(res.size() == 0) {
+				 				jResult.setText("Successed: No Failed Item");
+				 				return;
+				 			}
+				 			
+				 			List.clear();
+				 			ListIndex = 0;
+				 			
+				 			for(int i=0; i<res.size(); i++) {
+				 				String str = "[" + (i+1) + "/" + res.size() + "] Failed " + res.getContent().get(i).output();
+				 				List.add(str);
+				 			}
+				 			
+				 			jResult.setText(List.get(ListIndex));
+				 			return;
+				 		}
+				 	}
+				 	if(CmdName.equals("UpdateFolders")) {
+				 		long machineIndex = cm.getConnection().getServerMachineInfo().getIndex();
+				 		long depotIndex = 0;
+				 		if(cmdcfg.getItemsSize() == 4) {
+				 			depotIndex = cmdcfg.fetchFirstLong();
+				 		}
+				 		if(cmdcfg.getItemsSize() == 5) {
+				 			machineIndex = cmdcfg.fetchFirstLong();
+				 			depotIndex = cmdcfg.fetchFirstLong();
+				 		}
+				 		if(depotIndex > 0) {
+				 			boolean ok = cm.updateFolders(
+				 					machineIndex,
+				 					depotIndex,
+				 					cmdcfg.getLong(0),
+				 					cmdcfg.getString(1),
+				 					cmdcfg.getString(2));
+				 			String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+				 			if(!ok) {
+				 				jResult.setText("Failed: " + reason);
+				 				return;
+				 			}
+				 			
+				 			BasicCollections.Folders res = ((Replies.UpdateFolders)cm.getReply()).getFolders();
+				 			if(res.size() == 0) {
+				 				jResult.setText("Successed: No Failed Item");
+				 				return;
+				 			}
+				 			
+				 			List.clear();
+				 			ListIndex = 0;
+				 			
+				 			for(int i=0; i<res.size(); i++) {
+				 				String str = "[" + (i+1) + "/" + res.size() + "] Failed " + res.getContent().get(i).output();
+				 				List.add(str);
+				 			}
+				 			
+				 			jResult.setText(List.get(ListIndex));
+				 			return;
+				 		}
+				 	}
+				 	if(CmdName.equals("UpdateFiles")) {
+				 		long machineIndex = cm.getConnection().getServerMachineInfo().getIndex();
+				 		long depotIndex = 0;
+				 		if(cmdcfg.getItemsSize() == 4) {
+				 			depotIndex = cmdcfg.fetchFirstLong();
+				 		}
+				 		if(cmdcfg.getItemsSize() == 5) {
+				 			machineIndex = cmdcfg.fetchFirstLong();
+				 			depotIndex = cmdcfg.fetchFirstLong();
+				 		}
+				 		if(depotIndex > 0) {
+				 			boolean ok = cm.updateFiles(
+				 					machineIndex,
+				 					depotIndex,
+				 					cmdcfg.getLong(0),
+				 					cmdcfg.getString(1),
+				 					cmdcfg.getString(2));
+				 			String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+				 			if(!ok) {
+				 				jResult.setText("Failed: " + reason);
+				 				return;
+				 			}
+				 			
+				 			BasicCollections.BaseFiles res = ((Replies.UpdateFiles)cm.getReply()).getFiles();
+				 			if(res.size() == 0) {
+				 				jResult.setText("Successed: No Failed Item");
+				 				return;
+				 			}
+				 			
+				 			List.clear();
+				 			ListIndex = 0;
+				 			
+				 			for(int i=0; i<res.size(); i++) {
+				 				String str = "[" + (i+1) + "/" + res.size() + "] Failed " + res.getContent().get(i).output();
+				 				List.add(str);
+				 			}
+				 			
+				 			jResult.setText(List.get(ListIndex));
+				 			return;
+				 		}
+				 	}
 	 	            jResult.setText("Unsupport Command");
 	        	} catch(Exception ex) {
 	        		jResult.setText(ex.toString());

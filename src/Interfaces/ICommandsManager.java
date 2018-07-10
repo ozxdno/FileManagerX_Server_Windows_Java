@@ -49,6 +49,31 @@ public interface ICommandsManager {
 	public boolean removeDepot(Object conditions);
 	public boolean removeDataBase(Object conditions);
 	
+	public boolean updateMachines(long machineIndex, String items, Object conditions);
+	public boolean updateMachines(BasicModels.MachineInfo model, String items, Object conditions);
+	
+	public boolean updateDepots(long depotIndex, String items, Object conditions);
+	public boolean updateDepots(BasicModels.DepotInfo model, String items, Object conditions);
+	
+	public boolean updateDataBases(long databaseIndex, String items, Object conditions);
+	public boolean updateDataBases(BasicModels.DataBaseInfo model, String items, Object conditions);
+	
+	public boolean updateUsers(long userIndex, String items, Object conditions);
+	public boolean updateUsers(BasicModels.User model, String items, Object conditions);
+	
+	public boolean updateInvitations(String invitationCode, String items, Object conditions);
+	public boolean updateInvitations(BasicModels.Invitation model, String items, Object conditions);
+	
+	public boolean updateFolders(long depotIndex, long folderIndex, String items, Object conditions);
+	public boolean updateFolders(long depotIndex, BasicModels.Folder model, String items, Object conditions);
+	public boolean updateFolders(long machineIndex, long depotIndex, long folderIndex, String items, Object conditions);
+	public boolean updateFolders(long machineIndex, long depotIndex, BasicModels.Folder model, String items, Object conditions);
+	
+	public boolean updateFiles(long depotIndex, long fileIndex, String items, Object conditions);
+	public boolean updateFiles(long depotIndex, BasicModels.BaseFile model, String items, Object conditions);
+	public boolean updateFiles(long machineIndex, long depotIndex, long fileIndex, String items, Object conditions);
+	public boolean updateFiles(long machineIndex, long depotIndex, BasicModels.BaseFile model, String items, Object conditions);
+	
 	public boolean updateMachine(BasicModels.MachineInfo machine);
 	public boolean updateDepot(BasicModels.DepotInfo depot);
 	public boolean updateDataBase(BasicModels.DataBaseInfo database);

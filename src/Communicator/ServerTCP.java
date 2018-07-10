@@ -430,7 +430,7 @@ class Scanner extends Thread {
 		socket = null;
 		abort = false;
 		running = true;
-		permitIdle = 60 * 60 * 1000;
+		permitIdle = Globals.Configurations.TimeForServerPermitIdle;
 		this.setName("TCP Server Scanner");
 	}
 	public void run() {

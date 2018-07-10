@@ -85,10 +85,10 @@ public class DepotChecker implements Interfaces.IDepotChecker{
 		this.deleteFiles = new BasicCollections.BaseFiles();
 		
 		if(this.totalFolders.size() == 0) {
-			return true;
+			//return true;
 		}
 		if(this.totalFiles.size() == 0) {
-			return true;
+			//return true;
 		}
 		
 		long currentFileIndex = Globals.Configurations.Next_FileIndex;

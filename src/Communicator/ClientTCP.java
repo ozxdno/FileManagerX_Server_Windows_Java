@@ -55,7 +55,7 @@ public class ClientTCP implements IClientLinker{
 			this.connections = new ArrayList<Interfaces.IClientConnection>();
 		}
 		this.connections.clear();
-		this.permitIdle = 60 * 60 * 1000;
+		this.permitIdle = Globals.Configurations.TimeForClientPermitIdle;
 		this.Next_ConnectionIndex = 0;
 	}
 	

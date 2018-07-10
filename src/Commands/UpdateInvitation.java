@@ -82,21 +82,6 @@ public class UpdateInvitation extends Comman implements Interfaces.ICommands {
 			this.reply();
 			return false;
 		}
-		
-		return Globals.Configurations.StartType.equals(BasicEnums.StartType.Server) ?
-				this.executeInServer() :
-				this.executeInInvitation();
-	}
-	public void reply() {
-		this.setBasicMessagePackageToReply();
-		this.getConnection().setSendString(this.getReply().output());
-		this.getConnection().setSendLength(this.getConnection().getSendString().length());
-		this.getConnection().setContinueSendString();
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	private boolean executeInServer() {
 		if(!super.isLogin()) {
 			this.reply();
 			return false;
@@ -114,19 +99,30 @@ public class UpdateInvitation extends Comman implements Interfaces.ICommands {
 			return false;
 		}
 		
-		if(!Globals.Datas.DBManager.updataInvitation(invitation)) {
+		if(this.isArriveTargetMachine()) {
+			if(!Globals.Datas.DBManager.updataInvitation(invitation)) {
+				this.getReply().setOK(false);
+				this.getReply().setFailedReason("Update to Invitation Failed");
+				this.reply();
+				return false;
+			}
+			
+			this.getReply().setInvitation(invitation);
+			this.reply();
+			return true;
+		}
+		else {
+			this.getReply().setFailedReason("Unsupport Command at This Machine");
 			this.getReply().setOK(false);
-			this.getReply().setFailedReason("Update to Invitation Failed");
 			this.reply();
 			return false;
 		}
-		
-		this.getReply().setInvitation(invitation);
-		this.reply();
-		return true;
 	}
-	private boolean executeInInvitation() {
-		return true;
+	public void reply() {
+		this.setBasicMessagePackageToReply();
+		this.getConnection().setSendString(this.getReply().output());
+		this.getConnection().setSendLength(this.getConnection().getSendString().length());
+		this.getConnection().setContinueSendString();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

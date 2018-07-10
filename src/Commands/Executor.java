@@ -176,6 +176,41 @@ public class Executor implements Interfaces.ICommandExecutor {
 			uf.setConnection(connection);
 			return uf.input(connection.getReceiveString()) != null && uf.execute();
 		}
+		if(c.getField().equals("UpdateMachines")) {
+			Commands.UpdateMachines um = new Commands.UpdateMachines();
+			um.setConnection(connection);
+			return um.input(connection.getReceiveString()) != null && um.execute();
+		}
+		if(c.getField().equals("UpdateDepots")) {
+			Commands.UpdateDepots ud = new Commands.UpdateDepots();
+			ud.setConnection(connection);
+			return ud.input(connection.getReceiveString()) != null && ud.execute();
+		}
+		if(c.getField().equals("UpdateDataBases")) {
+			Commands.UpdateDataBases ud = new Commands.UpdateDataBases();
+			ud.setConnection(connection);
+			return ud.input(connection.getReceiveString()) != null && ud.execute();
+		}
+		if(c.getField().equals("UpdateUsers")) {
+			Commands.UpdateUsers uu = new Commands.UpdateUsers();
+			uu.setConnection(connection);
+			return uu.input(connection.getReceiveString()) != null && uu.execute();
+		}
+		if(c.getField().equals("UpdateInvitations")) {
+			Commands.UpdateInvitations ui = new Commands.UpdateInvitations();
+			ui.setConnection(connection);
+			return ui.input(connection.getReceiveString()) != null && ui.execute();
+		}
+		if(c.getField().equals("UpdateFolders")) {
+			Commands.UpdateFolders uf = new Commands.UpdateFolders();
+			uf.setConnection(connection);
+			return uf.input(connection.getReceiveString()) != null && uf.execute();
+		}
+		if(c.getField().equals("UpdateFiles")) {
+			Commands.UpdateFiles uf = new Commands.UpdateFiles();
+			uf.setConnection(connection);
+			return uf.input(connection.getReceiveString()) != null && uf.execute();
+		}
 		if(c.getField().equals("RemoveDepots")) {
 			Commands.RemoveDepots rd = new Commands.RemoveDepots();
 			rd.setConnection(connection);

@@ -218,6 +218,83 @@ public class Executor implements Interfaces.IReplyExecutor {
 			return qsz.input(connection.getReceiveString()) != null &&
 					qsz.execute(connection);
 		}
+		if(c.getField().equals("UpdateMachines")) {
+			Replies.UpdateMachines um = new Replies.UpdateMachines();
+			this.reply = um;
+			Interfaces.ICommunicatorSendTotal st = Factories.CommunicatorFactory.createSendTotal();
+			st.input(connection.getReceiveString());
+			for(String item : st.getLines()) {
+				um.input(item);
+				um.execute(connection);
+			}
+			return true;
+		}
+		if(c.getField().equals("UpdateDepots")) {
+			Replies.UpdateDepots ud = new Replies.UpdateDepots();
+			this.reply = ud;
+			Interfaces.ICommunicatorSendTotal st = Factories.CommunicatorFactory.createSendTotal();
+			st.input(connection.getReceiveString());
+			for(String item : st.getLines()) {
+				ud.input(item);
+				ud.execute(connection);
+			}
+			return true;
+		}
+		if(c.getField().equals("UpdateDataBases")) {
+			Replies.UpdateDataBases ud = new Replies.UpdateDataBases();
+			this.reply = ud;
+			Interfaces.ICommunicatorSendTotal st = Factories.CommunicatorFactory.createSendTotal();
+			st.input(connection.getReceiveString());
+			for(String item : st.getLines()) {
+				ud.input(item);
+				ud.execute(connection);
+			}
+			return true;
+		}
+		if(c.getField().equals("UpdateUsers")) {
+			Replies.UpdateUsers ud = new Replies.UpdateUsers();
+			this.reply = ud;
+			Interfaces.ICommunicatorSendTotal st = Factories.CommunicatorFactory.createSendTotal();
+			st.input(connection.getReceiveString());
+			for(String item : st.getLines()) {
+				ud.input(item);
+				ud.execute(connection);
+			}
+			return true;
+		}
+		if(c.getField().equals("UpdateInvitations")) {
+			Replies.UpdateInvitations ui = new Replies.UpdateInvitations();
+			this.reply = ui;
+			Interfaces.ICommunicatorSendTotal st = Factories.CommunicatorFactory.createSendTotal();
+			st.input(connection.getReceiveString());
+			for(String item : st.getLines()) {
+				ui.input(item);
+				ui.execute(connection);
+			}
+			return true;
+		}
+		if(c.getField().equals("UpdateFolders")) {
+			Replies.UpdateFolders uf = new Replies.UpdateFolders();
+			this.reply = uf;
+			Interfaces.ICommunicatorSendTotal st = Factories.CommunicatorFactory.createSendTotal();
+			st.input(connection.getReceiveString());
+			for(String item : st.getLines()) {
+				uf.input(item);
+				uf.execute(connection);
+			}
+			return true;
+		}
+		if(c.getField().equals("UpdateFiles")) {
+			Replies.UpdateFiles uf = new Replies.UpdateFiles();
+			this.reply = uf;
+			Interfaces.ICommunicatorSendTotal st = Factories.CommunicatorFactory.createSendTotal();
+			st.input(connection.getReceiveString());
+			for(String item : st.getLines()) {
+				uf.input(item);
+				uf.execute(connection);
+			}
+			return true;
+		}
 		if(c.getField().equals("UpdateMachine")) {
 			Replies.UpdateMachine um = new Replies.UpdateMachine();
 			this.reply = um;

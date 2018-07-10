@@ -258,7 +258,7 @@ public class SQLManager implements Interfaces.IDBManager{
 		String[] columns = new String[] {
 				"Index",
 				"Name",
-				"Ip",
+				"IP",
 				"Port"
 		};
 		String[] types = new String[] {
@@ -1364,7 +1364,7 @@ public class SQLManager implements Interfaces.IDBManager{
 				"`Coins` = '" + invitation.getUser().getCoins() + "', " + 
 				"`Money` = '" + invitation.getUser().getMoney() + "' " +
 				"WHERE " + 
-				"`Code` = " + invitation.getCode() +
+				"`Code` = '" + invitation.getCode() + "' " +
 				";";
 		}
 		try {
