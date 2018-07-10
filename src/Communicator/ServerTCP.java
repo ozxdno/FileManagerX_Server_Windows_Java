@@ -458,9 +458,6 @@ class Scanner extends Thread {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public void disconnect() {
-		
-		this.removeAllConnections();
-		
 		try {
 			if(socket != null) {
 				socket.close();
@@ -469,6 +466,7 @@ class Scanner extends Thread {
 			;
 		}
 		while(running) {
+			Tools.Time.sleepUntil(1);
 			abort = true;
 		}
 		try {

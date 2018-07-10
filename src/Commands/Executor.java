@@ -26,6 +26,11 @@ public class Executor implements Interfaces.ICommandExecutor {
 			cs.setConnection(connection);
 			return cs.input(connection.getReceiveString()) != null && cs.execute();
 		}
+		if(c.getField().equals("Restart")) {
+			Commands.Restart r = new Commands.Restart();
+			r.setConnection(connection);
+			return r.input(connection.getReceiveString()) != null && r.execute();
+		}
 		if(c.getField().equals("Input")) {
 			Commands.Input i = new Commands.Input();
 			i.setConnection(connection);
@@ -150,6 +155,26 @@ public class Executor implements Interfaces.ICommandExecutor {
 			Commands.UpdateDataBase ud = new Commands.UpdateDataBase();
 			ud.setConnection(connection);
 			return ud.input(connection.getReceiveString()) != null && ud.execute();
+		}
+		if(c.getField().equals("UpdateUser")) {
+			Commands.UpdateUser uu = new Commands.UpdateUser();
+			uu.setConnection(connection);
+			return uu.input(connection.getReceiveString()) != null && uu.execute();
+		}
+		if(c.getField().equals("UpdateInvitation")) {
+			Commands.UpdateInvitation ui = new Commands.UpdateInvitation();
+			ui.setConnection(connection);
+			return ui.input(connection.getReceiveString()) != null && ui.execute();
+		}
+		if(c.getField().equals("UpdateFolder")) {
+			Commands.UpdateFolder uf = new Commands.UpdateFolder();
+			uf.setConnection(connection);
+			return uf.input(connection.getReceiveString()) != null && uf.execute();
+		}
+		if(c.getField().equals("UpdateFile")) {
+			Commands.UpdateFile uf = new Commands.UpdateFile();
+			uf.setConnection(connection);
+			return uf.input(connection.getReceiveString()) != null && uf.execute();
 		}
 		if(c.getField().equals("RemoveDepots")) {
 			Commands.RemoveDepots rd = new Commands.RemoveDepots();

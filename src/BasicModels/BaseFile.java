@@ -2,6 +2,12 @@ package BasicModels;
 
 import java.io.*;
 
+/**
+ * Tags 用空格作区分
+ * 
+ * @author ozxdno
+ *
+ */
 public class BaseFile implements Interfaces.IPublic {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

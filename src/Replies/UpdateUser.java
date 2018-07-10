@@ -1,34 +1,34 @@
 package Replies;
 
-public class UpdateInvitation extends Comman implements Interfaces.IReplies {
+public class UpdateUser extends Comman implements Interfaces.IReplies {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	private BasicModels.Invitation invitation;
+	private BasicModels.User user;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public boolean setInvitation(BasicModels.Invitation invitation) {
-		if(invitation == null) {
+	public boolean setUser(BasicModels.User user) {
+		if(user == null) {
 			return false;
 		}
-		this.invitation = invitation;
+		this.user = user;
 		return true;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public BasicModels.Invitation getInvitation() {
-		return this.invitation;
+	public BasicModels.User getUser() {
+		return this.user;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public UpdateInvitation() {
+	public UpdateUser() {
 		initThis();
 	}
 	private void initThis() {
-		this.invitation = new BasicModels.Invitation();
+		this.user = new BasicModels.User();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -44,7 +44,7 @@ public class UpdateInvitation extends Comman implements Interfaces.IReplies {
 		BasicModels.Config c = new BasicModels.Config();
 		c.setField(this.getClass().getSimpleName());
 		c.addToBottom(new BasicModels.Config(super.output()));
-		c.addToBottom(new BasicModels.Config(this.invitation.output()));
+		c.addToBottom(new BasicModels.Config(this.user.output()));
 		return c.output();
 	}
 	public String input(String in) {
@@ -52,17 +52,17 @@ public class UpdateInvitation extends Comman implements Interfaces.IReplies {
 		if(in == null) {
 			return null;
 		}
-		return this.invitation.input(in);
+		return this.user.input(in);
 	}
 	public void copyReference(Object o) {
 		super.copyReference(o);
-		UpdateInvitation qf = (UpdateInvitation)o;
-		this.invitation = qf.invitation;
+		UpdateUser qf = (UpdateUser)o;
+		this.user = qf.user;
 	}
 	public void copyValue(Object o) {
 		super.copyValue(o);
-		UpdateInvitation qf = (UpdateInvitation)o;
-		this.invitation.copyValue(qf.invitation);
+		UpdateUser qf = (UpdateUser)o;
+		this.user.copyValue(qf.user);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

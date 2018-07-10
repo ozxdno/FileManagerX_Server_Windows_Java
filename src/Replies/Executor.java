@@ -45,6 +45,12 @@ public class Executor implements Interfaces.IReplyExecutor {
 			return cs.input(connection.getReceiveString()) != null &&
 					cs.execute(connection);
 		}
+		if(c.getField().equals("Restart")) {
+			Replies.Restart r = new Replies.Restart();
+			this.reply = r;
+			return r.input(connection.getReceiveString()) != null &&
+					r.execute(connection);
+		}
 		if(c.getField().equals("Input")) {
 			Replies.Input i = new Replies.Input();
 			this.reply = i;
@@ -229,6 +235,30 @@ public class Executor implements Interfaces.IReplyExecutor {
 			this.reply = ud;
 			return ud.input(connection.getReceiveString()) != null &&
 					ud.execute(connection);
+		}
+		if(c.getField().equals("UpdateUser")) {
+			Replies.UpdateUser uu = new Replies.UpdateUser();
+			this.reply = uu;
+			return uu.input(connection.getReceiveString()) != null &&
+					uu.execute(connection);
+		}
+		if(c.getField().equals("UpdateInvitation")) {
+			Replies.UpdateInvitation ui = new Replies.UpdateInvitation();
+			this.reply = ui;
+			return ui.input(connection.getReceiveString()) != null &&
+					ui.execute(connection);
+		}
+		if(c.getField().equals("UpdateFolder")) {
+			Replies.UpdateFolder uf = new Replies.UpdateFolder();
+			this.reply = uf;
+			return uf.input(connection.getReceiveString()) != null &&
+					uf.execute(connection);
+		}
+		if(c.getField().equals("UpdateFile")) {
+			Replies.UpdateFile uf = new Replies.UpdateFile();
+			this.reply = uf;
+			return uf.input(connection.getReceiveString()) != null &&
+					uf.execute(connection);
 		}
 		if(c.getField().equals("RemoveDepots")) {
 			Replies.RemoveDepots rd = new Replies.RemoveDepots();

@@ -8,7 +8,7 @@ public final class Configurations {
 	public static boolean IsClient = false;
 	
 	public static boolean ErrorOccurs = false;
-	public static boolean Restart = false;
+	public static boolean Restart = true;
 	
 	public static long Next_FileIndex = 0;
 	public static long Next_MachineIndex = 0;
@@ -58,4 +58,16 @@ public final class Configurations {
 	 * 测试连接是否正常
 	 */
 	public static long TimeForTestSendCommand = 100;
+	/**
+	 * 重启等待时间
+	 */
+	public static long TimeForRestart = 1*60*1000;
+	/**
+	 * Server Connection 允许空闲时间
+	 */
+	public static long TimeForServerPermitIdle = Long.MAX_VALUE;
+	/**
+	 * Client Connection 允许空闲时间
+	 */
+	public static long TimeForClientPermitIdle = Long.MAX_VALUE;
 }

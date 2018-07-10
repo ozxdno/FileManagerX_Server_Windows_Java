@@ -15,6 +15,7 @@ import javax.swing.*;
 // Input = D:\Space_For_Media\Pictures\FMX_Test_Depot_A\新建文件夹\a1.rar|D:\Space_For_Media\Pictures\FMX_Test_Depot_C\a5.rar|2366464
 // Output = 5|6|D:\Space_For_Media\Pictures\FMX_Test_Depot_C\a2.jpg|D:\Space_For_Media\Pictures\FMX_Test_Depot_E\a2.jpg
 // Output = D:\Space_For_Media\Pictures\FMX_Test_Depot_C\a2.jpg|D:\Space_For_Media\Pictures\FMX_Test_Depot_A\a3.jpg
+// UpdateFile = 6|9|6|1|-1|-1|-1|D:\Space_For_Media\Pictures\FMX_Test_Depot_E\Konachan.com - 50234 sample.jpg|Unsupport|NotExistInRemote|1513230724366|2284384|0|a new Tag
 
 @SuppressWarnings("serial")
 public class MainForm extends JFrame {
@@ -169,6 +170,7 @@ public class MainForm extends JFrame {
 	            	List.add("    next");
 	            	List.add("    direct    d    @");
 	            	List.add("    CloseServer    cs");
+	            	List.add("    Restart    r");
 	            	List.add("    test    t");
 	            	List.add("    input    i");
 	            	List.add("    output    o");
@@ -188,6 +190,13 @@ public class MainForm extends JFrame {
 	            	List.add("    QueryFolder    qfd");
 	            	List.add("    QueryFile    qf");
 	            	List.add("    QuerySize    qsz");
+	            	List.add("    UpdateMachine    um");
+	            	List.add("    UpdateDepot    ud");
+	            	List.add("    UpdateDataBase    udb");
+	            	List.add("    UpdateUser    uu");
+	            	List.add("    UpdateInvitation    ui");
+	            	List.add("    UpdateFolder    ufd");
+	            	List.add("    UpdateFile    uf");
 	            	
 	            	for(int i=0; i<List.size(); i++) {
 	            		List.set(i, "[" + (i+1) + "/" + List.size() + "]" + List.get(i));
@@ -220,6 +229,20 @@ public class MainForm extends JFrame {
 	            	List.add(tip);
 	            	
 	            	jInput.setText("CloseServer = next");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("restart") || f.equals("r")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/2][No Args]";
+	            	List.add(tip);
+	            	tip = "[2/2][destMachineIndex]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("Restart = next");
 	            	jResult.setText(List.get(0));
 	            	ListIndex = 0;
 	            	return;
@@ -490,6 +513,94 @@ public class MainForm extends JFrame {
 	            	ListIndex = 0;
 	            	return;
 	            }
+	            if(f.equals("updatemachine") || f.equals("um")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/1][machineInfo]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("UpdateMachine = ");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("updatedepot") || f.equals("ud")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/1][depotInfo]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("UpdateDepot = ");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("updatedatabase") || f.equals("udb")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/1][databaseInfo]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("UpdateDataBase = ");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("updateuser") || f.equals("uu")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/1][user]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("UpdateUser = ");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("updateinvitation") || f.equals("ui")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/1][invitation]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("UpdateInvitation = ");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("updatefolder") || f.equals("ufd")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/2][destDepot][folder]";
+	            	List.add(tip);
+	            	tip = "[2/2][destMachine][destDepot][folder]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("UpdateFolder = next");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("updatefile") || f.equals("uf")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/2][destDepot][basefile]";
+	            	List.add(tip);
+	            	tip = "[2/2][destMachine][destDepot][basefile]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("UpdateFile = next");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
 	            jResult.setText("[Unsupport]");
 	        }
 	    }
@@ -584,6 +695,20 @@ public class MainForm extends JFrame {
 	 	        			return;
 	 	        		}
 	 	            }
+	        		 if(CmdName.equals("Restart")) {
+		        			if(cmdcfg.getItemsSize() == 0) {
+		 	        			boolean ok = cm.restart();
+		 	        			String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+		 	        			jResult.setText(ok ? "Successed" : "Failed: " + reason);
+		 	        			return;
+		 	        		}
+		        			if(cmdcfg.getItemsSize() == 1) {
+		 	        			boolean ok = cm.restart(cmdcfg.getLong(0));
+		 	        			String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+		 	        			jResult.setText(ok ? "Successed" : "Failed: " + reason);
+		 	        			return;
+		 	        		}
+		 	            }
 	 	            if(CmdName.equals("Test")) {
 	 	            	if(cmdcfg.getItemsSize() == 0) {
 	 	        			boolean res = cm.test();
@@ -1135,6 +1260,143 @@ public class MainForm extends JFrame {
 		 	        		 jResult.setText(res < 0 ? "Failed: " + reason : "Size: " + res);
 		 	        		 return;
 		 	        	 }
+		 	          }
+			 	   	if(CmdName.equals("UpdateMachine")) {
+			 	   		BasicModels.MachineInfo para = new BasicModels.MachineInfo();
+			 	   		int sz = new BasicModels.Config(para.output()).getItemsSize();
+	   
+			 	   		if(cmdcfg.getItemsSize() == sz) {
+			 	   			
+				 	   		 String rem = para.input(cmdcfg.output());
+				 	   		 if(rem == null) {
+				 	   			 jResult.setText("Failed: Input is Wrong");
+				 	   		 }
+		 	        		 boolean ok = cm.updateMachine(para);
+		 	        		 String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+		 	        		 
+		 	        		 jResult.setText(ok ? "Successed" : "Failed: " + reason);
+		 	        		 return;
+		 	        	 }
+		 	          }
+			 	   	if(CmdName.equals("UpdateDepot")) {
+			 	   		BasicModels.DepotInfo para = new BasicModels.DepotInfo();
+			 	   		int sz = new BasicModels.Config(para.output()).getItemsSize();
+ 	   
+	 		   			if(cmdcfg.getItemsSize() == sz) {
+				 	   		 
+				 	   		 String rem = para.input(cmdcfg.output());
+				 	   		 if(rem == null) {
+				 	   			 jResult.setText("Failed: Input is Wrong");
+				 	   		 }
+		 	        		 boolean ok = cm.updateDepot(para);
+		 	        		 String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+		 	        		 
+		 	        		 jResult.setText(ok ? "Successed" : "Failed: " + reason);
+		 	        		 return;
+		 	        	 }
+		 	          }
+			 	   if(CmdName.equals("UpdateDataBase")) {
+			 		   		BasicModels.DataBaseInfo para = new BasicModels.DataBaseInfo();
+			 		   		int sz = new BasicModels.Config(para.output()).getItemsSize();
+		 	   
+		 	   			if(cmdcfg.getItemsSize() == sz) {
+				 	   		 
+				 	   		 String rem = para.input(cmdcfg.output());
+				 	   		 if(rem == null) {
+				 	   			 jResult.setText("Failed: Input is Wrong");
+				 	   		 }
+		 	        		 boolean ok = cm.updateDataBase(para);
+		 	        		 String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+		 	        		 
+		 	        		 jResult.setText(ok ? "Successed" : "Failed: " + reason);
+		 	        		 return;
+		 	        	 }
+		 	          }
+			 	   	if(CmdName.equals("UpdateUser")) {
+			 	   			BasicModels.User para = new BasicModels.User();
+			 	   			int sz = new BasicModels.Config(para.output()).getItemsSize();
+			 	   
+				 	   	 if(cmdcfg.getItemsSize() == sz) {
+				 	   		 
+				 	   		 String rem = para.input(cmdcfg.output());
+				 	   		 if(rem == null) {
+				 	   			 jResult.setText("Failed: Input is Wrong");
+				 	   		 }
+		 	        		 boolean ok = cm.updateUser(para);
+		 	        		 String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+		 	        		 
+		 	        		 jResult.setText(ok ? "Successed" : "Failed: " + reason);
+		 	        		 return;
+		 	        	 }
+		 	          }
+			 	   if(CmdName.equals("UpdateInvitation")) {
+			 		   		BasicModels.Invitation para = new BasicModels.Invitation();
+			 		   		int sz = new BasicModels.Config(para.output()).getItemsSize();
+			 		   
+				 	   	 if(cmdcfg.getItemsSize() == sz) {
+				 	   		 
+				 	   		 String rem = para.input(cmdcfg.output());
+				 	   		 if(rem == null) {
+				 	   			 jResult.setText("Failed: Input is Wrong");
+				 	   		 }
+		 	        		 boolean ok = cm.updateInvitation(para);
+		 	        		 String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+		 	        		 
+		 	        		 jResult.setText(ok ? "Successed" : "Failed: " + reason);
+		 	        		 return;
+		 	        	 }
+		 	          }
+			 	   if(CmdName.equals("UpdateFolder")) {
+			 		     BasicModels.Folder para = new BasicModels.Folder();
+			 		     int sz = new BasicModels.Config(para.output()).getItemsSize();
+			 		     
+			 		     long machine = cm.getConnection().getServerMachineInfo().getIndex();
+			 		     long depot = 0;
+				 		 if(cmdcfg.getItemsSize() == sz + 1) {
+				 		     depot = cmdcfg.fetchFirstLong();
+				 		 }
+				 		 if(cmdcfg.getItemsSize() == sz + 2) {
+				 			 machine = cmdcfg.fetchFirstLong();
+				 		     depot = cmdcfg.fetchFirstLong();
+				 		 }
+			 		     
+				 	   	 if(depot > 0) {
+				 	   		 String rem = para.input(cmdcfg.output());
+				 	   		 if(rem == null) {
+				 	   			 jResult.setText("Failed: Input is Wrong");
+				 	   		 }
+		 	        		 boolean ok = cm.updateFolder(machine, depot, para);
+		 	        		 String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+		 	        		 
+		 	        		 jResult.setText(ok ? "Successed" : "Failed: " + reason);
+		 	        		 return;
+				 	   	 }
+		 	          }
+				 	 if(CmdName.equals("UpdateFile")) {
+			 		     BasicModels.BaseFile para = new BasicModels.BaseFile();
+			 		     int sz = new BasicModels.Config(para.output()).getItemsSize();
+			 		     
+			 		     long machine = cm.getConnection().getServerMachineInfo().getIndex();
+			 		     long depot = 0;
+				 		 if(cmdcfg.getItemsSize() == sz + 1) {
+				 		     depot = cmdcfg.fetchFirstLong();
+				 		 }
+				 		 if(cmdcfg.getItemsSize() == sz + 2) {
+				 			 machine = cmdcfg.fetchFirstLong();
+				 		     depot = cmdcfg.fetchFirstLong();
+				 		 }
+			 		     
+				 	   	 if(depot > 0) {
+				 	   		 String rem = para.input(cmdcfg.output());
+				 	   		 if(rem == null) {
+				 	   			 jResult.setText("Failed: Input is Wrong");
+				 	   		 }
+		 	        		 boolean ok = cm.updateFile(machine, depot, para);
+		 	        		 String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+		 	        		 
+		 	        		 jResult.setText(ok ? "Successed" : "Failed: " + reason);
+		 	        		 return;
+				 	   	 }
 		 	          }
 	 	            jResult.setText("Unsupport Command");
 	        	} catch(Exception ex) {

@@ -52,6 +52,14 @@ public interface ICommandsManager {
 	public boolean updateMachine(BasicModels.MachineInfo machine);
 	public boolean updateDepot(BasicModels.DepotInfo depot);
 	public boolean updateDataBase(BasicModels.DataBaseInfo database);
+	public boolean updateUser(BasicModels.User user);
+	public boolean updateInvitation(BasicModels.Invitation invitation);
+	
+	public boolean updateFolder(long depotIndex, BasicModels.Folder folder);
+	public boolean updateFolder(long machineIndex, long depotIndex, BasicModels.Folder folder);
+	
+	public boolean updateFile(long depotIndex, BasicModels.BaseFile file);
+	public boolean updateFile(long machineIndex, long depotIndex, BasicModels.BaseFile file);
 	
 	public boolean loginConnection();
 	public boolean loginUser();
@@ -64,6 +72,9 @@ public interface ICommandsManager {
 	
 	public boolean closeServer();
 	public boolean closeServer(long destMachine);
+	
+	public boolean restart();
+	public boolean restart(long destMachine);
 	
 	public boolean input(String sourUrl, String destUrl);
 	public boolean input(String sourUrl, String destUrl, boolean cover);

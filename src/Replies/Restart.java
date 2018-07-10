@@ -1,6 +1,6 @@
 package Replies;
 
-public class CloseServer extends Comman implements Interfaces.IReplies {
+public class Restart extends Comman implements Interfaces.IReplies {
 	
 	public String toString() {
 		return this.output();

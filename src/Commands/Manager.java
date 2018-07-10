@@ -1125,6 +1125,172 @@ public class Manager implements Interfaces.ICommandsManager {
 			return true;
 		}
 	}
+	public boolean updateUser(BasicModels.User user) {
+		this.reply = null;
+		
+		if(Globals.Configurations.IsServer) {
+			boolean ok = Globals.Datas.DBManager.updataUser(user);
+			this.reply = new Replies.UpdateDataBase();
+			((Replies.UpdateUser)this.reply).setUser(user);
+			this.reply.setOK(ok);
+			return ok;
+		}
+		else {
+			if(!this.isConnectionRunning()) {
+				return false;
+			}
+			if(this.isDirectConnection()) {
+				return this.directlyUpdateUser(user);
+			}
+			
+			Commands.UpdateUser cmd = new Commands.UpdateUser();
+			cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+			cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+			cmd.setUser(user);
+			
+			reply = swre.execute(cmd.output());
+			if(this.reply != null && !(reply instanceof Replies.UpdateUser)) {
+				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+				this.reply = null;
+				return false;
+			}
+			if(reply == null || !reply.isOK()) {
+				return false;
+			}
+			return true;
+		}
+	}
+	public boolean updateInvitation(BasicModels.Invitation invitation) {
+		this.reply = null;
+		
+		if(Globals.Configurations.IsServer) {
+			boolean ok = Globals.Datas.DBManager.updataInvitation(invitation);
+			this.reply = new Replies.UpdateDataBase();
+			((Replies.UpdateInvitation)this.reply).setInvitation(invitation);
+			this.reply.setOK(ok);
+			return ok;
+		}
+		else {
+			if(!this.isConnectionRunning()) {
+				return false;
+			}
+			if(this.isDirectConnection()) {
+				return this.directlyUpdateInvitation(invitation);
+			}
+			
+			Commands.UpdateInvitation cmd = new Commands.UpdateInvitation();
+			cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+			cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+			cmd.setInvitation(invitation);
+			
+			reply = swre.execute(cmd.output());
+			if(this.reply != null && !(reply instanceof Replies.UpdateInvitation)) {
+				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+				this.reply = null;
+				return false;
+			}
+			if(reply == null || !reply.isOK()) {
+				return false;
+			}
+			return true;
+		}
+	}
+	
+	public boolean updateFolder(long depotIndex, BasicModels.Folder folder) {
+		return this.updateFolder(
+				this.connection.getServerMachineInfo().getIndex(),
+				depotIndex,
+				folder);
+	}
+	public boolean updateFolder(long machineIndex, long depotIndex, BasicModels.Folder folder) {
+		this.reply = null;
+		
+		if(machineIndex == Globals.Configurations.This_MachineIndex) {
+			this.reply = new Replies.UpdateFolder();
+			Interfaces.IDBManager dbm = Globals.Datas.DBManagers.searchDepotIndex(depotIndex);
+			if(dbm == null) {
+				this.reply.setFailedReason("Not Found DBManager");
+				this.reply.setOK(false);
+				return false;
+			}
+			
+			boolean ok = dbm.updataFolder(folder);
+			if(!ok) {
+				this.reply.setFailedReason("Update Folder to DataBase Failed");
+			}
+			((Replies.UpdateFolder)this.reply).setFolder(folder);
+			this.reply.setOK(ok);
+			return ok;
+		}
+		else {
+			Commands.UpdateFolder cmd = new Commands.UpdateFolder();
+			cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+			cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+			cmd.getBasicMessagePackage().setDestMachineIndex(machineIndex);
+			cmd.getBasicMessagePackage().setDestDepotIndex(depotIndex);
+			cmd.setFolder(folder);
+			
+			this.reply = swre.execute(cmd.output());
+			if(this.reply != null && !(reply instanceof Replies.UpdateFolder)) {
+				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+				this.reply = null;
+				return false;
+			}
+			if(reply == null || !reply.isOK()) {
+				return false;
+			}
+			
+			return true;
+		}
+	}
+	
+	public boolean updateFile(long depotIndex, BasicModels.BaseFile file) {
+		return this.updateFile(
+				this.connection.getServerMachineInfo().getIndex(),
+				depotIndex,
+				file);
+	}
+	public boolean updateFile(long machineIndex, long depotIndex, BasicModels.BaseFile file) {
+		this.reply = null;
+		
+		if(machineIndex == Globals.Configurations.This_MachineIndex) {
+			this.reply = new Replies.UpdateFile();
+			Interfaces.IDBManager dbm = Globals.Datas.DBManagers.searchDepotIndex(depotIndex);
+			if(dbm == null) {
+				this.reply.setFailedReason("Not Found DBManager");
+				this.reply.setOK(false);
+				return false;
+			}
+			
+			boolean ok = dbm.updataFile(file);
+			if(!ok) {
+				this.reply.setFailedReason("Update File to DataBase Failed");
+			}
+			((Replies.UpdateFile)this.reply).setFile(file);
+			this.reply.setOK(ok);
+			return ok;
+		}
+		else {
+			Commands.UpdateFile cmd = new Commands.UpdateFile();
+			cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+			cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+			cmd.getBasicMessagePackage().setDestMachineIndex(machineIndex);
+			cmd.getBasicMessagePackage().setDestDepotIndex(depotIndex);
+			cmd.setFile(file);
+			
+			this.reply = swre.execute(cmd.output());
+			if(this.reply != null && !(reply instanceof Replies.UpdateFile)) {
+				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+				this.reply = null;
+				return false;
+			}
+			if(reply == null || !reply.isOK()) {
+				return false;
+			}
+			
+			return true;
+		}
+	}
 	
 	public boolean loginConnection() {
 		if(!this.loginUser()) {
@@ -1299,6 +1465,32 @@ public class Manager implements Interfaces.ICommandsManager {
 		
 		this.reply = swre.execute(cmd.output());
 		if(this.reply != null && !(reply instanceof Replies.CloseServer)) {
+			BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+			this.reply = null;
+			return false;
+		}
+		if(reply == null || !reply.isOK()) {
+			return false;
+		}
+		return true;
+	}
+	
+	public boolean restart() {
+		return this.restart(this.connection.getServerMachineInfo().getIndex());
+	}
+	public boolean restart(long destMachine) {
+		this.reply = null;
+		if(!this.isConnectionRunning()) {
+			return false;
+		}
+		
+		Commands.Restart cmd = new Commands.Restart();
+		cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+		cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+		cmd.getBasicMessagePackage().setDestMachineIndex(destMachine);
+		
+		this.reply = swre.execute(cmd.output());
+		if(this.reply != null && !(reply instanceof Replies.Restart)) {
 			BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
 			this.reply = null;
 			return false;
@@ -1697,6 +1889,18 @@ public class Manager implements Interfaces.ICommandsManager {
 	private boolean directlyUpdateDataBase(BasicModels.DataBaseInfo database) {
 		Interfaces.ICommandsManager cm = Globals.Datas.ServerConnection.getCommandsManager();
 		boolean res = cm.updateDataBase(database);
+		this.reply = cm.getReply();
+		return res;
+	}
+	private boolean directlyUpdateUser(BasicModels.User user) {
+		Interfaces.ICommandsManager cm = Globals.Datas.ServerConnection.getCommandsManager();
+		boolean res = cm.updateUser(user);
+		this.reply = cm.getReply();
+		return res;
+	}
+	private boolean directlyUpdateInvitation(BasicModels.Invitation invitation) {
+		Interfaces.ICommandsManager cm = Globals.Datas.ServerConnection.getCommandsManager();
+		boolean res = cm.updateInvitation(invitation);
 		this.reply = cm.getReply();
 		return res;
 	}

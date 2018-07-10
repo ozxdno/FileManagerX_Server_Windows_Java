@@ -53,140 +53,150 @@ public class MainProcess extends Thread implements Interfaces.IProcess {
 	}
 	public void run() {
 		
-		this.finished = false;
-		this.running = true;
-		this.abort = false;
-		this.stop = false;
-		
-		boolean operateOK = true;
-		boolean cfgOK = true;
-		
-		//////////////////////////////////////////// INIT ///////////////////////////////////////////////
-		
-		// create other folders and files
-		Tools.Pathes.createAll(Globals.Configurations.StartType);
-		
-		// create and load CFG file
-		if(operateOK) {
-			cfgOK &= Tools.CFGFile.createCFG();
-			operateOK &= cfgOK;
-		}
-		if(operateOK) {
-			cfgOK &= Tools.CFGFile.loadCFG();
-			operateOK &= cfgOK;
-		}
-		
-		// Set Form Title
-		if(operateOK && Globals.Datas.Form_Main != null) {
-			Globals.Datas.Form_Main.setTitle(
-					"FileManagerX - " + 
-					Globals.Configurations.StartType.toString() + " : " + 
-					Globals.Datas.ThisUser.getNickName()
-					);
-		}
-		
-		// check server
-		if(operateOK && Globals.Configurations.StartType.equals(BasicEnums.StartType.Server)) {
-			Interfaces.IServerChecker sc = Factories.ServerCheckerFactory.createServerChecker();
-			sc.setDBManager(Globals.Datas.DBManager);
-			sc.check();
-		}
-		
-		// check local depots
-		if(operateOK) {
+		while(Globals.Configurations.Restart) {
+			
+			Globals.Configurations.Restart = false;
+			this.finished = false;
+			this.running = true;
+			this.abort = false;
+			this.stop = false;
+			
+			boolean operateOK = true;
+			boolean cfgOK = true;
+			
+			//////////////////////////////////////////// INIT ///////////////////////////////////////////////
+			
+			// create other folders and files
+			Tools.Pathes.createAll(Globals.Configurations.StartType);
+			
+			// create and load CFG file
+			if(operateOK) {
+				cfgOK &= Tools.CFGFile.createCFG();
+				operateOK &= cfgOK;
+			}
+			if(operateOK) {
+				cfgOK &= Tools.CFGFile.loadCFG();
+				operateOK &= cfgOK;
+			}
+			
+			// Set Form Title
+			if(operateOK && Globals.Datas.Form_Main != null) {
+				Globals.Datas.Form_Main.setTitle(
+						"FileManagerX - " + 
+						Globals.Configurations.StartType.toString() + " : " + 
+						Globals.Datas.ThisUser.getNickName()
+						);
+			}
+			
+			// check server
+			if(operateOK && Globals.Configurations.StartType.equals(BasicEnums.StartType.Server)) {
+				Interfaces.IServerChecker sc = Factories.ServerCheckerFactory.createServerChecker();
+				sc.setDBManager(Globals.Datas.DBManager);
+				sc.check();
+			}
+			
+			// check local depots
+			if(operateOK) {
+				for(Interfaces.IDBManager dbm : Globals.Datas.DBManagers.getContent()) {
+					Interfaces.IDepotChecker dc = Factories.DepotCheckerFactory.createDepotChecker();
+					dc.initialize(dbm);
+					dc.check();
+				}
+			}
+			
+			// start server
+			if(operateOK) {
+				Globals.Datas.Server.initialize(Globals.Datas.ThisMachine);
+				Globals.Datas.Server.connect();
+				operateOK &= Globals.Datas.Server.isRunning();
+			}
+			
+			// delete log file
+			if(operateOK) {
+				Globals.Datas.Errors.deleteAgoLogs(30);
+			}
+			
+			// save CFG before execute tasks
+			if(cfgOK) {
+				Tools.CFGFile.saveCFG();
+			}
+			
+			// save Server DataBase before execute tasks
+			if(Globals.Configurations.StartType.equals(BasicEnums.StartType.Server) && Globals.Datas.DBManager != null &&
+					Globals.Datas.DBManager.getDBInfo().getType().equals(BasicEnums.DataBaseType.TXT)) {
+				Globals.Datas.DBManager.disconnect();
+				Globals.Datas.DBManager.connect();
+			}
+			
+			// save DataBases before execute tasks
 			for(Interfaces.IDBManager dbm : Globals.Datas.DBManagers.getContent()) {
-				Interfaces.IDepotChecker dc = Factories.DepotCheckerFactory.createDepotChecker();
-				dc.initialize(dbm);
-				dc.check();
-			}
-		}
-		
-		// start server
-		if(operateOK) {
-			Globals.Datas.Server.initialize(Globals.Datas.ThisMachine);
-			Globals.Datas.Server.connect();
-			operateOK &= Globals.Datas.Server.isRunning();
-		}
-		
-		// delete log file
-		if(operateOK) {
-			Globals.Datas.Errors.deleteAgoLogs(30);
-		}
-		
-		// save CFG before execute tasks
-		if(cfgOK) {
-			Tools.CFGFile.saveCFG();
-		}
-		
-		// save Server DataBase before execute tasks
-		if(Globals.Configurations.StartType.equals(BasicEnums.StartType.Server) && Globals.Datas.DBManager != null &&
-				Globals.Datas.DBManager.getDBInfo().getType().equals(BasicEnums.DataBaseType.TXT)) {
-			Globals.Datas.DBManager.disconnect();
-			Globals.Datas.DBManager.connect();
-		}
-		
-		// save DataBases before execute tasks
-		for(Interfaces.IDBManager dbm : Globals.Datas.DBManagers.getContent()) {
-			if(dbm.getDBInfo().getType().equals(BasicEnums.DataBaseType.TXT)) {
-				dbm.disconnect();
-				dbm.connect();
-			}
-		}
-		
-		// save Errors before execute tasks
-		Globals.Datas.Errors.save();
-		
-		//////////////////////////////////////////// TASK ///////////////////////////////////////////////
-		
-		// tasks
-		if(operateOK) {
-			while(!this.abort) {
-				if(!Globals.Datas.Server.isRunning()) {
-					BasicEnums.ErrorType.COMMUNICATOR_CONNECTION_CLOSED.register("Server[This Machine] Closed");
-					break;
+				if(dbm.getDBInfo().getType().equals(BasicEnums.DataBaseType.TXT)) {
+					dbm.disconnect();
+					dbm.connect();
 				}
-				
-				if(!Globals.Configurations.IsServer && !Globals.Datas.ServerConnection.isRunning()) {
-					BasicEnums.ErrorType.COMMUNICATOR_CONNECTION_CLOSED.register("Server[Remote Machine] Closed");
-					break;
+			}
+			
+			// save Errors before execute tasks
+			Globals.Datas.Errors.save();
+			
+			//////////////////////////////////////////// TASK ///////////////////////////////////////////////
+			
+			// tasks
+			if(operateOK) {
+				while(!this.abort) {
+					if(!Globals.Datas.Server.isRunning()) {
+						BasicEnums.ErrorType.COMMUNICATOR_CONNECTION_CLOSED.register("Server[This Machine] Closed");
+						break;
+					}
+					
+					if(!Globals.Configurations.IsServer && !Globals.Datas.ServerConnection.isRunning()) {
+						BasicEnums.ErrorType.COMMUNICATOR_CONNECTION_CLOSED.register("Server[Remote Machine] Closed");
+						break;
+					}
+					
+					Tools.Time.sleepUntil(1000);
+					Globals.Datas.Errors.save(100);
 				}
-				
-				Tools.Time.sleepUntil(1000);
-				Globals.Datas.Errors.save(100);
+			}
+			
+			//////////////////////////////////////////// EXIT ///////////////////////////////////////////////
+			
+			// save CFG
+			if(cfgOK) {
+				Tools.CFGFile.saveCFG();
+			}
+			
+			// save Errors
+			Globals.Datas.Errors.save();
+			
+			// save DataBases
+			for(Interfaces.IDBManager dbm : Globals.Datas.DBManagers.getContent()) {
+				if(dbm.getDBInfo().getType().equals(BasicEnums.DataBaseType.TXT)) {
+					dbm.disconnect();
+				}
+			}
+			
+			// Close Form
+			if(Globals.Datas.Form_Main != null) {
+				Globals.Datas.Form_Main.dispose();
+			}
+			
+			// Close Server
+			Globals.Datas.Server.disconnect();
+			
+			// Close Connection
+			Globals.Datas.ServerConnection.disconnect();
+			Globals.Datas.Client.removeAllConnections();
+			
+			// end
+			this.finished = true;
+			this.running = false;
+			
+			// ÑÓ³Ù¿ªÆô
+			if(Globals.Configurations.Restart) {
+				Tools.Time.sleepUntil(Globals.Configurations.TimeForRestart);
 			}
 		}
-		
-		//////////////////////////////////////////// EXIT ///////////////////////////////////////////////
-		
-		// save CFG
-		if(cfgOK) {
-			Tools.CFGFile.saveCFG();
-		}
-		
-		// save Errors
-		Globals.Datas.Errors.save();
-		
-		// save DataBases
-		for(Interfaces.IDBManager dbm : Globals.Datas.DBManagers.getContent()) {
-			if(dbm.getDBInfo().getType().equals(BasicEnums.DataBaseType.TXT)) {
-				dbm.disconnect();
-			}
-		}
-		
-		// Close Form
-		if(Globals.Datas.Form_Main != null) {
-			Globals.Datas.Form_Main.dispose();
-		}
-		
-		// Close Server
-		Globals.Datas.Server.disconnect();
-		
-		// Close Connection
-		Globals.Datas.ServerConnection.disconnect();
-		Globals.Datas.Client.removeAllConnections();
-		
-		this.finished = true;
-		this.running = false;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
