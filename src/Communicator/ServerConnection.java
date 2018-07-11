@@ -451,6 +451,11 @@ public class ServerConnection extends Thread implements Interfaces.IServerConnec
 						}
 					}
 					
+					// 更新数据库
+					if(this.fileConnector.isWriteToLocal()) {
+						Tools.Update.addSingleFile(this.fileConnector.getDestDepot(), this.fileConnector.getDestUrl());
+					}
+					
 					// 不着急关，等待一段时间
 					Tools.Time.sleepUntil(Globals.Configurations.TimeForInputFileWait);
 					

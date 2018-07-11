@@ -69,7 +69,14 @@ public class DepotManager implements Interfaces.IDepotManager{
 			java.io.File sour = new java.io.File(sourUrl);
 			String destUrl = Tools.Url.setName(sourUrl, targetName);
 			java.io.File dest = new java.io.File(destUrl);
-			return sour.renameTo(dest);
+			boolean ok = sour.renameTo(dest);
+			if(ok && dest.isDirectory()) {
+				Tools.Update.fixSingleFolderUrl(sour.getAbsolutePath(), dest.getAbsolutePath());
+			}
+			if(ok && dest.isFile()) {
+				Tools.Update.fixSingleFileUrl(sour.getAbsolutePath(), dest.getAbsolutePath());
+			}
+			return ok;
 		} catch(Exception e) {
 			BasicEnums.ErrorType.COMMON_FILE_OPERATE_FAILED.register(e.toString());
 			return false;
@@ -84,7 +91,14 @@ public class DepotManager implements Interfaces.IDepotManager{
 			java.io.File sour = new java.io.File(sourUrl);
 			String destUrl = Tools.Url.setNameWithoutExtension(sourUrl, targetNameWithoutExtension);
 			java.io.File dest = new java.io.File(destUrl);
-			return sour.renameTo(dest);
+			boolean ok = sour.renameTo(dest);
+			if(ok && dest.isDirectory()) {
+				Tools.Update.fixSingleFolderUrl(sour.getAbsolutePath(), dest.getAbsolutePath());
+			}
+			if(ok && dest.isFile()) {
+				Tools.Update.fixSingleFileUrl(sour.getAbsolutePath(), dest.getAbsolutePath());
+			}
+			return ok;
 		} catch(Exception e) {
 			BasicEnums.ErrorType.COMMON_FILE_OPERATE_FAILED.register(e.toString());
 			return false;
@@ -97,7 +111,11 @@ public class DepotManager implements Interfaces.IDepotManager{
 		
 		try {
 			java.io.File sour = new java.io.File(targetFile);
-			return sour.delete();
+			boolean ok = sour.delete();
+			if(ok) {
+				Tools.Update.delSingleFile(sour.getAbsolutePath());
+			}
+			return ok;
 		} catch(Exception e) {
 			BasicEnums.ErrorType.COMMON_FILE_OPERATE_FAILED.register(e.toString());
 			return false;
@@ -114,7 +132,14 @@ public class DepotManager implements Interfaces.IDepotManager{
 		try {
 			java.io.File sour = new java.io.File(sourUrl);
 			java.io.File dest = new java.io.File(destUrl);
-			return sour.renameTo(dest);
+			boolean ok = sour.renameTo(dest);
+			if(ok && dest.isDirectory()) {
+				Tools.Update.movSingleFolder(sour.getAbsolutePath(), dest.getAbsolutePath());
+			}
+			if(ok && dest.isFile()) {
+				Tools.Update.movSingleFile(sour.getAbsolutePath(), dest.getAbsolutePath());
+			}
+			return ok;
 		} catch(Exception e) {
 			BasicEnums.ErrorType.COMMON_FILE_OPERATE_FAILED.register(e.toString());
 			return false;
@@ -128,7 +153,12 @@ public class DepotManager implements Interfaces.IDepotManager{
 		if(!this.isInDepot(destUrl)) {
 			return false;
 		}
-		return this.copyFileCore(sourUrl, destUrl);
+		
+		boolean ok = this.copyFileCore(sourUrl, destUrl);
+		if(ok) {
+			Tools.Update.addSingleFile(destUrl);
+		}
+		return ok;
 	}
 	
 	public boolean renameDirectory(String sourUrl, String targetName) {
@@ -177,7 +207,11 @@ public class DepotManager implements Interfaces.IDepotManager{
 			if(f.exists() && f.isDirectory()) {
 				return true;
 			}
-			return f.mkdirs();
+			boolean ok = f.mkdirs();
+			if(ok) {
+				Tools.Update.addSingleFolder(f.getAbsolutePath());
+			}
+			return ok;
 		} catch(Exception e) {
 			BasicEnums.ErrorType.COMMON_FILE_OPERATE_FAILED.register(e.toString());
 			return false;
@@ -196,7 +230,11 @@ public class DepotManager implements Interfaces.IDepotManager{
 			if(f.exists() && f.isFile()) {
 				return true;
 			}
-			return f.createNewFile();
+			boolean ok = f.createNewFile();
+			if(ok) {
+				Tools.Update.addSingleFile(f.getAbsolutePath());
+			}
+			return ok;
 		} catch(Exception e) {
 			BasicEnums.ErrorType.COMMON_FILE_OPERATE_FAILED.register(e.toString());
 			return false;
@@ -248,6 +286,8 @@ public class DepotManager implements Interfaces.IDepotManager{
 	        
 	        is.close();
 	        os.close();
+	        
+	        Tools.Update.addSingleFile(dest.getAbsolutePath());
 	        return true;
 		} catch(Exception e) {
 			BasicEnums.ErrorType.COMMON_FILE_OPERATE_FAILED.register(e.toString());
@@ -258,17 +298,26 @@ public class DepotManager implements Interfaces.IDepotManager{
 	private boolean deleteDirectoryCore(String localUrl) {
 		try {
 			boolean ok = true;
+			boolean okThis = true;
 			java.io.File sour = new java.io.File(localUrl);
 			java.io.File[] subfiles = sour.listFiles();
 			for(java.io.File f : subfiles) {
 				if(f.isFile()) {
-					ok &= f.delete();
+					okThis = f.delete();
+					ok &= okThis;
+					if(okThis) {
+						Tools.Update.delSingleFile(f.getAbsolutePath());
+					}
 				}
 				if(f.isDirectory()) {
-					ok &= deleteDirectoryCore(f.getAbsolutePath());
+					okThis = deleteDirectoryCore(f.getAbsolutePath());
+					ok &= okThis;
 				}
 			}
-			sour.delete();
+			okThis = sour.delete();
+			if(okThis) {
+				Tools.Update.delSingleFolder(sour.getAbsolutePath());
+			}
 			return ok;
 		} catch(Exception e) {
 			BasicEnums.ErrorType.COMMON_FILE_OPERATE_FAILED.register(e.toString());
@@ -278,20 +327,30 @@ public class DepotManager implements Interfaces.IDepotManager{
 	private boolean copyDirectoryCore(String sourLocalUrl, String destLocalUrl) {
 		try {
 			boolean ok = true;
+			boolean okThis = true;
 			java.io.File sour = new java.io.File(sourLocalUrl);
 			java.io.File dest = new java.io.File(destLocalUrl);
 			
 			if(!dest.exists()) {
-				ok &= dest.mkdirs();
+				okThis = dest.mkdirs();
+				ok &= okThis;
+				if(okThis) {
+					Tools.Update.addSingleFolder(dest.getAbsolutePath());
+				}
 			}
 			
 			java.io.File[] subfiles = sour.listFiles();
 			for(java.io.File f : subfiles) {
 				if(f.isFile()) {
-					ok &= this.copyFileCore(f.getAbsolutePath(), destLocalUrl+"\\"+f.getName());
+					okThis = this.copyFileCore(f.getAbsolutePath(), destLocalUrl+"\\"+f.getName());
+					ok &= okThis;
+					if(okThis) {
+						Tools.Update.addSingleFile(f.getAbsolutePath());
+					}
 				}
 				if(f.isDirectory()) {
-					ok &= this.copyDirectoryCore(f.getAbsolutePath(), destLocalUrl+"\\"+f.getName());
+					okThis = this.copyDirectoryCore(f.getAbsolutePath(), destLocalUrl+"\\"+f.getName());
+					ok &= okThis;
 				}
 			}
 			return ok;

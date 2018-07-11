@@ -213,13 +213,15 @@ public class Operator extends Thread implements Interfaces.IPublic, Interfaces.I
 		this.stop = false;
 		
 		reason = "";
+	}
+	
+	public void run() {
+		
+		// to collections
 		if(Globals.Datas.Operators != null) {
 			this.setIndex();
 			Globals.Datas.Operators.add(this);
 		}
-	}
-	
-	public void run() {
 		
 		// start
 		this.setBeginTicks();
@@ -230,28 +232,11 @@ public class Operator extends Thread implements Interfaces.IPublic, Interfaces.I
 		this.abort = false;
 		this.stop = false;
 		
-		// depot
-		Interfaces.IDBManager dbm = Globals.Datas.DBManagers.searchDepotIndex(depotIndex);
-		if(dbm != null) {
-			this.depotInfo = dbm.getDBInfo().getDepotInfo();
-		}
-		else {
-			if(this.depotIndex == Globals.Datas.DBManager.getDBInfo().getDepotIndex()) {
-				this.depotInfo = Globals.Datas.DBManager.getDBInfo().getDepotInfo();
-			}
-			else {
-				this.depotInfo = new BasicModels.DepotInfo();
-			}
-		}
-		
-		// manager
-		Interfaces.IDepotManager dm = this.depotInfo.getManager();
-		dm.setUncheck(uncheck);
-		
-		// op
-		boolean operateOK = true;
+		// operate
+		boolean operateOK = this.operate();
 		
 		// end
+		this.setEndTicks();
 		this.finished = true;
 		this.running = false;
 		this.successed = operateOK;
@@ -402,6 +387,97 @@ public class Operator extends Thread implements Interfaces.IPublic, Interfaces.I
 	public boolean exitProcess() {
 		this.abort = true;
 		return true;
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	private boolean operate() {
+		// depot
+		Interfaces.IDBManager dbm = Globals.Datas.DBManagers.searchDepotIndex(depotIndex);
+		if(dbm != null) {
+			this.depotInfo = dbm.getDBInfo().getDepotInfo();
+		}
+		else {
+			if(this.depotIndex == Globals.Datas.DBManager.getDBInfo().getDepotIndex()) {
+				this.depotInfo = Globals.Datas.DBManager.getDBInfo().getDepotInfo();
+			}
+			else {
+				this.depotInfo = new BasicModels.DepotInfo();
+			}
+		}
+		
+		// manager
+		Interfaces.IDepotManager dm = this.depotInfo.getManager();
+		dm.setUncheck(uncheck);
+		
+		if(this.type.equals(BasicEnums.OperateType.CHECK_SERVER)) {
+			return Globals.Datas.DBManager.getServerChecker().check();
+		}
+		if(this.type.equals(BasicEnums.OperateType.CHECK_INDEX)) {
+			return Globals.Datas.DBManager.getServerChecker().checkIndex();
+		}
+		
+		if(this.type.equals(BasicEnums.OperateType.CHECK_DEPOT)) {
+			if(dbm == null) {
+				return false;
+			}
+			else {
+				return dbm.getChecker().check();
+			}
+		}
+		if(this.type.equals(BasicEnums.OperateType.CHECK_FOLDERS_FILES)) {
+			if(dbm == null) {
+				return false;
+			}
+			else {
+				return dbm.getChecker().checkFoldersAndFiles();
+			}
+		}
+		
+		if(this.type.equals(BasicEnums.OperateType.OPEN_IN_SYSTEM)) {
+			return dm.openInSystem(destUrl);
+		}
+		if(this.type.equals(BasicEnums.OperateType.COPY_FOLDER)) {
+			return dm.copyDirectory(sourUrl, destUrl);
+		}
+		if(this.type.equals(BasicEnums.OperateType.COPY_FILE)) {
+			return dm.copyFile(sourUrl, destUrl);
+		}
+		if(this.type.equals(BasicEnums.OperateType.CREATE_FOLDER)) {
+			return dm.createFolder(destUrl);
+		}
+		if(this.type.equals(BasicEnums.OperateType.CREATE_FILE)) {
+			return dm.createFile(destUrl);
+		}
+		if(this.type.equals(BasicEnums.OperateType.DELETE_FOLDER)) {
+			return dm.deleteDirectory(destUrl);
+		}
+		if(this.type.equals(BasicEnums.OperateType.DELETE_FILE)) {
+			return dm.deleteFile(destUrl);
+		}
+		if(this.type.equals(BasicEnums.OperateType.DELETE_CONTENT)) {
+			return dm.deleteContent(destUrl);
+		}
+		if(this.type.equals(BasicEnums.OperateType.MOVE_FOLDER)) {
+			return dm.moveDirectory(sourUrl, destUrl);
+		}
+		if(this.type.equals(BasicEnums.OperateType.MOVE_FILE)) {
+			return dm.moveFile(sourUrl, destUrl);
+		}
+		if(this.type.equals(BasicEnums.OperateType.RENAME_FOLDER)) {
+			return dm.renameDirectory(sourUrl, destUrl);
+		}
+		if(this.type.equals(BasicEnums.OperateType.RENAME_FILE)) {
+			return dm.renameFile(sourUrl, destUrl);
+		}
+		if(this.type.equals(BasicEnums.OperateType.RENAME_FOLDER_WITHOUT_EXTENSION)) {
+			return dm.renameDirectory(sourUrl, destUrl);
+		}
+		if(this.type.equals(BasicEnums.OperateType.RENAME_FILE_WITHOUT_EXTENSION)) {
+			return dm.renameFileWithoutExtension(sourUrl, destUrl);
+		}
+		
+		return false;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

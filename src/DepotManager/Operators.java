@@ -69,6 +69,9 @@ public class Operators implements Interfaces.ICollection {
 			if(!content.get(i).isStarted()) {
 				continue;
 			}
+			if(!content.get(i).isFinished()) {
+				continue;
+			}
 			if(Tools.Time.getTicks() - content.get(i).getEndTicks() > this.permitIdle) {
 				this.content.remove(i);
 				continue;

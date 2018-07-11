@@ -101,9 +101,9 @@ public class DepotChecker implements Interfaces.IDepotChecker{
 			}
 		}
 		
-		long database = this.totalFolders.getContent().get(0).getDataBase();
-		long machine = this.totalFolders.getContent().get(0).getMachine();
-		long depot = this.totalFolders.getContent().get(0).getDepot();
+		long database = this.dbmanager.getDBInfo().getIndex();
+		long machine = this.dbmanager.getDBInfo().getMachineInfo().getIndex();
+		long depot = this.dbmanager.getDBInfo().getDepotIndex();
 		
 		int nextAddFolder = 0;
 		int nextAddFile = 0;

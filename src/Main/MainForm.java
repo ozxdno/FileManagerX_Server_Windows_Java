@@ -18,6 +18,10 @@ import javax.swing.*;
 // UpdateFile = 6|9|6|1|-1|-1|-1|D:\Space_For_Media\Pictures\FMX_Test_Depot_E\Konachan.com - 50234 sample.jpg|Unsupport|NotExistInRemote|1513230724366|2284384|0|a new Tag
 // UpdateInvitation = invitation01|2|FileManagerX|ozxdno|**********|ozxdno@126.com||Offline|Admin|Level9|0||0|0.0
 // UpdateInvitation = invitation01|0||||||Offline|Admin|Level9|0||9999|0.0
+// OperateDepot = OPEN_IN_SYSTEM|5||D:\Space_For_Media\Pictures\FMX_Test_Depot_A\1 (4).jpg
+// OperateDepot = CREATE_FOLDER|5||D:\Space_For_Media\Pictures\FMX_Test_Depot_A\NEW FOLDER
+// OperateDepot = RENAME_FILE_WITHOUT_EXTENSION|5|D:\Space_For_Media\Pictures\FMX_Test_Depot_A\a2.jpg|BBBB
+// OperateDepot = MOVE_FOLDER|5|D:\Space_For_Media\Pictures\FMX_Test_Depot_A\°¢¾Å°¢¾Å|D:\Space_For_Media\Pictures\FMX_Test_Depot_A\BBBB\A9A9
 
 @SuppressWarnings("serial")
 public class MainForm extends JFrame {
@@ -285,6 +289,20 @@ public class MainForm extends JFrame {
 	            	List.add(tip);
 	            	
 	            	jInput.setText("TimeForExecute = ");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("operatedepot") || f.equals("od")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/2][operateType][destDepotIndex][sourUrl][destUrl]";
+	            	List.add(tip);
+	            	tip = "[2/2][operateType][destMachineIndex][destDepotIndex][sourUrl][destUrl]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("OperateDepot = next");
 	            	jResult.setText(List.get(0));
 	            	ListIndex = 0;
 	            	return;
@@ -1066,6 +1084,29 @@ public class MainForm extends JFrame {
 	        		 if(CmdName.equals("TimeForExecute")) {
 		        			if(cmdcfg.getItemsSize() == 3) {
 		 	        			boolean ok = cm.timeForExecute(cmdcfg.getLong(0), cmdcfg.getLong(1), cmdcfg.getLong(2));
+		 	        			String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+		 	        			jResult.setText(ok ? "Successed" : "Failed: " + reason);
+		 	        			return;
+		 	        		}
+		 	            }
+	        		 if(CmdName.equals("OperateDepot")) {
+		        			if(cmdcfg.getItemsSize() == 4) {
+		        				BasicEnums.OperateType type = BasicEnums.OperateType.valueOf(cmdcfg.getString(0));
+		        				long depot = cmdcfg.getLong(1);
+		        				String sour = cmdcfg.getString(2);
+		        				String dest = cmdcfg.getString(3);
+		 	        			boolean ok = cm.operateDepot(type, depot, sour, dest);
+		 	        			String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+		 	        			jResult.setText(ok ? "Successed" : "Failed: " + reason);
+		 	        			return;
+		 	        		}
+		        			if(cmdcfg.getItemsSize() == 5) {
+		        				BasicEnums.OperateType type = BasicEnums.OperateType.valueOf(cmdcfg.getString(0));
+		        				long machine = cmdcfg.getLong(1);
+		        				long depot = cmdcfg.getLong(2);
+		        				String sour = cmdcfg.getString(3);
+		        				String dest = cmdcfg.getString(4);
+		 	        			boolean ok = cm.operateDepot(type, machine, depot, sour, dest);
 		 	        			String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
 		 	        			jResult.setText(ok ? "Successed" : "Failed: " + reason);
 		 	        			return;

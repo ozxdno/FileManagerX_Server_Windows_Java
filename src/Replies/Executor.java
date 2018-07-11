@@ -57,6 +57,12 @@ public class Executor implements Interfaces.IReplyExecutor {
 			return t.input(connection.getReceiveString()) != null &&
 					t.execute(connection);
 		}
+		if(c.getField().equals("OperateDepot")) {
+			Replies.OperateDepot t = new Replies.OperateDepot();
+			this.reply = t;
+			return t.input(connection.getReceiveString()) != null &&
+					t.execute(connection);
+		}
 		if(c.getField().equals("Input")) {
 			Replies.Input i = new Replies.Input();
 			this.reply = i;

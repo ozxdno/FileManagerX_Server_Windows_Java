@@ -36,6 +36,11 @@ public class Executor implements Interfaces.ICommandExecutor {
 			t.setConnection(connection);
 			return t.input(connection.getReceiveString()) != null && t.execute();
 		}
+		if(c.getField().equals("OperateDepot")) {
+			Commands.OperateDepot t = new Commands.OperateDepot();
+			t.setConnection(connection);
+			return t.input(connection.getReceiveString()) != null && t.execute();
+		}
 		if(c.getField().equals("Input")) {
 			Commands.Input i = new Commands.Input();
 			i.setConnection(connection);

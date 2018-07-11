@@ -2401,6 +2401,53 @@ public class Manager implements Interfaces.ICommandsManager {
 		return true;
 	}
 	
+	public boolean operateDepot(BasicEnums.OperateType operateType, long destDepot, String sourUrl, String destUrl) {
+		return this.operateDepot(
+				operateType,
+				this.connection.getServerMachineInfo().getIndex(),
+				destDepot,
+				sourUrl,
+				destUrl
+				);
+	}
+	public boolean operateDepot(DepotManager.Operator operator) {
+		return this.operateDepot(
+				this.connection.getServerMachineInfo().getIndex(),
+				operator);
+	}
+	public boolean operateDepot(BasicEnums.OperateType operateType, long destMachine, long destDepot, String sourUrl, String destUrl) {
+		DepotManager.Operator op = new DepotManager.Operator();
+		op.setType(operateType);
+		op.setDepotIndex(destDepot);
+		op.setSourUrl(sourUrl);
+		op.setDestUrl(destUrl);
+		
+		return this.operateDepot(destMachine, op);
+	}
+	public boolean operateDepot(long destMachine, DepotManager.Operator operator) {
+		this.reply = null;
+		if(!this.isConnectionRunning()) {
+			return false;
+		}
+		
+		Commands.OperateDepot cmd = new Commands.OperateDepot();
+		cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+		cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+		cmd.getBasicMessagePackage().setDestMachineIndex(destMachine);
+		cmd.setOperator(operator);
+		
+		this.reply = swre.execute(cmd.output());
+		if(this.reply != null && !(reply instanceof Replies.OperateDepot)) {
+			BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+			this.reply = null;
+			return false;
+		}
+		if(reply == null || !reply.isOK()) {
+			return false;
+		}
+		return true;
+	}
+	
 	public boolean input(String sourUrl, String destUrl) {
 		return this.input(
 				sourUrl,

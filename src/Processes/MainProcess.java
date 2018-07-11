@@ -155,7 +155,10 @@ public class MainProcess extends Thread implements Interfaces.IProcess {
 					}
 					
 					Tools.Time.sleepUntil(1000);
+					
 					Globals.Datas.Errors.save(100);
+					
+					Globals.Datas.Operators.removeIdleOperator();
 				}
 			}
 			

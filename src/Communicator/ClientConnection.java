@@ -493,6 +493,11 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 						}
 					}
 					
+					// 更新数据库
+					if(this.fileConnector.isWriteToLocal()) {
+						Tools.Update.addSingleFile(this.fileConnector.getSourDepot(), this.fileConnector.getDestUrl());
+					}
+					
 					// 延迟关闭，等待接收完毕。
 					Tools.Time.sleepUntil(Globals.Configurations.TimeForInputFileWait);
 					
