@@ -1,5 +1,5 @@
 package FileModels;
 
-public class Gif {
+public class Gif extends BasicModels.BaseFile implements Interfaces.IPublic {
 
 }

@@ -1,5 +1,5 @@
 package FileModels;
 
-public class Music {
+public class Music extends BasicModels.BaseFile implements Interfaces.IPublic {
 
 }

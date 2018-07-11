@@ -1,5 +1,5 @@
 package FileModels;
 
-public class Video {
+public class Video extends BasicModels.BaseFile implements Interfaces.IPublic {
 
 }

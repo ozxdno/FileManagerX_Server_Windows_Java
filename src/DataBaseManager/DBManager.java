@@ -115,6 +115,19 @@ public class DBManager implements Interfaces.IDBManager {
 		return manager.createTable_Invitations();
 	}
 	
+	public boolean createTable_Pictures() {
+		return manager.createTable_Pictures();
+	}
+	public boolean createTable_Gifs() {
+		return manager.createTable_Gifs();
+	}
+	public boolean createTable_Musics() {
+		return manager.createTable_Musics();
+	}
+	public boolean createTable_Videos() {
+		return manager.createTable_Videos();
+	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean deleteServerTables() {
@@ -148,6 +161,19 @@ public class DBManager implements Interfaces.IDBManager {
 		return manager.deleteTable_Invitations();
 	}
 	
+	public boolean deleteTable_Pictures() {
+		return manager.deleteTable_Pictures();
+	}
+	public boolean deleteTable_Gifs() {
+		return manager.deleteTable_Gifs();
+	}
+	public boolean deleteTable_Musics() {
+		return manager.deleteTable_Musics();
+	}
+	public boolean deleteTable_Videos() {
+		return manager.deleteTable_Videos();
+	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public BasicCollections.Folders QueryFolders(Object conditions) {
@@ -170,6 +196,10 @@ public class DBManager implements Interfaces.IDBManager {
 	}
 	public BasicCollections.DataBaseInfos QueryDataBaseInfos(Object conditions) {
 		return this.manager.QueryDataBaseInfos(conditions);
+	}
+	
+	public BasicCollections.BaseFiles QuerySpecificFiles(BasicEnums.FileType type, Object conditions) {
+		return manager.QuerySpecificFiles(type, conditions);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -196,6 +226,10 @@ public class DBManager implements Interfaces.IDBManager {
 		return this.manager.QueryDataBaseInfo(conditions);
 	}
 	
+	public BasicModels.BaseFile QuerySpecificFile(BasicEnums.FileType type, Object conditions) {
+		return this.manager.QuerySpecificFile(type, conditions);
+	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean updataFolders(BasicCollections.Folders folders) {
@@ -218,6 +252,10 @@ public class DBManager implements Interfaces.IDBManager {
 	}
 	public boolean updataDataBaseInfos(BasicCollections.DataBaseInfos dbInfos) {
 		return this.updataDataBaseInfos(dbInfos);
+	}
+	
+	public boolean updataSpecificFiles(BasicEnums.FileType type, BasicCollections.BaseFiles files) {
+		return this.manager.updataSpecificFiles(type, files);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -244,6 +282,10 @@ public class DBManager implements Interfaces.IDBManager {
 		return this.manager.updataDataBaseInfo(dbInfo);
 	}
 	
+	public boolean updataSpecificFile(BasicEnums.FileType type, BasicModels.BaseFile file) {
+		return this.manager.updataSpecificFile(type, file);
+	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean removeFolders(BasicCollections.Folders folders) {
@@ -268,6 +310,10 @@ public class DBManager implements Interfaces.IDBManager {
 		return this.manager.removeDataBaseInfos(dbInfos);
 	}
 	
+	public boolean removeSpecificFiles(BasicEnums.FileType type, BasicCollections.BaseFiles files) {
+		return this.manager.removeSpecificFiles(type, files);
+	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean removeFolder(BasicModels.Folder folder) {
@@ -290,6 +336,10 @@ public class DBManager implements Interfaces.IDBManager {
 	}
 	public boolean removeDataBaseInfo(BasicModels.DataBaseInfo dbInfo) {
 		return this.manager.removeDataBaseInfo(dbInfo);
+	}
+	
+	public boolean removeSpecificFile(BasicEnums.FileType type, BasicModels.BaseFile file) {
+		return this.removeSpecificFile(type, file);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

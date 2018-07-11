@@ -152,6 +152,19 @@ public class SQLManager implements Interfaces.IDBManager{
 		if(!this.createTable_Files()) {
 			return false;
 		}
+		
+		if(!this.createTable_Pictures()) {
+			return false;
+		}
+		if(!this.createTable_Gifs()) {
+			return false;
+		}
+		if(!this.createTable_Musics()) {
+			return false;
+		}
+		if(!this.createTable_Videos()) {
+			return false;
+		}
 		return true;
 	}
 	public boolean createTable(String tableName, String[] columns, String[] types) {
@@ -364,6 +377,83 @@ public class SQLManager implements Interfaces.IDBManager{
 		return this.createTable(tableName, columns, types);
 	}
 	
+	public boolean createTable_Pictures() {
+		String tableName = "Pictures";
+		String[] columns = new String[] {
+				"Index",
+				"Height",
+				"Width",
+				"RowPixels",
+				"ColPixels"
+		};
+		String[] types = new String[] {
+				"INT UNIQUE",
+				"INT",
+				"INT",
+				"VARCHAR(2048)",
+				"VARCHAR(2048)"
+		};
+		return this.createTable(tableName, columns, types);
+	}
+	public boolean createTable_Gifs() {
+		String tableName = "Gifs";
+		String[] columns = new String[] {
+				"Index",
+				"Height",
+				"Width",
+				"Lasting",
+				"RowPixels",
+				"ColPixels"
+		};
+		String[] types = new String[] {
+				"INT UNIQUE",
+				"INT",
+				"INT",
+				"BIGINT",
+				"VARCHAR(2048)",
+				"VARCHAR(2048)"
+		};
+		return this.createTable(tableName, columns, types);
+	}
+	public boolean createTable_Musics() {
+		String tableName = "Musics";
+		String[] columns = new String[] {
+				"Index",
+				"Author",
+				"Singer",
+				"Album",
+				"Lasting"
+		};
+		String[] types = new String[] {
+				"INT UNIQUE",
+				"VARCHAR(100)",
+				"VARCHAR(100)",
+				"VARCHAR(100)",
+				"BIGINT"
+		};
+		return this.createTable(tableName, columns, types);
+	}
+	public boolean createTable_Videos() {
+		String tableName = "Videos";
+		String[] columns = new String[] {
+				"Index",
+				"Height",
+				"Width",
+				"Lasting",
+				"RowPixels",
+				"ColPixels"
+		};
+		String[] types = new String[] {
+				"INT UNIQUE",
+				"INT",
+				"INT",
+				"BIGINT",
+				"VARCHAR(2048)",
+				"VARCHAR(2048)"
+		};
+		return this.createTable(tableName, columns, types);
+	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean deleteServerTables() {
@@ -389,6 +479,19 @@ public class SQLManager implements Interfaces.IDBManager{
 			return false;
 		}
 		if(!this.deleteTable_Files()) {
+			return false;
+		}
+		
+		if(!this.deleteTable_Pictures()) {
+			return false;
+		}
+		if(!this.deleteTable_Gifs()) {
+			return false;
+		}
+		if(!this.deleteTable_Musics()) {
+			return false;
+		}
+		if(!this.deleteTable_Videos()) {
 			return false;
 		}
 		return true;
@@ -423,6 +526,19 @@ public class SQLManager implements Interfaces.IDBManager{
 	}
 	public boolean deleteTable_Invitations() {
 		return this.deleteTable("Invitations");
+	}
+	
+	public boolean deleteTable_Pictures() {
+		return this.deleteTable("Users");
+	}
+	public boolean deleteTable_Gifs() {
+		return this.deleteTable("Users");
+	}
+	public boolean deleteTable_Musics() {
+		return this.deleteTable("Users");
+	}
+	public boolean deleteTable_Videos() {
+		return this.deleteTable("Users");
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -769,6 +885,55 @@ public class SQLManager implements Interfaces.IDBManager{
 		}
 	}
 	
+	public BasicCollections.BaseFiles QuerySpecificFiles(BasicEnums.FileType type, Object conditions) {
+		if(conditions == null) {
+			return null;
+		}
+		String con = "";
+		if(conditions instanceof QueryConditions) {
+			con = this.queryConditionsToStatement((QueryConditions)conditions);
+		}
+		else if(conditions instanceof QueryCondition) {
+			con = this.queryConditionToStatement((QueryCondition)conditions);
+		}
+		else if(conditions instanceof String) {
+			DataBaseManager.QueryConditions qcs = new DataBaseManager.QueryConditions();
+			try {
+				qcs.stringToThis((String)conditions);
+			}catch(Exception e) {
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
+				return null;
+			}
+			con = this.queryConditionsToStatement(qcs);
+		}
+		else {
+			return null;
+		}
+		String exp = "SELECT * FROM " + type.toString() + "s " + con + ";";
+		try {
+			ResultSet set = statement.executeQuery(exp);
+			BasicCollections.BaseFiles fs = new BasicCollections.BaseFiles();
+			
+			if(type.equals(BasicEnums.FileType.Picture)) {
+				while(set.next()) {
+					FileModels.Picture f = new FileModels.Picture();
+					f.setIndex(set.getLong(1));
+					f.setHeight(set.getInt(2));
+					f.setWidth(set.getInt(3));
+					f.setRowPixels(Tools.String.splitToIntArray(set.getString(4), ' '));
+					f.setColPixels(Tools.String.splitToIntArray(set.getString(5), ' '));
+					fs.add(f);
+				}
+				return fs;
+			}
+			
+			return null;
+		}catch(Exception e) {
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
+			return null;
+		}
+	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public BasicModels.Folder QueryFolder(Object conditions) {
@@ -1106,6 +1271,51 @@ public class SQLManager implements Interfaces.IDBManager{
 		}
 	}
 	
+	public BasicModels.BaseFile QuerySpecificFile(BasicEnums.FileType type, Object conditions) {
+		if(conditions == null) {
+			return null;
+		}
+		String con = "";
+		if(conditions instanceof QueryConditions) {
+			con = this.queryConditionsToStatement((QueryConditions)conditions);
+		}
+		else if(conditions instanceof QueryCondition) {
+			con = this.queryConditionToStatement((QueryCondition)conditions);
+		}
+		else if(conditions instanceof String) {
+			DataBaseManager.QueryConditions qcs = new DataBaseManager.QueryConditions();
+			try {
+				qcs.stringToThis((String)conditions);
+			}catch(Exception e) {
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
+				return null;
+			}
+			con = this.queryConditionsToStatement(qcs);
+		}
+		else {
+			return null;
+		}
+		String exp = "SELECT * FROM " + type.toString() + "s " + con + ";";
+		try {
+			ResultSet set = statement.executeQuery(exp);
+			
+			if(type.equals(BasicEnums.FileType.Picture) && set.next()) {
+				FileModels.Picture f = new FileModels.Picture();
+				f.setIndex(set.getLong(1));
+				f.setHeight(set.getInt(2));
+				f.setWidth(set.getInt(3));
+				f.setRowPixels(Tools.String.splitToIntArray(set.getString(4), ' '));
+				f.setColPixels(Tools.String.splitToIntArray(set.getString(5), ' '));
+				return f;
+			}
+			
+			return null;
+		}catch(Exception e) {
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
+			return null;
+		}
+	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public boolean updataFolders(BasicCollections.Folders folders) {
@@ -1158,6 +1368,18 @@ public class SQLManager implements Interfaces.IDBManager{
 		boolean ok = true;
 		for(BasicModels.DataBaseInfo d : dbInfos.getContent()) {
 			ok &= this.updataDataBaseInfo(d);
+		}
+		return ok;
+	}
+	
+	public boolean updataSpecificFiles(BasicEnums.FileType type, BasicCollections.BaseFiles files) {
+		boolean ok = true;
+		for(BasicModels.BaseFile f : files.getContent()) {
+			if(f.getType().equals(BasicEnums.FileType.Folder)) {
+				ok &= this.updataFolder((BasicModels.Folder)f);
+			} else {
+				ok &= this.updataSpecificFile(type, f);
+			}
 		}
 		return ok;
 	}
@@ -1505,6 +1727,54 @@ public class SQLManager implements Interfaces.IDBManager{
 		}
 	}
 	
+	public boolean updataSpecificFile(BasicEnums.FileType type, BasicModels.BaseFile file) {
+		if(file == null) {
+			return false;
+		}
+		String exp = "";
+		QueryCondition qc = new QueryCondition();
+		qc.setItemName("Index");
+		qc.setSign(Sign.EQUAL);
+		qc.setValue(String.valueOf(file.getIndex()));
+		BasicModels.BaseFile exists = (file.getIndex() >= 0 && file.getIndex() <= Globals.Configurations.Next_FileIndex) ?
+				this.QuerySpecificFile(type, qc) :
+				null;
+		if(exists == null) {
+			if(type.equals(BasicEnums.FileType.Picture)) {
+				FileModels.Picture m = (FileModels.Picture)file;
+				exp = "INSERT INTO " + type.toString() + "s Values(" +
+					m.getIndex() + ", " +
+					m.getHeight() + ", " +
+					m.getWidth() + ", " +
+					"'" + Tools.String.link(m.getRowPixels(), " ") + "', " +
+					"'" + Tools.String.link(m.getColPixels(), " ") + "'" +
+					");";
+			}
+		}
+		else {
+			if(type.equals(BasicEnums.FileType.Picture)) {
+				FileModels.Picture m = (FileModels.Picture)file;
+				exp = "UPDATE " +type.toString() + "s SET " +
+						"`Index` = " + m.getIndex() + ", " +
+						"`Height` = " + m.getHeight() + ", " +
+						"`Width` = " + m.getWidth() + ", " +
+						"`RowPixels` = '" + Tools.String.link(m.getRowPixels(), " ") + "', " +
+						"`ColPixels` = '" + Tools.String.link(m.getColPixels(), " ") + "' " +
+						"WHERE " + 
+						"`Index` = " + m.getIndex() +
+						";";
+			}
+		}
+		try {
+			statement.execute("SET SQL_SAFE_UPDATES = 0;");
+			statement.executeUpdate(exp);
+			return true;
+		}catch(Exception e) {
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString(), "exp = " + exp);
+			return false;
+		}
+	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public boolean removeFolders(BasicCollections.Folders folders) {
@@ -1557,6 +1827,18 @@ public class SQLManager implements Interfaces.IDBManager{
 		boolean ok = true;
 		for(BasicModels.DataBaseInfo i : dbInfos.getContent()) {
 			ok &= this.removeDataBaseInfo(i);
+		}
+		return ok;
+	}
+	
+	public boolean removeSpecificFiles(BasicEnums.FileType type, BasicCollections.BaseFiles files) {
+		boolean ok = true;
+		for(BasicModels.BaseFile f : files.getContent()) {
+			if(f.getType().equals(BasicEnums.FileType.Folder)) {
+				ok &= this.removeFolder((BasicModels.Folder)f);
+			} else {
+				ok &= this.removeSpecificFile(type, f);
+			}
 		}
 		return ok;
 	}
@@ -1626,6 +1908,17 @@ public class SQLManager implements Interfaces.IDBManager{
 	public boolean removeDataBaseInfo(BasicModels.DataBaseInfo dbInfo) {
 		try {
 			String exp = "DELETE FROM DataBaseInfo WHERE `Index` = " + String.valueOf(dbInfo.getIndex()) + ";";
+			this.statement.execute(exp);
+			return true;
+		} catch(Exception e) {
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
+			return true;
+		}
+	}
+	
+	public boolean removeSpecificFile(BasicEnums.FileType type, BasicModels.BaseFile file) {
+		try {
+			String exp = "DELETE FROM " + type.toString() + "s WHERE `Index` = " + file.getIndex() + ";";
 			this.statement.execute(exp);
 			return true;
 		} catch(Exception e) {

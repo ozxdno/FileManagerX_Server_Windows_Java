@@ -51,3 +51,5 @@
 20:15:48 = OTHERS|1531311348979|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:954]<-loadCFG[CFGFile.java:57]<-run[MainProcess.java:78]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
 20:17:20 = OTHERS|1531311440027|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:954]<-loadCFG[CFGFile.java:57]<-run[MainProcess.java:78]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
 20:18:36 = OTHERS|1531311516215|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:954]<-loadCFG[CFGFile.java:57]<-run[MainProcess.java:78]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
+22:50:10 = COMMUNICATOR_BUILD_SOCKED_FAILED|1531320610621|Warning|Build Socked Failed|setSocket[ClientConnection.java:229]<-loadDepotCFG[CFGFile.java:880]<-loadCFG[CFGFile.java:57]<-run[MainProcess.java:78]|java.net.ConnectException: Connection refused: connect
+22:51:11 = COMMUNICATOR_BUILD_SOCKED_FAILED|1531320671892|Warning|Build Socked Failed|setSocket[ClientConnection.java:229]<-loadDepotCFG[CFGFile.java:880]<-loadCFG[CFGFile.java:57]<-run[MainProcess.java:78]|java.net.ConnectException: Connection refused: connect

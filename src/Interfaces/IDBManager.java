@@ -33,6 +33,11 @@ public interface IDBManager {
 	public boolean createTable_Users();
 	public boolean createTable_Invitations();
 	
+	public boolean createTable_Pictures();
+	public boolean createTable_Gifs();
+	public boolean createTable_Musics();
+	public boolean createTable_Videos();
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 
 	public boolean deleteServerTables();
@@ -46,6 +51,11 @@ public interface IDBManager {
 	public boolean deleteTable_Users();
 	public boolean deleteTable_Invitations();
 	
+	public boolean deleteTable_Pictures();
+	public boolean deleteTable_Gifs();
+	public boolean deleteTable_Musics();
+	public boolean deleteTable_Videos();
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 
 	public BasicCollections.Folders QueryFolders(Object conditions);
@@ -55,6 +65,8 @@ public interface IDBManager {
 	public BasicCollections.MachineInfos QueryMachineInfos(Object conditions);
 	public BasicCollections.DepotInfos QueryDepotInfos(Object conditions);
 	public BasicCollections.DataBaseInfos QueryDataBaseInfos(Object conditions);
+	
+	public BasicCollections.BaseFiles QuerySpecificFiles(BasicEnums.FileType type, Object conditions);
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 
@@ -66,6 +78,8 @@ public interface IDBManager {
 	public BasicModels.DepotInfo QueryDepotInfo(Object conditions);
 	public BasicModels.DataBaseInfo QueryDataBaseInfo(Object conditions);
 	
+	public BasicModels.BaseFile QuerySpecificFile(BasicEnums.FileType type, Object conditions);
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 
 	public boolean updataFolders(BasicCollections.Folders folders);
@@ -75,6 +89,8 @@ public interface IDBManager {
 	public boolean updataMachineInfos(BasicCollections.MachineInfos machineInfos);
 	public boolean updataDepotInfos(BasicCollections.DepotInfos depotInfos);
 	public boolean updataDataBaseInfos(BasicCollections.DataBaseInfos dbInfos);
+	
+	public boolean updataSpecificFiles(BasicEnums.FileType type, BasicCollections.BaseFiles files);
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 
@@ -86,6 +102,8 @@ public interface IDBManager {
 	public boolean updataDepotInfo(BasicModels.DepotInfo depotInfo);
 	public boolean updataDataBaseInfo(BasicModels.DataBaseInfo dbInfo);
 	
+	public boolean updataSpecificFile(BasicEnums.FileType type, BasicModels.BaseFile file);
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 
 	public boolean removeFolders(BasicCollections.Folders folders);
@@ -96,6 +114,8 @@ public interface IDBManager {
 	public boolean removeDepotInfos(BasicCollections.DepotInfos depotInfos);
 	public boolean removeDataBaseInfos(BasicCollections.DataBaseInfos dbInfos);
 	
+	public boolean removeSpecificFiles(BasicEnums.FileType type, BasicCollections.BaseFiles files);
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 	
 	public boolean removeFolder(BasicModels.Folder folder);
@@ -105,6 +125,8 @@ public interface IDBManager {
 	public boolean removeMachineInfo(BasicModels.MachineInfo machineInfo);
 	public boolean removeDepotInfo(BasicModels.DepotInfo depotInfo);
 	public boolean removeDataBaseInfo(BasicModels.DataBaseInfo dbInfo);
+	
+	public boolean removeSpecificFile(BasicEnums.FileType type, BasicModels.BaseFile file);
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 }

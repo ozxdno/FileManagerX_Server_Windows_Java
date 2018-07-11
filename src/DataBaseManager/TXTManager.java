@@ -17,6 +17,11 @@ public class TXTManager implements Interfaces.IDBManager {
 	private BasicCollections.Users users;
 	private BasicCollections.Invitations invitations;
 	
+	public BasicCollections.BaseFiles pictures;
+	public BasicCollections.BaseFiles gifs;
+	public BasicCollections.BaseFiles musics;
+	public BasicCollections.BaseFiles videos;
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public boolean setDBInfo(BasicModels.DataBaseInfo dbInfo) {
@@ -145,6 +150,34 @@ public class TXTManager implements Interfaces.IDBManager {
 			ok &= txt.save();
 		}
 		
+		if(this.pictures != null) {
+			FileModels.Text txt = new FileModels.Text(this.dbInfo.getUrl() + "\\Pictures.txt");
+			for(BasicModels.BaseFile f : this.pictures.getContent()) {
+				txt.getContent().add(f.output());
+			}
+			ok &= txt.save();
+		}
+		if(this.gifs != null) {
+			FileModels.Text txt = new FileModels.Text(this.dbInfo.getUrl() + "\\Gifs.txt");
+			for(BasicModels.BaseFile f : this.gifs.getContent()) {
+				txt.getContent().add(f.output());
+			}
+			ok &= txt.save();
+		}
+		if(this.musics != null) {
+			FileModels.Text txt = new FileModels.Text(this.dbInfo.getUrl() + "\\Musics.txt");
+			for(BasicModels.BaseFile f : this.musics.getContent()) {
+				txt.getContent().add(f.output());
+			}
+			ok &= txt.save();
+		}
+		if(this.videos != null) {
+			FileModels.Text txt = new FileModels.Text(this.dbInfo.getUrl() + "\\Videos.txt");
+			for(BasicModels.BaseFile f : this.videos.getContent()) {
+				txt.getContent().add(f.output());
+			}
+			ok &= txt.save();
+		}
 		return ok;
 	}
 	
@@ -173,6 +206,19 @@ public class TXTManager implements Interfaces.IDBManager {
 			return false;
 		}
 		if(!this.createTable_Files()) {
+			return false;
+		}
+		
+		if(!this.createTable_Pictures()) {
+			return false;
+		}
+		if(!this.createTable_Gifs()) {
+			return false;
+		}
+		if(!this.createTable_Musics()) {
+			return false;
+		}
+		if(!this.createTable_Videos()) {
 			return false;
 		}
 		return true;
@@ -213,6 +259,19 @@ public class TXTManager implements Interfaces.IDBManager {
 		return this.createTable("Invitations", null, null);
 	}
 	
+	public boolean createTable_Pictures() {
+		return this.createTable("Pictures", null, null);
+	}
+	public boolean createTable_Gifs() {
+		return this.createTable("Gifs", null, null);
+	}
+	public boolean createTable_Musics() {
+		return this.createTable("Musics", null, null);
+	}
+	public boolean createTable_Videos() {
+		return this.createTable("Videos", null, null);
+	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public boolean deleteServerTables() {
@@ -238,6 +297,19 @@ public class TXTManager implements Interfaces.IDBManager {
 			return false;
 		}
 		if(!this.deleteTable_Files()) {
+			return false;
+		}
+		
+		if(!this.deleteTable_Pictures()) {
+			return false;
+		}
+		if(!this.deleteTable_Gifs()) {
+			return false;
+		}
+		if(!this.deleteTable_Musics()) {
+			return false;
+		}
+		if(!this.deleteTable_Videos()) {
 			return false;
 		}
 		return true;
@@ -295,6 +367,31 @@ public class TXTManager implements Interfaces.IDBManager {
 			this.invitations.clear();
 		}
 		return this.deleteTable("Invitations");
+	}
+	
+	public boolean deleteTable_Pictures() {
+		if(this.pictures != null) {
+			this.pictures.clear();
+		}
+		return this.deleteTable("Pictures");
+	}
+	public boolean deleteTable_Gifs() {
+		if(this.gifs != null) {
+			this.gifs.clear();
+		}
+		return this.deleteTable("Gifs");
+	}
+	public boolean deleteTable_Musics() {
+		if(this.musics != null) {
+			this.musics.clear();
+		}
+		return this.deleteTable("Musics");
+	}
+	public boolean deleteTable_Videos() {
+		if(this.videos != null) {
+			this.videos.clear();
+		}
+		return this.deleteTable("Videos");
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1339,6 +1436,47 @@ public class TXTManager implements Interfaces.IDBManager {
 		return res;
 	}
 	
+	public BasicCollections.BaseFiles QuerySpecificFiles(BasicEnums.FileType type, Object conditions) {
+		if(type.equals(BasicEnums.FileType.Picture)) {
+			return this.QueryPictures(conditions);
+		}
+		if(type.equals(BasicEnums.FileType.Gif)) {
+			return this.QueryGifs(conditions);
+		}
+		if(type.equals(BasicEnums.FileType.Music)) {
+			return this.QueryMusics(conditions);
+		}
+		if(type.equals(BasicEnums.FileType.Video)) {
+			return this.QueryVideos(conditions);
+		}
+		
+		return null;
+	}
+	public BasicCollections.BaseFiles QueryPictures(Object conditions) {
+		if(this.pictures == null) {
+			this.loadPictures();
+		}
+		return null;
+	}
+	public BasicCollections.BaseFiles QueryGifs(Object conditions) {
+		if(this.gifs == null) {
+			this.loadGifs();
+		}
+		return null;
+	}
+	public BasicCollections.BaseFiles QueryMusics(Object conditions) {
+		if(this.musics == null) {
+			this.loadMusics();
+		}
+		return null;
+	}
+	public BasicCollections.BaseFiles QueryVideos(Object conditions) {
+		if(this.videos == null) {
+			this.loadVideos();
+		}
+		return null;
+	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public BasicModels.Folder QueryFolder(Object conditions) {
@@ -2195,6 +2333,10 @@ public class TXTManager implements Interfaces.IDBManager {
 		return null;
 	}
 	
+	public BasicModels.BaseFile QuerySpecificFile(BasicEnums.FileType type, Object conditions) {
+		return null;
+	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean updataFolders(BasicCollections.Folders folders) {
@@ -2268,6 +2410,18 @@ public class TXTManager implements Interfaces.IDBManager {
 		boolean ok = true;
 		for(BasicModels.DataBaseInfo ie : dbInfos.getContent()) {
 			ok &= this.updataDataBaseInfo(ie);
+		}
+		return ok;
+	}
+	
+	public boolean updataSpecificFiles(BasicEnums.FileType type, BasicCollections.BaseFiles files) {
+		boolean ok = true;
+		for(BasicModels.BaseFile f : files.getContent()) {
+			if(f.getType().equals(BasicEnums.FileType.Folder)) {
+				ok &= this.updataFolder((BasicModels.Folder)f);
+			} else {
+				ok &= this.updataSpecificFile(type, f);
+			}
 		}
 		return ok;
 	}
@@ -2417,6 +2571,10 @@ public class TXTManager implements Interfaces.IDBManager {
 		return true;
 	}
 	
+	public boolean updataSpecificFile(BasicEnums.FileType type, BasicModels.BaseFile file) {
+		return false;
+	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean removeFolders(BasicCollections.Folders folders) {
@@ -2494,6 +2652,18 @@ public class TXTManager implements Interfaces.IDBManager {
 		return ok;
 	}
 	
+	public boolean removeSpecificFiles(BasicEnums.FileType type, BasicCollections.BaseFiles files) {
+		boolean ok = true;
+		for(BasicModels.BaseFile f : files.getContent()) {
+			if(f.getType().equals(BasicEnums.FileType.Folder)) {
+				ok &= this.removeFolder((BasicModels.Folder)f);
+			} else {
+				ok &= this.removeSpecificFile(type, f);
+			}
+		}
+		return ok;
+	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean removeFolder(BasicModels.Folder folder) {
@@ -2544,6 +2714,10 @@ public class TXTManager implements Interfaces.IDBManager {
 		}
 		this.dbInfos.delete(dbInfo.getIndex());
 		return true;
+	}
+	
+	public boolean removeSpecificFile(BasicEnums.FileType type, BasicModels.BaseFile file) {
+		return false;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2629,6 +2803,55 @@ public class TXTManager implements Interfaces.IDBManager {
 			String r = f.input(line);
 			if(r != null) {
 				this.dbInfos.add(f);
+			}
+		}
+	}
+	
+	private void loadPictures() {
+		this.pictures = new BasicCollections.BaseFiles();
+		FileModels.Text txt = new FileModels.Text(this.dbInfo.getUrl() + "\\Pictures.txt");
+		txt.load(true);
+		for(String line : txt.getContent()) {
+			FileModels.Picture f = new FileModels.Picture();
+			String r = f.input(line);
+			if(r != null) {
+				this.pictures.add(f);
+			}
+		}
+	}
+	private void loadGifs() {
+		this.gifs = new BasicCollections.BaseFiles();
+		FileModels.Text txt = new FileModels.Text(this.dbInfo.getUrl() + "\\Gifs.txt");
+		txt.load(true);
+		for(String line : txt.getContent()) {
+			FileModels.Gif f = new FileModels.Gif();
+			String r = f.input(line);
+			if(r != null) {
+				this.gifs.add(f);
+			}
+		}
+	}
+	private void loadMusics() {
+		this.musics = new BasicCollections.BaseFiles();
+		FileModels.Text txt = new FileModels.Text(this.dbInfo.getUrl() + "\\Musics.txt");
+		txt.load(true);
+		for(String line : txt.getContent()) {
+			FileModels.Music f = new FileModels.Music();
+			String r = f.input(line);
+			if(r != null) {
+				this.musics.add(f);
+			}
+		}
+	}
+	private void loadVideos() {
+		this.videos = new BasicCollections.BaseFiles();
+		FileModels.Text txt = new FileModels.Text(this.dbInfo.getUrl() + "\\Videos.txt");
+		txt.load(true);
+		for(String line : txt.getContent()) {
+			FileModels.Video f = new FileModels.Video();
+			String r = f.input(line);
+			if(r != null) {
+				this.videos.add(f);
 			}
 		}
 	}
