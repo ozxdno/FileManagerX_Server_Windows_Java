@@ -122,17 +122,21 @@ public class MainProcess extends Thread implements Interfaces.IProcess {
 			}
 			
 			// save Server DataBase before execute tasks
-			if(Globals.Configurations.StartType.equals(BasicEnums.StartType.Server) && Globals.Datas.DBManager != null &&
-					Globals.Datas.DBManager.getDBInfo().getType().equals(BasicEnums.DataBaseType.TXT)) {
-				Globals.Datas.DBManager.disconnect();
-				Globals.Datas.DBManager.connect();
+			if(operateOK) {
+				if(Globals.Configurations.StartType.equals(BasicEnums.StartType.Server) && Globals.Datas.DBManager != null &&
+						Globals.Datas.DBManager.getDBInfo().getType().equals(BasicEnums.DataBaseType.TXT)) {
+					Globals.Datas.DBManager.disconnect();
+					Globals.Datas.DBManager.connect();
+				}
 			}
 			
 			// save DataBases before execute tasks
-			for(Interfaces.IDBManager dbm : Globals.Datas.DBManagers.getContent()) {
-				if(dbm.getDBInfo().getType().equals(BasicEnums.DataBaseType.TXT)) {
-					dbm.disconnect();
-					dbm.connect();
+			if(operateOK) {
+				for(Interfaces.IDBManager dbm : Globals.Datas.DBManagers.getContent()) {
+					if(dbm.getDBInfo().getType().equals(BasicEnums.DataBaseType.TXT)) {
+						dbm.disconnect();
+						dbm.connect();
+					}
 				}
 			}
 			
@@ -172,10 +176,21 @@ public class MainProcess extends Thread implements Interfaces.IProcess {
 			// save Errors
 			Globals.Datas.Errors.save();
 			
+			// save Server DataBase before execute tasks
+			if(operateOK) {
+				if(Globals.Configurations.StartType.equals(BasicEnums.StartType.Server) && Globals.Datas.DBManager != null &&
+						Globals.Datas.DBManager.getDBInfo().getType().equals(BasicEnums.DataBaseType.TXT)) {
+					Globals.Datas.DBManager.disconnect();
+					Globals.Datas.DBManager.connect();
+				}
+			}
+			
 			// save DataBases
-			for(Interfaces.IDBManager dbm : Globals.Datas.DBManagers.getContent()) {
-				if(dbm.getDBInfo().getType().equals(BasicEnums.DataBaseType.TXT)) {
-					dbm.disconnect();
+			if(operateOK) {
+				for(Interfaces.IDBManager dbm : Globals.Datas.DBManagers.getContent()) {
+					if(dbm.getDBInfo().getType().equals(BasicEnums.DataBaseType.TXT)) {
+						dbm.disconnect();
+					}
 				}
 			}
 			

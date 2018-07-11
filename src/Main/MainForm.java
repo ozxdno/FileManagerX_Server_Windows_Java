@@ -237,7 +237,7 @@ public class MainForm extends JFrame {
 	            		List.set(i, "[" + (i+1) + "/" + List.size() + "]" + List.get(i));
 	            	}
 	            	
-	            	jInput.setText("Tip = next");
+	            	jInput.setText("Tip = ");
 	            	jResult.setText(List.get(0));
 	            	ListIndex = 0;
 	            	return;
@@ -263,7 +263,7 @@ public class MainForm extends JFrame {
 	            	tip = "[2/2][destMachineIndex]";
 	            	List.add(tip);
 	            	
-	            	jInput.setText("CloseServer = next");
+	            	jInput.setText("CloseServer = ");
 	            	jResult.setText(List.get(0));
 	            	ListIndex = 0;
 	            	return;
@@ -277,7 +277,7 @@ public class MainForm extends JFrame {
 	            	tip = "[2/2][destMachineIndex]";
 	            	List.add(tip);
 	            	
-	            	jInput.setText("Restart = next");
+	            	jInput.setText("Restart = ");
 	            	jResult.setText(List.get(0));
 	            	ListIndex = 0;
 	            	return;
@@ -317,7 +317,7 @@ public class MainForm extends JFrame {
 	            	tip = "[2/2][operateType][destMachineIndex][destDepotIndex][sourUrl][destUrl]";
 	            	List.add(tip);
 	            	
-	            	jInput.setText("OperateDepot = next");
+	            	jInput.setText("OperateDepot = ");
 	            	jResult.setText(List.get(0));
 	            	ListIndex = 0;
 	            	return;
@@ -351,7 +351,7 @@ public class MainForm extends JFrame {
 	            	tip = "[4/4][sourMachine][destMachine][sourUrl][destUrl][finishedBytes]";
 	            	List.add(tip);
 	            	
-	            	jInput.setText("Input = next");
+	            	jInput.setText("Input = ");
 	            	jResult.setText(List.get(0));
 	            	ListIndex = 0;
 	            	return;
@@ -369,7 +369,7 @@ public class MainForm extends JFrame {
 	            	tip = "[4/4][sourMachine][destMachine][sourUrl][destUrl][finishedBytes]";
 	            	List.add(tip);
 	            	
-	            	jInput.setText("Output = next");
+	            	jInput.setText("Output = ");
 	            	jResult.setText(List.get(0));
 	            	ListIndex = 0;
 	            	return;
@@ -429,7 +429,7 @@ public class MainForm extends JFrame {
 	            	tip = "[1/1][No Args]";
 	            	List.add(tip);
 	            	
-	            	jInput.setText("QueryConfigurations = next");
+	            	jInput.setText("QueryConfigurations = ");
 	            	jResult.setText(List.get(0));
 	            	ListIndex = 0;
 	            	return;
@@ -513,7 +513,7 @@ public class MainForm extends JFrame {
 	            	tip = "[2/2][destMachine][destDepot][conditions]";
 	            	List.add(tip);
 	            	
-	            	jInput.setText("QueryFolders = next");
+	            	jInput.setText("QueryFolders = ");
 	            	jResult.setText(List.get(0));
 	            	ListIndex = 0;
 	            	return;
@@ -527,7 +527,7 @@ public class MainForm extends JFrame {
 	            	tip = "[2/2][destMachine][destDepot][conditions]";
 	            	List.add(tip);
 	            	
-	            	jInput.setText("QueryFiles = next");
+	            	jInput.setText("QueryFiles = ");
 	            	jResult.setText(List.get(0));
 	            	ListIndex = 0;
 	            	return;
@@ -601,7 +601,7 @@ public class MainForm extends JFrame {
 	            	tip = "[2/2][destMachine][destDepot][conditions]";
 	            	List.add(tip);
 	            	
-	            	jInput.setText("QueryFolder = next");
+	            	jInput.setText("QueryFolder = ");
 	            	jResult.setText(List.get(0));
 	            	ListIndex = 0;
 	            	return;
@@ -615,7 +615,7 @@ public class MainForm extends JFrame {
 	            	tip = "[2/2][destMachine][destDepot][conditions]";
 	            	List.add(tip);
 	            	
-	            	jInput.setText("QueryFile = next");
+	            	jInput.setText("QueryFile = ");
 	            	jResult.setText(List.get(0));
 	            	ListIndex = 0;
 	            	return;
@@ -631,7 +631,7 @@ public class MainForm extends JFrame {
 	            	tip = "[2/3][destMachine][destDepot][queryItem]";
 	            	List.add(tip);
 	            	
-	            	jInput.setText("QuerySize = next");
+	            	jInput.setText("QuerySize = ");
 	            	jResult.setText(List.get(0));
 	            	ListIndex = 0;
 	            	return;
@@ -705,7 +705,7 @@ public class MainForm extends JFrame {
 	            	tip = "[2/2][destMachine][destDepot][folder]";
 	            	List.add(tip);
 	            	
-	            	jInput.setText("UpdateFolder = next");
+	            	jInput.setText("UpdateFolder = ");
 	            	jResult.setText(List.get(0));
 	            	ListIndex = 0;
 	            	return;
@@ -719,7 +719,7 @@ public class MainForm extends JFrame {
 	            	tip = "[2/2][destMachine][destDepot][basefile]";
 	            	List.add(tip);
 	            	
-	            	jInput.setText("UpdateFile = next");
+	            	jInput.setText("UpdateFile = ");
 	            	jResult.setText(List.get(0));
 	            	ListIndex = 0;
 	            	return;
@@ -793,7 +793,7 @@ public class MainForm extends JFrame {
 	            	tip = "[2/2][destMachine][destDepot][folderIndex][items][conditions]";
 	            	List.add(tip);
 	            	
-	            	jInput.setText("UpdateFolders = next");
+	            	jInput.setText("UpdateFolders = ");
 	            	jResult.setText(List.get(0));
 	            	ListIndex = 0;
 	            	return;
@@ -807,7 +807,7 @@ public class MainForm extends JFrame {
 	            	tip = "[2/2][destMachine][destDepot][fileIndex][items][conditions]";
 	            	List.add(tip);
 	            	
-	            	jInput.setText("UpdateFiles = next");
+	            	jInput.setText("UpdateFiles = ");
 	            	jResult.setText(List.get(0));
 	            	ListIndex = 0;
 	            	return;
@@ -881,7 +881,7 @@ public class MainForm extends JFrame {
 	            	tip = "[2/2][destMachine][destDepot][conditions]";
 	            	List.add(tip);
 	            	
-	            	jInput.setText("RemoveFolders = next");
+	            	jInput.setText("RemoveFolders = ");
 	            	jResult.setText(List.get(0));
 	            	ListIndex = 0;
 	            	return;
@@ -895,7 +895,7 @@ public class MainForm extends JFrame {
 	            	tip = "[2/2][destMachine][destDepot][conditions]";
 	            	List.add(tip);
 	            	
-	            	jInput.setText("RemoveFiles = next");
+	            	jInput.setText("RemoveFiles = ");
 	            	jResult.setText(List.get(0));
 	            	ListIndex = 0;
 	            	return;
@@ -969,7 +969,7 @@ public class MainForm extends JFrame {
 	            	tip = "[2/2][destMachine][destDepot][conditions]";
 	            	List.add(tip);
 	            	
-	            	jInput.setText("RemoveFolder = next");
+	            	jInput.setText("RemoveFolder = ");
 	            	jResult.setText(List.get(0));
 	            	ListIndex = 0;
 	            	return;
@@ -983,7 +983,7 @@ public class MainForm extends JFrame {
 	            	tip = "[2/2][destMachine][destDepot][conditions]";
 	            	List.add(tip);
 	            	
-	            	jInput.setText("RemoveFile = next");
+	            	jInput.setText("RemoveFile = ");
 	            	jResult.setText(List.get(0));
 	            	ListIndex = 0;
 	            	return;

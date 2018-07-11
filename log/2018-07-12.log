@@ -1,0 +1,11 @@
+00:10:59 = OTHERS|1531325459697|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:954]<-loadCFG[CFGFile.java:57]<-run[MainProcess.java:78]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
+00:37:10 = OTHERS|1531327030053|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:967]<-loadCFG[CFGFile.java:70]<-run[MainProcess.java:78]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
+00:38:24 = COMMUNICATOR_CONNECTION_CLOSED|1531327104257|Warning|Connection Already has been Closed|run[MainProcess.java:157]|Server[Remote Machine] Closed
+00:45:46 = OTHERS|1531327546442|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:967]<-loadCFG[CFGFile.java:70]<-run[MainProcess.java:78]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
+00:45:59 = COMMUNICATOR_CONNECTION_CLOSED|1531327559599|Warning|Connection Already has been Closed|run[MainProcess.java:157]|Server[Remote Machine] Closed
+00:47:14 = OTHERS|1531327634203|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:967]<-loadCFG[CFGFile.java:70]<-run[MainProcess.java:78]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
+01:05:06 = OTHERS|1531328706861|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:967]<-loadCFG[CFGFile.java:70]<-run[MainProcess.java:78]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
+01:06:26 = COMMUNICATOR_CONNECTION_CLOSED|1531328786070|Warning|Connection Already has been Closed|run[MainProcess.java:157]|Server[Remote Machine] Closed
+01:09:06 = OTHERS|1531328946407|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:967]<-loadCFG[CFGFile.java:70]<-run[MainProcess.java:78]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
+01:12:43 = COMMUNICATOR_CONNECTION_CLOSED|1531329163663|Warning|Connection Already has been Closed|run[MainProcess.java:157]|Server[Remote Machine] Closed
+01:16:28 = OTHERS|1531329388722|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:967]<-loadCFG[CFGFile.java:70]<-run[MainProcess.java:78]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.

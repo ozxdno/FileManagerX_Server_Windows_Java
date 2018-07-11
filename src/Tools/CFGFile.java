@@ -33,6 +33,7 @@ public class CFGFile {
 			BasicEnums.ErrorType.CFG_WRONG_CONTENT.register("Wrong StartType, No such StartType: " + c.getValue());
 			return false;
 		}
+		// 显示窗体
 		try {
 			for(int i=0; i<c.getItems().length; i++) {
 				if(c.getString(i).equals("ShowForm")) {
@@ -48,6 +49,18 @@ public class CFGFile {
 		Globals.Configurations.IsServer = type.equals(BasicEnums.StartType.Server);
 		Globals.Configurations.IsDepot = type.equals(BasicEnums.StartType.Depot);
 		Globals.Configurations.IsClient = type.equals(BasicEnums.StartType.Client);
+		
+		// 创建新文件
+		try {
+			for(int i=0; i<c.getItems().length; i++) {
+				if(c.getString(i).equals("New")) {
+					Tools.CFGFile.saveCFGCore(type, true);
+					return false;
+				}
+			}
+		} catch(Exception e) {
+			;
+		}
 		
 		boolean ok = true;
 		if(type.equals(BasicEnums.StartType.Server)) {
@@ -1230,13 +1243,13 @@ public class CFGFile {
 		Globals.Configurations.Next_MachineIndex = 0;
 		Globals.Configurations.Next_DepotIndex = 0;
 		Globals.Configurations.Next_DataBaseIndex = 0;
-		Globals.Configurations.This_MachineIndex = 0;
-		Globals.Configurations.This_UserIndex = 0;
+		//Globals.Configurations.This_MachineIndex = 0;
+		//Globals.Configurations.This_UserIndex = 0;
 		Globals.Configurations.Server_MachineIndex = 0;
 		Globals.Configurations.Server_UserIndex = 0;
 		
-		Globals.Datas.ThisMachine.setIndex(0);
-		Globals.Datas.ThisUser.setIndex(0);
+		//Globals.Datas.ThisMachine.setIndex(0);
+		//Globals.Datas.ThisUser.setIndex(0);
 		Globals.Datas.ServerMachine.setIndex(0);
 		Globals.Datas.ServerUser.setIndex(0);
 		
@@ -1400,9 +1413,9 @@ public class CFGFile {
 				txt.getContent().add(line);
 				line = "ServerDataBaseName = ";
 				txt.getContent().add(line);
-				line = "ServerDataBaseType = [You Must Fill]";
+				line = "ServerDataBaseType = ";
 				txt.getContent().add(line);
-				line = "ServerDataBaseUrl = [You Must Fill]";
+				line = "ServerDataBaseUrl = ";
 				txt.getContent().add(line);
 			}
 			if(BasicEnums.StartType.Depot.equals(type) || BasicEnums.StartType.Client.equals(type)) {

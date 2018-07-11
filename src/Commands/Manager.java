@@ -2986,6 +2986,7 @@ public class Manager implements Interfaces.ICommandsManager {
 	private boolean isDirectConnection() {
 		return this.connection.getServerMachineInfo().getIndex() != Globals.Configurations.Server_MachineIndex &&
 				this.connection.getClientMachineInfo().getIndex() != Globals.Configurations.Server_MachineIndex &&
+					this.connection != Globals.Datas.ServerConnection &&
 						!Globals.Configurations.IsServer;
 	}
 	
