@@ -74,4 +74,8 @@ public final class Configurations {
 	 * 操作的存储时间
 	 */
 	public static long TimeForOperatorIdle = 1*60*1000;
+	/**
+	 * 截屏所需时间
+	 */
+	public static long TimeForPrintScreen = 1000;
 }

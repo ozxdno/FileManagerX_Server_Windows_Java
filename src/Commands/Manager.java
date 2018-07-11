@@ -2401,6 +2401,50 @@ public class Manager implements Interfaces.ICommandsManager {
 		return true;
 	}
 	
+	public boolean printScreen() {
+		return this.printScreen(this.connection.getServerMachineInfo().getIndex());
+	}
+	public boolean printScreen(long destMachine) {
+		if(destMachine == Globals.Configurations.This_MachineIndex) {
+			this.reply = new Replies.Comman();
+			this.reply.setFailedReason("Print Self");
+			this.reply.setOK(false);
+			return false;
+		}
+		
+		if(!this.operateDepot(BasicEnums.OperateType.PRINT_SCREEN, destMachine, 0, "", "")) {
+			return false;
+		}
+		
+		Tools.Time.sleepUntil(Globals.Configurations.TimeForPrintScreen);
+		
+		String exepath = Tools.Pathes.getExePath();
+		String scrpath = Tools.Pathes.getFolder_TMP_0_Screen() + "\\" + destMachine + ".png";
+		String relpath = "@" + scrpath.substring(exepath.length());
+		
+		Commands.Input cmd = new Commands.Input();
+		cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+		cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+		cmd.getBasicMessagePackage().setSourMachineIndex(Globals.Configurations.This_MachineIndex);
+		cmd.getBasicMessagePackage().setDestMachineIndex(destMachine);
+		cmd.setSourUrl(relpath);
+		cmd.setDestUrl(scrpath);
+		cmd.setFinishedBytes(0);
+		cmd.setTotalBytes(0);
+		cmd.setCover(true);
+		
+		this.reply = swre.execute(cmd.output());
+		if(this.reply != null && !(reply instanceof Replies.Input)) {
+			BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+			this.reply = null;
+			return false;
+		}
+		if(reply == null || !reply.isOK()) {
+			return false;
+		}
+		return true;
+	}
+	
 	public boolean operateDepot(BasicEnums.OperateType operateType, long destDepot, String sourUrl, String destUrl) {
 		return this.operateDepot(
 				operateType,

@@ -157,7 +157,7 @@ public class Input extends Comman implements Interfaces.ICommands {
 			this.reply();
 			return false;
 		}
-		if(!this.isExistDest_MachineIndex_DepotIndex()) {
+		if(!this.isDestMachineIndexExist()) {
 			this.reply();
 			return false;
 		}
@@ -172,6 +172,10 @@ public class Input extends Comman implements Interfaces.ICommands {
 			}
 		}
 		if(this.getBasicMessagePackage().getDestMachineIndex() == Globals.Configurations.This_MachineIndex) {
+			if(sourUrl != null && sourUrl.length() > 0 && sourUrl.charAt(0) == '@') {
+				this.sourUrl = Tools.Pathes.getExePath() + sourUrl.substring(1);
+			}
+			
 			java.io.File sourFile = new java.io.File(this.sourUrl);
 			if(!sourFile.exists()) {
 				this.getReply().setFailedReason("Sour File Not Exist");

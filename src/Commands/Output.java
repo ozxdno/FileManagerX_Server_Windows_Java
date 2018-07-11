@@ -156,12 +156,15 @@ public class Output extends Comman implements Interfaces.ICommands {
 			this.reply();
 			return false;
 		}
-		if(!this.isExistDest_MachineIndex_DepotIndex()) {
+		if(!this.isDestMachineIndexExist()) {
 			this.reply();
 			return false;
 		}
 		
 		if(this.getBasicMessagePackage().getDestMachineIndex() == Globals.Configurations.This_MachineIndex) {
+			if(destUrl != null && destUrl.length() > 0 && destUrl.charAt(0) == '@') {
+				this.destUrl = Tools.Pathes.getExePath() + destUrl.substring(1);
+			}
 			java.io.File destFile = new java.io.File(this.destUrl);
 			if(destFile.exists() && !this.cover && destFile.isDirectory()) {
 				this.getReply().setFailedReason("Dest File Existed");

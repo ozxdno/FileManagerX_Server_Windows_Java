@@ -50,6 +50,12 @@ public class Pathes {
 	public final static java.lang.String getFolder_TMP() {
 		return getExePath() + "\\tmp";
 	}
+	public final static java.lang.String getFolder_TMP_0() {
+		return getFolder_TMP() + "\\0";
+	}
+	public final static java.lang.String getFolder_TMP_0_Screen() {
+		return getFolder_TMP_0() + "\\Screen";
+	}
 	
 	public final static java.lang.String getFile_CFG() {
 		//return getFolder_CFG() + "\\FileManagerX_Server_TXT.cfg";
@@ -123,6 +129,16 @@ public class Pathes {
 		dm.setUncheck(true);
 		return dm.createFolder(getFolder_TMP());
 	}
+	public final static boolean createFolder_TMP_0() {
+		Interfaces.IDepotManager dm = Factories.DepotManagerFactory.createDepotManager();
+		dm.setUncheck(true);
+		return dm.createFolder(getFolder_TMP_0());
+	}
+	public final static boolean createFolder_TMP_0_Screen() {
+		Interfaces.IDepotManager dm = Factories.DepotManagerFactory.createDepotManager();
+		dm.setUncheck(true);
+		return dm.createFolder(getFolder_TMP_0_Screen());
+	}
 	
 	public final static boolean createAll() {
 		boolean ok = true;
@@ -131,6 +147,9 @@ public class Pathes {
 		ok &= createFolder_LOG();
 		ok &= createFolder_DBS();
 		ok &= createFolder_TMP();
+		
+		ok &= createFolder_TMP_0();
+		ok &= createFolder_TMP_0_Screen();
 		
 		return ok;
 	}

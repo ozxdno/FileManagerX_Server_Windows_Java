@@ -87,6 +87,12 @@ public class OperateDepot extends Comman implements Interfaces.ICommands {
 		}
 		
 		if(this.isArriveTargetMachine()) {
+			DepotManager.Operator existOp = Globals.Datas.Operators.search(this.operator.getIndex());
+			if(existOp != null) {
+				this.getReply().setOperator(existOp);
+				this.reply();
+				return true;
+			}
 			this.operator.startProcess();
 			this.getReply().setOperator(operator);
 			this.reply();

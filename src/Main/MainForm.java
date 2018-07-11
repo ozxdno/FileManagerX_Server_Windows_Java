@@ -179,6 +179,7 @@ public class MainForm extends JFrame {
 	            	List.add("    Restart    r");
 	            	List.add("    Test    t");
 	            	List.add("    TimeForExecute    tfe");
+	            	List.add("    PrintScreen    ps");
 	            	List.add("    OperateDepot    od");
 	            	List.add("    Input    i");
 	            	List.add("    Output    o");
@@ -289,6 +290,20 @@ public class MainForm extends JFrame {
 	            	List.add(tip);
 	            	
 	            	jInput.setText("TimeForExecute = ");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("printscreen") || f.equals("ps")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/2][No Args]";
+	            	List.add(tip);
+	            	tip = "[2/2][destMachineIndex]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("PrintScreen = ");
 	            	jResult.setText(List.get(0));
 	            	ListIndex = 0;
 	            	return;
@@ -999,7 +1014,7 @@ public class MainForm extends JFrame {
 	        			;
 	        		}
 	        		
-	        		if(CmdName.equals("Input") || CmdName.equals("Output")) {
+	        		if(CmdName.equals("Input") || CmdName.equals("Output")|| CmdName.equals("PrintScreen")) {
 	        			Interfaces.IClientConnection con = Factories.CommunicatorFactory.createRunningClientConnection(
 	        					destMachine,
 	        					sourMachine
@@ -1037,7 +1052,7 @@ public class MainForm extends JFrame {
 	        			cm = con.getCommandsManager();
 	        		}
 	        	}
-	        	else if(CmdName.equals("Input") || CmdName.equals("Output")) {
+	        	else if(CmdName.equals("Input") || CmdName.equals("Output") || CmdName.equals("PrintScreen")) {
 	        		Interfaces.IClientConnection con = Factories.CommunicatorFactory.createRunningClientConnection();
         			if(con == null) {
     					jResult.setText("Create Connection Failed");
@@ -1084,6 +1099,20 @@ public class MainForm extends JFrame {
 	        		 if(CmdName.equals("TimeForExecute")) {
 		        			if(cmdcfg.getItemsSize() == 3) {
 		 	        			boolean ok = cm.timeForExecute(cmdcfg.getLong(0), cmdcfg.getLong(1), cmdcfg.getLong(2));
+		 	        			String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+		 	        			jResult.setText(ok ? "Successed" : "Failed: " + reason);
+		 	        			return;
+		 	        		}
+		 	            }
+	        		 if(CmdName.equals("PrintScreen")) {
+		        			if(cmdcfg.getItemsSize() == 0) {
+		 	        			boolean ok = cm.printScreen();
+		 	        			String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+		 	        			jResult.setText(ok ? "Successed" : "Failed: " + reason);
+		 	        			return;
+		 	        		}
+		        			if(cmdcfg.getItemsSize() == 1) {
+		 	        			boolean ok = cm.printScreen(cmdcfg.getLong(0));
 		 	        			String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
 		 	        			jResult.setText(ok ? "Successed" : "Failed: " + reason);
 		 	        			return;

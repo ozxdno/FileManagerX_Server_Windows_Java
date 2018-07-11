@@ -123,6 +123,9 @@ public interface ICommandsManager {
 	
 	public boolean timeForExecute(long destMachine, long receiveWaitTicks, long sendWaitTicks);
 	
+	public boolean printScreen();
+	public boolean printScreen(long destMachine);
+	
 	public boolean operateDepot(BasicEnums.OperateType operateType, long destDepot, String sourUrl, String destUrl);
 	public boolean operateDepot(DepotManager.Operator operator);
 	public boolean operateDepot(BasicEnums.OperateType operateType, long destmachine, long destDepot, String sourUrl, String destUrl);

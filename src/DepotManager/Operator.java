@@ -437,6 +437,10 @@ public class Operator extends Thread implements Interfaces.IPublic, Interfaces.I
 		if(this.type.equals(BasicEnums.OperateType.OPEN_IN_SYSTEM)) {
 			return dm.openInSystem(destUrl);
 		}
+		if(this.type.equals(BasicEnums.OperateType.PRINT_SCREEN)) {
+			return dm.printScreen();
+		}
+		
 		if(this.type.equals(BasicEnums.OperateType.COPY_FOLDER)) {
 			return dm.copyDirectory(sourUrl, destUrl);
 		}

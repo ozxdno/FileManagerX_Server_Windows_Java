@@ -59,6 +59,21 @@ public class DepotManager implements Interfaces.IDepotManager{
 			return false;
 		}
 	}
+	public boolean printScreen() {
+		try {
+			java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit().getScreenSize(); // Size of Screen
+			java.awt.Rectangle cutRect = new java.awt.Rectangle(screenSize); // Range of PrintScreen
+			java.awt.Robot robot = new java.awt.Robot();
+			java.awt.image.BufferedImage image = robot.createScreenCapture(cutRect);
+			
+			String savePath = Tools.Pathes.getFolder_TMP_0_Screen() + "\\" + Globals.Configurations.This_MachineIndex + ".png";
+			javax.imageio.ImageIO.write(image, "png", new java.io.File(savePath));
+			return true;
+		} catch(Exception e) {
+			BasicEnums.ErrorType.OTHERS.register(e.toString());
+			return false;
+		}
+	}
 
 	public boolean renameFile(String sourUrl, String targetName) {
 		if(!this.isDepotRight()) {
