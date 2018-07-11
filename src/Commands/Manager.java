@@ -2226,10 +2226,16 @@ public class Manager implements Interfaces.ICommandsManager {
 		BasicModels.MachineInfo machine = this.queryMachine("[&] Name = '" + this.connection.getClientMachineInfo().getName() + "'");
 		if(machine != null) {
 			if(machine.getIndex() != this.connection.getClientMachineInfo().getIndex()) {
-				BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register(
-						"Login Failed",
-						"MachineName Existed, But Index is Not Equal");
-				return false;
+				if(machine.getIp().equals(this.connection.getClientMachineInfo().getIp()) && 
+						machine.getPort() == this.connection.getClientMachineInfo().getPort()) {
+					this.connection.getClientMachineInfo().setIndex(machine.getIndex());
+				}
+				else {
+					BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register(
+							"Login Failed",
+							"MachineName Existed, But Index is Not Equal");
+					return false;
+				}
 			}
 		}
 		
