@@ -19,6 +19,8 @@ public interface IConnection {
 	public boolean setFileConnector(Interfaces.IFileConnector fileConnector);
 	
 	public boolean setCloseServer(boolean closeServer);
+	public boolean setExchange(boolean exchange);
+	
 	public boolean setActiveExecutor(boolean active);
 	public boolean setContinueReceiveString();
 	public boolean setContinueSendString();
@@ -59,6 +61,8 @@ public interface IConnection {
 	public boolean isBusy();
 	
 	public boolean getCloseServer();
+	public boolean getExchange();
+	
 	public boolean isActiveExecutor();
 	public boolean isContinueReceiveString();
 	public boolean isContinueSendString();

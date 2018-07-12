@@ -480,7 +480,7 @@ class Scanner extends Thread {
 	public synchronized void removeIdleConnections() {
 		for(int i=this.connections.size() - 1; i>=0; i--) {
 			if(!this.connections.get(i).isRunning()) {
-				this.connections.get(i).disconnect();
+				//this.connections.get(i).disconnect();
 				this.connections.remove(i);
 				continue;
 			}

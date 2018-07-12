@@ -26,6 +26,16 @@ public class Executor implements Interfaces.ICommandExecutor {
 			cs.setConnection(connection);
 			return cs.input(connection.getReceiveString()) != null && cs.execute();
 		}
+		if(c.getField().equals("Exchange")) {
+			Commands.Exchange cs = new Commands.Exchange();
+			cs.setConnection(connection);
+			return cs.input(connection.getReceiveString()) != null && cs.execute();
+		}
+		if(c.getField().equals("CreateConnection")) {
+			Commands.CreateConnection cs = new Commands.CreateConnection();
+			cs.setConnection(connection);
+			return cs.input(connection.getReceiveString()) != null && cs.execute();
+		}
 		if(c.getField().equals("Restart")) {
 			Commands.Restart r = new Commands.Restart();
 			r.setConnection(connection);
@@ -68,6 +78,11 @@ public class Executor implements Interfaces.ICommandExecutor {
 		}
 		if(c.getField().equals("LoginType")) {
 			Commands.LoginType lt = new Commands.LoginType();
+			lt.setConnection(connection);
+			return lt.input(connection.getReceiveString()) != null && lt.execute();
+		}
+		if(c.getField().equals("LoginIndex")) {
+			Commands.LoginIndex lt = new Commands.LoginIndex();
 			lt.setConnection(connection);
 			return lt.input(connection.getReceiveString()) != null && lt.execute();
 		}

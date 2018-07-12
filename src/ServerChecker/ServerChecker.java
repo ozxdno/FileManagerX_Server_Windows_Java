@@ -50,6 +50,9 @@ public class ServerChecker implements Interfaces.IServerChecker {
 	
 	public boolean check() {
 		
+		if(!this.checkDataBaseAndTables()) {
+			return false;
+		}
 		if(!this.checkIndex()) {
 			return false;
 		}
@@ -68,6 +71,17 @@ public class ServerChecker implements Interfaces.IServerChecker {
 		if(!this.checkInvitations()) {
 			return false;
 		}
+		
+		return true;
+	}
+	
+	public boolean checkDataBaseAndTables() {
+		if(this.dbmanager == null) {
+			return false;
+		}
+		
+		this.dbmanager.createDataBase();
+		this.dbmanager.createServerTables();
 		
 		return true;
 	}
@@ -159,18 +173,41 @@ public class ServerChecker implements Interfaces.IServerChecker {
 		if(this.dbmanager == null) {
 			return false;
 		}
+		
+		BasicCollections.DataBaseInfos dbs = this.dbmanager.QueryDataBaseInfos("");
+		BasicCollections.DepotInfos ds = this.dbmanager.QueryDepotInfos("");
+		for(int i=0; i<ds.size(); i++) {
+			BasicModels.DepotInfo d = ds.getContent().get(i);
+			BasicModels.DataBaseInfo db = dbs.search(d.getDBIndex());
+			if(db == null) {
+				this.dbmanager.removeDepotInfo(d);
+			}
+		}
+		
 		return true;
 	}
 	public boolean checkDataBases() {
 		if(this.dbmanager == null) {
 			return false;
 		}
+		
+		BasicCollections.DataBaseInfos dbs = this.dbmanager.QueryDataBaseInfos("");
+		BasicCollections.DepotInfos ds = this.dbmanager.QueryDepotInfos("");
+		for(int i=0; i<dbs.size(); i++) {
+			BasicModels.DataBaseInfo db = dbs.getContent().get(i);
+			BasicModels.DepotInfo d = ds.search(db.getDepotIndex());
+			if(d == null) {
+				this.dbmanager.removeDataBaseInfo(db);
+			}
+		}
+		
 		return true;
 	}
 	public boolean checkUsers() {
 		if(this.dbmanager == null) {
 			return false;
 		}
+		
 		return true;
 	}
 	public boolean checkInvitations() {

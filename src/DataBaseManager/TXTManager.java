@@ -184,45 +184,73 @@ public class TXTManager implements Interfaces.IDBManager {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public boolean createServerTables() {
+		boolean ok = true;
 		if(!this.createTable_MachineInfo()) {
-			return false;
+			//return false;
+			ok = false;
 		}
 		if(!this.createTable_DepotInfo()) {
-			return false;
+			//return false;
+			ok = false;
 		}
 		if(!this.createTable_DataBaseInfo()) {
-			return false;
+			//return false;
+			ok = false;
 		}
 		if(!this.createTable_Users()) {
-			return false;
+			//return false;
+			ok = false;
 		}
 		if(!this.createTable_Invitations()) {
-			return false;
+			//return false;
+			ok = false;
 		}
-		return true;
+		return ok;
 	}
 	public boolean createDepotTables() {
+		boolean ok = true;
 		if(!this.createTable_Folders()) {
-			return false;
+			//return false;
+			ok = false;
 		}
 		if(!this.createTable_Files()) {
-			return false;
+			//return false;
+			ok = false;
 		}
 		
 		if(!this.createTable_Pictures()) {
-			return false;
+			//return false;
+			ok = false;
 		}
 		if(!this.createTable_Gifs()) {
-			return false;
+			//return false;
+			ok = false;
 		}
 		if(!this.createTable_Musics()) {
-			return false;
+			//return false;
+			ok = false;
 		}
 		if(!this.createTable_Videos()) {
+			//return false;
+			ok = false;
+		}
+		return ok;
+	}
+	
+	public boolean createDataBase() {
+		try {
+			String url = this.getDBInfo().getUrl();
+			java.io.File database = new java.io.File(url);
+			if(!database.exists() || !database.isDirectory()) {
+				return database.mkdirs();
+			}
+			return true;
+		} catch(Exception e) {
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register("Create DataBase Failed");
 			return false;
 		}
-		return true;
 	}
+	
 	public boolean createTable(String tableName, String[] columns, String[] types) {
 		if(tableName == null || tableName.length() == 0) {
 			return false;
@@ -275,45 +303,70 @@ public class TXTManager implements Interfaces.IDBManager {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public boolean deleteServerTables() {
+		boolean ok = true;
 		if(!this.deleteTable_MachineInfo()) {
-			return false;
+			//return false;
+			ok = false;
 		}
 		if(!this.deleteTable_DepotInfo()) {
-			return false;
+			//return false;
+			ok = false;
 		}
 		if(!this.deleteTable_DataBaseInfo()) {
-			return false;
+			//return false;
+			ok = false;
 		}
 		if(!this.deleteTable_Users()) {
-			return false;
+			//return false;
+			ok = false;
 		}
 		if(!this.deleteTable_Invitations()) {
-			return false;
+			//return false;
+			ok = false;
 		}
-		return true;
+		return ok;
 	}
 	public boolean deleteDepotTables() {
+		boolean ok = true;
 		if(!this.deleteTable_Folders()) {
-			return false;
+			//return false;
+			ok = false;
 		}
 		if(!this.deleteTable_Files()) {
-			return false;
+			//return false;
+			ok = false;
 		}
 		
 		if(!this.deleteTable_Pictures()) {
-			return false;
+			//return false;
+			ok = false;
 		}
 		if(!this.deleteTable_Gifs()) {
-			return false;
+			//return false;
+			ok = false;
 		}
 		if(!this.deleteTable_Musics()) {
-			return false;
+			//return false;
+			ok = false;
 		}
 		if(!this.deleteTable_Videos()) {
+			//return false;
+			ok = false;
+		}
+		return ok;
+	}
+	
+	public boolean deleteDataBase() {
+		try {
+			Interfaces.IDepotManager dm = this.getDBInfo().getDepotInfo().getManager();
+			dm.setUncheck(true);
+			return dm.deleteDirectory(this.dbInfo.getUrl());
+		} catch(Exception e) {
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register("Delete DataBase Failed");
 			return false;
 		}
-		return true;
 	}
+	
 	public boolean deleteTable(String tableName) {
 		java.io.File f = new java.io.File(dbInfo.getUrl() + "\\" + tableName + ".txt");
 		if(!f.exists()) {

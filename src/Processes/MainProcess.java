@@ -79,10 +79,22 @@ public class MainProcess extends Thread implements Interfaces.IProcess {
 				operateOK &= cfgOK;
 			}
 			
+			// create a server connection
+			if(operateOK && Globals.Configurations.NetType.equals(BasicEnums.NetType.ONE_IN_WWW) &&
+					!Globals.Configurations.IsServer) {
+				Interfaces.IClientConnection con = Factories.CommunicatorFactory.createRunningClientConnection();
+				con.setUser(Globals.Datas.ThisUser);
+				con.setType(BasicEnums.ConnectionType.TRANSPORT_COMMAND);
+				con.getCommandsManager().loginConnection();
+				con.getCommandsManager().exchange();
+			}
+			
 			// Set Form Title
 			if(operateOK && Globals.Datas.Form_Main != null) {
 				Globals.Datas.Form_Main.setTitle(
-						"FileManagerX - " + 
+						"FileManagerX" + 
+						" [" + Globals.Configurations.This_MachineIndex + "]" +
+						" - " + 
 						Globals.Configurations.StartType.toString() + " : " + 
 						Globals.Datas.ThisUser.getNickName()
 						);
@@ -163,6 +175,8 @@ public class MainProcess extends Thread implements Interfaces.IProcess {
 					Globals.Datas.Errors.save(100);
 					
 					Globals.Datas.Operators.removeIdleOperator();
+					
+					Globals.Datas.Client.removeIdleConnections();
 				}
 			}
 			

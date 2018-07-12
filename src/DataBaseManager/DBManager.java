@@ -90,6 +90,11 @@ public class DBManager implements Interfaces.IDBManager {
 	public boolean createDepotTables() {
 		return manager.createDepotTables();
 	}
+	
+	public boolean createDataBase() {
+		return manager.createDataBase();
+	}
+	
 	public boolean createTable(String tableName, String[] columns, String[] types) {
 		return manager.createTable(tableName, columns, types);
 	}
@@ -136,6 +141,11 @@ public class DBManager implements Interfaces.IDBManager {
 	public boolean deleteDepotTables() {
 		return manager.deleteDepotTables();
 	}
+	
+	public boolean deleteDataBase() {
+		return manager.deleteDataBase();
+	}
+	
 	public boolean deleteTable(String tableName) {
 		return manager.deleteTable(tableName);
 	}

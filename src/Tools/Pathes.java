@@ -47,6 +47,9 @@ public class Pathes {
 	public final static java.lang.String getFolder_DBS() {
 		return getExePath() + "\\dbs";
 	}
+	public final static java.lang.String getFolder_DBS(long depotIndex) {
+		return getFolder_DBS() + "\\" + depotIndex;
+	}
 	public final static java.lang.String getFolder_TMP() {
 		return getExePath() + "\\tmp";
 	}
@@ -123,6 +126,11 @@ public class Pathes {
 		Interfaces.IDepotManager dm = Factories.DepotManagerFactory.createDepotManager();
 		dm.setUncheck(true);
 		return dm.createFolder(getFolder_DBS());
+	}
+	public final static boolean createFolder_DBS(long depotIndex) {
+		Interfaces.IDepotManager dm = Factories.DepotManagerFactory.createDepotManager();
+		dm.setUncheck(true);
+		return dm.createFolder(getFolder_DBS(depotIndex));
 	}
 	public final static boolean createFolder_TMP() {
 		Interfaces.IDepotManager dm = Factories.DepotManagerFactory.createDepotManager();

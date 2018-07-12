@@ -110,6 +110,7 @@ public interface ICommandsManager {
 	public boolean loginUser();
 	public boolean loginMachine();
 	public boolean loginType();
+	public boolean loginIndex();
 	
 	public boolean test();
 	public String test(String str);
@@ -125,6 +126,9 @@ public interface ICommandsManager {
 	
 	public boolean printScreen();
 	public boolean printScreen(long destMachine);
+	
+	public boolean exchange();
+	public boolean createConnection(long destMachine, BasicModels.MachineInfo machineInfo);
 	
 	public boolean operateDepot(BasicEnums.OperateType operateType, long destDepot, String sourUrl, String destUrl);
 	public boolean operateDepot(DepotManager.Operator operator);

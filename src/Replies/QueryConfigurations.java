@@ -16,6 +16,8 @@ public class QueryConfigurations extends Comman implements Interfaces.IReplies {
 	private long Server_MachineIndex = 0;
 	private long Server_UserIndex = 0;
 	
+	private BasicEnums.NetType netType;
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean setNext_FileIndex(long nextIndex) {
@@ -84,6 +86,14 @@ public class QueryConfigurations extends Comman implements Interfaces.IReplies {
 		return true;
 	}
 	
+	public boolean setNetType(BasicEnums.NetType type) {
+		if(type == null) {
+			return false;
+		}
+		this.netType = type;
+		return true;
+	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public long getNext_FileIndex() {
@@ -116,6 +126,10 @@ public class QueryConfigurations extends Comman implements Interfaces.IReplies {
 		return this.Server_UserIndex;
 	}
 	
+	public BasicEnums.NetType getNetType() {
+		return this.netType;
+	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public QueryConfigurations() {
@@ -133,6 +147,8 @@ public class QueryConfigurations extends Comman implements Interfaces.IReplies {
 		
 		Server_MachineIndex = 0;
 		Server_UserIndex = 0;
+		
+		netType = BasicEnums.NetType.ONE_IN_WWW;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -157,6 +173,7 @@ public class QueryConfigurations extends Comman implements Interfaces.IReplies {
 		c.addToBottom(this.This_UserIndex);
 		c.addToBottom(this.Server_MachineIndex);
 		c.addToBottom(this.Server_UserIndex);
+		c.addToBottom(this.netType.toString());
 		return c.output();
 	}
 	public String input(String in) {
@@ -184,6 +201,8 @@ public class QueryConfigurations extends Comman implements Interfaces.IReplies {
 		if(!c.getIsOK()) { return null; }
 		this.Server_UserIndex = c.fetchFirstLong();
 		if(!c.getIsOK()) { return null; }
+		this.netType = BasicEnums.NetType.valueOf(c.fetchFirstString());
+		if(!c.getIsOK()) { return null; }
 		
 		return c.output();
 	}
@@ -199,6 +218,7 @@ public class QueryConfigurations extends Comman implements Interfaces.IReplies {
 		this.Server_UserIndex = qc.Server_UserIndex;
 		this.This_MachineIndex = qc.This_MachineIndex;
 		this.This_UserIndex = qc.This_UserIndex;
+		this.netType = qc.netType;
 	}
 	public void copyValue(Object o) {
 		super.copyValue(o);
@@ -212,6 +232,7 @@ public class QueryConfigurations extends Comman implements Interfaces.IReplies {
 		this.Server_UserIndex = qc.Server_UserIndex;
 		this.This_MachineIndex = qc.This_MachineIndex;
 		this.This_UserIndex = qc.This_UserIndex;
+		this.netType = qc.netType;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

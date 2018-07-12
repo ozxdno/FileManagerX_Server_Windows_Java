@@ -128,45 +128,75 @@ public class SQLManager implements Interfaces.IDBManager{
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public boolean createServerTables() {
+		boolean ok = true;
 		if(!this.createTable_MachineInfo()) {
-			return false;
+			//return false;
+			ok = false;
 		}
 		if(!this.createTable_DepotInfo()) {
-			return false;
+			//return false;
+			ok = false;
 		}
 		if(!this.createTable_DataBaseInfo()) {
-			return false;
+			//return false;
+			ok = false;
 		}
 		if(!this.createTable_Users()) {
-			return false;
+			//return false;
+			ok = false;
 		}
 		if(!this.createTable_Invitations()) {
-			return false;
+			//return false;
+			ok = false;
 		}
-		return true;
+		return ok;
 	}
 	public boolean createDepotTables() {
+		boolean ok = true;
 		if(!this.createTable_Folders()) {
-			return false;
+			//return false;
+			ok = false;
 		}
 		if(!this.createTable_Files()) {
-			return false;
+			//return false;
+			ok = false;
 		}
 		
 		if(!this.createTable_Pictures()) {
-			return false;
+			//return false;
+			ok = false;
 		}
 		if(!this.createTable_Gifs()) {
-			return false;
+			//return false;
+			ok = false;
 		}
 		if(!this.createTable_Musics()) {
-			return false;
+			//return false;
+			ok = false;
 		}
 		if(!this.createTable_Videos()) {
+			//return false;
+			ok = false;
+		}
+		return ok;
+	}
+	
+	public boolean createDataBase() {
+		try {
+			int idx = this.dbInfo.getUrl().lastIndexOf('\\');
+			if(idx == -1) {
+				return false;
+			}
+			String dbname = this.dbInfo.getUrl().substring(idx+1);
+			String exp = "CREATE DATABASE IF NOT EXISTS `"+ dbname + "`";
+			statement.executeUpdate(exp);
+			return true;
+		} catch(Exception e) {
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register("Create DataBase Failed", e.toString());
 			return false;
 		}
-		return true;
 	}
+	
 	public boolean createTable(String tableName, String[] columns, String[] types) {
 		if(tableName == null || columns == null || types == null) {
 			return false;
@@ -196,7 +226,8 @@ public class SQLManager implements Interfaces.IDBManager{
 			}
 			exp = exp.substring(0, exp.length()-2);
 			exp += ");";
-			return statement.executeUpdate(exp) == 0;
+			statement.executeUpdate(exp);
+			return true;
 		} catch(Exception e) {
 			BasicEnums.ErrorType.DB_OPERATE_FAILED.register("Create Table " + tableName + " Failed", e.toString());
 			return false;
@@ -457,45 +488,76 @@ public class SQLManager implements Interfaces.IDBManager{
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean deleteServerTables() {
+		boolean ok = true;
 		if(!this.deleteTable_MachineInfo()) {
-			return false;
+			//return false;
+			ok = false;
 		}
 		if(!this.deleteTable_DepotInfo()) {
-			return false;
+			//return false;
+			ok = false;
 		}
 		if(!this.deleteTable_DataBaseInfo()) {
-			return false;
+			//return false;
+			ok = false;
 		}
 		if(!this.deleteTable_Users()) {
-			return false;
+			//return false;
+			ok = false;
 		}
 		if(!this.deleteTable_Invitations()) {
-			return false;
+			//return false;
+			ok = false;
 		}
-		return true;
+		return ok;
 	}
 	public boolean deleteDepotTables() {
+		boolean ok = true;
 		if(!this.deleteTable_Folders()) {
-			return false;
+			//return false;
+			ok = false;
 		}
 		if(!this.deleteTable_Files()) {
-			return false;
+			//return false;
+			ok = false;
 		}
 		
 		if(!this.deleteTable_Pictures()) {
-			return false;
+			//return false;
+			ok = false;
 		}
 		if(!this.deleteTable_Gifs()) {
-			return false;
+			//return false;
+			ok = false;
 		}
 		if(!this.deleteTable_Musics()) {
-			return false;
+			//return false;
+			ok = false;
 		}
 		if(!this.deleteTable_Videos()) {
+			//return false;
+			ok = false;
+		}
+		return ok;
+	}
+	
+	public boolean deleteDataBase() {
+		
+		try {
+			int idx = this.dbInfo.getUrl().lastIndexOf('\\');
+			if(idx == -1) {
+				return false;
+			}
+			String dbname = this.dbInfo.getUrl().substring(idx+1);
+			String exp = "DROP DATABASE IF EXISTS `" + dbname + "`";
+			statement.executeUpdate(exp);
+			return true;
+		} catch(Exception e) {
+			BasicEnums.ErrorType.DB_OPERATE_FAILED.register("Create DataBase Failed", e.toString());
 			return false;
 		}
-		return true;
 	}
+	
 	public boolean deleteTable(String tableName) {
 		String exp = "DROP TABLE " + tableName;
 		try {
@@ -529,16 +591,16 @@ public class SQLManager implements Interfaces.IDBManager{
 	}
 	
 	public boolean deleteTable_Pictures() {
-		return this.deleteTable("Users");
+		return this.deleteTable("Pictures");
 	}
 	public boolean deleteTable_Gifs() {
-		return this.deleteTable("Users");
+		return this.deleteTable("Gifs");
 	}
 	public boolean deleteTable_Musics() {
-		return this.deleteTable("Users");
+		return this.deleteTable("Musics");
 	}
 	public boolean deleteTable_Videos() {
-		return this.deleteTable("Users");
+		return this.deleteTable("Videos");
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

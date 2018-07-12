@@ -23,6 +23,8 @@ public class ServerConnection extends Thread implements Interfaces.IServerConnec
 	private volatile boolean busy;
 	
 	private boolean closeServer;
+	private boolean exchange;
+	
 	private boolean activeEexcutor;
 	private boolean continueReceiveString;
 	private boolean continueSendString;
@@ -88,8 +90,8 @@ public class ServerConnection extends Thread implements Interfaces.IServerConnec
 			BasicEnums.ErrorType.COMMON_SET_WRONG_VALUE.register("name is Empty");
 			return false;
 		}
+		
 		this.name = name;
-		super.setName("TCP Server: " + name);
 		return true;
 	}
 	public boolean setConnectionName() {
@@ -129,6 +131,11 @@ public class ServerConnection extends Thread implements Interfaces.IServerConnec
 		this.closeServer = closeServer;
 		return true;
 	}
+	public boolean setExchange(boolean exchange) {
+		this.exchange = exchange;
+		return true;
+	}
+	
 	public boolean setActiveExecutor(boolean active) {
 		this.activeEexcutor = active;
 		return true;
@@ -287,6 +294,10 @@ public class ServerConnection extends Thread implements Interfaces.IServerConnec
 	public boolean getCloseServer() {
 		return this.closeServer;
 	}
+	public boolean getExchange() {
+		return this.exchange;
+	}
+	
 	public boolean isActiveExecutor() {
 		return this.activeEexcutor;
 	}
@@ -351,6 +362,8 @@ public class ServerConnection extends Thread implements Interfaces.IServerConnec
 		this.busy = false;
 		
 		this.closeServer = false;
+		this.exchange = false;
+		
 		this.activeEexcutor = true;
 		this.continueReceiveString = true;
 		this.continueSendString = false;
@@ -375,6 +388,12 @@ public class ServerConnection extends Thread implements Interfaces.IServerConnec
 			return;
 		}
 		
+		try {
+			super.setName("<-" + this.socket.getInetAddress().getHostAddress() + ":" + this.socket.getPort());
+		} catch(Exception e) {
+			BasicEnums.ErrorType.OTHERS.register("Set Name Failed", e.toString());
+		}
+		
 		BufferedReader br = null;
 		PrintWriter pw = null;
 		DataInputStream dis = null;
@@ -389,7 +408,7 @@ public class ServerConnection extends Thread implements Interfaces.IServerConnec
 			return;
 		}
 		
-		while(!abort && !socket.isClosed() && !closeServer) {
+		while(!abort && !socket.isClosed() && !closeServer && !exchange) {
 			try {
 				if(this.continueReceiveString) {
 					this.setLastOperationTime();
@@ -516,19 +535,20 @@ public class ServerConnection extends Thread implements Interfaces.IServerConnec
 				break;
 			}
 		}
-		running = false;
-		try {
-			this.fileConnector.close();
-			br.close();
-			pw.close();
-			dis.close();
-			dos.close();
-		} catch(Exception e) {
-			;
+		
+		if(this.exchange) {
+			this.toClientConnection();
+			this.running = false;
+			Globals.Datas.Server.removeIdleConnections();
 		}
-		Globals.Datas.Server.removeIdleConnections();
-		if(closeServer) {
-			Globals.Datas.Server.disconnect();
+		else {
+			running = false;
+			this.fileConnector.close();
+			this.disconnect();
+			Globals.Datas.Server.removeIdleConnections();
+			if(closeServer) {
+				Globals.Datas.Server.disconnect();
+			}
 		}
 	}
 	
@@ -565,6 +585,24 @@ public class ServerConnection extends Thread implements Interfaces.IServerConnec
 		} catch(Exception e) {
 			;
 		}
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	private boolean toClientConnection() {
+		Interfaces.IClientConnection con = Factories.CommunicatorFactory.createClientConnection();
+		con.setSocket(socket);
+		this.copyTo(con);
+		con.connect();
+		return con.isRunning();
+	}
+	private void copyTo(Interfaces.IClientConnection con) {
+		con.setServerMachineInfo(clientMachineInfo);
+		con.setClientMachineInfo(serverMachineInfo);
+		con.setType(type);
+		con.setConnectionName(name);
+		con.setIndex(index);
+		con.setUser(user);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

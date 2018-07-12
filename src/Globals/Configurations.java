@@ -3,6 +3,8 @@ package Globals;
 public final class Configurations {
 	
 	public static BasicEnums.StartType StartType = BasicEnums.StartType.Client;
+	public static BasicEnums.NetType NetType = BasicEnums.NetType.ONE_IN_WWW;
+	
 	public static boolean IsServer = false;
 	public static boolean IsDepot = false;
 	public static boolean IsClient = false;

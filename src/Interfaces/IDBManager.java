@@ -24,6 +24,9 @@ public interface IDBManager {
 
 	public boolean createServerTables();
 	public boolean createDepotTables();
+	
+	public boolean createDataBase();
+	
 	public boolean createTable(String tableName, String[] columns, String[] types);
 	public boolean createTable_Folders();
 	public boolean createTable_Files();
@@ -42,6 +45,9 @@ public interface IDBManager {
 
 	public boolean deleteServerTables();
 	public boolean deleteDepotTables();
+	
+	public boolean deleteDataBase();
+	
 	public boolean deleteTable(String tableName);
 	public boolean deleteTable_Folders();
 	public boolean deleteTable_Files();

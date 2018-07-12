@@ -95,6 +95,7 @@ public class QueryConfigurations extends Comman implements Interfaces.ICommands 
 		qc.setThis_UserIndex(Globals.Configurations.This_UserIndex);
 		qc.setServer_MachineIndex(Globals.Configurations.Server_MachineIndex);
 		qc.setServer_UserIndex(Globals.Configurations.Server_UserIndex);
+		qc.setNetType(Globals.Configurations.NetType);
 		
 		this.reply();
 		return qc.isOK();

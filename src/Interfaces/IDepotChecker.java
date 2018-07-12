@@ -9,6 +9,8 @@ public interface IDepotChecker {
 	public boolean initialize(Object infos);
 	public boolean check();
 	
+	public boolean checkDataBaseAndTables();
+	
 	public boolean checkFoldersAndFiles();
 	public boolean checkFileType();
 	public boolean checkPixes();

@@ -31,6 +31,25 @@ public class CommunicatorFactory {
 			BasicModels.MachineInfo serverMachine,
 			BasicModels.MachineInfo clientMachine) {
 		
+		if(Globals.Configurations.NetType.equals(BasicEnums.NetType.ONE_IN_WWW) && 
+			clientMachine.getIndex() == Globals.Configurations.Server_MachineIndex &&
+			Globals.Configurations.IsServer) {
+			
+			Interfaces.IClientConnection client = Globals.Datas.Client.search(serverMachine.getIndex());
+			if(client == null) {
+				return null;
+			}
+			boolean ok = client.getCommandsManager().createConnection(
+					serverMachine.getIndex(), clientMachine);
+			if(!ok) {
+				return null;
+			}
+			
+			int index = ((Replies.CreateConnection)(client.getCommandsManager().getReply())).getCreateConnection();
+			Interfaces.IClientConnection con = Globals.Datas.Client.search(index);
+			return con;
+		}
+		
 		Interfaces.IClientConnection con = createClientConnection();
 		con.setServerMachineInfo(serverMachine);
 		con.setClientMachineInfo(clientMachine);
@@ -62,16 +81,7 @@ public class CommunicatorFactory {
 			}
 		}
 		
-		Interfaces.IClientConnection con = createClientConnection();
-		con.setServerMachineInfo(sv);
-		con.setClientMachineInfo(ce);
-		con.setSocket();
-		con.connect();
-		if(!con.isRunning()) {
-			return null;
-		}
-		
-		return con;
+		return createRunningClientConnection(sv, ce);
 	}
 	public static final Interfaces.IClientConnection createRunningClientConnection() {
 		return createRunningClientConnection(

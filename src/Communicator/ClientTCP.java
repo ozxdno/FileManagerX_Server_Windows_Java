@@ -128,7 +128,7 @@ public class ClientTCP implements IClientLinker{
 	public synchronized void removeIdleConnections() {
 		for(int i=this.connections.size() - 1; i>=0; i--) {
 			if(!this.connections.get(i).isRunning()) {
-				this.connections.get(i).disconnect();
+				//this.connections.get(i).disconnect();
 				this.connections.remove(i);
 				continue;
 			}
@@ -138,6 +138,13 @@ public class ClientTCP implements IClientLinker{
 			if(passed > this.permitIdle) {
 				this.connections.get(i).disconnect();
 				this.connections.remove(i);
+				continue;
+			}
+			String t = this.connections.get(i).getCommandsManager().test("Test");
+			if(t == null || !t.equals("Test")) {
+				this.connections.get(i).disconnect();
+				this.connections.remove(i);
+				continue;
 			}
 		}
 	}

@@ -33,7 +33,7 @@ public class DefaultFactory {
 		db.setName(def.getMachineInfo().getName());
 		db.setMachineInfo(Globals.Datas.ThisMachine);
 		db.setType(BasicEnums.DataBaseType.TXT);
-		db.setUrl(Tools.Pathes.getFolder_DBS());
+		db.setUrl("");
 		
 		def.setDBInfo(db);
 		db.setDepotInfo(def);

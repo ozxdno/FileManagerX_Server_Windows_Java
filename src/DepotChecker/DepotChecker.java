@@ -61,6 +61,9 @@ public class DepotChecker implements Interfaces.IDepotChecker{
 	}
 	
 	public boolean check() {
+		if(!this.checkDataBaseAndTables()) {
+			return false;
+		}
 		if(!this.checkFoldersAndFiles()) {
 			return false;
 		}
@@ -71,6 +74,13 @@ public class DepotChecker implements Interfaces.IDepotChecker{
 			return false;
 		}
 		
+		return true;
+	}
+	
+	public boolean checkDataBaseAndTables() {
+		
+		this.dbmanager.createDataBase();
+		this.dbmanager.createDepotTables();
 		return true;
 	}
 	

@@ -45,6 +45,18 @@ public class Executor implements Interfaces.IReplyExecutor {
 			return cs.input(connection.getReceiveString()) != null &&
 					cs.execute(connection);
 		}
+		if(c.getField().equals("Exchange")) {
+			Replies.Exchange cs = new Replies.Exchange();
+			this.reply = cs;
+			return cs.input(connection.getReceiveString()) != null &&
+					cs.execute(connection);
+		}
+		if(c.getField().equals("CreateConnection")) {
+			Replies.CreateConnection cs = new Replies.CreateConnection();
+			this.reply = cs;
+			return cs.input(connection.getReceiveString()) != null &&
+					cs.execute(connection);
+		}
 		if(c.getField().equals("Restart")) {
 			Replies.Restart r = new Replies.Restart();
 			this.reply = r;
@@ -95,6 +107,12 @@ public class Executor implements Interfaces.IReplyExecutor {
 		}
 		if(c.getField().equals("LoginType")) {
 			Replies.LoginType lt = new Replies.LoginType();
+			this.reply = lt;
+			return lt.input(connection.getReceiveString()) != null &&
+					lt.execute(connection);
+		}
+		if(c.getField().equals("LoginIndex")) {
+			Replies.LoginIndex lt = new Replies.LoginIndex();
 			this.reply = lt;
 			return lt.input(connection.getReceiveString()) != null &&
 					lt.execute(connection);

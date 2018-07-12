@@ -8,6 +8,7 @@ import javax.swing.*;
 // errors
 // tip
 
+// Input = 2|3|D:\Space_For_Media\Pictures\FMX_Test_Depot_E\a2.jpg|D:\Space_For_Media\Pictures\FMX_Test_Depot_C\a16.jpg
 // @Input = 5|6|D:\Space_For_Media\Pictures\FMX_Test_Depot_E\a2.jpg|D:\Space_For_Media\Pictures\FMX_Test_Depot_C\a15.jpg
 // Input = 5|6|D:\Space_For_Media\Pictures\FMX_Test_Depot_E\a2.jpg|D:\Space_For_Media\Pictures\FMX_Test_Depot_C\a10.jpg
 // Input = D:\Space_For_Media\Pictures\FMX_Test_Depot_A\°¢¾Å\a2.jpg|D:\Space_For_Media\Pictures\FMX_Test_Depot_C\a2.jpg
@@ -1269,23 +1270,25 @@ public class MainForm extends JFrame {
 	 	           			ListIndex = 0;
 	 	           			String item = "";
 	 	           			
-	 	           			item = "[1/9]Next_FileIndex = " + rep.getNext_FileIndex();
+	 	           			item = "[1/10]Next_FileIndex = " + rep.getNext_FileIndex();
 	 	           			List.add(item);
-		 	           		item = "[2/9]Next_UserIndex = " + rep.getNext_UserIndex();
+		 	           		item = "[2/10]Next_UserIndex = " + rep.getNext_UserIndex();
 	 	           			List.add(item);
-	 	           			item = "[3/9]Next_MachineIndex = " + rep.getNext_MachineIndex();
+	 	           			item = "[3/10]Next_MachineIndex = " + rep.getNext_MachineIndex();
 	 	           			List.add(item);
-	 	           			item = "[4/9]Next_DepotIndex = " + rep.getNext_DepotIndex();
+	 	           			item = "[4/10]Next_DepotIndex = " + rep.getNext_DepotIndex();
 		           			List.add(item);
-		           			item = "[5/9]Next_DataBaseIndex = " + rep.getNext_DataBaseIndex();
+		           			item = "[5/10]Next_DataBaseIndex = " + rep.getNext_DataBaseIndex();
 	 	           			List.add(item);
-	 	           			item = "[6/9]This_MachineIndex = " + rep.getThis_MachineIndex();
+	 	           			item = "[6/10]This_MachineIndex = " + rep.getThis_MachineIndex();
 		           			List.add(item);
-		           			item = "[7/9]This_UserIndex = " + rep.getThis_UserIndex();
+		           			item = "[7/10]This_UserIndex = " + rep.getThis_UserIndex();
 	 	           			List.add(item);
-	 	           			item = "[8/9]Server_MachineIndex = " + rep.getServer_MachineIndex();
+	 	           			item = "[8/10]Server_MachineIndex = " + rep.getServer_MachineIndex();
 		           			List.add(item);
-		           			item = "[9/9]Server_UserIndex = " + rep.getServer_UserIndex();
+		           			item = "[9/10]Server_UserIndex = " + rep.getServer_UserIndex();
+	 	           			List.add(item);
+	 	           			item = "[10/10]NetType = " + rep.getNetType().toString();
 	 	           			List.add(item);
 	 	           			
 	 	           			jInput.setText("QueryConfigurations = next");

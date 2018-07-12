@@ -84,6 +84,17 @@ public class CFGFile {
 		} catch(Exception e) {
 			;
 		}
+		
+		// ÍøÂçÀàÐÍ
+		try {
+			if(Globals.Configurations.IsServer) {
+				c = cs.fetch("NetType");
+				Globals.Configurations.NetType = BasicEnums.NetType.valueOf(c.fetchFirstString());
+			}
+		} catch(Exception e) {
+			;
+		}
+		
 		return ok;
 	}
 	public final static boolean saveCFG() {
@@ -248,7 +259,7 @@ public class CFGFile {
 			Globals.Datas.ServerMachine.copyReference(machine);
 		}
 		
-		// Server Communicator
+		// Create Server DataBase
 		// if the content of ServerDepotIndex or ServerDataBaseIndex is wrong, it will set to 0.
 		// if ServerDepotIndex or ServerDataBaseIndex is wrong, it will set to 1.
 		// you change other info is OK, it will update to database.
@@ -277,9 +288,7 @@ public class CFGFile {
 			}
 			try {
 				java.lang.String url = cs.fetch("ServerDepotUrl").getString();
-				if(url != null) {
-					depotInfo.setUrl(url);
-				}
+				depotInfo.setUrl(url);
 			}catch(Exception e) {
 				;
 			}
@@ -313,6 +322,19 @@ public class CFGFile {
 				}
 			}catch(Exception e) {
 				;
+			}
+			
+			if(dbInfo.getType().equals(BasicEnums.DataBaseType.TXT)) {
+				java.io.File dbFolder = new java.io.File(dbInfo.getUrl());
+				if(!dbFolder.exists() || !dbFolder.isDirectory()) {
+					java.lang.String url = Tools.Pathes.getFolder_DBS(0);
+					boolean ok = Tools.Pathes.createFolder_DBS(0);
+					if(!ok) {
+						BasicEnums.ErrorType.COMMON_FILE_OPERATE_FAILED.register("Create Folder_DBS:0 Failed");
+						return false;
+					}
+					dbInfo.setUrl(url);
+				}
 			}
 			
 			depotInfo.setDBInfo(dbInfo);
@@ -501,11 +523,10 @@ public class CFGFile {
 			}
 			try {
 				java.lang.String url = cdepot.fetchFirstString();
-				if(url != null && url.length() > 0) {
-					depotInfo.setUrl(url);
-				} else {
+				if(url == null || url.length() == 0) {
 					continue;
 				}
+				depotInfo.setUrl(url);
 			} catch(Exception e) {
 				continue;
 			}
@@ -524,17 +545,15 @@ public class CFGFile {
 				BasicEnums.DataBaseType type = BasicEnums.DataBaseType.valueOf(cdb.fetchFirstString());
 				dbInfo.setType(type);
 			} catch(Exception e) {
-				continue;
+				dbInfo.setType(BasicEnums.DataBaseType.TXT);
 			}
 			try {
 				java.lang.String url = cdb.fetchFirstString();
 				if(url != null && url.length() > 0) {
 					dbInfo.setUrl(url);
-				} else {
-					continue;
 				}
 			} catch(Exception e) {
-				continue;
+				;
 			}
 			
 			depotInfo.setDBInfo(dbInfo);
@@ -568,6 +587,20 @@ public class CFGFile {
 				continue;
 			}
 			
+			if(dbInfo.getType().equals(BasicEnums.DataBaseType.TXT) && dbInfo.getUrl().length() == 0) {
+				java.lang.String url = Tools.Pathes.getFolder_DBS(dbInfo.getIndex());
+				boolean ok = Tools.Pathes.createFolder_DBS(dbInfo.getIndex());
+				if(!ok) {
+					BasicEnums.ErrorType.COMMON_FILE_OPERATE_FAILED.register("Create DataBaseFolder Failed");
+					continue;
+				}
+				dbInfo.setUrl(url);
+				if(!Globals.Datas.DBManager.updataDataBaseInfo(dbInfo)) {
+					BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register("Update DataBase Url Failed", "Url = " + url);
+					continue;
+				}
+			}
+			
 			BasicModels.Folder f = new BasicModels.Folder(depotInfo.getUrl());
 			long currentFileIndex = Globals.Configurations.Next_FileIndex;
 			f.setIndex();
@@ -584,6 +617,7 @@ public class CFGFile {
 			dbmanager.connect();
 			if(dbmanager.isConnected()) {
 				dbmanager.deleteDepotTables();
+				dbmanager.createDataBase();
 				dbmanager.createDepotTables();
 				if(!dbmanager.updataFolder(f)) {
 					continue;
@@ -638,6 +672,7 @@ public class CFGFile {
 			Interfaces.IDBManager dbm = Globals.Datas.DBManagers.searchDepotIndex(depotInfo.getIndex());
 			if(dbm != null) {
 				dbm.deleteDepotTables();
+				dbm.deleteDataBase();
 			}
 			Globals.Datas.DBManagers.deleteDataBaseName(dbInfo.getName());
 		}
@@ -652,6 +687,7 @@ public class CFGFile {
 		// delete all depots
 		for(Interfaces.IDBManager dbm : Globals.Datas.DBManagers.getContent()) {
 			dbm.deleteDepotTables();
+			dbm.deleteDataBase();
 		}
 		
 		// delete server
@@ -916,6 +952,7 @@ public class CFGFile {
 			}
 			Globals.Configurations.Server_MachineIndex = repqc.getServer_MachineIndex();
 			Globals.Configurations.Server_UserIndex = repqc.getServer_UserIndex();
+			Globals.Configurations.NetType = repqc.getNetType();
 			
 			BasicModels.MachineInfo sm = Globals.Datas.ServerConnection.getCommandsManager().queryMachine(
 					"[&] Index = " + Globals.Configurations.Server_MachineIndex);
@@ -1085,16 +1122,13 @@ public class CFGFile {
 				BasicEnums.DataBaseType type = BasicEnums.DataBaseType.valueOf(cdb.fetchFirstString());
 				dbInfo.setType(type);
 			} catch(Exception e) {
-				continue;
+				dbInfo.setType(BasicEnums.DataBaseType.TXT);
 			}
 			try {
 				java.lang.String url = cdb.fetchFirstString();
-				if(url == null || url.length() == 0) {
-					continue;
-				}
 				dbInfo.setUrl(url);
 			} catch(Exception e) {
-				continue;
+				;
 			}
 			
 			// QueryConfigurations
@@ -1157,6 +1191,23 @@ public class CFGFile {
 			}
 			dbInfo = repudb.getDataBaseInfo();
 			
+			// UpdateDataBaseUrl
+			if(dbInfo.getType().equals(BasicEnums.DataBaseType.TXT) && dbInfo.getUrl().length() == 0) {
+				java.lang.String url = Tools.Pathes.getFolder_DBS(dbInfo.getIndex());
+				boolean ok = Tools.Pathes.createFolder_DBS(dbInfo.getIndex());
+				if(!ok) {
+					BasicEnums.ErrorType.COMMON_FILE_OPERATE_FAILED.register("Create DataBaseFolder Failed");
+					continue;
+				}
+				dbInfo.setUrl(url);
+				udb.setDataBaseInfo(dbInfo);
+				repudb = (Replies.UpdateDataBase)swre.execute(udb.output());
+				if(repudb == null || !repudb.isOK()) {
+					BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register("Update DataBaseUrl Failed", "Url = " + url);
+					continue;
+				}
+			}
+			
 			// Create DataBase
 			dbInfo.setDepotInfo(depotInfo);
 			depotInfo.setDBInfo(dbInfo);
@@ -1179,6 +1230,7 @@ public class CFGFile {
 			dbmanager.connect();
 			if(dbmanager.isConnected()) {
 				dbmanager.deleteDepotTables();
+				dbmanager.createDataBase();
 				dbmanager.createDepotTables();
 				if(!dbmanager.updataFolder(f)) { continue; }
 				if(!dbmanager.updataFiles(files)) { continue; }
@@ -1223,6 +1275,8 @@ public class CFGFile {
 			if(dbm == null) { continue; }
 			
 			dbm.deleteDepotTables();
+			dbm.deleteDataBase();
+			Globals.Datas.DBManagers.deleteDataBaseIndex(dbm.getDBInfo().getIndex());
 		}
 		
 		// end
@@ -1235,7 +1289,33 @@ public class CFGFile {
 		// delete all depots
 		for(Interfaces.IDBManager dbm : Globals.Datas.DBManagers.getContent()) {
 			dbm.deleteDepotTables();
+			dbm.deleteDataBase();
 		}
+		
+		// unregister
+		for(Interfaces.IDBManager dbm : Globals.Datas.DBManagers.getContent()) {
+			try {
+				boolean ok = Globals.Datas.ServerConnection.getCommandsManager().removeDataBase(
+						"[&] Index = " + dbm.getDBInfo().getIndex());
+				if(!ok) {
+					BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register(
+							"Remove DataBase Failed, Index = " +
+							dbm.getDBInfo().getIndex());
+				}
+				ok = Globals.Datas.ServerConnection.getCommandsManager().removeDepot(
+						"[&] Index = " + dbm.getDBInfo().getDepotIndex());
+				if(!ok) {
+					BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register(
+							"Remove Depot Failed, Index = " +
+							dbm.getDBInfo().getDepotIndex());
+				}
+			} catch(Exception e) {
+				;
+			}
+		}
+		
+		// clear
+		Globals.Datas.DBManagers.clear();
 		
 		// clear Indexes
 		Globals.Configurations.Next_FileIndex = 0;
@@ -1245,14 +1325,15 @@ public class CFGFile {
 		Globals.Configurations.Next_DataBaseIndex = 0;
 		//Globals.Configurations.This_MachineIndex = 0;
 		//Globals.Configurations.This_UserIndex = 0;
-		Globals.Configurations.Server_MachineIndex = 0;
-		Globals.Configurations.Server_UserIndex = 0;
+		//Globals.Configurations.Server_MachineIndex = 0;
+		//Globals.Configurations.Server_UserIndex = 0;
 		
 		//Globals.Datas.ThisMachine.setIndex(0);
 		//Globals.Datas.ThisUser.setIndex(0);
-		Globals.Datas.ServerMachine.setIndex(0);
-		Globals.Datas.ServerUser.setIndex(0);
+		//Globals.Datas.ServerMachine.setIndex(0);
+		//Globals.Datas.ServerUser.setIndex(0);
 		
+		/*
 		if(Globals.Datas.DBManager.getDBInfo() != null) {
 			Globals.Datas.DBManager.getDBInfo().setIndex(0);
 			Globals.Datas.DBManager.getDBInfo().setDepotIndex(0);
@@ -1261,6 +1342,7 @@ public class CFGFile {
 				Globals.Datas.DBManager.getDBInfo().getDepotInfo().setDBIndex(0);
 			}
 		}
+		*/
 		
 		// save to file
 		return saveDepotCFG();
@@ -1290,9 +1372,19 @@ public class CFGFile {
 		
 		line = "";
 		txt.getContent().add(line);
+		line = "[Attention]: Do Not Save Other Infos in This File, It will reset At Running.";
+		txt.getContent().add(line);
+		
+		line = "";
+		txt.getContent().add(line);
 		line = "StartType = " + Globals.Configurations.StartType.toString() + 
 				(Globals.Datas.Form_Main.isVisible() ? "|ShowForm" : "");
 		txt.getContent().add(line);
+		
+		if(Globals.Configurations.IsServer) {
+			line = "NetType = " + Globals.Configurations.NetType.toString();
+			txt.getContent().add(line);
+		}
 		
 		line = "";
 		txt.getContent().add(line);
@@ -1547,7 +1639,12 @@ public class CFGFile {
 		txt.getContent().add(line);
 		line = "Example: +DataBase = [DataBaseName2]|TXT|[DataBaseFolderAbsolutePath]";
 		txt.getContent().add(line);
-		
+		line = "";
+		txt.getContent().add(line);
+		line = "Example: +Depot = [DepotName3]|[DepotFolderAbsolutePath]";
+		txt.getContent().add(line);
+		line = "Example: +DataBase = [DataBaseName3]";
+		txt.getContent().add(line);
 		
 		line = "";
 		txt.getContent().add(line);
@@ -1560,9 +1657,9 @@ public class CFGFile {
 		txt.getContent().add(line);
 		line = "             Otherwise some Errors will happen in Running.";
 		txt.getContent().add(line);
+		
 		line = "";
 		txt.getContent().add(line);
-		
 		line = "Example: -Depot = [DepotName1]";
 		txt.getContent().add(line);
 		line = "Example: -DataBase = [DataBaseName1]";
@@ -1570,10 +1667,16 @@ public class CFGFile {
 		
 		line = "";
 		txt.getContent().add(line);
-		
 		line = "Example: -Depot = [DepotName2]";
 		txt.getContent().add(line);
 		line = "Example: -DataBase = [DataBaseName2]";
+		txt.getContent().add(line);
+		
+		line = "";
+		txt.getContent().add(line);
+		line = "Example: -Depot = [DepotName3]";
+		txt.getContent().add(line);
+		line = "Example: -DataBase = [DataBaseName3]";
 		txt.getContent().add(line);
 		
 		line = "";

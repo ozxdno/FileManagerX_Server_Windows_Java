@@ -2177,6 +2177,9 @@ public class Manager implements Interfaces.ICommandsManager {
 		if(!this.loginType()) {
 			return false;
 		}
+		if(!this.loginIndex()) {
+			return false;
+		}
 		
 		return true;
 	}
@@ -2278,6 +2281,28 @@ public class Manager implements Interfaces.ICommandsManager {
 		
 		this.reply = swre.execute(cmd.output());
 		if(this.reply != null && !(reply instanceof Replies.LoginType)) {
+			BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+			this.reply = null;
+			return false;
+		}
+		if(reply == null || !reply.isOK()) {
+			return false;
+		}
+		return true;
+	}
+	
+	public boolean loginIndex() {
+		this.reply = null;
+		if(!this.isConnectionRunning()) {
+			return false;
+		}
+		
+		Commands.LoginIndex cmd = new Commands.LoginIndex();
+		cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+		cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+		
+		this.reply = swre.execute(cmd.output());
+		if(this.reply != null && !(reply instanceof Replies.LoginIndex)) {
 			BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
 			this.reply = null;
 			return false;
@@ -2441,6 +2466,51 @@ public class Manager implements Interfaces.ICommandsManager {
 		
 		this.reply = swre.execute(cmd.output());
 		if(this.reply != null && !(reply instanceof Replies.Input)) {
+			BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+			this.reply = null;
+			return false;
+		}
+		if(reply == null || !reply.isOK()) {
+			return false;
+		}
+		return true;
+	}
+	
+	public boolean exchange() {
+		this.reply = null;
+		if(!this.isConnectionRunning()) {
+			return false;
+		}
+		
+		Commands.Exchange cmd = new Commands.Exchange();
+		cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+		cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+		
+		this.reply = swre.execute(cmd.output());
+		if(this.reply != null && !(reply instanceof Replies.Exchange)) {
+			BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+			this.reply = null;
+			return false;
+		}
+		if(reply == null || !reply.isOK()) {
+			return false;
+		}
+		return true;
+	}
+	public boolean createConnection(long destMachine, BasicModels.MachineInfo machineInfo) {
+		this.reply = null;
+		if(!this.isConnectionRunning()) {
+			return false;
+		}
+		
+		Commands.CreateConnection cmd = new Commands.CreateConnection();
+		cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+		cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+		cmd.getBasicMessagePackage().setDestMachineIndex(destMachine);
+		cmd.setMachineInfo(machineInfo);
+		
+		this.reply = swre.execute(cmd.output());
+		if(this.reply != null && !(reply instanceof Replies.CreateConnection)) {
 			BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
 			this.reply = null;
 			return false;
