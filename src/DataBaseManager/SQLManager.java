@@ -988,6 +988,44 @@ public class SQLManager implements Interfaces.IDBManager{
 				}
 				return fs;
 			}
+			if(type.equals(BasicEnums.FileType.Gif)) {
+				while(set.next()) {
+					FileModels.Gif f = new FileModels.Gif();
+					f.setIndex(set.getLong(1));
+					f.setHeight(set.getInt(2));
+					f.setWidth(set.getInt(3));
+					f.setLasting(set.getLong(4));
+					f.setRowPixels(Tools.String.splitToIntArray(set.getString(5), ' '));
+					f.setColPixels(Tools.String.splitToIntArray(set.getString(6), ' '));
+					fs.add(f);
+				}
+				return fs;
+			}
+			if(type.equals(BasicEnums.FileType.Music)) {
+				while(set.next()) {
+					FileModels.Music f = new FileModels.Music();
+					f.setIndex(set.getLong(1));
+					f.setAuthor(set.getString(2));
+					f.setSinger(set.getString(3));
+					f.setAlbum(set.getString(4));
+					f.setLasting(set.getLong(5));
+					fs.add(f);
+				}
+				return fs;
+			}
+			if(type.equals(BasicEnums.FileType.Video)) {
+				while(set.next()) {
+					FileModels.Video f = new FileModels.Video();
+					f.setIndex(set.getLong(1));
+					f.setHeight(set.getInt(2));
+					f.setWidth(set.getInt(3));
+					f.setLasting(set.getLong(4));
+					f.setRowPixels(Tools.String.splitToIntArray(set.getString(5), ' '));
+					f.setColPixels(Tools.String.splitToIntArray(set.getString(6), ' '));
+					fs.add(f);
+				}
+				return fs;
+			}
 			
 			return null;
 		}catch(Exception e) {
@@ -1368,6 +1406,35 @@ public class SQLManager implements Interfaces.IDBManager{
 				f.setWidth(set.getInt(3));
 				f.setRowPixels(Tools.String.splitToIntArray(set.getString(4), ' '));
 				f.setColPixels(Tools.String.splitToIntArray(set.getString(5), ' '));
+				return f;
+			}
+			if(type.equals(BasicEnums.FileType.Gif) && set.next()) {
+				FileModels.Gif f = new FileModels.Gif();
+				f.setIndex(set.getLong(1));
+				f.setHeight(set.getInt(2));
+				f.setWidth(set.getInt(3));
+				f.setLasting(set.getLong(4));
+				f.setRowPixels(Tools.String.splitToIntArray(set.getString(5), ' '));
+				f.setColPixels(Tools.String.splitToIntArray(set.getString(6), ' '));
+				return f;
+			}
+			if(type.equals(BasicEnums.FileType.Music) && set.next()) {
+				FileModels.Music f = new FileModels.Music();
+				f.setIndex(set.getLong(1));
+				f.setAuthor(set.getString(2));
+				f.setSinger(set.getString(3));
+				f.setAlbum(set.getString(4));
+				f.setLasting(set.getLong(5));
+				return f;
+			}
+			if(type.equals(BasicEnums.FileType.Video) && set.next()) {
+				FileModels.Video f = new FileModels.Video();
+				f.setIndex(set.getLong(1));
+				f.setHeight(set.getInt(2));
+				f.setWidth(set.getInt(3));
+				f.setLasting(set.getLong(4));
+				f.setRowPixels(Tools.String.splitToIntArray(set.getString(5), ' '));
+				f.setColPixels(Tools.String.splitToIntArray(set.getString(6), ' '));
 				return f;
 			}
 			
@@ -1812,6 +1879,37 @@ public class SQLManager implements Interfaces.IDBManager{
 					"'" + Tools.String.link(m.getColPixels(), " ") + "'" +
 					");";
 			}
+			if(type.equals(BasicEnums.FileType.Gif)) {
+				FileModels.Gif m = (FileModels.Gif)file;
+				exp = "INSERT INTO " + type.toString() + "s Values(" +
+					m.getIndex() + ", " +
+					m.getHeight() + ", " +
+					m.getWidth() + ", " +
+					m.getLasting() + ", " +
+					"'" + Tools.String.link(m.getRowPixels(), " ") + "', " +
+					"'" + Tools.String.link(m.getColPixels(), " ") + "'" +
+					");";
+			}
+			if(type.equals(BasicEnums.FileType.Music)) {
+				FileModels.Music m = (FileModels.Music)file;
+				exp = "INSERT INTO " + type.toString() + "s Values(" +
+					m.getIndex() + ", " +
+					"'" + m.getAuthor() + "', " +
+					"'" + m.getSinger() + "', " +
+					"'" + m.getAlbum() + "'" +
+					");";
+			}
+			if(type.equals(BasicEnums.FileType.Video)) {
+				FileModels.Video m = (FileModels.Video)file;
+				exp = "INSERT INTO " + type.toString() + "s Values(" +
+					m.getIndex() + ", " +
+					m.getHeight() + ", " +
+					m.getWidth() + ", " +
+					m.getLasting() + ", " +
+					"'" + Tools.String.link(m.getRowPixels(), " ") + "', " +
+					"'" + Tools.String.link(m.getColPixels(), " ") + "'" +
+					");";
+			}
 		}
 		else {
 			if(type.equals(BasicEnums.FileType.Picture)) {
@@ -1820,6 +1918,44 @@ public class SQLManager implements Interfaces.IDBManager{
 						"`Index` = " + m.getIndex() + ", " +
 						"`Height` = " + m.getHeight() + ", " +
 						"`Width` = " + m.getWidth() + ", " +
+						"`RowPixels` = '" + Tools.String.link(m.getRowPixels(), " ") + "', " +
+						"`ColPixels` = '" + Tools.String.link(m.getColPixels(), " ") + "' " +
+						"WHERE " + 
+						"`Index` = " + m.getIndex() +
+						";";
+			}
+			if(type.equals(BasicEnums.FileType.Gif)) {
+				FileModels.Gif m = (FileModels.Gif)file;
+				exp = "UPDATE " +type.toString() + "s SET " +
+						"`Index` = " + m.getIndex() + ", " +
+						"`Height` = " + m.getHeight() + ", " +
+						"`Width` = " + m.getWidth() + ", " +
+						"`Lasting` = " + m.getLasting() + ", " +
+						"`RowPixels` = '" + Tools.String.link(m.getRowPixels(), " ") + "', " +
+						"`ColPixels` = '" + Tools.String.link(m.getColPixels(), " ") + "' " +
+						"WHERE " + 
+						"`Index` = " + m.getIndex() +
+						";";
+			}
+			if(type.equals(BasicEnums.FileType.Music)) {
+				FileModels.Music m = (FileModels.Music)file;
+				exp = "UPDATE " +type.toString() + "s SET " +
+						"`Index` = " + m.getIndex() + ", " +
+						"`Author` = '" + m.getAuthor() + "', " +
+						"`Singer` = '" + m.getSinger() + "', " +
+						"`Album` = '" + m.getAlbum() + "', " +
+						"`Lasting` = " + m.getLasting() + " " +
+						"WHERE " + 
+						"`Index` = " + m.getIndex() +
+						";";
+			}
+			if(type.equals(BasicEnums.FileType.Video)) {
+				FileModels.Video m = (FileModels.Video)file;
+				exp = "UPDATE " +type.toString() + "s SET " +
+						"`Index` = " + m.getIndex() + ", " +
+						"`Height` = " + m.getHeight() + ", " +
+						"`Width` = " + m.getWidth() + ", " +
+						"`Lasting` = " + m.getLasting() + ", " +
 						"`RowPixels` = '" + Tools.String.link(m.getRowPixels(), " ") + "', " +
 						"`ColPixels` = '" + Tools.String.link(m.getColPixels(), " ") + "' " +
 						"WHERE " + 

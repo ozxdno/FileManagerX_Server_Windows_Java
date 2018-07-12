@@ -12,6 +12,8 @@ public interface IDepotChecker {
 	public boolean checkDataBaseAndTables();
 	
 	public boolean checkFoldersAndFiles();
-	public boolean checkFileType();
-	public boolean checkPixes();
+	public boolean checkPictures();
+	public boolean checkGifs();
+	public boolean checkMusics();
+	public boolean checkViedos();
 }

@@ -137,3 +137,6 @@
 19:24:00 = OTHERS|1531394640872|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:1004]<-loadCFG[CFGFile.java:70]<-run[MainProcess.java:78]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
 19:24:30 = OTHERS|1531394670618|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:1004]<-loadCFG[CFGFile.java:70]<-run[MainProcess.java:78]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
 19:24:57 = OTHERS|1531394697690|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:1004]<-loadCFG[CFGFile.java:70]<-run[MainProcess.java:78]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
+20:04:47 = OTHERS|1531397087615|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:1004]<-loadCFG[CFGFile.java:70]<-run[MainProcess.java:78]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
+20:04:47 = COMMANDS_EXECUTE_FAILED|1531397087872|Warning|Command Execute Failed|loadDepotCFG[CFGFile.java:1157]<-loadCFG[CFGFile.java:70]<-run[MainProcess.java:78]|Add Depot Failed, Existed: DepotC
+20:04:47 = COMMANDS_EXECUTE_FAILED|1531397087914|Warning|Command Execute Failed|loadDepotCFG[CFGFile.java:1157]<-loadCFG[CFGFile.java:70]<-run[MainProcess.java:78]|Add Depot Failed, Existed: DepotD

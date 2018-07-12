@@ -49,30 +49,30 @@ public class ServerChecker implements Interfaces.IServerChecker {
 	}
 	
 	public boolean check() {
-		
+		boolean ok = false;
 		if(!this.checkDataBaseAndTables()) {
-			return false;
+			ok = false;
 		}
 		if(!this.checkIndex()) {
-			return false;
+			ok = false;
 		}
 		if(!this.checkMachines()) {
-			return false;
+			ok = false;
 		}
 		if(!this.checkDepots()) {
-			return false;
+			ok = false;
 		}
 		if(!this.checkDataBases()) {
-			return false;
+			ok = false;
 		}
 		if(!this.checkUsers()) {
-			return false;
+			ok = false;
 		}
 		if(!this.checkInvitations()) {
-			return false;
+			ok = false;
 		}
 		
-		return true;
+		return ok;
 	}
 	
 	public boolean checkDataBaseAndTables() {

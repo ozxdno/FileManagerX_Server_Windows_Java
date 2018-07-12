@@ -61,30 +61,35 @@ public class DepotChecker implements Interfaces.IDepotChecker{
 	}
 	
 	public boolean check() {
+		boolean ok = true;
 		if(!this.checkDataBaseAndTables()) {
-			return false;
+			ok = false;
 		}
 		if(!this.checkFoldersAndFiles()) {
-			return false;
+			ok = false;
 		}
 		if(!this.checkFileType()) {
-			return false;
-		}
-		if(!this.checkPixes()) {
-			return false;
+			ok = false;
 		}
 		
-		return true;
+		return ok;
 	}
 	
 	public boolean checkDataBaseAndTables() {
-		
+		if(this.dbmanager == null) {
+			return false;
+		}
 		this.dbmanager.createDataBase();
 		this.dbmanager.createDepotTables();
 		return true;
 	}
 	
 	public boolean checkFoldersAndFiles() {
+		if(this.dbmanager == null) {
+			return false;
+		}
+		
+		// 校验是否存在
 		this.totalFolders = dbmanager.QueryFolders(new DataBaseManager.QueryConditions());
 		this.totalFiles = dbmanager.QueryFiles(new DataBaseManager.QueryConditions());
 		this.checkedMark_Folders = new boolean[this.totalFolders.size()];
@@ -164,6 +169,17 @@ public class DepotChecker implements Interfaces.IDepotChecker{
 		
 		this.dbmanager.removeFolders(this.deleteFolders);
 		this.dbmanager.removeFiles(this.deleteFiles);
+		
+		// 校验内容
+		this.totalFolders = this.dbmanager.QueryFolders("");
+		this.totalFiles = this.dbmanager.QueryFiles("");
+		for(int i=0; i<this.totalFolders.size(); i++) {
+			this.checkFile(this.totalFolders.getContent().get(i));
+		}
+		for(int i=0; i<this.totalFiles.size(); i++) {
+			this.checkFile(this.totalFiles.getContent().get(i));
+		}
+		
 		return true;
 	}
 	public boolean checkFileType() {
@@ -182,7 +198,28 @@ public class DepotChecker implements Interfaces.IDepotChecker{
 		return ok;
 	}
 	
-	public boolean checkPixes() {
+	public boolean checkPictures() {
+		if(this.dbmanager == null) {
+			return false;
+		}
+		return true;
+	}
+	public boolean checkGifs() {
+		if(this.dbmanager == null) {
+			return false;
+		}
+		return true;
+	}
+	public boolean checkMusics() {
+		if(this.dbmanager == null) {
+			return false;
+		}
+		return true;
+	}
+	public boolean checkViedos() {
+		if(this.dbmanager == null) {
+			return false;
+		}
 		return true;
 	}
 	
@@ -222,6 +259,52 @@ public class DepotChecker implements Interfaces.IDepotChecker{
 				}
 				continue;
 			}
+		}
+	}
+	private void checkFile(BasicModels.BaseFile file) {
+		java.io.File f = new java.io.File(file.getUrl());
+		if(!f.exists()) {
+			this.dbmanager.removeFile(file);
+			return;
+		}
+		
+		boolean needUpdate = false;
+		
+		// type
+		BasicEnums.FileType type = BasicEnums.FileType.Unsupport;
+		if(f.isDirectory()) {
+			type = BasicEnums.FileType.Folder;
+		}
+		if(f.isFile()) {
+			BasicModels.Support s = Globals.Datas.Supports.search(file.getExtension());
+			if(s == null) {
+				type = BasicEnums.FileType.Unsupport;
+			}
+			else {
+				type = s.getType();
+			}
+		}
+		if(!type.equals(file.getType())) {
+			file.setType(type);
+			needUpdate = true;
+		}
+		// modify
+		long modify = f.lastModified();
+		if(modify != file.getModify()) {
+			file.setModify(modify);
+			needUpdate = true;
+		}
+		// length
+		long length = f.length();
+		if(!type.equals(BasicEnums.FileType.Folder) && length != file.getLength()) {
+			file.setLength(length);
+			needUpdate = true;
+		}
+		
+		
+		// Update
+		if(needUpdate) {
+			this.dbmanager.updataFile(file);
 		}
 	}
 	

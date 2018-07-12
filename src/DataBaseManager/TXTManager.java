@@ -1509,25 +1509,389 @@ public class TXTManager implements Interfaces.IDBManager {
 		if(this.pictures == null) {
 			this.loadPictures();
 		}
-		return null;
+		QueryConditions qcs = new QueryConditions();
+		if(conditions instanceof QueryCondition) {
+			qcs.add((QueryCondition)conditions);
+		}
+		else if(conditions instanceof QueryConditions) {
+			qcs = (QueryConditions)conditions;
+		}
+		else if(conditions instanceof String) {
+			try {
+				qcs.stringToThis((String)conditions);
+			}catch(Exception e) {
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
+				return null;
+			}
+		}
+		else {
+			return null;
+		}
+		if(qcs.size() == 0) {
+			return this.pictures;
+		}
+		
+		boolean[] checkedMark = new boolean[this.pictures.size()];
+		for(int i=0; i<this.pictures.size(); i++) {
+			checkedMark[i] = true;
+		}
+		
+		for(int i=0; i<qcs.size(); i++) {
+			QueryCondition qc = qcs.getContent().get(i);
+			FileModels.Picture p = null;
+			if(qc.getItemName().equals("Index")) {
+				for(int j=0; j<this.pictures.size(); j++) {
+					boolean satisfied = this.satisfyLong(pictures.getContent().get(j).getIndex(), qc);
+					if(qc.getRelation().equals(Relation.AND)) {
+						checkedMark[j] &= satisfied;
+					}
+					if(qc.getRelation().equals(Relation.OR)) {
+						checkedMark[j] |= satisfied;
+					}
+				}
+				continue;
+			}
+			if(qc.getItemName().equals("Height")) {
+				for(int j=0; j<this.pictures.size(); j++) {
+					p = (FileModels.Picture)pictures.getContent().get(j);
+					boolean satisfied = this.satisfyInteger(p.getHeight(), qc);
+					if(qc.getRelation().equals(Relation.AND)) {
+						checkedMark[j] &= satisfied;
+					}
+					if(qc.getRelation().equals(Relation.OR)) {
+						checkedMark[j] |= satisfied;
+					}
+				}
+				continue;
+			}
+			if(qc.getItemName().equals("Width")) {
+				for(int j=0; j<this.pictures.size(); j++) {
+					p = (FileModels.Picture)pictures.getContent().get(j);
+					boolean satisfied = this.satisfyInteger(p.getWidth(), qc);
+					if(qc.getRelation().equals(Relation.AND)) {
+						checkedMark[j] &= satisfied;
+					}
+					if(qc.getRelation().equals(Relation.OR)) {
+						checkedMark[j] |= satisfied;
+					}
+				}
+				continue;
+			}
+		}
+		
+		BasicCollections.BaseFiles res = new BasicCollections.BaseFiles();
+		for(int i=0; i<checkedMark.length; i++) {
+			if(checkedMark[i]) {
+				FileModels.Picture n = new FileModels.Picture();
+				n.copyValue(this.pictures.getContent().get(i));
+				res.add(n);
+			}
+		}
+		return res;
 	}
 	public BasicCollections.BaseFiles QueryGifs(Object conditions) {
 		if(this.gifs == null) {
 			this.loadGifs();
 		}
-		return null;
+		QueryConditions qcs = new QueryConditions();
+		if(conditions instanceof QueryCondition) {
+			qcs.add((QueryCondition)conditions);
+		}
+		else if(conditions instanceof QueryConditions) {
+			qcs = (QueryConditions)conditions;
+		}
+		else if(conditions instanceof String) {
+			try {
+				qcs.stringToThis((String)conditions);
+			}catch(Exception e) {
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
+				return null;
+			}
+		}
+		else {
+			return null;
+		}
+		if(qcs.size() == 0) {
+			return this.gifs;
+		}
+		
+		boolean[] checkedMark = new boolean[this.gifs.size()];
+		for(int i=0; i<this.gifs.size(); i++) {
+			checkedMark[i] = true;
+		}
+		
+		for(int i=0; i<qcs.size(); i++) {
+			QueryCondition qc = qcs.getContent().get(i);
+			FileModels.Gif p = null;
+			if(qc.getItemName().equals("Index")) {
+				for(int j=0; j<this.gifs.size(); j++) {
+					boolean satisfied = this.satisfyLong(gifs.getContent().get(j).getIndex(), qc);
+					if(qc.getRelation().equals(Relation.AND)) {
+						checkedMark[j] &= satisfied;
+					}
+					if(qc.getRelation().equals(Relation.OR)) {
+						checkedMark[j] |= satisfied;
+					}
+				}
+				continue;
+			}
+			if(qc.getItemName().equals("Height")) {
+				for(int j=0; j<this.gifs.size(); j++) {
+					p = (FileModels.Gif)gifs.getContent().get(j);
+					boolean satisfied = this.satisfyInteger(p.getHeight(), qc);
+					if(qc.getRelation().equals(Relation.AND)) {
+						checkedMark[j] &= satisfied;
+					}
+					if(qc.getRelation().equals(Relation.OR)) {
+						checkedMark[j] |= satisfied;
+					}
+				}
+				continue;
+			}
+			if(qc.getItemName().equals("Width")) {
+				for(int j=0; j<this.gifs.size(); j++) {
+					p = (FileModels.Gif)gifs.getContent().get(j);
+					boolean satisfied = this.satisfyInteger(p.getWidth(), qc);
+					if(qc.getRelation().equals(Relation.AND)) {
+						checkedMark[j] &= satisfied;
+					}
+					if(qc.getRelation().equals(Relation.OR)) {
+						checkedMark[j] |= satisfied;
+					}
+				}
+				continue;
+			}
+			if(qc.getItemName().equals("Lasting")) {
+				for(int j=0; j<this.gifs.size(); j++) {
+					p = (FileModels.Gif)gifs.getContent().get(j);
+					boolean satisfied = this.satisfyLong(p.getLasting(), qc);
+					if(qc.getRelation().equals(Relation.AND)) {
+						checkedMark[j] &= satisfied;
+					}
+					if(qc.getRelation().equals(Relation.OR)) {
+						checkedMark[j] |= satisfied;
+					}
+				}
+				continue;
+			}
+		}
+		
+		BasicCollections.BaseFiles res = new BasicCollections.BaseFiles();
+		for(int i=0; i<checkedMark.length; i++) {
+			if(checkedMark[i]) {
+				FileModels.Gif n = new FileModels.Gif();
+				n.copyValue(this.gifs.getContent().get(i));
+				res.add(n);
+			}
+		}
+		return res;
 	}
 	public BasicCollections.BaseFiles QueryMusics(Object conditions) {
 		if(this.musics == null) {
 			this.loadMusics();
 		}
-		return null;
+		QueryConditions qcs = new QueryConditions();
+		if(conditions instanceof QueryCondition) {
+			qcs.add((QueryCondition)conditions);
+		}
+		else if(conditions instanceof QueryConditions) {
+			qcs = (QueryConditions)conditions;
+		}
+		else if(conditions instanceof String) {
+			try {
+				qcs.stringToThis((String)conditions);
+			}catch(Exception e) {
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
+				return null;
+			}
+		}
+		else {
+			return null;
+		}
+		if(qcs.size() == 0) {
+			return this.musics;
+		}
+		
+		boolean[] checkedMark = new boolean[this.musics.size()];
+		for(int i=0; i<this.musics.size(); i++) {
+			checkedMark[i] = true;
+		}
+		
+		for(int i=0; i<qcs.size(); i++) {
+			QueryCondition qc = qcs.getContent().get(i);
+			FileModels.Music p = null;
+			if(qc.getItemName().equals("Index")) {
+				for(int j=0; j<this.musics.size(); j++) {
+					boolean satisfied = this.satisfyLong(musics.getContent().get(j).getIndex(), qc);
+					if(qc.getRelation().equals(Relation.AND)) {
+						checkedMark[j] &= satisfied;
+					}
+					if(qc.getRelation().equals(Relation.OR)) {
+						checkedMark[j] |= satisfied;
+					}
+				}
+				continue;
+			}
+			if(qc.getItemName().equals("Author")) {
+				for(int j=0; j<this.musics.size(); j++) {
+					p = (FileModels.Music)musics.getContent().get(j);
+					boolean satisfied = this.satisfyString(p.getAuthor(), qc);
+					if(qc.getRelation().equals(Relation.AND)) {
+						checkedMark[j] &= satisfied;
+					}
+					if(qc.getRelation().equals(Relation.OR)) {
+						checkedMark[j] |= satisfied;
+					}
+				}
+				continue;
+			}
+			if(qc.getItemName().equals("Singer")) {
+				for(int j=0; j<this.musics.size(); j++) {
+					p = (FileModels.Music)musics.getContent().get(j);
+					boolean satisfied = this.satisfyString(p.getSinger(), qc);
+					if(qc.getRelation().equals(Relation.AND)) {
+						checkedMark[j] &= satisfied;
+					}
+					if(qc.getRelation().equals(Relation.OR)) {
+						checkedMark[j] |= satisfied;
+					}
+				}
+				continue;
+			}
+			if(qc.getItemName().equals("Album")) {
+				for(int j=0; j<this.musics.size(); j++) {
+					p = (FileModels.Music)musics.getContent().get(j);
+					boolean satisfied = this.satisfyString(p.getAlbum(), qc);
+					if(qc.getRelation().equals(Relation.AND)) {
+						checkedMark[j] &= satisfied;
+					}
+					if(qc.getRelation().equals(Relation.OR)) {
+						checkedMark[j] |= satisfied;
+					}
+				}
+				if(qc.getItemName().equals("Lasting")) {
+					for(int j=0; j<this.musics.size(); j++) {
+						p = (FileModels.Music)musics.getContent().get(j);
+						boolean satisfied = this.satisfyLong(p.getLasting(), qc);
+						if(qc.getRelation().equals(Relation.AND)) {
+							checkedMark[j] &= satisfied;
+						}
+						if(qc.getRelation().equals(Relation.OR)) {
+							checkedMark[j] |= satisfied;
+						}
+					}
+					continue;
+				}
+				continue;
+			}
+		}
+		
+		BasicCollections.BaseFiles res = new BasicCollections.BaseFiles();
+		for(int i=0; i<checkedMark.length; i++) {
+			if(checkedMark[i]) {
+				FileModels.Music n = new FileModels.Music();
+				n.copyValue(this.musics.getContent().get(i));
+				res.add(n);
+			}
+		}
+		return res;
 	}
 	public BasicCollections.BaseFiles QueryVideos(Object conditions) {
 		if(this.videos == null) {
 			this.loadVideos();
 		}
-		return null;
+		QueryConditions qcs = new QueryConditions();
+		if(conditions instanceof QueryCondition) {
+			qcs.add((QueryCondition)conditions);
+		}
+		else if(conditions instanceof QueryConditions) {
+			qcs = (QueryConditions)conditions;
+		}
+		else if(conditions instanceof String) {
+			try {
+				qcs.stringToThis((String)conditions);
+			}catch(Exception e) {
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
+				return null;
+			}
+		}
+		else {
+			return null;
+		}
+		if(qcs.size() == 0) {
+			return this.videos;
+		}
+		
+		boolean[] checkedMark = new boolean[this.videos.size()];
+		for(int i=0; i<this.videos.size(); i++) {
+			checkedMark[i] = true;
+		}
+		
+		for(int i=0; i<qcs.size(); i++) {
+			QueryCondition qc = qcs.getContent().get(i);
+			FileModels.Video p = null;
+			if(qc.getItemName().equals("Index")) {
+				for(int j=0; j<this.videos.size(); j++) {
+					boolean satisfied = this.satisfyLong(videos.getContent().get(j).getIndex(), qc);
+					if(qc.getRelation().equals(Relation.AND)) {
+						checkedMark[j] &= satisfied;
+					}
+					if(qc.getRelation().equals(Relation.OR)) {
+						checkedMark[j] |= satisfied;
+					}
+				}
+				continue;
+			}
+			if(qc.getItemName().equals("Height")) {
+				for(int j=0; j<this.videos.size(); j++) {
+					p = (FileModels.Video)videos.getContent().get(j);
+					boolean satisfied = this.satisfyInteger(p.getHeight(), qc);
+					if(qc.getRelation().equals(Relation.AND)) {
+						checkedMark[j] &= satisfied;
+					}
+					if(qc.getRelation().equals(Relation.OR)) {
+						checkedMark[j] |= satisfied;
+					}
+				}
+				continue;
+			}
+			if(qc.getItemName().equals("Width")) {
+				for(int j=0; j<this.videos.size(); j++) {
+					p = (FileModels.Video)videos.getContent().get(j);
+					boolean satisfied = this.satisfyInteger(p.getWidth(), qc);
+					if(qc.getRelation().equals(Relation.AND)) {
+						checkedMark[j] &= satisfied;
+					}
+					if(qc.getRelation().equals(Relation.OR)) {
+						checkedMark[j] |= satisfied;
+					}
+				}
+				continue;
+			}
+			if(qc.getItemName().equals("Lasting")) {
+				for(int j=0; j<this.videos.size(); j++) {
+					p = (FileModels.Video)videos.getContent().get(j);
+					boolean satisfied = this.satisfyLong(p.getLasting(), qc);
+					if(qc.getRelation().equals(Relation.AND)) {
+						checkedMark[j] &= satisfied;
+					}
+					if(qc.getRelation().equals(Relation.OR)) {
+						checkedMark[j] |= satisfied;
+					}
+				}
+				continue;
+			}
+		}
+		
+		BasicCollections.BaseFiles res = new BasicCollections.BaseFiles();
+		for(int i=0; i<checkedMark.length; i++) {
+			if(checkedMark[i]) {
+				FileModels.Video n = new FileModels.Video();
+				n.copyValue(this.videos.getContent().get(i));
+				res.add(n);
+			}
+		}
+		return res;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2387,6 +2751,326 @@ public class TXTManager implements Interfaces.IDBManager {
 	}
 	
 	public BasicModels.BaseFile QuerySpecificFile(BasicEnums.FileType type, Object conditions) {
+		if(type.equals(BasicEnums.FileType.Picture)) {
+			return this.QueryPicture(conditions);
+		}
+		if(type.equals(BasicEnums.FileType.Gif)) {
+			return this.QueryGif(conditions);
+		}
+		if(type.equals(BasicEnums.FileType.Music)) {
+			return this.QueryMusic(conditions);
+		}
+		if(type.equals(BasicEnums.FileType.Video)) {
+			return this.QueryVideo(conditions);
+		}
+		return null;
+	}
+	public BasicModels.BaseFile QueryPicture(Object conditions) {
+		if(this.pictures == null) {
+			this.loadPictures();
+		}
+		QueryConditions qcs = new QueryConditions();
+		if(conditions instanceof QueryCondition) {
+			qcs.add((QueryCondition)conditions);
+		}
+		else if(conditions instanceof QueryConditions) {
+			qcs = (QueryConditions)conditions;
+		}
+		else if(conditions instanceof String) {
+			try {
+				qcs.stringToThis((String)conditions);
+			}catch(Exception e) {
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
+				return null;
+			}
+		}
+		else {
+			return null;
+		}
+		if(qcs.size() == 0) {
+			return this.pictures.size() == 0 ? null : this.pictures.getContent().get(0);
+		}
+		
+		for(BasicModels.BaseFile f : this.pictures.getContent()) {
+			boolean ok = true;
+			FileModels.Picture p = (FileModels.Picture)f;
+			for(QueryCondition qc : qcs.getContent()) {
+				if(qc.getItemName().equals("Index")) {
+					boolean satisfied = this.satisfyLong(p.getIndex(), qc);
+					if(qc.getRelation().equals(Relation.AND)) {
+						ok &= satisfied;
+					}
+					if(qc.getRelation().equals(Relation.OR)) {
+						ok |= satisfied;
+					}
+				}
+				if(qc.getItemName().equals("Height")) {
+					boolean satisfied = this.satisfyInteger(p.getHeight(), qc);
+					if(qc.getRelation().equals(Relation.AND)) {
+						ok &= satisfied;
+					}
+					if(qc.getRelation().equals(Relation.OR)) {
+						ok |= satisfied;
+					}
+				}
+				if(qc.getItemName().equals("Width")) {
+					boolean satisfied = this.satisfyInteger(p.getWidth(), qc);
+					if(qc.getRelation().equals(Relation.AND)) {
+						ok &= satisfied;
+					}
+					if(qc.getRelation().equals(Relation.OR)) {
+						ok |= satisfied;
+					}
+				}
+			}
+			
+			if(ok) {
+				FileModels.Picture r = new FileModels.Picture();
+				r.copyValue(p);
+				return r;
+			}
+		}
+		
+		return null;
+	}
+	public BasicModels.BaseFile QueryGif(Object conditions) {
+		if(this.gifs == null) {
+			this.loadGifs();
+		}
+		QueryConditions qcs = new QueryConditions();
+		if(conditions instanceof QueryCondition) {
+			qcs.add((QueryCondition)conditions);
+		}
+		else if(conditions instanceof QueryConditions) {
+			qcs = (QueryConditions)conditions;
+		}
+		else if(conditions instanceof String) {
+			try {
+				qcs.stringToThis((String)conditions);
+			}catch(Exception e) {
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
+				return null;
+			}
+		}
+		else {
+			return null;
+		}
+		if(qcs.size() == 0) {
+			return this.gifs.size() == 0 ? null : this.gifs.getContent().get(0);
+		}
+		
+		for(BasicModels.BaseFile f : this.gifs.getContent()) {
+			boolean ok = true;
+			FileModels.Gif p = (FileModels.Gif)f;
+			for(QueryCondition qc : qcs.getContent()) {
+				if(qc.getItemName().equals("Index")) {
+					boolean satisfied = this.satisfyLong(p.getIndex(), qc);
+					if(qc.getRelation().equals(Relation.AND)) {
+						ok &= satisfied;
+					}
+					if(qc.getRelation().equals(Relation.OR)) {
+						ok |= satisfied;
+					}
+				}
+				if(qc.getItemName().equals("Height")) {
+					boolean satisfied = this.satisfyInteger(p.getHeight(), qc);
+					if(qc.getRelation().equals(Relation.AND)) {
+						ok &= satisfied;
+					}
+					if(qc.getRelation().equals(Relation.OR)) {
+						ok |= satisfied;
+					}
+				}
+				if(qc.getItemName().equals("Width")) {
+					boolean satisfied = this.satisfyInteger(p.getWidth(), qc);
+					if(qc.getRelation().equals(Relation.AND)) {
+						ok &= satisfied;
+					}
+					if(qc.getRelation().equals(Relation.OR)) {
+						ok |= satisfied;
+					}
+				}
+				if(qc.getItemName().equals("Lasting")) {
+					boolean satisfied = this.satisfyLong(p.getLasting(), qc);
+					if(qc.getRelation().equals(Relation.AND)) {
+						ok &= satisfied;
+					}
+					if(qc.getRelation().equals(Relation.OR)) {
+						ok |= satisfied;
+					}
+				}
+			}
+			
+			if(ok) {
+				FileModels.Gif r = new FileModels.Gif();
+				r.copyValue(p);
+				return r;
+			}
+		}
+		
+		return null;
+	}
+	public BasicModels.BaseFile QueryMusic(Object conditions) {
+		if(this.musics == null) {
+			this.loadMusics();
+		}
+		QueryConditions qcs = new QueryConditions();
+		if(conditions instanceof QueryCondition) {
+			qcs.add((QueryCondition)conditions);
+		}
+		else if(conditions instanceof QueryConditions) {
+			qcs = (QueryConditions)conditions;
+		}
+		else if(conditions instanceof String) {
+			try {
+				qcs.stringToThis((String)conditions);
+			}catch(Exception e) {
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
+				return null;
+			}
+		}
+		else {
+			return null;
+		}
+		if(qcs.size() == 0) {
+			return this.musics.size() == 0 ? null : this.musics.getContent().get(0);
+		}
+		
+		for(BasicModels.BaseFile f : this.musics.getContent()) {
+			boolean ok = true;
+			FileModels.Music p = (FileModels.Music)f;
+			for(QueryCondition qc : qcs.getContent()) {
+				if(qc.getItemName().equals("Index")) {
+					boolean satisfied = this.satisfyLong(p.getIndex(), qc);
+					if(qc.getRelation().equals(Relation.AND)) {
+						ok &= satisfied;
+					}
+					if(qc.getRelation().equals(Relation.OR)) {
+						ok |= satisfied;
+					}
+				}
+				if(qc.getItemName().equals("Author")) {
+					boolean satisfied = this.satisfyString(p.getAuthor(), qc);
+					if(qc.getRelation().equals(Relation.AND)) {
+						ok &= satisfied;
+					}
+					if(qc.getRelation().equals(Relation.OR)) {
+						ok |= satisfied;
+					}
+				}
+				if(qc.getItemName().equals("Singer")) {
+					boolean satisfied = this.satisfyString(p.getSinger(), qc);
+					if(qc.getRelation().equals(Relation.AND)) {
+						ok &= satisfied;
+					}
+					if(qc.getRelation().equals(Relation.OR)) {
+						ok |= satisfied;
+					}
+				}
+				if(qc.getItemName().equals("Album")) {
+					boolean satisfied = this.satisfyString(p.getAlbum(), qc);
+					if(qc.getRelation().equals(Relation.AND)) {
+						ok &= satisfied;
+					}
+					if(qc.getRelation().equals(Relation.OR)) {
+						ok |= satisfied;
+					}
+				}
+				if(qc.getItemName().equals("Lasting")) {
+					boolean satisfied = this.satisfyLong(p.getLasting(), qc);
+					if(qc.getRelation().equals(Relation.AND)) {
+						ok &= satisfied;
+					}
+					if(qc.getRelation().equals(Relation.OR)) {
+						ok |= satisfied;
+					}
+				}
+			}
+			
+			if(ok) {
+				FileModels.Music r = new FileModels.Music();
+				r.copyValue(p);
+				return r;
+			}
+		}
+		
+		return null;
+	}
+	public BasicModels.BaseFile QueryVideo(Object conditions) {
+		if(this.videos == null) {
+			this.loadVideos();
+		}
+		QueryConditions qcs = new QueryConditions();
+		if(conditions instanceof QueryCondition) {
+			qcs.add((QueryCondition)conditions);
+		}
+		else if(conditions instanceof QueryConditions) {
+			qcs = (QueryConditions)conditions;
+		}
+		else if(conditions instanceof String) {
+			try {
+				qcs.stringToThis((String)conditions);
+			}catch(Exception e) {
+				BasicEnums.ErrorType.OTHERS.register(e.toString());
+				return null;
+			}
+		}
+		else {
+			return null;
+		}
+		if(qcs.size() == 0) {
+			return this.videos.size() == 0 ? null : this.videos.getContent().get(0);
+		}
+		
+		for(BasicModels.BaseFile f : this.videos.getContent()) {
+			boolean ok = true;
+			FileModels.Video p = (FileModels.Video)f;
+			for(QueryCondition qc : qcs.getContent()) {
+				if(qc.getItemName().equals("Index")) {
+					boolean satisfied = this.satisfyLong(p.getIndex(), qc);
+					if(qc.getRelation().equals(Relation.AND)) {
+						ok &= satisfied;
+					}
+					if(qc.getRelation().equals(Relation.OR)) {
+						ok |= satisfied;
+					}
+				}
+				if(qc.getItemName().equals("Height")) {
+					boolean satisfied = this.satisfyInteger(p.getHeight(), qc);
+					if(qc.getRelation().equals(Relation.AND)) {
+						ok &= satisfied;
+					}
+					if(qc.getRelation().equals(Relation.OR)) {
+						ok |= satisfied;
+					}
+				}
+				if(qc.getItemName().equals("Width")) {
+					boolean satisfied = this.satisfyInteger(p.getWidth(), qc);
+					if(qc.getRelation().equals(Relation.AND)) {
+						ok &= satisfied;
+					}
+					if(qc.getRelation().equals(Relation.OR)) {
+						ok |= satisfied;
+					}
+				}
+				if(qc.getItemName().equals("Lasting")) {
+					boolean satisfied = this.satisfyLong(p.getLasting(), qc);
+					if(qc.getRelation().equals(Relation.AND)) {
+						ok &= satisfied;
+					}
+					if(qc.getRelation().equals(Relation.OR)) {
+						ok |= satisfied;
+					}
+				}
+			}
+			
+			if(ok) {
+				FileModels.Video r = new FileModels.Video();
+				r.copyValue(p);
+				return r;
+			}
+		}
+		
 		return null;
 	}
 	
@@ -2625,7 +3309,71 @@ public class TXTManager implements Interfaces.IDBManager {
 	}
 	
 	public boolean updataSpecificFile(BasicEnums.FileType type, BasicModels.BaseFile file) {
+		if(type.equals(BasicEnums.FileType.Picture)) {
+			return this.updatePicture((FileModels.Picture)file);
+		}
+		if(type.equals(BasicEnums.FileType.Gif)) {
+			return this.updateGif((FileModels.Gif)file);
+		}
+		if(type.equals(BasicEnums.FileType.Music)) {
+			return this.updateMusic((FileModels.Music)file);
+		}
+		if(type.equals(BasicEnums.FileType.Video)) {
+			return this.updateVideo((FileModels.Video)file);
+		}
 		return false;
+	}
+	public boolean updatePicture(FileModels.Picture p) {
+		if(this.pictures == null) {
+			this.loadPictures();
+		}
+		
+		int index = this.pictures.indexOf(p.getIndex());
+		if(index <= 0) {
+			return false;
+		}
+		
+		this.pictures.getContent().get(index).copyValue(p);
+		return true;
+	}
+	public boolean updateGif(FileModels.Gif g) {
+		if(this.gifs == null) {
+			this.loadGifs();
+		}
+		
+		int index = this.gifs.indexOf(g.getIndex());
+		if(index <= 0) {
+			return false;
+		}
+		
+		this.gifs.getContent().get(index).copyValue(g);
+		return true;
+	}
+	public boolean updateMusic(FileModels.Music m) {
+		if(this.musics == null) {
+			this.loadMusics();
+		}
+		
+		int index = this.musics.indexOf(m.getIndex());
+		if(index <= 0) {
+			return false;
+		}
+		
+		this.musics.getContent().get(index).copyValue(m);
+		return true;
+	}
+	public boolean updateVideo(FileModels.Video v) {
+		if(this.videos == null) {
+			this.loadVideos();
+		}
+		
+		int index = this.videos.indexOf(v.getIndex());
+		if(index <= 0) {
+			return false;
+		}
+		
+		this.videos.getContent().get(index).copyValue(v);
+		return true;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2770,7 +3518,51 @@ public class TXTManager implements Interfaces.IDBManager {
 	}
 	
 	public boolean removeSpecificFile(BasicEnums.FileType type, BasicModels.BaseFile file) {
+		if(type.equals(BasicEnums.FileType.Picture)) {
+			return this.removePicture((FileModels.Picture)file);
+		}
+		if(type.equals(BasicEnums.FileType.Gif)) {
+			return this.removeGif((FileModels.Gif)file);
+		}
+		if(type.equals(BasicEnums.FileType.Music)) {
+			return this.removeMusic((FileModels.Music)file);
+		}
+		if(type.equals(BasicEnums.FileType.Video)) {
+			return this.removeVideo((FileModels.Video)file);
+		}
 		return false;
+	}
+	public boolean removePicture(FileModels.Picture p) {
+		if(this.pictures == null) {
+			this.loadPictures();
+		}
+		
+		this.pictures.delete(p.getIndex());
+		return true;
+	}
+	public boolean removeGif(FileModels.Gif g) {
+		if(this.gifs == null) {
+			this.loadGifs();
+		}
+		
+		this.gifs.delete(g.getIndex());
+		return true;
+	}
+	public boolean removeMusic(FileModels.Music m) {
+		if(this.musics == null) {
+			this.loadMusics();
+		}
+		
+		this.musics.delete(m.getIndex());
+		return true;
+	}
+	public boolean removeVideo(FileModels.Video v) {
+		if(this.videos == null) {
+			this.loadVideos();
+		}
+		
+		this.videos.delete(v.getIndex());
+		return true;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
