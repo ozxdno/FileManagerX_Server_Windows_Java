@@ -177,6 +177,8 @@ public class MainProcess extends Thread implements Interfaces.IProcess {
 					Globals.Datas.Operators.removeIdleOperator();
 					
 					Globals.Datas.Client.removeIdleConnections();
+					
+					this.removeIdleServerConnection();
 				}
 			}
 			
@@ -267,6 +269,16 @@ public class MainProcess extends Thread implements Interfaces.IProcess {
 	public boolean exitProcess() {
 		this.abort = true;
 		return true;
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	private void removeIdleServerConnection() {
+		String t = Globals.Datas.ServerConnection.getCommandsManager().test("Test");
+		if(t == null || !t.equals("Test")) {
+			BasicEnums.ErrorType.COMMUNICATOR_CONNECTION_CLOSED.register("Server Closed");
+			Globals.Datas.ServerConnection.disconnect();
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -37,6 +37,7 @@ public class CFGFile {
 		try {
 			for(int i=0; i<c.getItems().length; i++) {
 				if(c.getString(i).equals("ShowForm")) {
+					Globals.Configurations.ShowForm = true;
 					Globals.Datas.Form_Main.setVisible(true);
 					break;
 				}
@@ -1378,7 +1379,7 @@ public class CFGFile {
 		line = "";
 		txt.getContent().add(line);
 		line = "StartType = " + Globals.Configurations.StartType.toString() + 
-				(Globals.Datas.Form_Main.isVisible() ? "|ShowForm" : "");
+				(Globals.Configurations.ShowForm ? "|ShowForm" : "");
 		txt.getContent().add(line);
 		
 		if(Globals.Configurations.IsServer) {
