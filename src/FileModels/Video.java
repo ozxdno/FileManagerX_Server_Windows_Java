@@ -100,7 +100,7 @@ public class Video extends BasicModels.BaseFile implements Interfaces.IPublic {
 		initThis();
 	}
 	public String toString() {
-		return this.getName() + ": " + width + " X " + height;
+		return "[" + this.getName() + "] " + width + "X" + height + " " + Tools.Time.ticks2String(lasting, "HH:mm:ss");
 	}
 	public String output() {
 		BasicModels.Config c = new BasicModels.Config();

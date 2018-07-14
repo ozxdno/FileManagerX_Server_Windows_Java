@@ -306,6 +306,46 @@ public class Executor implements Interfaces.ICommandExecutor {
 			rf.setConnection(connection);
 			return rf.input(connection.getReceiveString()) != null && rf.execute();
 		}
+		if(c.getField().equals("QuerySpecificFile")) {
+			Commands.QuerySpecificFile rf = new Commands.QuerySpecificFile();
+			rf.setConnection(connection);
+			return rf.input(connection.getReceiveString()) != null && rf.execute();
+		}
+		if(c.getField().equals("QuerySpecificFiles")) {
+			Commands.QuerySpecificFiles rf = new Commands.QuerySpecificFiles();
+			rf.setConnection(connection);
+			return rf.input(connection.getReceiveString()) != null && rf.execute();
+		}
+		if(c.getField().equals("RemoveSpecificFile")) {
+			Commands.RemoveSpecificFile rf = new Commands.RemoveSpecificFile();
+			rf.setConnection(connection);
+			return rf.input(connection.getReceiveString()) != null && rf.execute();
+		}
+		if(c.getField().equals("RemoveSpecificFiles")) {
+			Commands.RemoveSpecificFiles rf = new Commands.RemoveSpecificFiles();
+			rf.setConnection(connection);
+			return rf.input(connection.getReceiveString()) != null && rf.execute();
+		}
+		if(c.getField().equals("UpdateSpecificFile")) {
+			Commands.UpdateSpecificFile rf = new Commands.UpdateSpecificFile();
+			rf.setConnection(connection);
+			return rf.input(connection.getReceiveString()) != null && rf.execute();
+		}
+		if(c.getField().equals("UpdateSpecificFiles")) {
+			Commands.UpdateSpecificFiles rf = new Commands.UpdateSpecificFiles();
+			rf.setConnection(connection);
+			return rf.input(connection.getReceiveString()) != null && rf.execute();
+		}
+		if(c.getField().equals("OutputMatchFile")) {
+			Commands.OutputMatchFile rf = new Commands.OutputMatchFile();
+			rf.setConnection(connection);
+			return rf.input(connection.getReceiveString()) != null && rf.execute();
+		}
+		if(c.getField().equals("OperateMatch")) {
+			Commands.OperateMatch rf = new Commands.OperateMatch();
+			rf.setConnection(connection);
+			return rf.input(connection.getReceiveString()) != null && rf.execute();
+		}
 		
 		return this.executeUnsupport(connection);
 	}

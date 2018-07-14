@@ -170,7 +170,7 @@ public class MainProcess extends Thread implements Interfaces.IProcess {
 						break;
 					}
 					
-					Tools.Time.sleepUntil(1000);
+					Tools.Time.sleepUntil(60*1000);
 					
 					Globals.Datas.Errors.save(100);
 					
@@ -274,11 +274,15 @@ public class MainProcess extends Thread implements Interfaces.IProcess {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	private void removeIdleServerConnection() {
-		String t = Globals.Datas.ServerConnection.getCommandsManager().test("Test");
-		if(t == null || !t.equals("Test")) {
-			BasicEnums.ErrorType.COMMUNICATOR_CONNECTION_CLOSED.register("Server Closed");
-			Globals.Datas.ServerConnection.disconnect();
+		/*
+		if(!Globals.Configurations.IsServer) {
+			String t = Globals.Datas.ServerConnection.getCommandsManager().test("Test");
+			if(t == null || !t.equals("Test")) {
+				BasicEnums.ErrorType.COMMUNICATOR_CONNECTION_CLOSED.register("Server Closed");
+				Globals.Datas.ServerConnection.disconnect();
+			}
 		}
+		*/
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

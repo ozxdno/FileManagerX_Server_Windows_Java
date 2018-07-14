@@ -190,9 +190,10 @@ public class QuerySpecificFile extends Comman implements Interfaces.ICommands {
 				return false;
 			}
 			
-			BasicModels.BaseFile file = cm.queryFile(
+			BasicModels.BaseFile file = cm.querySpecificFile(
 					this.getBasicMessagePackage().getDestMachineIndex(),
 					this.getBasicMessagePackage().getDestDepotIndex(),
+					this.type,
 					this.conditions
 					);
 			Replies.QuerySpecificFile rep = (Replies.QuerySpecificFile)cm.getReply();

@@ -1,0 +1,1 @@
+12:46:17 = COMMUNICATOR_BUILD_SOCKED_FAILED|1531543577810|Warning|Build Socked Failed|setSocket[ClientConnection.java:235]<-loadDepotCFG[CFGFile.java:930]<-loadCFG[CFGFile.java:71]<-run[MainProcess.java:78]|java.net.ConnectException: Connection refused: connect

@@ -2145,6 +2145,323 @@ public class Manager implements Interfaces.ICommandsManager {
 		}
 	}
 	
+	public BasicModels.BaseFile querySpecificFile(long depotIndex, BasicEnums.FileType type, Object conditions) {
+		return this.querySpecificFile(
+				this.connection.getServerMachineInfo().getIndex(),
+				depotIndex,
+				type,
+				conditions);
+	}
+	public BasicModels.BaseFile querySpecificFile(long machineIndex, long depotIndex, BasicEnums.FileType type, Object conditions) {
+		this.reply = null;
+		
+		if(machineIndex == Globals.Configurations.This_MachineIndex) {
+			Interfaces.IDBManager dbm = Globals.Datas.DBManagers.searchDepotIndex(depotIndex);
+			if(dbm == null) {
+				return null;
+			}
+			BasicModels.BaseFile file = dbm.QuerySpecificFile(type, conditions);
+			if(file == null) {
+				return null;
+			}
+			this.reply = new Replies.QuerySpecificFile();
+			((Replies.QueryFile)this.reply).setFile(file);
+			return file;
+		}
+		else {
+			Commands.QuerySpecificFile cmd = new Commands.QuerySpecificFile();
+			cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+			cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+			cmd.getBasicMessagePackage().setDestMachineIndex(machineIndex);
+			cmd.getBasicMessagePackage().setDestDepotIndex(depotIndex);
+			cmd.setType(type);
+			if(conditions instanceof String) {
+				cmd.setQueryConditions((String)conditions);
+			}
+			else if(conditions instanceof  DataBaseManager.QueryCondition) {
+				cmd.setQueryCondition((DataBaseManager.QueryCondition)conditions);
+			}
+			else if(conditions instanceof  DataBaseManager.QueryConditions) {
+				cmd.setQueryConditions((DataBaseManager.QueryConditions)conditions);
+			}
+			else {
+				BasicEnums.ErrorType.OTHERS.register("Type of conditions is Wrong", conditions.toString());
+				return null;
+			}
+			
+			reply = swre.execute(cmd.output());
+			if(this.reply != null && !(reply instanceof Replies.QuerySpecificFile)) {
+				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+				this.reply = null;
+				return null;
+			}
+			if(reply == null || !reply.isOK()) {
+				return null;
+			}
+			return ((Replies.QuerySpecificFile)reply).getFile();
+		}
+	}
+	public BasicCollections.BaseFiles querySpecificFiles(long depotIndex, BasicEnums.FileType type, Object conditions) {
+		return this.querySpecificFiles(
+				this.connection.getServerMachineInfo().getIndex(),
+				depotIndex,
+				type,
+				conditions);
+	}
+	public BasicCollections.BaseFiles querySpecificFiles(long machineIndex, long depotIndex, BasicEnums.FileType type, Object conditions) {
+		this.reply = null;
+		
+		if(machineIndex == Globals.Configurations.This_MachineIndex) {
+			Interfaces.IDBManager dbm = Globals.Datas.DBManagers.searchDepotIndex(depotIndex);
+			if(dbm == null) {
+				return null;
+			}
+			BasicCollections.BaseFiles files = dbm.QuerySpecificFiles(type, conditions);
+			if(files == null) {
+				return null;
+			}
+			this.reply = new Replies.QuerySpecificFiles();
+			((Replies.QuerySpecificFiles)this.reply).setFiles(files);
+			return files;
+		}
+		else {
+			Commands.QuerySpecificFiles cmd = new Commands.QuerySpecificFiles();
+			cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+			cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+			cmd.getBasicMessagePackage().setDestMachineIndex(machineIndex);
+			cmd.getBasicMessagePackage().setDestDepotIndex(depotIndex);
+			cmd.setType(type);
+			if(conditions instanceof String) {
+				cmd.setQueryConditions((String)conditions);
+			}
+			else if(conditions instanceof  DataBaseManager.QueryCondition) {
+				cmd.setQueryCondition((DataBaseManager.QueryCondition)conditions);
+			}
+			else if(conditions instanceof  DataBaseManager.QueryConditions) {
+				cmd.setQueryConditions((DataBaseManager.QueryConditions)conditions);
+			}
+			else {
+				BasicEnums.ErrorType.OTHERS.register("Type of conditions is Wrong", conditions.toString());
+				return null;
+			}
+			
+			reply = swre.execute(cmd.output());
+			if(this.reply != null && !(reply instanceof Replies.QuerySpecificFiles)) {
+				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+				this.reply = null;
+				return null;
+			}
+			if(reply == null || !reply.isOK()) {
+				return null;
+			}
+			return ((Replies.QuerySpecificFiles)reply).getFiles();
+		}
+	}
+	public boolean removeSpecificFile(long depotIndex, BasicEnums.FileType type, Object conditions) {
+		return this.removeSpecificFile(
+				this.connection.getServerMachineInfo().getIndex(),
+				depotIndex,
+				type,
+				conditions);
+	}
+	public boolean removeSpecificFile(long machineIndex, long depotIndex, BasicEnums.FileType type, Object conditions) {
+		this.reply = null;
+		if(!this.isConnectionRunning()) {
+			return false;
+		}
+		
+		Commands.RemoveSpecificFile cmd = new Commands.RemoveSpecificFile();
+		cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+		cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+		cmd.getBasicMessagePackage().setDestMachineIndex(machineIndex);
+		cmd.getBasicMessagePackage().setDestDepotIndex(depotIndex);
+		cmd.setType(type);
+		if(conditions instanceof String) {
+			cmd.setQueryConditions((String)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryCondition) {
+			cmd.setQueryCondition((DataBaseManager.QueryCondition)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryConditions) {
+			cmd.setQueryConditions((DataBaseManager.QueryConditions)conditions);
+		}
+		else {
+			BasicEnums.ErrorType.OTHERS.register("Type of conditions is Wrong");
+			return false;
+		}
+		
+		if(Globals.Configurations.This_MachineIndex == machineIndex) {
+			boolean ok = cmd.remove();
+			this.reply = cmd.getReply();
+			return ok;
+		}
+		else {
+			reply = swre.execute(cmd.output());
+			if(this.reply != null && !(reply instanceof Replies.RemoveSpecificFile)) {
+				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+				this.reply = null;
+				return false;
+			}
+			if(reply == null || !reply.isOK()) {
+				return false;
+			}
+			return true;
+		}
+	}
+	public boolean removeSpecificFiles(long depotIndex, BasicEnums.FileType type, Object conditions) {
+		return this.removeSpecificFiles(
+				this.connection.getServerMachineInfo().getIndex(),
+				depotIndex,
+				type,
+				conditions);
+	}
+	public boolean removeSpecificFiles(long machineIndex, long depotIndex, BasicEnums.FileType type, Object conditions) {
+		this.reply = null;
+		
+		Commands.RemoveSpecificFiles cmd = new Commands.RemoveSpecificFiles();
+		cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+		cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+		cmd.getBasicMessagePackage().setDestMachineIndex(machineIndex);
+		cmd.getBasicMessagePackage().setDestDepotIndex(depotIndex);
+		cmd.setType(type);
+		if(conditions instanceof String) {
+			cmd.setQueryConditions((String)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryCondition) {
+			cmd.setQueryCondition((DataBaseManager.QueryCondition)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryConditions) {
+			cmd.setQueryConditions((DataBaseManager.QueryConditions)conditions);
+		}
+		else {
+			BasicEnums.ErrorType.OTHERS.register("Type of conditions is Wrong");
+			return false;
+		}
+		
+		if(Globals.Configurations.This_MachineIndex == machineIndex) {
+			boolean ok = cmd.remove();
+			this.reply = cmd.getReply();
+			return ok;
+		}
+		else {
+			if(!this.isConnectionRunning()) {
+				return false;
+			}
+			
+			reply = swre.execute(cmd.output());
+			if(this.reply != null && !(reply instanceof Replies.RemoveSpecificFiles)) {
+				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+				this.reply = null;
+				return false;
+			}
+			if(reply == null || !reply.isOK()) {
+				return false;
+			}
+			return true;
+		}
+	}
+	public boolean updateSpecificFile(long depotIndex, BasicEnums.FileType type, BasicModels.BaseFile file) {
+		return this.updateSpecificFile(
+				this.connection.getServerMachineInfo().getIndex(),
+				depotIndex,
+				type,
+				file);
+	}
+	public boolean updateSpecificFile(long machineIndex, long depotIndex, BasicEnums.FileType type, BasicModels.BaseFile file) {
+		this.reply = null;
+		
+		if(machineIndex == Globals.Configurations.This_MachineIndex) {
+			this.reply = new Replies.UpdateSpecificFile();
+			Interfaces.IDBManager dbm = Globals.Datas.DBManagers.searchDepotIndex(depotIndex);
+			if(dbm == null) {
+				this.reply.setFailedReason("Not Found DBManager");
+				this.reply.setOK(false);
+				return false;
+			}
+			
+			boolean ok = dbm.updataSpecificFile(type, file);
+			if(!ok) {
+				this.reply.setFailedReason("Update File to DataBase Failed");
+			}
+			((Replies.UpdateSpecificFile)this.reply).setFile(file);
+			this.reply.setOK(ok);
+			return ok;
+		}
+		else {
+			Commands.UpdateSpecificFile cmd = new Commands.UpdateSpecificFile();
+			cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+			cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+			cmd.getBasicMessagePackage().setDestMachineIndex(machineIndex);
+			cmd.getBasicMessagePackage().setDestDepotIndex(depotIndex);
+			cmd.setType(type);
+			cmd.setFile(file);
+			
+			this.reply = swre.execute(cmd.output());
+			if(this.reply != null && !(reply instanceof Replies.UpdateSpecificFile)) {
+				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+				this.reply = null;
+				return false;
+			}
+			if(reply == null || !reply.isOK()) {
+				return false;
+			}
+			
+			return true;
+		}
+	}
+	public boolean updateSpecificFiles(long depotIndex, BasicEnums.FileType type, BasicModels.BaseFile model, String items, Object conditions) {
+		return this.updateSpecificFiles(
+				this.connection.getServerMachineInfo().getIndex(),
+				depotIndex,
+				type,
+				model,
+				items,
+				conditions);
+	}
+	public boolean updateSpecificFiles(long machineIndex, long depotIndex, BasicEnums.FileType type, BasicModels.BaseFile model, String items, Object conditions) {
+		this.reply = null;
+		
+		Commands.UpdateSpecificFiles cmd = new Commands.UpdateSpecificFiles();
+		cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+		cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+		cmd.getBasicMessagePackage().setDestMachineIndex(machineIndex);
+		cmd.getBasicMessagePackage().setDestDepotIndex(depotIndex);
+		cmd.setType(type);
+		cmd.setModel(model);
+		cmd.setItems(items);
+		if(conditions instanceof String) {
+			cmd.setQueryConditions((String)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryCondition) {
+			cmd.setQueryCondition((DataBaseManager.QueryCondition)conditions);
+		}
+		else if(conditions instanceof DataBaseManager.QueryConditions) {
+			cmd.setQueryConditions((DataBaseManager.QueryConditions)conditions);
+		}
+		else {
+			BasicEnums.ErrorType.OTHERS.register("Type of conditions is Wrong");
+			return false;
+		}
+		
+		if(Globals.Configurations.This_MachineIndex == machineIndex) {
+			boolean ok = cmd.update();
+			this.reply = cmd.getReply();
+			return ok;
+		}
+		else {
+			reply = swre.execute(cmd.output());
+			if(this.reply != null && !(reply instanceof Replies.UpdateSpecificFiles)) {
+				BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+				this.reply = null;
+				return false;
+			}
+			if(reply == null || !reply.isOK()) {
+				return false;
+			}
+			return true;
+		}
+	}
+	
 	public boolean registerUser(String invitationCode, BasicModels.User user) {
 		this.reply = null;
 		if(!this.isConnectionRunning()) {
@@ -2568,6 +2885,47 @@ public class Manager implements Interfaces.ICommandsManager {
 		return true;
 	}
 	
+	public boolean operateMatch(BasicEnums.FileType type, String args) {
+		return this.operateMatch(
+				this.connection.getServerMachineInfo().getIndex(),
+				type,
+				args);
+	}
+	public boolean operateMatch(Match.Match match) {
+		return this.operateMatch(
+				this.connection.getServerMachineInfo().getIndex(),
+				match);
+	}
+	public boolean operateMatch(long destMachine, BasicEnums.FileType type, String args) {
+		Match.Match match = new Match.Match();
+		match.setType(type);
+		match.setMatchArgs(args);
+		return this.operateMatch(destMachine, match);
+	}
+	public boolean operateMatch(long destMachine, Match.Match match) {
+		this.reply = null;
+		if(!this.isConnectionRunning()) {
+			return false;
+		}
+		
+		Commands.OperateMatch cmd = new Commands.OperateMatch();
+		cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+		cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+		cmd.getBasicMessagePackage().setDestMachineIndex(destMachine);
+		cmd.setOperateMatch(match);
+		
+		this.reply = swre.execute(cmd.output());
+		if(this.reply != null && !(reply instanceof Replies.OperateMatch)) {
+			BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+			this.reply = null;
+			return false;
+		}
+		if(reply == null || !reply.isOK()) {
+			return false;
+		}
+		return true;
+	}
+	
 	public boolean input(String sourUrl, String destUrl) {
 		return this.input(
 				sourUrl,
@@ -2835,6 +3193,69 @@ public class Manager implements Interfaces.ICommandsManager {
 		
 		this.reply = swre.execute(cmd.output());
 		if(this.reply != null && !(reply instanceof Replies.Output)) {
+			BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
+			this.reply = null;
+			return false;
+		}
+		if(reply == null || !reply.isOK()) {
+			return false;
+		}
+		return true;
+	}
+	
+	public boolean outputMatchFile(String sourUrl) {
+		return this.outputMatchFile(
+				this.connection.getServerMachineInfo().getIndex(),
+				sourUrl,
+				"");
+	}
+	public boolean outputMatchFile(long destMachine, String sourUrl) {
+		return this.outputMatchFile(
+				destMachine,
+				sourUrl,
+				"");
+	}
+	public boolean outputMatchFile(long destMachine, String sourUrl, String destUrl) {
+		return this.outputMatchFile(
+				destMachine,
+				sourUrl,
+				destUrl,
+				0);
+	}
+	public boolean outputMatchFile(long destMachine, String sourUrl, String destUrl, long totalBytes) {
+		this.reply = null;
+		if(!this.isConnectionRunning()) {
+			return false;
+		}
+		
+		if(true) {
+			java.io.File sourFile = new java.io.File(sourUrl);
+			if(!sourFile.exists()) {
+				BasicEnums.ErrorType.COMMON_FILE_NOT_EXIST.register("sourUrl = " + sourUrl);
+				return false;
+			}
+			if(sourFile.isDirectory()) {
+				BasicEnums.ErrorType.COMMON_FILE_NOT_EXIST.register("sourUrl is a Directory", "sourUrl = " + sourUrl);
+				return false;
+			}
+			totalBytes = sourFile.length();
+		}
+		
+		Commands.OutputMatchFile cmd = new Commands.OutputMatchFile();
+		cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
+		cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());
+		cmd.getBasicMessagePackage().setSourMachineIndex(this.connection.getClientMachineInfo().getIndex());
+		cmd.getBasicMessagePackage().setDestMachineIndex(destMachine);
+		cmd.getBasicMessagePackage().setSourDepotIndex(0);
+		cmd.getBasicMessagePackage().setDestDepotIndex(0);
+		cmd.setSourUrl(sourUrl);
+		cmd.setDestUrl(destUrl);
+		cmd.setFinishedBytes(0);
+		cmd.setTotalBytes(totalBytes);
+		cmd.setCover(false);
+		
+		this.reply = swre.execute(cmd.output());
+		if(this.reply != null && !(reply instanceof Replies.OutputMatchFile)) {
 			BasicEnums.ErrorType.OTHERS.register("Type of Reply is Wrong", "replyClass = " + reply.getClass().getSimpleName());
 			this.reply = null;
 			return false;

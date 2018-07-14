@@ -77,6 +77,8 @@ public final class Configurations {
 	 * 操作的存储时间
 	 */
 	public static long TimeForOperatorIdle = 1*60*1000;
+	
+	public static long TimeForMatchIdle = Long.MAX_VALUE;
 	/**
 	 * 截屏所需时间
 	 */

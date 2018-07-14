@@ -89,7 +89,7 @@ public class Picture extends BasicModels.BaseFile implements Interfaces.IPublic 
 		initThis();
 	}
 	public String toString() {
-		return this.getName() + ": " + width + " X " + height;
+		return "[" + this.getName() + "] " + width + "X" + height;
 	}
 	public String output() {
 		BasicModels.Config c = new BasicModels.Config();

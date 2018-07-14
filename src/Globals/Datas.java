@@ -119,6 +119,11 @@ public class Datas {
 	 */
 	public final static DepotManager.Operators Operators =
 			new DepotManager.Operators();
+	/**
+	 * 所有的匹配操作列表
+	 */
+	public final static Match.Matches Matches = 
+			new Match.Matches();
 	
 	/**
 	 * 一个简易窗体，用于测试各个命令。

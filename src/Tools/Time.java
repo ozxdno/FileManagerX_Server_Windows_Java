@@ -38,6 +38,47 @@ public class Time {
 		return sdf.format(new Date(tick));  
 	}
 	
+	public final static java.lang.String ticks2String(long ticks, java.lang.String format) {
+		long ms = ticks % 1000;
+		java.lang.String msstr = java.lang.String.format("%03d", ms );
+		ticks = (ticks - ms) / 1000;
+		if(format.equals("ss")) {
+			return java.lang.String.valueOf(ticks);
+		}
+		if(format.equals("ss:ms")) {
+			return java.lang.String.valueOf(ticks) + msstr;
+		}
+		long s = ticks % 60;
+		ticks = (ticks - s) / 60;
+		java.lang.String sstr = java.lang.String.format("%02d", s );
+		if(format.equals("mm:ss")) {
+			return java.lang.String.valueOf(ticks) + ":" + sstr;
+		}
+		if(format.equals("mm:ss:ms")) {
+			return java.lang.String.valueOf(ticks) + ":" + sstr + ":" + msstr;
+		}
+		long m = ticks % 60;
+		ticks = (ticks-m) / 60;
+		java.lang.String mstr = java.lang.String.format("%02d", m );
+		if(format.equals("HH:mm:ss")) {
+			return java.lang.String.valueOf(ticks) + ":" + mstr + ":" + sstr;
+		}
+		if(format.equals("HH:mm:ss:ms")) {
+			return java.lang.String.valueOf(ticks) + ":" + mstr + ":" + sstr + ":" + msstr;
+		}
+		long h = ticks % 24;
+		ticks = (ticks-h) / 24;
+		java.lang.String Hstr = java.lang.String.format("%02d", h );
+		if(format.equals("dd HH:mm:ss")) {
+			return java.lang.String.valueOf(ticks) + " " + Hstr + ":" + mstr + ":" + sstr;
+		}
+		if(format.equals("dd HH:mm:ss:ms")) {
+			return java.lang.String.valueOf(ticks) + " " + Hstr + ":" + mstr + ":" + sstr + ":" + msstr;
+		}
+		
+		return "";
+	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public final static long longTime2Ticks(java.lang.String longTime) {

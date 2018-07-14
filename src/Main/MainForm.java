@@ -234,6 +234,15 @@ public class MainForm extends JFrame {
 	            	List.add("    RemoveFile    rf");
 	            	List.add("    MatchPicture    mpic");
 	            	
+	            	List.add("    QuerySpecificFile    qsp");
+	            	List.add("    QuerySpecificFiles    qsps");
+	            	List.add("    RemoveSpecificFile    rsp");
+	            	List.add("    RemoveSpecificFile    rsps");
+	            	List.add("    UpdateSpecificFile    usp");
+	            	List.add("    UpdateSpecificFile    usps");
+	            	List.add("    OperateMatch    om");
+	            	List.add("    OutputMatchFile    omf");
+	            	
 	            	for(int i=0; i<List.size(); i++) {
 	            		List.set(i, "[" + (i+1) + "/" + List.size() + "]" + List.get(i));
 	            	}
@@ -985,6 +994,120 @@ public class MainForm extends JFrame {
 	            	List.add(tip);
 	            	
 	            	jInput.setText("RemoveFile = ");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("queryspecificfile") || f.equals("qsp")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/2][destDepot][fileType][conditions]";
+	            	List.add(tip);
+	            	tip = "[2/2][destMachine][destDepot][fileType][conditions]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("QuerySpecificFile = ");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("queryspecificfiles") || f.equals("qsps")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/2][destDepot][fileType][conditions]";
+	            	List.add(tip);
+	            	tip = "[2/2][destMachine][destDepot][fileType][conditions]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("QuerySpecificFiles = ");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("removespecificfile") || f.equals("rsp")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/2][destDepot][fileType][conditions]";
+	            	List.add(tip);
+	            	tip = "[2/2][destMachine][destDepot][fileType][conditions]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("RemoveSpecificFile = ");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("removespecificfiles") || f.equals("rsps")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/2][destDepot][fileType][conditions]";
+	            	List.add(tip);
+	            	tip = "[2/2][destMachine][destDepot][fileType][conditions]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("RemoveSpecificFiles = ");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("updatespecificfile") || f.equals("usp")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/2][destDepot][fileType][file]";
+	            	List.add(tip);
+	            	tip = "[2/2][destMachine][destDepot][fileType][file]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("UpdateSpecificFile = ");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("updatespecificfiles") || f.equals("usps")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/2][destDepot][fileType][fileModel][items][conditions]";
+	            	List.add(tip);
+	            	tip = "[2/2][destMachine][destDepot][fileType][fileModel][items][conditions]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("UpdateSpecificFiles = ");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("operatematch") || f.equals("om")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/2][fileType][matchArgs]";
+	            	List.add(tip);
+	            	tip = "[2/2][destMachine][fileType][matchArgs]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("OperateMatch = ");
+	            	jResult.setText(List.get(0));
+	            	ListIndex = 0;
+	            	return;
+	            }
+	            if(f.equals("outputmatchfile") || f.equals("omf")) {
+	            	String tip = "";
+	            	List.clear();
+	            	
+	            	tip = "[1/3][sourUrl]";
+	            	List.add(tip);
+	            	tip = "[2/3][destMachine][sourUrl]";
+	            	List.add(tip);
+	            	tip = "[3/3][destMachine][sourUrl][destUrl]";
+	            	List.add(tip);
+	            	
+	            	jInput.setText("OutputMatchFile = ");
 	            	jResult.setText(List.get(0));
 	            	ListIndex = 0;
 	            	return;
@@ -2415,6 +2538,43 @@ public class MainForm extends JFrame {
 			 	   	if(CmdName.equals("RemoveFile")) {
 		 	        	 if(cmdcfg.getItemsSize() == 2) {
 		 	        		 boolean ok = cm.removeFile(cmdcfg.getLong(0), cmdcfg.getString(1));
+		 	        		 String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+		 	        		jResult.setText(ok ? "Successed" : "Failed: " + reason);
+		 	        		 return;
+		 	        	 }
+		 	        	if(cmdcfg.getItemsSize() == 3) {
+		 	        		 boolean ok = cm.removeFile(cmdcfg.getLong(0), cmdcfg.getLong(1), cmdcfg.getString(2));
+		 	        		 String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+		 	        		jResult.setText(ok ? "Successed" : "Failed: " + reason);
+		 	        		 return;
+		 	        	 }
+		 	          }
+			 	   if(CmdName.equals("UpdateSpecificFile")) {
+		 	        	 if(cmdcfg.getItemsSize() == 2) {
+		 	        		 long depot = cmdcfg.fetchFirstLong();
+		 	        		 BasicEnums.FileType type = BasicEnums.FileType.valueOf(cmdcfg.fetchFirstString());
+		 	        		 BasicModels.BaseFile f = null;
+		 	        		 if(type.equals(BasicEnums.FileType.Picture)) {
+		 	        			 FileModels.Picture p = new FileModels.Picture();
+		 	        			 p.input(cmdcfg.output());
+		 	        			 f = p;
+		 	        		 }
+		 	        		if(type.equals(BasicEnums.FileType.Gif)) {
+		 	        			 FileModels.Gif p = new FileModels.Gif();
+		 	        			 p.input(cmdcfg.output());
+		 	        			 f = p;
+		 	        		 }
+		 	        		if(type.equals(BasicEnums.FileType.Music)) {
+		 	        			 FileModels.Music p = new FileModels.Music();
+		 	        			 p.input(cmdcfg.output());
+		 	        			 f = p;
+		 	        		 }
+		 	        		if(type.equals(BasicEnums.FileType.Video)) {
+		 	        			 FileModels.Video p = new FileModels.Video();
+		 	        			 p.input(cmdcfg.output());
+		 	        			 f = p;
+		 	        		 }
+		 	        		 boolean ok = cm.updateSpecificFile(depot, type, f);
 		 	        		 String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
 		 	        		jResult.setText(ok ? "Successed" : "Failed: " + reason);
 		 	        		 return;

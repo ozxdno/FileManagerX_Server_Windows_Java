@@ -486,7 +486,74 @@ public class Executor implements Interfaces.IReplyExecutor {
 			return uf.input(connection.getReceiveString()) != null &&
 					uf.execute(connection);
 		}
-		
+		if(c.getField().equals("QuerySpecificFile")) {
+			Replies.QuerySpecificFile uf = new Replies.QuerySpecificFile();
+			this.reply = uf;
+			return uf.input(connection.getReceiveString()) != null &&
+					uf.execute(connection);
+		}
+		if(c.getField().equals("RemoveSpecificFile")) {
+			Replies.RemoveSpecificFile uf = new Replies.RemoveSpecificFile();
+			this.reply = uf;
+			return uf.input(connection.getReceiveString()) != null &&
+					uf.execute(connection);
+		}
+		if(c.getField().equals("UpdateSpecificFile")) {
+			Replies.UpdateSpecificFile uf = new Replies.UpdateSpecificFile();
+			this.reply = uf;
+			return uf.input(connection.getReceiveString()) != null &&
+					uf.execute(connection);
+		}
+		if(c.getField().equals("OutputMatchFile")) {
+			Replies.OutputMatchFile uf = new Replies.OutputMatchFile();
+			this.reply = uf;
+			return uf.input(connection.getReceiveString()) != null &&
+					uf.execute(connection);
+		}
+		if(c.getField().equals("UpdateSpecificFiles")) {
+			Replies.UpdateSpecificFiles uf = new Replies.UpdateSpecificFiles();
+			this.reply = uf;
+			Interfaces.ICommunicatorSendTotal st = Factories.CommunicatorFactory.createSendTotal();
+			st.input(connection.getReceiveString());
+			for(String item : st.getLines()) {
+				uf.input(item);
+				uf.execute(connection);
+			}
+			return true;
+		}
+		if(c.getField().equals("QuerySpecificFiles")) {
+			Replies.QuerySpecificFiles uf = new Replies.QuerySpecificFiles();
+			this.reply = uf;
+			Interfaces.ICommunicatorSendTotal st = Factories.CommunicatorFactory.createSendTotal();
+			st.input(connection.getReceiveString());
+			for(String item : st.getLines()) {
+				uf.input(item);
+				uf.execute(connection);
+			}
+			return true;
+		}
+		if(c.getField().equals("RemoveSpecificFiles")) {
+			Replies.RemoveSpecificFiles uf = new Replies.RemoveSpecificFiles();
+			this.reply = uf;
+			Interfaces.ICommunicatorSendTotal st = Factories.CommunicatorFactory.createSendTotal();
+			st.input(connection.getReceiveString());
+			for(String item : st.getLines()) {
+				uf.input(item);
+				uf.execute(connection);
+			}
+			return true;
+		}
+		if(c.getField().equals("OperateMatch")) {
+			Replies.OperateMatch uf = new Replies.OperateMatch();
+			this.reply = uf;
+			Interfaces.ICommunicatorSendTotal st = Factories.CommunicatorFactory.createSendTotal();
+			st.input(connection.getReceiveString());
+			for(String item : st.getLines()) {
+				uf.input(item);
+				uf.execute(connection);
+			}
+			return true;
+		}
 		
 		while(true) {
 			Replies.Unsupport u = new Replies.Unsupport();

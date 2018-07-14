@@ -104,6 +104,19 @@ public interface ICommandsManager {
 	public boolean updateFile(long depotIndex, BasicModels.BaseFile file);
 	public boolean updateFile(long machineIndex, long depotIndex, BasicModels.BaseFile file);
 	
+	public BasicModels.BaseFile querySpecificFile(long depotIndex, BasicEnums.FileType type, Object conditions);
+	public BasicModels.BaseFile querySpecificFile(long machineIndex, long depotIndex, BasicEnums.FileType type, Object conditions);
+	public BasicCollections.BaseFiles querySpecificFiles(long depotIndex, BasicEnums.FileType type, Object conditions);
+	public BasicCollections.BaseFiles querySpecificFiles(long machineIndex, long depotIndex, BasicEnums.FileType type, Object conditions);
+	public boolean removeSpecificFile(long depotIndex, BasicEnums.FileType type, Object conditions);
+	public boolean removeSpecificFile(long machineIndex, long depotIndex, BasicEnums.FileType type, Object conditions);
+	public boolean removeSpecificFiles(long depotIndex, BasicEnums.FileType type, Object conditions);
+	public boolean removeSpecificFiles(long machineIndex, long depotIndex, BasicEnums.FileType type, Object conditions);
+	public boolean updateSpecificFile(long depotIndex, BasicEnums.FileType type, BasicModels.BaseFile file);
+	public boolean updateSpecificFile(long machineIndex, long depotIndex, BasicEnums.FileType type, BasicModels.BaseFile file);
+	public boolean updateSpecificFiles(long depotIndex, BasicEnums.FileType type, BasicModels.BaseFile model, String items, Object conditions);
+	public boolean updateSpecificFiles(long machineIndex, long depotIndex, BasicEnums.FileType type, BasicModels.BaseFile model, String items, Object conditions);
+	
 	public boolean registerUser(String invitationCode, BasicModels.User user);
 	
 	public boolean loginConnection();
@@ -135,6 +148,11 @@ public interface ICommandsManager {
 	public boolean operateDepot(BasicEnums.OperateType operateType, long destmachine, long destDepot, String sourUrl, String destUrl);
 	public boolean operateDepot(long destMachine, DepotManager.Operator operator);
 	
+	public boolean operateMatch(BasicEnums.FileType type, String args);
+	public boolean operateMatch(Match.Match match);
+	public boolean operateMatch(long destMachine, BasicEnums.FileType type, String args);
+	public boolean operateMatch(long destMachine, Match.Match match);
+	
 	public boolean input(String sourUrl, String destUrl);
 	public boolean input(String sourUrl, String destUrl, boolean cover);
 	public boolean input(String sourUrl, String destUrl, long finishedBytes);
@@ -154,6 +172,11 @@ public interface ICommandsManager {
 	public boolean output(long sourMachine, long destMachine, String sourUrl, String destUrl, long finishedBytes);
 	public boolean output(long sourMachine, long destMachine, String sourUrl, String destUrl, long finishedBytes, boolean cover);
 	public boolean output(long sourMachine, long destMachine, long sourDepot, long destDepot, String sourUrl, String destUrl, long finishedBytes, long totalBytes, boolean cover);
+	
+	public boolean outputMatchFile(String sourUrl);
+	public boolean outputMatchFile(long destMachine, String sourUrl);
+	public boolean outputMatchFile(long destMachine, String sourUrl, String destUrl);
+	public boolean outputMatchFile(long destMachine, String sourUrl, String destUrl, long totalBytes);
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

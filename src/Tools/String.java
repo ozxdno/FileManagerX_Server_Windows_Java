@@ -120,6 +120,24 @@ public class String {
 		return link(array,mark,0,array.length-1);
 	}
 	
+	public static final java.lang.String link(long[] array, java.lang.String mark, int bgIndex, int edIndex) {
+		if(array == null || array.length == 0) {
+			return "";
+		}
+		if(bgIndex > edIndex) {
+			return "";
+		}
+		
+		java.lang.String[] items = new java.lang.String[edIndex - bgIndex + 1];
+		for(int i=0; i<items.length; i++) {
+			items[i] = java.lang.String.valueOf(array[i]);
+		}
+		return link(items,mark,0,items.length-1);
+	}
+	public static final java.lang.String link(long[] array, java.lang.String mark) {
+		return link(array,mark,0,array.length-1);
+	}
+	
 	/**
 	 * 把指定一行字符串分割成若干个子字符串，分割标志为 mark 。
 	 * @param line 指定字符串
@@ -165,6 +183,19 @@ public class String {
 		try {
 			for(int i=0; i<items.length; i++) {
 				res[i] = Integer.parseInt(items[i]);
+			}
+			return res;
+		} catch(Exception e) {
+			BasicEnums.ErrorType.OTHERS.register(e.toString());
+			return null;
+		}
+	}
+	public static final long[] splitToLongArray(java.lang.String line, char mark) {
+		java.lang.String[] items = split(line, mark);
+		long[] res = new long[items.length];
+		try {
+			for(int i=0; i<items.length; i++) {
+				res[i] = Long.parseLong(items[i]);
 			}
 			return res;
 		} catch(Exception e) {
