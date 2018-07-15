@@ -15,6 +15,9 @@ public class DepotChecker implements Interfaces.IDepotChecker{
 	private BasicCollections.BaseFiles deleteFiles;
 	private BasicCollections.Folders deleteFolders;
 	
+	private BasicCollections.BaseFiles modifiedFiles;
+	private BasicCollections.Folders modifiedFolders;
+	
 	private boolean[] checkedMark_Folders;
 	private boolean[] checkedMark_Files;
 	
@@ -66,9 +69,6 @@ public class DepotChecker implements Interfaces.IDepotChecker{
 			ok = false;
 		}
 		if(!this.checkFoldersAndFiles()) {
-			ok = false;
-		}
-		if(!this.checkFileType()) {
 			ok = false;
 		}
 		
@@ -173,35 +173,89 @@ public class DepotChecker implements Interfaces.IDepotChecker{
 		// 校验内容
 		this.totalFolders = this.dbmanager.QueryFolders("");
 		this.totalFiles = this.dbmanager.QueryFiles("");
+		this.checkedMark_Folders = new boolean[this.totalFolders.size()];
+		this.checkedMark_Files = new boolean[this.totalFiles.size()];
+		Tools.SetElements.setBooleanArrayElements(checkedMark_Folders, false);
+		Tools.SetElements.setBooleanArrayElements(checkedMark_Files, false);
 		for(int i=0; i<this.totalFolders.size(); i++) {
-			this.checkFile(this.totalFolders.getContent().get(i));
+			this.checkFile(this.totalFolders.getContent().get(i), i, this.checkedMark_Folders);
 		}
 		for(int i=0; i<this.totalFiles.size(); i++) {
-			this.checkFile(this.totalFiles.getContent().get(i));
+			this.checkFile(this.totalFiles.getContent().get(i), i, this.checkedMark_Files);
 		}
 		
-		return true;
-	}
-	public boolean checkFileType() {
-		boolean ok = true;
-		this.totalFiles = dbmanager.QueryFiles(new DataBaseManager.QueryConditions());
-		for(int i=0; i<this.totalFiles.size(); i++) {
-			BasicModels.BaseFile f = this.totalFiles.getContent().get(i);
-			BasicEnums.FileType tp0 = f.getType();
-			BasicModels.Support s = Globals.Datas.Supports.search(f.getExtension());
-			BasicEnums.FileType tp1 = s == null ? BasicEnums.FileType.Unsupport : s.getType();
-			if(!tp0.equals(tp1)) {
-				f.setType(tp1);
-				ok &= dbmanager.updataFile(f);
+		// 添加修改项
+		this.modifiedFolders.clear();
+		this.modifiedFiles.clear();
+		for(int i=0; i<this.checkedMark_Files.length; i++) {
+			if(this.checkedMark_Files[i]) {
+				this.modifiedFiles.add(this.totalFiles.getContent().get(i));
 			}
 		}
-		return ok;
+		
+		// 清除缓存
+		this.addFolders.clear();
+		this.addFiles.clear();
+		this.deleteFolders.clear();
+		this.deleteFiles.clear();
+		return true;
 	}
 	
 	public boolean checkPictures() {
 		if(this.dbmanager == null) {
 			return false;
 		}
+		
+		this.addFolders.clear();
+		this.addFiles.clear();
+		this.deleteFolders.clear();
+		this.deleteFiles.clear();
+		
+		// 提取添加与删除的文件
+		BasicCollections.BaseFiles pics = this.dbmanager.QuerySpecificFiles(BasicEnums.FileType.Picture, "");
+		boolean[] checkedMark = new boolean[pics.size()];
+		Tools.SetElements.setBooleanArrayElements(checkedMark, false);
+		for(int i=0; i<this.totalFiles.size(); i++) {
+			BasicModels.BaseFile f = this.totalFiles.getContent().get(i);
+			if(f.getType().equals(BasicEnums.FileType.Picture)) {
+				int idx = pics.indexOf(f.getIndex());
+				if(idx < 0) {
+					FileModels.Picture p = new FileModels.Picture(f.getUrl());
+					p.setIndex(f.getIndex());
+					p.load();
+					this.addFiles.add(p);
+				}
+				else {
+					checkedMark[idx] = true;
+					FileModels.Picture p = (FileModels.Picture)pics.getContent().get(idx);
+					boolean reload = false;
+					reload |= (p.getHeight() <= 0);
+					reload |= (p.getWidth() <= 0);
+					reload |= (p.getRowPixels().length != Globals.Extras.MatchPicture_PixelAmount);
+					reload |= (p.getColPixels().length != Globals.Extras.MatchPicture_PixelAmount);
+					reload |= (this.modifiedFiles.indexOf(this.totalFiles.getContent().get(i).getIndex()) >= 0);
+					if(reload) {
+						p.load();
+						this.dbmanager.updataSpecificFile(BasicEnums.FileType.Picture, p);
+					}
+				}
+			}
+		}
+		for(int i=0; i<checkedMark.length; i++) {
+			if(!checkedMark[i]) {
+				this.deleteFiles.add(pics.getContent().get(i));
+			}
+		}
+		
+		// 添加与删除
+		this.dbmanager.updataSpecificFiles(BasicEnums.FileType.Picture, this.addFiles);
+		this.dbmanager.removeSpecificFiles(BasicEnums.FileType.Picture, this.deleteFiles);
+		
+		// 清除缓存
+		this.addFolders.clear();
+		this.addFiles.clear();
+		this.deleteFolders.clear();
+		this.deleteFiles.clear();
 		return true;
 	}
 	public boolean checkGifs() {
@@ -261,7 +315,7 @@ public class DepotChecker implements Interfaces.IDepotChecker{
 			}
 		}
 	}
-	private void checkFile(BasicModels.BaseFile file) {
+	private void checkFile(BasicModels.BaseFile file, int index, boolean[] modifiedMark) {
 		java.io.File f = new java.io.File(file.getUrl());
 		if(!f.exists()) {
 			this.dbmanager.removeFile(file);
@@ -292,6 +346,7 @@ public class DepotChecker implements Interfaces.IDepotChecker{
 		long modify = f.lastModified();
 		if(modify != file.getModify()) {
 			file.setModify(modify);
+			modifiedMark[index] = true;
 			needUpdate = true;
 		}
 		// length

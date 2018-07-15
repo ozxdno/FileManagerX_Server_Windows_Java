@@ -1058,9 +1058,7 @@ public class MainForm extends JFrame {
 	            	String tip = "";
 	            	List.clear();
 	            	
-	            	tip = "[1/2][destDepot][fileType][file]";
-	            	List.add(tip);
-	            	tip = "[2/2][destMachine][destDepot][fileType][file]";
+	            	tip = "[1/1][destMachine][destDepot][fileType][file]";
 	            	List.add(tip);
 	            	
 	            	jInput.setText("UpdateSpecificFile = ");
@@ -1072,9 +1070,7 @@ public class MainForm extends JFrame {
 	            	String tip = "";
 	            	List.clear();
 	            	
-	            	tip = "[1/2][destDepot][fileType][fileModel][items][conditions]";
-	            	List.add(tip);
-	            	tip = "[2/2][destMachine][destDepot][fileType][fileModel][items][conditions]";
+	            	tip = "[1/1][destMachine][destDepot][fileType][fileModel][items][conditions]";
 	            	List.add(tip);
 	            	
 	            	jInput.setText("UpdateSpecificFiles = ");
@@ -1086,9 +1082,7 @@ public class MainForm extends JFrame {
 	            	String tip = "";
 	            	List.clear();
 	            	
-	            	tip = "[1/2][fileType][matchArgs]";
-	            	List.add(tip);
-	            	tip = "[2/2][destMachine][fileType][matchArgs]";
+	            	tip = "[1/1][destMachine][fileType][matchArgs]";
 	            	List.add(tip);
 	            	
 	            	jInput.setText("OperateMatch = ");
@@ -2550,7 +2544,8 @@ public class MainForm extends JFrame {
 		 	        	 }
 		 	          }
 			 	   if(CmdName.equals("UpdateSpecificFile")) {
-		 	        	 if(cmdcfg.getItemsSize() == 2) {
+		 	        	 if(cmdcfg.getItemsSize() > 0) {
+		 	        		 long machine = cmdcfg.fetchFirstLong();
 		 	        		 long depot = cmdcfg.fetchFirstLong();
 		 	        		 BasicEnums.FileType type = BasicEnums.FileType.valueOf(cmdcfg.fetchFirstString());
 		 	        		 BasicModels.BaseFile f = null;
@@ -2574,18 +2569,286 @@ public class MainForm extends JFrame {
 		 	        			 p.input(cmdcfg.output());
 		 	        			 f = p;
 		 	        		 }
-		 	        		 boolean ok = cm.updateSpecificFile(depot, type, f);
-		 	        		 String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
-		 	        		jResult.setText(ok ? "Successed" : "Failed: " + reason);
-		 	        		 return;
-		 	        	 }
-		 	        	if(cmdcfg.getItemsSize() == 3) {
-		 	        		 boolean ok = cm.removeFile(cmdcfg.getLong(0), cmdcfg.getLong(1), cmdcfg.getString(2));
+		 	        		 boolean ok = cm.updateSpecificFile(machine, depot, type, f);
 		 	        		 String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
 		 	        		jResult.setText(ok ? "Successed" : "Failed: " + reason);
 		 	        		 return;
 		 	        	 }
 		 	          }
+			 	   		if(CmdName.equals("UpdateSpecificFiles")) {
+			 	   			if(cmdcfg.getItemsSize() > 0) {
+			 	        		 long machine = cmdcfg.fetchFirstLong();
+			 	        		 long depot = cmdcfg.fetchFirstLong();
+			 	        		 BasicEnums.FileType type = BasicEnums.FileType.valueOf(cmdcfg.fetchFirstString());
+			 	        		 BasicModels.BaseFile f = null;
+			 	        		 if(type.equals(BasicEnums.FileType.Picture)) {
+			 	        			 FileModels.Picture p = new FileModels.Picture();
+			 	        			 p.input(cmdcfg.output());
+			 	        			 f = p;
+			 	        		 }
+		 	        		if(type.equals(BasicEnums.FileType.Gif)) {
+		 	        			 FileModels.Gif p = new FileModels.Gif();
+		 	        			 p.input(cmdcfg.output());
+		 	        			 f = p;
+		 	        		 }
+		 	        		if(type.equals(BasicEnums.FileType.Music)) {
+		 	        			 FileModels.Music p = new FileModels.Music();
+		 	        			 p.input(cmdcfg.output());
+		 	        			 f = p;
+		 	        		 }
+		 	        		if(type.equals(BasicEnums.FileType.Video)) {
+		 	        			 FileModels.Video p = new FileModels.Video();
+		 	        			 p.input(cmdcfg.output());
+		 	        			 f = p;
+		 	        		 }
+		 	        		 String items = cmdcfg.fetchFirstString();
+		 	        		 String conditions = cmdcfg.fetchFirstString();
+		 	        		 boolean ok = cm.updateSpecificFiles(machine, depot, type, f, items, conditions);
+		 	        		 String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+		 	        		 if(!ok) {
+		 	        			 jResult.setText("Failed: " + reason);
+		 	        			 return;
+		 	        		 }
+		 	        		 
+		 	        		 BasicCollections.BaseFiles files = ((Replies.UpdateSpecificFiles)cm.getReply()).getFiles();
+		 	        		if(files.size() == 0) {
+	 	           				jResult.setText("Successed: Empty");
+	 	           				return;
+	 	           			}
+	 	           			
+	 	           			List.clear();
+	 	           			ListIndex = 0;
+	 	           			String item = "";
+	 	           			
+	 	           			for(int i=0; i<files.size(); i++) {
+	 	           				item = "[" + (i+1) + "/" + files.size() + "]" + files.getContent().get(i).output();
+	 	           				List.add(item);
+	 	           			}
+ 	           			
+	 	           			 jResult.setText(List.get(ListIndex));
+		 	        		 return;
+		 	        	 }
+		 	          }
+			 	   	if(CmdName.equals("QuerySpecificFile")) {
+				 	   	if(cmdcfg.getItemsSize() == 3) {
+		 	        		 long depot = cmdcfg.fetchFirstLong();
+		 	        		 BasicEnums.FileType type = BasicEnums.FileType.valueOf(cmdcfg.fetchFirstString());
+		 	        		 String conditions = cmdcfg.fetchFirstString();
+		 	        		 BasicModels.BaseFile file = cm.querySpecificFile(depot, type, conditions);
+		 	        		 String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+		 	        		 if(file == null) {
+		 	        			jResult.setText("Failed: " + reason);
+		 	        			return;
+		 	        		 }
+		 	        		 jResult.setText(file.output());
+		 	        		 return;
+		 	        	 }
+		 	        	 if(cmdcfg.getItemsSize() == 4) {
+		 	        		 long machine = cmdcfg.fetchFirstLong();
+		 	        		 long depot = cmdcfg.fetchFirstLong();
+		 	        		 BasicEnums.FileType type = BasicEnums.FileType.valueOf(cmdcfg.fetchFirstString());
+		 	        		 String conditions = cmdcfg.fetchFirstString();
+		 	        		 BasicModels.BaseFile file = cm.querySpecificFile(machine, depot, type, conditions);
+		 	        		 String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+		 	        		 if(file == null) {
+		 	        			jResult.setText("Failed: " + reason);
+		 	        			return;
+		 	        		 }
+		 	        		 jResult.setText(file.output());
+		 	        		 return;
+		 	        	 }
+		 	          }
+			 	   if(CmdName.equals("QuerySpecificFiles")) {
+			 		   	if(cmdcfg.getItemsSize() == 3) {
+		 	        		 long depot = cmdcfg.fetchFirstLong();
+		 	        		 BasicEnums.FileType type = BasicEnums.FileType.valueOf(cmdcfg.fetchFirstString());
+		 	        		 String conditions = cmdcfg.fetchFirstString();
+		 	        		 BasicCollections.BaseFiles files = cm.querySpecificFiles(depot, type, conditions);
+		 	        		 String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+		 	        		 if(files == null) {
+		 	        			 jResult.setText("Failed: " + reason);
+		 	        			 return;
+		 	        		 }
+		 	           			if(files.size() == 0) {
+		 	           				jResult.setText("Successed: Empty");
+		 	           				return;
+		 	           			}
+		 	           			
+		 	           			List.clear();
+		 	           			ListIndex = 0;
+		 	           			String item = "";
+		 	           			
+		 	           			for(int i=0; i<files.size(); i++) {
+		 	           				item = "[" + (i+1) + "/" + files.size() + "]" + files.getContent().get(i).output();
+		 	           				List.add(item);
+		 	           			}
+	 	           			
+	 	           			jResult.setText(List.get(ListIndex));
+	 	           			return;
+		 	        	 }
+		 	        	 if(cmdcfg.getItemsSize() == 4) {
+		 	        		 long machine = cmdcfg.fetchFirstLong();
+		 	        		 long depot = cmdcfg.fetchFirstLong();
+		 	        		 BasicEnums.FileType type = BasicEnums.FileType.valueOf(cmdcfg.fetchFirstString());
+		 	        		 String conditions = cmdcfg.fetchFirstString();
+		 	        		 BasicCollections.BaseFiles files = cm.querySpecificFiles(machine, depot, type, conditions);
+		 	        		 String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+		 	        		 if(files == null) {
+		 	        			 jResult.setText("Failed: " + reason);
+		 	        			 return;
+		 	        		 }
+		 	           			if(files.size() == 0) {
+		 	           				jResult.setText("Successed: Empty");
+		 	           				return;
+		 	           			}
+		 	           			
+		 	           			List.clear();
+		 	           			ListIndex = 0;
+		 	           			String item = "";
+		 	           			
+		 	           			for(int i=0; i<files.size(); i++) {
+		 	           				item = "[" + (i+1) + "/" + files.size() + "]" + files.getContent().get(i).output();
+		 	           				List.add(item);
+		 	           			}
+	 	           			
+	 	           			jResult.setText(List.get(ListIndex));
+	 	           			return;
+		 	        	 }
+		 	          }
+			 	  if(CmdName.equals("RemoveSpecificFile")) {
+				 		 if(cmdcfg.getItemsSize() == 3) {
+		 	        		 long depot = cmdcfg.fetchFirstLong();
+		 	        		 BasicEnums.FileType type = BasicEnums.FileType.valueOf(cmdcfg.fetchFirstString());
+		 	        		 String conditions = cmdcfg.fetchFirstString();
+		 	        		 boolean ok = cm.removeSpecificFile(depot, type, conditions);
+		 	        		 String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+		 	        		jResult.setText(ok ? "Successed" : "Failed: " + reason);
+		 	        		 return;
+		 	        	 }
+		 	        	 if(cmdcfg.getItemsSize() == 4) {
+		 	        		 long machine = cmdcfg.fetchFirstLong();
+		 	        		 long depot = cmdcfg.fetchFirstLong();
+		 	        		 BasicEnums.FileType type = BasicEnums.FileType.valueOf(cmdcfg.fetchFirstString());
+		 	        		 String conditions = cmdcfg.fetchFirstString();
+		 	        		 boolean ok = cm.removeSpecificFile(machine, depot, type, conditions);
+		 	        		 String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+		 	        		jResult.setText(ok ? "Successed" : "Failed: " + reason);
+		 	        		 return;
+		 	        	 }
+		 	          }
+			 	   		if(CmdName.equals("RemoveSpecificFiles")) {
+				 	   		if(cmdcfg.getItemsSize() == 3) {
+			 	        		 long depot = cmdcfg.fetchFirstLong();
+			 	        		 BasicEnums.FileType type = BasicEnums.FileType.valueOf(cmdcfg.fetchFirstString());
+		 	        		 String conditions = cmdcfg.fetchFirstString();
+		 	        		 boolean ok = cm.removeSpecificFiles(depot, type, conditions);
+		 	        		 String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+		 	        		 if(!ok) {
+		 	        			 jResult.setText("Failed: " + reason);
+		 	        			 return;
+		 	        		 }
+		 	        		 
+		 	        		 BasicCollections.BaseFiles files = ((Replies.RemoveSpecificFiles)cm.getReply()).getFiles();
+		 	        		if(files.size() == 0) {
+		           				jResult.setText("Successed: Empty");
+		           				return;
+		           			}
+		           			
+		           			List.clear();
+		           			ListIndex = 0;
+		           			String item = "";
+		           			
+		           			for(int i=0; i<files.size(); i++) {
+		           				item = "[" + (i+1) + "/" + files.size() + "]" + files.getContent().get(i).output();
+		           				List.add(item);
+		           			}
+	          			
+		           			 jResult.setText(List.get(ListIndex));
+		 	        		 return;
+		 	        	 }
+			 	   			if(cmdcfg.getItemsSize() == 4) {
+			 	        		 long machine = cmdcfg.fetchFirstLong();
+			 	        		 long depot = cmdcfg.fetchFirstLong();
+			 	        		 BasicEnums.FileType type = BasicEnums.FileType.valueOf(cmdcfg.fetchFirstString());
+		 	        		 String conditions = cmdcfg.fetchFirstString();
+		 	        		 boolean ok = cm.removeSpecificFiles(machine, depot, type, conditions);
+		 	        		 String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+		 	        		 if(!ok) {
+		 	        			 jResult.setText("Failed: " + reason);
+		 	        			 return;
+		 	        		 }
+		 	        		 
+		 	        		 BasicCollections.BaseFiles files = ((Replies.RemoveSpecificFiles)cm.getReply()).getFiles();
+		 	        		if(files.size() == 0) {
+	 	           				jResult.setText("Successed: Empty");
+	 	           				return;
+	 	           			}
+	 	           			
+	 	           			List.clear();
+	 	           			ListIndex = 0;
+	 	           			String item = "";
+	 	           			
+	 	           			for(int i=0; i<files.size(); i++) {
+	 	           				item = "[" + (i+1) + "/" + files.size() + "]" + files.getContent().get(i).output();
+	 	           				List.add(item);
+	 	           			}
+	           			
+	 	           			 jResult.setText(List.get(ListIndex));
+		 	        		 return;
+		 	        	 }
+		 	          }
+			 	   		if(CmdName.equals("OperateMatch")) {
+			 	   			if(cmdcfg.getItemsSize() > 0) {
+			 	   				long machine = cmdcfg.fetchFirstLong();
+			 	   				BasicEnums.FileType type = BasicEnums.FileType.valueOf(cmdcfg.fetchFirstString());
+			 	   				String args = cmdcfg.getValue();
+			 	   				
+			 	   				boolean ok = cm.operateMatch(machine, type, args);
+				 	   			String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+			 	        		 if(!ok) {
+			 	        			 jResult.setText("Failed: " + reason);
+			 	        			 return;
+			 	        		 }
+			 	        		 
+			 	        		 BasicCollections.BaseFiles files = ((Replies.OperateMatch)cm.getReply()).getFiles();
+			 	        		if(files.size() == 0) {
+		 	           				jResult.setText("Successed: Empty");
+		 	           				return;
+		 	           			}
+		 	           			
+		 	           			List.clear();
+		 	           			ListIndex = 0;
+		 	           			String item = "";
+		 	           			
+		 	           			for(int i=0; i<files.size(); i++) {
+		 	           				item = "[" + (i+1) + "/" + files.size() + "]" + files.getContent().get(i).output();
+		 	           				List.add(item);
+		 	           			}
+		           			
+		 	           			 jResult.setText(List.get(ListIndex));
+			 	        		 return;
+			 	   			}
+			 	   		}
+			 	   	if(CmdName.equals("OutputMatchFile")) {
+			 	   		if(cmdcfg.getItemsSize() == 1) {
+			 	   			boolean ok = cm.outputMatchFile(cmdcfg.getString(0));
+			 	   			String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+			 	   			jResult.setText(ok ? "Successed" : "Failed: " + reason);
+			 	   			return;
+			 	   		}
+				 	   	if(cmdcfg.getItemsSize() == 2) {
+			 	   			boolean ok = cm.outputMatchFile(cmdcfg.getLong(0), cmdcfg.getString(1));
+			 	   			String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+			 	   			jResult.setText(ok ? "Successed" : "Failed: " + reason);
+			 	   			return;
+			 	   		}
+				 	   	if(cmdcfg.getItemsSize() == 3) {
+			 	   			boolean ok = cm.outputMatchFile(cmdcfg.getLong(0), cmdcfg.getString(1), cmdcfg.getString(2));
+			 	   			String reason = cm.getReply() == null ? "NULL" : cm.getReply().getFailedReason();
+			 	   			jResult.setText(ok ? "Successed" : "Failed: " + reason);
+			 	   			return;
+			 	   		}
+			 	   	}
 	 	            jResult.setText("Unsupport Command");
 	        	} catch(Exception ex) {
 	        		jResult.setText(ex.toString());

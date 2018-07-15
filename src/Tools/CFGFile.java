@@ -1373,7 +1373,7 @@ public class CFGFile {
 		
 		line = "";
 		txt.getContent().add(line);
-		line = "[Attention]: Do Not Save Other Infos in This File, It will reset At Running.";
+		line = "[Attention]: Do Not Save Other Info in This File, It will reset At Running.";
 		txt.getContent().add(line);
 		
 		line = "";

@@ -1,2 +1,1 @@
-DataBaseInfo = 5|5|dddd|TXT|2|DESKTOP-ASFUOAO|172.24.136.41|40000|D:\Space_For_Project\FileManagerX\Server\Windows_Java\dbs\5
-DataBaseInfo = 8|8|ffff|TXT|2|DESKTOP-ASFUOAO|172.24.136.41|40000|D:\Space_For_Project\FileManagerX\Server\Windows_Java\dbs\8
+DataBaseInfo = 1|1|DESKTOP-ASFUOAO|TXT|1|DESKTOP-ASFUOAO|172.24.136.41|40000|D:\Space_For_Project\FileManagerX\Server\Windows_Java\dbs\0

@@ -10,6 +10,14 @@ public class DefaultFactory {
 		def.setPort();
 		return def;
 	}
+	public final static BasicModels.MachineInfo createDefaultServerMachineInfo() {
+		BasicModels.MachineInfo def = new BasicModels.MachineInfo();
+		def.setIndex(Globals.Configurations.Next_MachineIndex + 1);
+		def.setIp();
+		def.setName();
+		def.setPort();
+		return def;
+	}
 	
 	/**
 	 * 

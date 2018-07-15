@@ -157,8 +157,21 @@ public class Gif extends BasicModels.BaseFile implements Interfaces.IPublic {
 	public boolean load() {
 		
 		try {
-			java.io.File p = new java.io.File(this.getUrl());
-			java.awt.image.BufferedImage bi = javax.imageio.ImageIO.read(p);
+			GifTools.GifDecoder gd = new GifTools.GifDecoder();
+			int status = gd.read(this.getUrl());
+			if(status != GifTools.GifDecoder.STATUS_OK) {
+				BasicEnums.ErrorType.COMMON_FILE_OPERATE_FAILED.register("Read Gif Failed, STATUS: " + status, this.getUrl());
+				return false;
+			}
+			
+			this.lasting = 0;
+			for(int i=0; i<gd.getFrameCount(); i++) {
+				this.lasting += gd.getDelay(i);
+			}
+			
+			//java.io.File p = new java.io.File(this.getUrl());
+			//java.awt.image.BufferedImage bi = javax.imageio.ImageIO.read(p);
+			java.awt.image.BufferedImage bi = gd.getFrame(0);
 			int xmin = bi.getMinX();
 			int ymin = bi.getMinY();
 			int xmax = bi.getWidth();

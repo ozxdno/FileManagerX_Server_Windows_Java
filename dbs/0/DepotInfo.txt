@@ -1,2 +1,1 @@
-DepotInfo = 5|2|DESKTOP-ASFUOAO|172.24.136.41|40000|D:\Space_For_Media\Pictures\FMX_Test_Depot_C|5|dddd|Running
-DepotInfo = 8|2|DESKTOP-ASFUOAO|172.24.136.41|40000|D:\Space_For_Media\Pictures\FMX_Test_Depot_H|8|ffff|Running
+DepotInfo = 1|1|DESKTOP-ASFUOAO|172.24.136.41|40000||1|DESKTOP-ASFUOAO|Running
