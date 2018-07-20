@@ -128,6 +128,11 @@ public class MainProcess extends Thread implements Interfaces.IProcess {
 				Globals.Datas.Errors.deleteAgoLogs(30);
 			}
 			
+			// delete rec file
+			if(operateOK) {
+				Globals.Datas.Records.deleteAgoRecords(30);
+			}
+			
 			// save CFG before execute tasks
 			if(cfgOK) {
 				Tools.CFGFile.saveCFG();
@@ -170,7 +175,9 @@ public class MainProcess extends Thread implements Interfaces.IProcess {
 						break;
 					}
 					
-					Tools.Time.sleepUntil(60*1000);
+					Tools.Time.sleepUntil(1*1000);
+					
+					Globals.Datas.Records.save(100);
 					
 					Globals.Datas.Errors.save(100);
 					
@@ -191,6 +198,9 @@ public class MainProcess extends Thread implements Interfaces.IProcess {
 			
 			// save Errors
 			Globals.Datas.Errors.save();
+			
+			// Records
+			Globals.Datas.Records.save();
 			
 			// save Server DataBase before execute tasks
 			if(operateOK) {
@@ -274,15 +284,14 @@ public class MainProcess extends Thread implements Interfaces.IProcess {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	private void removeIdleServerConnection() {
-		/*
+		
 		if(!Globals.Configurations.IsServer) {
-			String t = Globals.Datas.ServerConnection.getCommandsManager().test("Test");
-			if(t == null || !t.equals("Test")) {
+			if(!Globals.Datas.ServerConnection.test()) {
 				BasicEnums.ErrorType.COMMUNICATOR_CONNECTION_CLOSED.register("Server Closed");
 				Globals.Datas.ServerConnection.disconnect();
 			}
 		}
-		*/
+		
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

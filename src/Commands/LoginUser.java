@@ -86,6 +86,7 @@ public class LoginUser extends Comman implements Interfaces.ICommands {
 			this.reply();
 			return false;
 		}
+		
 		if(!Globals.Configurations.IsServer) {
 			Interfaces.ISWRE swre = Factories.CommunicatorFactory.createSWRE();
 			

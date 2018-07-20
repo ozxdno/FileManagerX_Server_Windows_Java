@@ -1,0 +1,50 @@
+11:27:22 = COMMUNICATOR_BUILD_SOCKED_FAILED|1531970842210|Warning|Build Socked Failed|setSocket[ClientConnection.java:235]<-loadDepotCFG[CFGFile.java:930]<-loadCFG[CFGFile.java:71]<-run[MainProcess.java:78]|java.net.ConnectException: Connection refused: connect
+11:28:22 = COMMUNICATOR_BUILD_SOCKED_FAILED|1531970902319|Warning|Build Socked Failed|setSocket[ClientConnection.java:235]<-loadDepotCFG[CFGFile.java:930]<-loadCFG[CFGFile.java:71]<-run[MainProcess.java:78]|java.net.ConnectException: Connection refused: connect
+11:30:26 = COMMUNICATOR_BUILD_SOCKED_FAILED|1531971026463|Warning|Build Socked Failed|setSocket[ClientConnection.java:235]<-loadDepotCFG[CFGFile.java:930]<-loadCFG[CFGFile.java:71]<-run[MainProcess.java:78]|java.net.ConnectException: Connection refused: connect
+11:33:42 = COMMUNICATOR_BUILD_SOCKED_FAILED|1531971222260|Warning|Build Socked Failed|setSocket[ClientConnection.java:235]<-loadDepotCFG[CFGFile.java:930]<-loadCFG[CFGFile.java:71]<-run[MainProcess.java:78]|java.net.ConnectException: Connection refused: connect
+11:34:22 = COMMUNICATOR_BUILD_SOCKED_FAILED|1531971262418|Warning|Build Socked Failed|setSocket[ClientConnection.java:235]<-loadDepotCFG[CFGFile.java:930]<-loadCFG[CFGFile.java:71]<-run[MainProcess.java:78]|java.net.ConnectException: Connection refused: connect
+11:36:30 = COMMUNICATOR_BUILD_SOCKED_FAILED|1531971390193|Warning|Build Socked Failed|setSocket[ClientConnection.java:235]<-loadDepotCFG[CFGFile.java:930]<-loadCFG[CFGFile.java:71]<-run[MainProcess.java:78]|java.net.ConnectException: Connection refused: connect
+11:49:09 = CFG_WRONG_CONTENT|1531972149828|Warning|Content is Wrong|loadDepotCFG[CFGFile.java:823]<-loadCFG[CFGFile.java:71]<-run[MainProcess.java:78]|the Value of ServerMachineIP is wrong
+11:52:03 = CFG_WRONG_CONTENT|1531972323394|Warning|Content is Wrong|loadDepotCFG[CFGFile.java:820]<-loadCFG[CFGFile.java:71]<-run[MainProcess.java:78]|the Value of ServerMachineIP is wrong
+11:53:19 = CFG_WRONG_CONTENT|1531972399639|Warning|Content is Wrong|loadDepotCFG[CFGFile.java:820]<-loadCFG[CFGFile.java:71]<-run[MainProcess.java:78]|the Value of ServerMachineIP is wrong
+11:53:19 = CFG_WRONG_CONTENT|1531972399639|Warning|Content is Wrong|loadDepotCFG[CFGFile.java:831]<-loadCFG[CFGFile.java:71]<-run[MainProcess.java:78]|the Value of ServerMachinePort is wrong
+11:53:51 = COMMANDS_EXECUTE_FAILED|1531972431107|Warning|Login Failed|loginMachine[Manager.java:2554]<-loginConnection[Manager.java:2491]<-loadDepotCFG[CFGFile.java:937]<-loadCFG[CFGFile.java:71]<-run[MainProcess.java:78]|MachineName Existed, But Index is Not Equal
+11:53:51 = COMMANDS_EXECUTE_FAILED|1531972431107|Warning|Command Execute Failed|loadDepotCFG[CFGFile.java:939]<-loadCFG[CFGFile.java:71]<-run[MainProcess.java:78]|loginConnection Failed
+11:54:23 = CFG_WRONG_CONTENT|1531972463208|Warning|Content is Wrong|loadDepotCFG[CFGFile.java:820]<-loadCFG[CFGFile.java:71]<-run[MainProcess.java:78]|the Value of ServerMachineIP is wrong
+11:54:23 = CFG_WRONG_CONTENT|1531972463208|Warning|Content is Wrong|loadDepotCFG[CFGFile.java:831]<-loadCFG[CFGFile.java:71]<-run[MainProcess.java:78]|the Value of ServerMachinePort is wrong
+11:54:23 = COMMANDS_EXECUTE_FAILED|1531972463383|Warning|Login Failed|loginMachine[Manager.java:2554]<-loginConnection[Manager.java:2491]<-loadDepotCFG[CFGFile.java:937]<-loadCFG[CFGFile.java:71]<-run[MainProcess.java:78]|MachineName Existed, But Index is Not Equal
+11:54:23 = COMMANDS_EXECUTE_FAILED|1531972463383|Warning|Command Execute Failed|loadDepotCFG[CFGFile.java:939]<-loadCFG[CFGFile.java:71]<-run[MainProcess.java:78]|loginConnection Failed
+12:02:47 = CFG_WRONG_CONTENT|1531972967438|Warning|Content is Wrong|loadDepotCFG[CFGFile.java:820]<-loadCFG[CFGFile.java:71]<-run[MainProcess.java:78]|the Value of ServerMachineIP is wrong
+12:02:47 = CFG_WRONG_CONTENT|1531972967438|Warning|Content is Wrong|loadDepotCFG[CFGFile.java:831]<-loadCFG[CFGFile.java:71]<-run[MainProcess.java:78]|the Value of ServerMachinePort is wrong
+12:02:47 = OTHERS|1531972967746|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:1003]<-loadCFG[CFGFile.java:71]<-run[MainProcess.java:78]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
+12:04:14 = OTHERS|1531973054921|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:1003]<-loadCFG[CFGFile.java:71]<-run[MainProcess.java:78]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
+12:05:53 = OTHERS|1531973153114|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:1003]<-loadCFG[CFGFile.java:71]<-run[MainProcess.java:78]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
+12:06:11 = OTHERS|1531973171771|Warning|Type of Reply is Wrong|test[Manager.java:2657]<-test[Manager.java:2639]<-removeIdleServerConnection[MainProcess.java:279]<-run[MainProcess.java:181]|replyClass = Unsupport
+12:06:11 = NORMAL|1531973171771|Normal||run[ServerConnection.java:534]|
+12:06:11 = COMMUNICATOR_CONNECTION_CLOSED|1531973171771|Warning|Connection Already has been Closed|removeIdleServerConnection[MainProcess.java:281]<-run[MainProcess.java:181]|Server Closed
+12:06:11 = COMMUNICATOR_CONNECTION_CLOSED|1531973171783|Warning|Connection Already has been Closed|run[MainProcess.java:169]|Server[Remote Machine] Closed
+12:08:46 = OTHERS|1531973326761|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:1003]<-loadCFG[CFGFile.java:71]<-run[MainProcess.java:78]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
+12:13:09 = OTHERS|1531973589971|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:1003]<-loadCFG[CFGFile.java:71]<-run[MainProcess.java:78]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
+12:13:54 = OTHERS|1531973634851|Warning|Type of Reply is Wrong|test[Manager.java:2657]<-test[Manager.java:2639]<-removeIdleServerConnection[MainProcess.java:279]<-run[MainProcess.java:181]|replyClass = Unsupport
+12:13:54 = NORMAL|1531973634851|Normal||run[ServerConnection.java:534]|
+12:13:54 = COMMUNICATOR_CONNECTION_CLOSED|1531973634851|Warning|Connection Already has been Closed|removeIdleServerConnection[MainProcess.java:281]<-run[MainProcess.java:181]|Server Closed
+12:13:54 = COMMUNICATOR_CONNECTION_CLOSED|1531973634861|Warning|Connection Already has been Closed|run[MainProcess.java:169]|Server[Remote Machine] Closed
+12:15:40 = OTHERS|1531973740942|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:1003]<-loadCFG[CFGFile.java:71]<-run[MainProcess.java:78]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
+12:17:16 = NORMAL|1531973836248|Normal||run[ServerConnection.java:534]|
+12:17:16 = NORMAL|1531973836296|Normal||run[ClientConnection.java:572]|
+12:17:18 = COMMON_TIME_OUT|1531973838288|Warning|Time Out|waitUntilConnectionIdle[Time.java:134]<-execute[SWRE.java:89]<-execute[SWRE.java:105]<-test[Manager.java:2655]<-test[Manager.java:2639]<-removeIdleServerConnection[MainProcess.java:279]<-run[MainProcess.java:181]|waitTicks = 2000
+12:17:18 = COMMUNICATOR_RECEIVE_FAILED|1531973838288|Warning|Receive Data Failed|execute[SWRE.java:90]<-execute[SWRE.java:105]<-test[Manager.java:2655]<-test[Manager.java:2639]<-removeIdleServerConnection[MainProcess.java:279]<-run[MainProcess.java:181]|Time out
+12:17:18 = COMMUNICATOR_CONNECTION_CLOSED|1531973838288|Warning|Connection Already has been Closed|removeIdleServerConnection[MainProcess.java:281]<-run[MainProcess.java:181]|Server Closed
+12:17:18 = COMMUNICATOR_CONNECTION_CLOSED|1531973838288|Warning|Connection Already has been Closed|run[MainProcess.java:169]|Server[Remote Machine] Closed
+12:17:32 = OTHERS|1531973852440|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:1003]<-loadCFG[CFGFile.java:71]<-run[MainProcess.java:78]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
+12:18:07 = OTHERS|1531973887011|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:1003]<-loadCFG[CFGFile.java:71]<-run[MainProcess.java:78]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
+12:22:57 = OTHERS|1531974177164|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:1003]<-loadCFG[CFGFile.java:71]<-run[MainProcess.java:78]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
+12:25:26 = OTHERS|1531974326264|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:1003]<-loadCFG[CFGFile.java:71]<-run[MainProcess.java:78]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
+12:27:34 = OTHERS|1531974454860|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:1003]<-loadCFG[CFGFile.java:71]<-run[MainProcess.java:78]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
+12:30:21 = OTHERS|1531974621006|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:1003]<-loadCFG[CFGFile.java:71]<-run[MainProcess.java:78]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
+12:36:15 = OTHERS|1531974975879|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:1003]<-loadCFG[CFGFile.java:71]<-run[MainProcess.java:78]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
+12:53:06 = OTHERS|1531975986949|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:1003]<-loadCFG[CFGFile.java:71]<-run[MainProcess.java:78]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.
+12:53:09 = OTHERS|1531975989454|Warning|Type of Reply is Wrong|test[Manager.java:2657]<-test[Manager.java:2639]<-removeIdleServerConnection[MainProcess.java:279]<-run[MainProcess.java:181]|replyClass = QueryMachine
+12:53:09 = COMMUNICATOR_CONNECTION_CLOSED|1531975989454|Warning|Connection Already has been Closed|removeIdleServerConnection[MainProcess.java:281]<-run[MainProcess.java:181]|Server Closed
+12:53:09 = COMMUNICATOR_CONNECTION_CLOSED|1531975989465|Warning|Connection Already has been Closed|run[MainProcess.java:169]|Server[Remote Machine] Closed
+12:53:38 = OTHERS|1531976018067|Warning|Unknow Reason Type|loadDepotCFG[CFGFile.java:1003]<-loadCFG[CFGFile.java:71]<-run[MainProcess.java:78]|java.lang.IllegalArgumentException: No enum constant BasicEnums.FileType.

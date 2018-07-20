@@ -132,16 +132,7 @@ public class ClientTCP implements IClientLinker{
 				this.connections.remove(i);
 				continue;
 			}
-			long ticks1 = Tools.Time.getTicks();
-			long ticks2 = this.connections.get(i).getLastOperationTime();
-			long passed = ticks1 - ticks2;
-			if(passed > this.permitIdle) {
-				this.connections.get(i).disconnect();
-				this.connections.remove(i);
-				continue;
-			}
-			String t = this.connections.get(i).getCommandsManager().test("Test");
-			if(t == null || !t.equals("Test")) {
+			if(!this.connections.get(i).test()) {
 				this.connections.get(i).disconnect();
 				this.connections.remove(i);
 				continue;

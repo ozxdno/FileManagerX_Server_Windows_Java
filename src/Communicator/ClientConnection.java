@@ -416,6 +416,7 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 		
 		try {
 			super.setName("->" + this.socket.getInetAddress().getHostAddress() + ":" + this.socket.getPort());
+			this.name = this.serverMachineInfo.getName();
 		} catch(Exception e) {
 			BasicEnums.ErrorType.OTHERS.register("Set Name Failed", e.toString());
 		}
@@ -444,10 +445,19 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 						this.busy = false;
 						continue;
 					}
+					
+					BasicModels.Record r = new BasicModels.Record();
+					r.setType(BasicEnums.RecordType.CLIENT_CMD);
+					r.setConnectionName(name);
+					r.setThreadName(super.getName());
+					r.setContent(this.sendString);
+					Globals.Datas.Records.add(r);
+					
 					pw.println(this.sendString);
 					pw.flush();
 					this.busy = false;
 					this.continueSendString = false;
+					this.setLastOperationTime();
 				}
 				if(this.continueReceiveString) {
 					this.setLastOperationTime();
@@ -475,11 +485,20 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 							break;
 						}
 					}
+					
+					BasicModels.Record r = new BasicModels.Record();
+					r.setType(BasicEnums.RecordType.CLIENT_REP);
+					r.setConnectionName(name);
+					r.setThreadName(super.getName());
+					r.setContent(this.receiveString);
+					Globals.Datas.Records.add(r);
+					
 					if(this.activeEexcutor && this.executor != null) {
 						this.executor.execute(this);
 					}
 					this.continueReceiveString = false;
 					this.busy = false;
+					this.setLastOperationTime();
 				}
 				if(!this.continueReceiveString && !this.continueSendString && this.fileConnector.isActive() && 
 						this.fileConnector.isInputCommand()) { // save data to file
@@ -623,6 +642,18 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 		} catch(Exception e) {
 			;
 		}
+	}
+	public boolean test() {
+		if(Tools.Time.getTicks() - this.lastOperationTime <= Globals.Datas.Client.getPermitIdle()) {
+			return true;
+		}
+		if(!this.type.equals(BasicEnums.ConnectionType.TRANSPORT_COMMAND)) {
+			return true;
+		}
+		
+		String tick = String.valueOf(Tools.Time.getTicks());
+		String rece = this.getCommandsManager().test(tick);
+		return tick.equals(rece);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

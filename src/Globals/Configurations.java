@@ -60,7 +60,7 @@ public final class Configurations {
 	/**
 	 * 测试连接是否正常
 	 */
-	public static long TimeForTestSendCommand = 100;
+	public static long TimeForTestSendCommand = 500;
 	/**
 	 * 重启等待时间
 	 */
@@ -72,7 +72,7 @@ public final class Configurations {
 	/**
 	 * Client Connection 允许空闲时间
 	 */
-	public static long TimeForClientPermitIdle = Long.MAX_VALUE;
+	public static long TimeForClientPermitIdle = 5*1000;
 	/**
 	 * 操作的存储时间
 	 */

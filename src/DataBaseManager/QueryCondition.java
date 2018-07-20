@@ -185,7 +185,7 @@ public class QueryCondition implements Interfaces.IPublic {
 			this.value = v;
 			return true;
 		} catch(Exception e) {
-			BasicEnums.ErrorType.OTHERS.register(e.toString());
+			//BasicEnums.ErrorType.OTHERS.register(e.toString());
 			return false;
 		}
 	}

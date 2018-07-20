@@ -192,6 +192,12 @@ public enum ErrorType {
 			e.setReason(reason.length() == 0 ? "Connection is Busy" : reason);
 			e.setDetail(detail);
 		}
+		if(this.equals(ErrorType.COMMUNICATOR_RUNNING_FAILED)) {
+			e.setType(this);
+			e.setLevel(level);
+			e.setReason(reason.length() == 0 ? "Error Occurs in Running" : reason);
+			e.setDetail(detail);
+		}
 		
 		if(this.equals(ErrorType.DB_CONNECT_FAILED)) {
 			e.setType(this);

@@ -396,7 +396,7 @@ public class Errors implements Interfaces.IPublic, Interfaces.ICollection {
 		}
 		if(time.size() > permitLogAmount) {
 			java.util.Collections.sort(time);
-			for(int i=365; i<time.size(); i++) {
+			for(int i=permitLogAmount; i<time.size(); i++) {
 				String url = Tools.Pathes.getFolder_LOG() + "\\" + Tools.Time.ticks2ShortTime_Date(time.get(i)) + ".log";
 				java.io.File f = new java.io.File(url);
 				try {

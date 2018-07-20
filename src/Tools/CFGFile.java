@@ -802,7 +802,7 @@ public class CFGFile {
 		// You can change: ServerMachineIndex, ServerMachineName
 		// You cannot change: ServerMachineIP, ServerMachinePort
 		if(true) {
-			BasicModels.MachineInfo machine = new BasicModels.MachineInfo();
+			BasicModels.MachineInfo machine = Factories.DefaultFactory.createDefaultServerMachineInfo();
 			machine.setIndex(Globals.Configurations.Server_MachineIndex);
 			
 			c = cs.fetch("ServerMachineIndex");
@@ -814,28 +814,26 @@ public class CFGFile {
 			}
 			
 			c = cs.fetch("ServerMachineIP");
-			if(c == null) {
-				BasicEnums.ErrorType.CFG_NOT_EXIST.register("Not Find: ServerMachineIP");
-				return false;
+			if(c != null) {
+				java.lang.String ip = c.getValue();
+				if(!Tools.Url.isIp(ip)) {
+					BasicEnums.ErrorType.CFG_WRONG_CONTENT.register("the Value of ServerMachineIP is wrong");
+				}
+				else {
+					machine.setIp(ip);
+				}
 			}
-			java.lang.String ip = c.getValue();
-			if(!Tools.Url.isIp(ip)) {
-				BasicEnums.ErrorType.CFG_WRONG_CONTENT.register("the Value of ServerMachineIP is wrong");
-				return false;
-			}
-			machine.setIp(ip);
 			
 			c = cs.fetch("ServerMachinePort");
-			if(c == null) {
-				BasicEnums.ErrorType.CFG_NOT_EXIST.register("Not Find: ServerMachinePort");
-				return false;
+			if(c != null) {
+				int port = c.getInt();
+				if(port <=0 || port > 65535) {
+					BasicEnums.ErrorType.CFG_WRONG_CONTENT.register("the Value of ServerMachinePort is wrong");
+				}
+				else {
+					machine.setPort(port);
+				}
 			}
-			int port = c.getInt();
-			if(port <=0 || port > 65535) {
-				BasicEnums.ErrorType.CFG_WRONG_CONTENT.register("the Value of ServerMachinePort is wrong");
-				return false;
-			}
-			machine.setPort(port);
 			
 			if(machine.getIndex() != Globals.Configurations.Server_MachineIndex) {
 				BasicEnums.ErrorType.CFG_NOT_EQUAL.register("ServerMachineIndex Not Equals to Server_MachineIndex");
@@ -1516,9 +1514,9 @@ public class CFGFile {
 				txt.getContent().add(line);
 				line = "ServerMachineName = ";
 				txt.getContent().add(line);
-				line = "ServerMachineIP = [You Must Fill]";
+				line = "ServerMachineIP = ";
 				txt.getContent().add(line);
-				line = "ServerMachinePort = [You Must Fill]";
+				line = "ServerMachinePort = ";
 				txt.getContent().add(line);
 			}
 		}

@@ -99,8 +99,12 @@ public class QueryConditions implements Interfaces.IPublic, Interfaces.ICollecti
 		String[] items = Tools.String.split(str, ',');
 		boolean ok = true;
 		for(int i=0; i<items.length; i++) {
+			String item = Tools.String.clearLRSpace(items[i]);
+			if(item.length() == 0) {
+				continue;
+			}
 			QueryCondition qc = new QueryCondition();
-			if(qc.stringToThis(items[i])) {
+			if(qc.stringToThis(item)) {
 				this.content.add(qc);
 			}
 			else {

@@ -2545,27 +2545,19 @@ public class Manager implements Interfaces.ICommandsManager {
 		
 		BasicModels.MachineInfo machine = this.queryMachine("[&] Name = '" + this.connection.getClientMachineInfo().getName() + "'");
 		if(machine != null) {
-			if(machine.getIndex() != this.connection.getClientMachineInfo().getIndex()) {
-				if(machine.getIp().equals(this.connection.getClientMachineInfo().getIp()) && 
-						machine.getPort() == this.connection.getClientMachineInfo().getPort()) {
-					this.connection.getClientMachineInfo().setIndex(machine.getIndex());
-				}
-				else {
-					BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register(
-							"Login Failed",
-							"MachineName Existed, But Index is Not Equal");
-					return false;
-				}
-			}
+			this.connection.getClientMachineInfo().copyValue(machine);
 		}
 		
-		if(!this.updateMachine(this.connection.getClientMachineInfo())) {
+		if(machine == null && !this.updateMachine(this.connection.getClientMachineInfo())) {
 			BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register("Update Machine Failed");
 			return false;
 		}
-		this.connection.setClientMachineInfo(((Replies.UpdateMachine)this.reply).getMachineInfo());
-		this.reply = null;
 		
+		if(this.reply instanceof Replies.UpdateMachine) {
+			this.connection.setClientMachineInfo(((Replies.UpdateMachine)this.reply).getMachineInfo());
+		}
+		
+		this.reply = null;
 		Commands.LoginMachine cmd = new Commands.LoginMachine();
 		cmd.getBasicMessagePackage().setSourUserIndex(this.connection.getUser().getIndex());
 		cmd.getBasicMessagePackage().setPassword(this.connection.getUser().getPassword());

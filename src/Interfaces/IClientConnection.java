@@ -7,4 +7,6 @@ public interface IClientConnection extends IConnection {
 	
 	public boolean setCommandsManager(Interfaces.ICommandsManager cmdManager);
 	public Interfaces.ICommandsManager getCommandsManager();
+	
+	public boolean test();
 }

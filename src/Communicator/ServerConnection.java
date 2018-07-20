@@ -390,6 +390,7 @@ public class ServerConnection extends Thread implements Interfaces.IServerConnec
 		
 		try {
 			super.setName("<-" + this.socket.getInetAddress().getHostAddress() + ":" + this.socket.getPort());
+			this.name = this.clientMachineInfo.getName();
 		} catch(Exception e) {
 			BasicEnums.ErrorType.OTHERS.register("Set Name Failed", e.toString());
 		}
@@ -416,6 +417,14 @@ public class ServerConnection extends Thread implements Interfaces.IServerConnec
 					this.receiveString = br.readLine();
 					this.receiveLength = this.receiveString.length();
 					this.continueReceiveString = false;
+					
+					BasicModels.Record r = new BasicModels.Record();
+					r.setType(BasicEnums.RecordType.SERVER_CMD);
+					r.setConnectionName(name);
+					r.setThreadName(super.getName());
+					r.setContent(this.receiveString);
+					Globals.Datas.Records.add(r);
+					
 					if(this.activeEexcutor && this.executor != null) {
 						this.executor.execute(this);
 					}
@@ -429,6 +438,14 @@ public class ServerConnection extends Thread implements Interfaces.IServerConnec
 						this.busy = false;
 						continue;
 					}
+					
+					BasicModels.Record r = new BasicModels.Record();
+					r.setType(BasicEnums.RecordType.SERVER_REP);
+					r.setConnectionName(name);
+					r.setThreadName(super.getName());
+					r.setContent(this.sendString);
+					Globals.Datas.Records.add(r);
+					
 					Interfaces.ICommunicatorSendTotal st = Factories.CommunicatorFactory.createSendTotal();
 					st.input(sendString);
 					while(!st.isFinished()) {

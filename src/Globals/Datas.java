@@ -9,6 +9,10 @@ public class Datas {
 	 */
 	public final static BasicCollections.Errors Errors = 
 			new BasicCollections.Errors();
+	
+	public final static BasicCollections.Records Records = 
+			new BasicCollections.Records();
+	
 	/**
 	 * µ¼ÖÂ³ÌÐò±ÀÀ£µÄ´íÎó
 	 * 

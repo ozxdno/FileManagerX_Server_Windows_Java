@@ -55,6 +55,12 @@ public class DepotChecker implements Interfaces.IDepotChecker{
 	}
 	private void initThis() {
 		this.dbmanager = null;
+		this.addFolders = new BasicCollections.Folders();
+		this.addFiles = new BasicCollections.BaseFiles();
+		this.deleteFolders = new BasicCollections.Folders();
+		this.deleteFiles = new BasicCollections.BaseFiles();
+		this.modifiedFolders = new BasicCollections.Folders();
+		this.modifiedFiles = new BasicCollections.BaseFiles();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
