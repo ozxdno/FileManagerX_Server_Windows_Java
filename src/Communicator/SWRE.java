@@ -80,12 +80,14 @@ public class SWRE implements Interfaces.ISWRE {
 		connection.setActiveExecutor(true);
 		connection.setContinueSendString();
 		
+		/*
 		if(!Tools.Time.waitUntilConnectionIdle(this.sendWaitTicks, connection)) {
 			BasicEnums.ErrorType.COMMUNICATOR_SEND_FAILED.register("Time out");
 			return null;
 		}
+		*/
 		
-		connection.setContinueReceiveString();
+		//connection.setContinueReceiveString();
 		if(!Tools.Time.waitUntilConnectionIdle(this.receiveWaitTicks, connection)) {
 			BasicEnums.ErrorType.COMMUNICATOR_RECEIVE_FAILED.register("Time out");
 			return null;
@@ -93,7 +95,10 @@ public class SWRE implements Interfaces.ISWRE {
 		
 		//connection.setActiveExecutor(false);
 		//connection.setContinueWait();
-		return ((Interfaces.IReplyExecutor)connection.getExecutor()).getReply();
+		Interfaces.IReplies rep = ((Interfaces.IReplyExecutor)connection.getExecutor()).getReply();
+		//this.connection.setBusy(false);
+		
+		return rep;
 	}
 	
 	public Interfaces.IReplies execute(String command) {
@@ -101,6 +106,13 @@ public class SWRE implements Interfaces.ISWRE {
 			BasicEnums.ErrorType.COMMON_NULL.register("Connection is NULL or Executor is NULL");
 			return null;
 		}
+		
+		// 等待线程准备好
+		if(!Tools.Time.waitUntilConnectionIdle(this.sendWaitTicks, connection)) {
+			BasicEnums.ErrorType.COMMUNICATOR_SEND_FAILED.register("Time out");
+			return null;
+		}
+		
 		connection.setSendString(command);
 		return this.execute();
 	}

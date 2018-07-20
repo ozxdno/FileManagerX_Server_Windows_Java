@@ -83,4 +83,6 @@ public final class Configurations {
 	 * 截屏所需时间
 	 */
 	public static long TimeForPrintScreen = 1000;
+	
+	public static int PermitConnectionErrorAmount = 3;
 }

@@ -40,6 +40,7 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 	private int sendLength;
 	
 	private long lastOperationTime;
+	private int cntError;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -404,6 +405,7 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 		this.sendLength = 0;
 		
 		this.setLastOperationTime();
+		this.cntError = 0;
 		this.setName("TCP Client Connection");
 	}
 	public void run() {
@@ -455,9 +457,10 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 					
 					pw.println(this.sendString);
 					pw.flush();
-					this.busy = false;
+					//this.busy = false;
 					this.continueSendString = false;
 					this.setLastOperationTime();
+					this.continueReceiveString = true; // 自动开启接收
 				}
 				if(this.continueReceiveString) {
 					this.setLastOperationTime();
@@ -653,7 +656,14 @@ public class ClientConnection extends Thread implements Interfaces.IClientConnec
 		
 		String tick = String.valueOf(Tools.Time.getTicks());
 		String rece = this.getCommandsManager().test(tick);
-		return tick.equals(rece);
+		boolean ok = tick.equals(rece);
+		if(ok) {
+			this.cntError = 0;
+			return true;
+		}
+		
+		this.cntError ++;
+		return this.cntError <= Globals.Configurations.PermitConnectionErrorAmount;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

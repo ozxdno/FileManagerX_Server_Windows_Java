@@ -66,6 +66,9 @@ public class DataBaseInfos implements Interfaces.IPublic, Interfaces.ICollection
 		initThis();
 		String out = "";
 		while(true) {
+			if(in == null) { break; }
+			if(Tools.String.clearLRSpace(Tools.String.getValue(in)).length() == 0) { break; }
+			
 			BasicModels.DataBaseInfo e = new BasicModels.DataBaseInfo();
 			out = e.input(in);
 			if(out == null) { break; }

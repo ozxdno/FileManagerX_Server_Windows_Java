@@ -67,6 +67,9 @@ public class Errors implements Interfaces.IPublic, Interfaces.ICollection {
 		initThis();
 		String out = "";
 		while(true) {
+			if(in == null) { break; }
+			if(Tools.String.clearLRSpace(Tools.String.getValue(in)).length() == 0) { break; }
+			
 			BasicModels.Error e = new BasicModels.Error();
 			out = e.input(in);
 			if(out == null) { break; }

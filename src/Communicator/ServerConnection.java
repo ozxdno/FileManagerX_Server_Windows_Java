@@ -428,7 +428,8 @@ public class ServerConnection extends Thread implements Interfaces.IServerConnec
 					if(this.activeEexcutor && this.executor != null) {
 						this.executor.execute(this);
 					}
-					this.busy = false;
+					//this.busy = false;
+					// 接下来开启发送
 				}
 				if(this.continueSendString) {
 					this.setLastOperationTime();

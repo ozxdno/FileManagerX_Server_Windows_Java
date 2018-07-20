@@ -68,6 +68,9 @@ public class Records implements Interfaces.IPublic, Interfaces.ICollection {
 		initThis();
 		String out = "";
 		while(true) {
+			if(in == null) { break; }
+			if(Tools.String.clearLRSpace(Tools.String.getValue(in)).length() == 0) { break; }
+			
 			BasicModels.Record e = new BasicModels.Record();
 			out = e.input(in);
 			if(out == null) { break; }

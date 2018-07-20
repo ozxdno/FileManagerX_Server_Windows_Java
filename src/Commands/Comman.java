@@ -476,8 +476,14 @@ public class Comman implements Interfaces.ICommands {
 			
 			Commands.QueryMachine cmd = new Commands.QueryMachine();
 			cmd.setQueryConditions("[&] Index = " + this.bmp.getDestMachineIndex());
-			Replies.QueryMachine rep = (Replies.QueryMachine)swre.execute(cmd.output());
+			Interfaces.IReplies reply = swre.execute(cmd.output());
+			if(!(reply instanceof Replies.QueryMachine)) {
+				reply.setOK(false);
+				reply.setFailedReason("Reply Type is Wrong, replyClass = " + reply.getClass().getSimpleName());
+				return false;
+			}
 			
+			Replies.QueryMachine rep = (Replies.QueryMachine)swre.execute(cmd.output());
 			if(rep == null) {
 				reply.setOK(false);
 				reply.setFailedReason("Not Exist such MachineIndex in DataBase");
