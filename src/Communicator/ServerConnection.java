@@ -605,6 +605,17 @@ public class ServerConnection extends Thread implements Interfaces.IServerConnec
 		}
 	}
 	
+	public boolean test() {
+		if(Tools.Time.getTicks() - this.lastOperationTime <= Globals.Datas.Client.getPermitIdle()) {
+			return true;
+		}
+		if(!this.type.equals(BasicEnums.ConnectionType.TRANSPORT_COMMAND)) {
+			return true;
+		}
+		
+		return true;
+	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	private boolean toClientConnection() {
