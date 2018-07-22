@@ -7,6 +7,8 @@ public class Invitation implements Interfaces.IPublic {
 	
 	private String code;
 	private BasicModels.User user;
+	//private String activeTime;
+	//private int activeAmount;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
