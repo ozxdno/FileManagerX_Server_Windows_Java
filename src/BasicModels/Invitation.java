@@ -7,8 +7,8 @@ public class Invitation implements Interfaces.IPublic {
 	
 	private String code;
 	private BasicModels.User user;
-	//private String activeTime;
-	//private int activeAmount;
+	private String activeTime;
+	private int activeAmount;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -17,6 +17,12 @@ public class Invitation implements Interfaces.IPublic {
 	}
 	public BasicModels.User getUser() {
 		return user;
+	}
+	public String getActiveTime() {
+		return activeTime;
+	}
+	public int getActiveAmount() {
+		return activeAmount;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -33,6 +39,23 @@ public class Invitation implements Interfaces.IPublic {
 			return false;
 		}
 		this.user = user;
+		return true;
+	}
+	public boolean setActiveTime(String activeTime) {
+		if(activeTime == null) {
+			return false;
+		}
+		if(activeTime.length() == 0) {
+			return false;
+		}
+		this.activeTime = activeTime;
+		return true;
+	}
+	public boolean setActiveAmount(int amount) {
+		if(amount < 0) {
+			amount = 0;
+		}
+		this.activeAmount = amount;
 		return true;
 	}
 	
