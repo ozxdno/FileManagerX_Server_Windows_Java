@@ -3,6 +3,10 @@ package com.FileManagerX.Replies;
 import com.FileManagerX.BasicModels.*;
 
 public class LoginIndex extends BaseReply {
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public final static String FAILED_OVER_COUNT = "Login Times over Count";
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -117,7 +121,7 @@ public class LoginIndex extends BaseReply {
 		if(com.FileManagerX.Globals.Datas.Server.getNext_ConnectionIndex() > this.index) {
 			this.count--;
 			if(this.count < 0) {
-				this.setThis(false, "LoginFailed: Over Counnt");
+				this.setThis(false, FAILED_OVER_COUNT);
 				return false;
 			}
 			else {

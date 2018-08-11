@@ -8,10 +8,10 @@ public class RoutePathPackage implements com.FileManagerX.Interfaces.IRoutePathP
 	private long arriveTime;
 	private long backTime;
 	
-	private long depth;
-	
 	private long sourMachine;
 	private long destMachine;
+	
+	private long depth;
 	private java.util.List<Long> deliverMachines;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -79,6 +79,24 @@ public class RoutePathPackage implements com.FileManagerX.Interfaces.IRoutePathP
 			return false;
 		}
 		this.deliverMachines = machines;
+		return true;
+	}
+	public boolean setDeliverMachine(long deliver) {
+		if(depth < 0) {
+			return false;
+		}
+		if(depth > this.deliverMachines.size() + 1) {
+			return false;
+		}
+		
+		if(depth == 0) {
+			this.sourMachine = deliver;
+		}
+		if(depth == this.deliverMachines.size() + 1) {
+			this.destMachine = deliver;
+		}
+		
+		this.deliverMachines.set((int)depth-1, deliver);
 		return true;
 	}
 	

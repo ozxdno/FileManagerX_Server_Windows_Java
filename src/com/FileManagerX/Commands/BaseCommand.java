@@ -3,6 +3,26 @@ package com.FileManagerX.Commands;
 public class BaseCommand implements com.FileManagerX.Interfaces.ICommand {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public final static String FAILED_WRONG_INPUT = "Convert String to Target Object Failed";
+	
+	public final static String FAILED_NOT_CONNECT = "Connection is NULL or Not Running";
+	public final static String FAILED_NOT_LOGIN_USER = "Not Login User";
+	public final static String FAILED_NOT_LOGIN_MACHINE = "Not Login Machine";
+	public final static String FAILED_WRONG_USER_INDEX = "User Index is Wrong";
+	public final static String FAILED_WRONG_PASSWORD = "Password is Wrong";
+	public final static String FAILED_LOW_PRIORITY = "Priority is not Enough";
+	public final static String FAILED_LOW_LEVEL = "Level is not Enough";
+	public final static String FAILED_NO_SOUR_USER = "Not Found Sour User";
+	public final static String FAILED_NO_DEST_USER = "Not Found Dest User";
+	public final static String FAILED_NO_SOUR_MACHINE = "Not Found Sour Machine";
+	public final static String FAILED_NO_DEST_MACHINE = "Not Found Dest Machine";
+	public final static String FAILED_NO_SOUR_DEPOT = "Not Found Sour Depot";
+	public final static String FAILED_NO_DEST_DEPOT = "Not Found Dest Depot";
+	public final static String FAILED_NO_SOUR_DATABASE = "Not Found Sour DataBase";
+	public final static String FAILED_NO_DEST_DATABASE = "Not Found Dest DataBase";
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	private com.FileManagerX.Interfaces.IBasicMessagePackage bmp;
 	private com.FileManagerX.Interfaces.IConnection connection;
@@ -202,10 +222,22 @@ public class BaseCommand implements com.FileManagerX.Interfaces.ICommand {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean isPriorityEnough(com.FileManagerX.BasicEnums.UserPriority p) {
-		return this.connection.getClientUser().getPriority().isEnough(p);
+		boolean ok = this.connection.getClientUser().getPriority().isEnough(p);
+		if(!ok) {
+			this.getReply().setFailedReason(FAILED_LOW_PRIORITY);
+			this.getReply().setOK(false);
+			return false;
+		}
+		return ok;
 	}
 	public boolean isLevelEnough(com.FileManagerX.BasicEnums.UserLevel level) {
-		return this.connection.getClientUser().getLevel().isEnough(level);
+		boolean ok = this.connection.getClientUser().getLevel().isEnough(level);
+		if(!ok) {
+			this.getReply().setFailedReason(FAILED_LOW_LEVEL);
+			this.getReply().setOK(false);
+			return false;
+		}
+		return ok;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -213,7 +245,7 @@ public class BaseCommand implements com.FileManagerX.Interfaces.ICommand {
 	public boolean isConnected() {
 		if(connection == null || !connection.isRunning()) {
 			reply.setOK(false);
-			reply.setFailedReason("Disconnected");
+			reply.setFailedReason(FAILED_NOT_CONNECT);
 			return false;
 		}
 		return true;
@@ -221,7 +253,7 @@ public class BaseCommand implements com.FileManagerX.Interfaces.ICommand {
 	public boolean isLoginUser() {
 		if(this.connection.getClientUser() == null || this.connection.getClientUser().getIndex() <= 0) {
 			reply.setOK(false);
-			reply.setFailedReason("No Login User");
+			reply.setFailedReason(FAILED_NOT_LOGIN_USER);
 			return false;
 		}
 		return true;
@@ -229,7 +261,7 @@ public class BaseCommand implements com.FileManagerX.Interfaces.ICommand {
 	public boolean isLoginMachine() {
 		if(this.connection.getClientMachineInfo() == null || this.connection.getClientMachineInfo().getIndex() <= 0) {
 			reply.setOK(false);
-			reply.setFailedReason("No Login Machine");
+			reply.setFailedReason(FAILED_NOT_LOGIN_USER);
 			return false;
 		}
 		return true;
@@ -240,12 +272,12 @@ public class BaseCommand implements com.FileManagerX.Interfaces.ICommand {
 	public boolean isUserIndexRight() {
 		if(this.bmp.getSourUserIndex() <= 0) {
 			reply.setOK(false);
-			reply.setFailedReason("Wrong User Index");
+			reply.setFailedReason(FAILED_WRONG_USER_INDEX);
 			return false;
 		}
 		if(this.connection.getClientUser().getIndex() != this.bmp.getSourUserIndex()) {
 			reply.setOK(false);
-			reply.setFailedReason("Wrong User Index");
+			reply.setFailedReason(FAILED_WRONG_USER_INDEX);
 			return false;
 		}
 		return true;
@@ -253,12 +285,12 @@ public class BaseCommand implements com.FileManagerX.Interfaces.ICommand {
 	public boolean isPasswordRight() {
 		if(this.bmp.getPassword() == null || this.bmp.getPassword().length() == 0) {
 			reply.setOK(false);
-			reply.setFailedReason("Wrong Password");
+			reply.setFailedReason(FAILED_WRONG_PASSWORD);
 			return false;
 		}
 		if(!this.bmp.getPassword().equals(this.connection.getClientUser().getPassword())) {
 			reply.setOK(false);
-			reply.setFailedReason("Wrong Password");
+			reply.setFailedReason(FAILED_WRONG_PASSWORD);
 			return false;
 		}
 		return true;
@@ -286,7 +318,7 @@ public class BaseCommand implements com.FileManagerX.Interfaces.ICommand {
 		
 		if(suser == null) {
 			reply.setOK(false);
-			reply.setFailedReason("Not Exist such SourUser in DataBase");
+			reply.setFailedReason(FAILED_NO_SOUR_USER);
 			return false;
 		}
 		return true;
@@ -313,7 +345,7 @@ public class BaseCommand implements com.FileManagerX.Interfaces.ICommand {
 		
 		if(smachine == null) {
 			reply.setOK(false);
-			reply.setFailedReason("Not Exist such SourMachine in DataBase");
+			reply.setFailedReason(FAILED_NO_SOUR_MACHINE);
 			return false;
 		}
 		return true;
@@ -323,7 +355,7 @@ public class BaseCommand implements com.FileManagerX.Interfaces.ICommand {
 				com.FileManagerX.Globals.Datas.DBManagers.searchDepotIndex(bmp.getSourDepotIndex());
 		if(dbm == null) {
 			reply.setOK(false);
-			reply.setFailedReason("Not Exist such SourDepot in DataBase");
+			reply.setFailedReason(FAILED_NO_SOUR_DEPOT);
 			return false;
 		}
 		
@@ -335,7 +367,7 @@ public class BaseCommand implements com.FileManagerX.Interfaces.ICommand {
 				com.FileManagerX.Globals.Datas.DBManagers.searchDepotIndex(bmp.getSourDepotIndex());
 		if(dbm == null) {
 			reply.setOK(false);
-			reply.setFailedReason("Not Exist such SourDataBase in DataBase");
+			reply.setFailedReason(FAILED_NO_SOUR_DATABASE);
 			return false;
 		}
 		
@@ -365,7 +397,7 @@ public class BaseCommand implements com.FileManagerX.Interfaces.ICommand {
 		
 		if(duser == null) {
 			reply.setOK(false);
-			reply.setFailedReason("Not Exist such DestUser in DataBase");
+			reply.setFailedReason(FAILED_NO_DEST_USER);
 			return false;
 		}
 		return true;
@@ -392,7 +424,7 @@ public class BaseCommand implements com.FileManagerX.Interfaces.ICommand {
 		
 		if(dmachine == null) {
 			reply.setOK(false);
-			reply.setFailedReason("Not Exist such DestMachine in DataBase");
+			reply.setFailedReason(FAILED_NO_DEST_MACHINE);
 			return false;
 		}
 		return true;
@@ -402,7 +434,7 @@ public class BaseCommand implements com.FileManagerX.Interfaces.ICommand {
 				com.FileManagerX.Globals.Datas.DBManagers.searchDepotIndex(bmp.getDestDepotIndex());
 		if(dbm == null) {
 			reply.setOK(false);
-			reply.setFailedReason("Not Exist such DestDepot in DataBase");
+			reply.setFailedReason(FAILED_NO_DEST_DEPOT);
 			return false;
 		}
 		
@@ -414,7 +446,7 @@ public class BaseCommand implements com.FileManagerX.Interfaces.ICommand {
 				com.FileManagerX.Globals.Datas.DBManagers.searchDepotIndex(bmp.getDestDepotIndex());
 		if(dbm == null) {
 			reply.setOK(false);
-			reply.setFailedReason("Not Exist such DestDataBase in DataBase");
+			reply.setFailedReason(FAILED_NO_DEST_DATABASE);
 			return false;
 		}
 		

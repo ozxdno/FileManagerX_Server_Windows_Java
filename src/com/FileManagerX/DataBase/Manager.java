@@ -176,6 +176,8 @@ public class Manager implements com.FileManagerX.Interfaces.IDBManager {
 		this.managers.add(new com.FileManagerX.DataBase.MySQLManager_Gif());
 		this.managers.add(new com.FileManagerX.DataBase.MySQLManager_Music());
 		this.managers.add(new com.FileManagerX.DataBase.MySQLManager_Invitation());
+		this.managers.add(new com.FileManagerX.DataBase.MySQLManager_CFG());
+		this.managers.add(new com.FileManagerX.DataBase.MySQLManager_Chat());
 	}
 	private void createManager_TXT() {
 		this.managers.clear();

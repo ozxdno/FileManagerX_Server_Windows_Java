@@ -297,19 +297,23 @@ public class ServerConnection extends Thread implements com.FileManagerX.Interfa
 						if(com.FileManagerX.Globals.Configurations.Record) { this.record(); }
 						
 						// 处理
-						t.setConnection(this);
-						if(!t.isTimeOut() && t.isArriveTargetMachine()) { this.execute(t); }
-						if(!t.isTimeOut() && t.isDeliver()) { t.deliver(); }
+						if(t instanceof com.FileManagerX.Commands.Unsupport) {
+							;
+						}
+						else if(t instanceof com.FileManagerX.Replies.Unsupport) {
+							;
+						}
+						else {
+							t.setConnection(this);
+							if(!t.isTimeOut() && t.isArriveTargetMachine()) { this.execute(t); }
+							if(!t.isTimeOut() && t.isDeliver()) { t.deliver(); }
+						}
 						
 						// 特殊记录
 						if(!com.FileManagerX.Globals.Configurations.Record &&
 								(t == null || t.getBasicMessagePackage().isRecord())) {
 							this.record();
 						}
-						
-						// 清理缓存
-						
-						
 					}
 					buffer.add(recebytes[i]);
 				}

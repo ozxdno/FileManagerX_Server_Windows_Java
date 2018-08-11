@@ -9,6 +9,12 @@ import com.FileManagerX.DataBase.*;
 public class QueryUnits extends BaseCommand {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public final static String FAILED_OPERATE_DATABASE = "Operate DataBase Failed";
+	public final static String FAILED_WRONG_CONDITIONS = "Wrong Query Conditions";
+	public final static String FAILED_NOT_EXIST = "Result Set is Empty";
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	private com.FileManagerX.DataBase.Unit unit;
 	private QueryConditions conditions;
@@ -169,8 +175,8 @@ public class QueryUnits extends BaseCommand {
 			return false;
 		}
 		if(this.conditions == null) {
-			super.getReply().setOK(false);
-			super.getReply().setFailedReason("Wrong Query Conditions");
+			this.getReply().setFailedReason(FAILED_WRONG_CONDITIONS);
+			this.getReply().setOK(false);
 			this.getReply().send();
 			return false;
 		}
@@ -190,8 +196,8 @@ public class QueryUnits extends BaseCommand {
 		
 		com.FileManagerX.Interfaces.IPublic results = (IPublic)dbm.querys(conditions);
 		if(results == null) {
+			this.getReply().setFailedReason(FAILED_OPERATE_DATABASE);
 			this.getReply().setOK(false);
-			this.getReply().setFailedReason("Not Exist");
 			return false;
 		}
 		

@@ -9,9 +9,11 @@ public enum Unit {
 	DataBase,
 	User,
 	Invitation,
+	Chat,
 	
 	BaseFile,
 	Folder,
+	CFG,
 	Picture,
 	Gif,
 	Music,

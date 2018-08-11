@@ -7,6 +7,11 @@ public class LoginMachine extends BaseCommand {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	public final static String FAILED_OPERATE_DATABASE = "Operate DataBase Failed";
+	public final static String FAILED_NO_SUCH_MACHINE = "Not Found such Machine";
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	private MachineInfo machineInfo;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -124,8 +129,13 @@ public class LoginMachine extends BaseCommand {
 			this.machineInfo = (com.FileManagerX.BasicModels.MachineInfo)
 					com.FileManagerX.Globals.Datas.DBManager.query("[&] Name = '" + this.machineInfo.getName() + "'");
 		}
-		if(this.machineInfo == null || this.machineInfo.getIndex() <= 0) {
-			this.getReply().setFailedReason("Reply of QueryMachine is NULL");
+		if(this.machineInfo == null) {
+			this.getReply().setFailedReason(FAILED_OPERATE_DATABASE);
+			this.getReply().setOK(false);
+			return false;
+		}
+		if(this.machineInfo.getIndex() <= 0) {
+			this.getReply().setFailedReason(FAILED_NO_SUCH_MACHINE);
 			this.getReply().setOK(false);
 			return false;
 		}

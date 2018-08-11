@@ -113,14 +113,14 @@ public class Datas {
 			com.FileManagerX.Factories.CommunicatorFactory.createClientConnection();
 	
 	/**
-	 * 如果这台机器非服务器，则此值无效。（无任何用处）<br>
-	 * 如果是一台服务器的话，则连接下一台备用服务器。<br>
-	 * 当这台服务器连接达到上限时，连接将转向备用服务器。<br>
-	 * 如果备用服务器未运行，则无法创建更多的连接。
+	 * 其他可用的服务器的连接<br>
+	 * <br>
+	 * 假设其中一个子服务器 A 呈交上来一个处理不了的命令,<br>
+	 * 该服务器会询问其他服务器，<br>
 	 * 
 	 */
-	public final static com.FileManagerX.Interfaces.IClientConnection NextServer = 
-			com.FileManagerX.Factories.CommunicatorFactory.createClientConnection();
+	public final static com.FileManagerX.Interfaces.IClientConnections OtherServers = 
+			com.FileManagerX.Factories.CommunicatorFactory.createClientConnections();
 	/**
 	 * 所有的本地 Depot 的管理器，Depot 包含如下信息：
 	 * 

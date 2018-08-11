@@ -4,6 +4,8 @@ public enum OperateType {
 
 	IDLE,
 	
+	MATCH,
+	
 	INPUT,
 	OUTPUT,
 	THUMBNAIL,

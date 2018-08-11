@@ -18,6 +18,7 @@ public interface IRoutePathPackage extends IPublic {
 	public boolean setSourMachine(long sour);
 	public boolean setDestMachine(long dest);
 	public boolean setDeliverMachines(java.util.List<Long> machines);
+	public boolean setDeliverMachine(long deliver);
 	
 	public boolean setThis(long sourMachine, long destMachine);
 	

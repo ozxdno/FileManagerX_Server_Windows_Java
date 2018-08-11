@@ -9,7 +9,7 @@ package com.FileManagerX.Coder;
 public class Encoder {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public final static IEncode encode = new Encode_Location();
+	public final static IEncode ENCODE = new Encode_Location();
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -21,7 +21,7 @@ public class Encoder {
 				com.FileManagerX.BasicEnums.EOF.N.getReplce()
 			};
 		
-		return encode.encode(bytes, spc, rep);
+		return ENCODE.encode(bytes, spc, rep);
 	}
 	public final static byte[] Encode_String2Byte(String str) {
 		byte[] spc = new byte[] {
@@ -31,7 +31,7 @@ public class Encoder {
 				com.FileManagerX.BasicEnums.EOF.S.getReplce()
 			};
 		
-		return encode.encode(str.getBytes(), spc, rep);
+		return ENCODE.encode(str.getBytes(), spc, rep);
 	}
 	public final static String Encode_String2String(String str) {
 		byte[] spc = new byte[] {
@@ -41,7 +41,7 @@ public class Encoder {
 				com.FileManagerX.BasicEnums.EOF.S.getReplce()
 			};
 		
-		return new String(encode.encode(str.getBytes(), spc, rep));
+		return new String(ENCODE.encode(str.getBytes(), spc, rep));
 	}
 	public final static byte[] Encode_Transport2Byte(com.FileManagerX.Interfaces.ITransport t) {
 		String s = ((t instanceof com.FileManagerX.Interfaces.ICommand) ? 'C' : 'R') +
