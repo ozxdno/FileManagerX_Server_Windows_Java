@@ -137,6 +137,8 @@ public class MainProcess extends BasicProcess {
 		// Restart
 		if(com.FileManagerX.Globals.Configurations.Restart) {
 			com.FileManagerX.Globals.Configurations.Restart = false;
+			com.FileManagerX.Tools.Time.sleepUntil
+				(com.FileManagerX.Globals.Configurations.TimeForPermitIdle_Restart);
 			this.restartProcess();
 		}
 		return true;

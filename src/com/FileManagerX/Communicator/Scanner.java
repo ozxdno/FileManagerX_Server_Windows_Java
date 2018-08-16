@@ -81,6 +81,7 @@ public class Scanner extends com.FileManagerX.Processes.BasicProcess implements 
 		this.serverMachineInfo = Datas.ServerMachine;
 		this.socket = null;
 		this.setRunnable(new RunImpl());
+		this.setPermitIdle(com.FileManagerX.Globals.Configurations.TimeForPermitIdle_Scanner);
 		this.setIndex();
 	}
 	

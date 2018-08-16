@@ -14,6 +14,7 @@ public final class Configurations {
 	public static boolean Close = false;
 	public static boolean ShowForm = false;
 	public static boolean Record = false;
+	public static boolean Connected = false;
 	
 	public static long Next_FileIndex = 0;
 	public static long Next_MachineIndex = 0;
@@ -43,6 +44,7 @@ public final class Configurations {
 	public static long TimeForPermitIdle_Restart = 1*60*1000;
 	public static long TimeForPermitIdle_Transport = 5*1000;
 	public static long TimeForPermitIdle_Thread = 5*1000;
+	public static long TimeForPermitIdle_Scanner = Long.MAX_VALUE;
 	public static long TimeForPermitIdle_Server = Long.MAX_VALUE;
 	public static long TimeForPermitIdle_Client = Long.MAX_VALUE;
 	public static long TimeForPermitIdle_Executor = 5*1000;

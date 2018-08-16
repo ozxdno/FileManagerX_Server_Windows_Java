@@ -182,6 +182,7 @@ public class ClientConnection extends com.FileManagerX.Processes.BasicProcess
 		
 		this.socket = null;
 		this.setRunnable(new RunImpl());
+		this.setPermitIdle(com.FileManagerX.Globals.Configurations.TimeForPermitIdle_Client);
 		
 		this.receiveString = null;
 		this.sendString = null;
