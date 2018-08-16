@@ -27,7 +27,7 @@ public interface IBasicMessagePackage extends IPublic {
 	
 	public boolean setIsRecord(boolean isRecord);
 	public boolean setIsDirect(boolean isDirect);
-	public boolean setIsBroadCast(boolean isBroadCast);
+	public boolean setBroadCast(com.FileManagerX.Deliver.Broadcast broadcast);
 	
 	public boolean setPermitIdle(long idle);
 	public boolean setSendTime(long sendTime);
@@ -64,7 +64,7 @@ public interface IBasicMessagePackage extends IPublic {
 	
 	public boolean isRecord();
 	public boolean isDirect();
-	public boolean isBroadCast();
+	public com.FileManagerX.Deliver.Broadcast getBroadcast();
 	
 	public long getPermitIdle();
 	public long getSendTime();

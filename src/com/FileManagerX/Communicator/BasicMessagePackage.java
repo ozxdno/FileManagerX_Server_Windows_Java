@@ -26,7 +26,8 @@ public class BasicMessagePackage implements com.FileManagerX.Interfaces.IBasicMe
 	
 	private boolean isRecord;
 	private boolean isDircet;
-	private boolean isBroadCast;
+	
+	private com.FileManagerX.Deliver.Broadcast broadcast;
 	
 	private long permitIdle;
 	private long sendTime;
@@ -38,10 +39,13 @@ public class BasicMessagePackage implements com.FileManagerX.Interfaces.IBasicMe
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean setSourMachineIndex(long index) {
+		this.rrp.setSourMachine(index);
 		this.sourMachineIndex = index;
 		return true;
 	}
 	public boolean setDestMachineIndex(long index) {
+		this.rrp.setDestMachine(index);
+		this.broadcast.setDestMachine(index);
 		this.destMachineIndex = index;
 		return true;
 	}
@@ -137,8 +141,11 @@ public class BasicMessagePackage implements com.FileManagerX.Interfaces.IBasicMe
 		this.isDircet = isDirect;
 		return true;
 	}
-	public boolean setIsBroadCast(boolean isBroadCast) {
-		this.isBroadCast = isBroadCast;
+	public boolean setBroadCast(com.FileManagerX.Deliver.Broadcast broadcast) {
+		if(broadcast == null) {
+			return false;
+		}
+		this.broadcast = broadcast;
 		return true;
 	}
 	
@@ -245,8 +252,8 @@ public class BasicMessagePackage implements com.FileManagerX.Interfaces.IBasicMe
 	public boolean isDirect() {
 		return this.isDircet;
 	}
-	public boolean isBroadCast() {
-		return this.isBroadCast;
+	public com.FileManagerX.Deliver.Broadcast getBroadcast() {
+		return this.broadcast;
 	}
 	
 	public long getPermitIdle() {
@@ -291,9 +298,9 @@ public class BasicMessagePackage implements com.FileManagerX.Interfaces.IBasicMe
 		
 		this.isRecord = false;
 		this.isDircet = false;
-		this.isBroadCast = false;
+		this.broadcast = new com.FileManagerX.Deliver.Broadcast();
 		
-		this.permitIdle = com.FileManagerX.Globals.Configurations.TimeForCommandReceive;
+		this.permitIdle = com.FileManagerX.Globals.Configurations.TimeForPermitIdle_Transport;
 		this.rrp = com.FileManagerX.Factories.CommunicatorFactory.createRRP();
 		this.sendTime = com.FileManagerX.Tools.Time.getTicks();
 		this.receiveTime = com.FileManagerX.Tools.Time.getTicks();
@@ -339,7 +346,7 @@ public class BasicMessagePackage implements com.FileManagerX.Interfaces.IBasicMe
 		c.addToBottom(this.priority);
 		c.addToBottom(this.isRecord);
 		c.addToBottom(this.isDircet);
-		c.addToBottom(this.isBroadCast);
+		c.addToBottom(new com.FileManagerX.BasicModels.Config(this.broadcast.output()));
 		c.addToBottom(this.sourMachineIndex);
 		c.addToBottom(this.destMachineIndex);
 		c.addToBottom(this.sourDepotIndex);
@@ -372,8 +379,13 @@ public class BasicMessagePackage implements com.FileManagerX.Interfaces.IBasicMe
 		if(!c.getIsOK()) { return null; }
 		this.isDircet = c.fetchFirstBoolean();
 		if(!c.getIsOK()) { return null; }
-		this.isBroadCast = c.fetchFirstBoolean();
-		if(!c.getIsOK()) { return null; }
+		
+		in = this.broadcast.input(c.output());
+		if(in == null) {
+			return null;
+		}
+		c = new com.FileManagerX.BasicModels.Config(in);
+		
 		this.sourMachineIndex = c.fetchFirstLong();
 		if(!c.getIsOK()) { return null; }
 		this.destMachineIndex = c.fetchFirstLong();
@@ -432,7 +444,7 @@ public class BasicMessagePackage implements com.FileManagerX.Interfaces.IBasicMe
 		
 		this.isRecord = bmp.isRecord;
 		this.isDircet = bmp.isDircet;
-		this.isBroadCast = bmp.isBroadCast;
+		this.broadcast.copyReference(bmp.broadcast);
 		
 		this.permitIdle = bmp.permitIdle;
 		this.sendTime = bmp.sendTime;
@@ -462,7 +474,7 @@ public class BasicMessagePackage implements com.FileManagerX.Interfaces.IBasicMe
 		
 		this.isRecord = bmp.isRecord;
 		this.isDircet = bmp.isDircet;
-		this.isBroadCast = bmp.isBroadCast;
+		this.broadcast.copyValue(bmp.broadcast);
 		
 		this.permitIdle = bmp.permitIdle;
 		this.sendTime = bmp.sendTime;

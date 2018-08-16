@@ -8,6 +8,7 @@ public class MySQLManager_CFG implements com.FileManagerX.Interfaces.IDBManager 
 
 	private com.FileManagerX.BasicModels.DataBaseInfo database;
 	private com.FileManagerX.DataBase.Unit unit;
+	private boolean connected;
 	private boolean running;
 	private String name;
 	
@@ -45,6 +46,10 @@ public class MySQLManager_CFG implements com.FileManagerX.Interfaces.IDBManager 
 		this.unit = unit;
 		return true;
 	}
+	public boolean setIsRunning(boolean running) {
+		this.running = running;
+		return true;
+	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -66,17 +71,23 @@ public class MySQLManager_CFG implements com.FileManagerX.Interfaces.IDBManager 
 	private void initThis() {
 		this.database = null;
 		this.unit = Unit.CFG;
-		this.running = false;
+		this.connected = false;
 		this.name = "CFG";
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public boolean isConnected() {
+		return this.connected;
+	}
+	public boolean isRunning() {
 		return this.running;
 	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public boolean connect() {
-		this.running = false;
+		this.connected = false;
 		
 		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config
 				(this.database.getUrl().replace('\\', '|'));
@@ -105,10 +116,10 @@ public class MySQLManager_CFG implements com.FileManagerX.Interfaces.IDBManager 
 			return false;
 		}
 		
-		return this.running = true;
+		return this.connected = true;
 	}
 	public boolean disconnect() {
-		this.running = false;
+		this.connected = false;
 		if(statement != null) {
 			try {
 				statement.close();

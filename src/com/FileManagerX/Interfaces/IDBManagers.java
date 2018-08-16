@@ -61,4 +61,6 @@ public interface IDBManagers extends ICollection {
 	
 	public void removeIdleDBManagers();
 	public void removeAllDBManagers();
+	
+	public com.FileManagerX.Interfaces.IDBManager nextIdleManager(Unit unit);
 }

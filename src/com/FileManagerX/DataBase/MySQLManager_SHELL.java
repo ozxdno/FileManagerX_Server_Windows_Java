@@ -8,6 +8,7 @@ public class MySQLManager_SHELL implements com.FileManagerX.Interfaces.IDBManage
 
 	private com.FileManagerX.BasicModels.DataBaseInfo database;
 	private com.FileManagerX.DataBase.Unit unit;
+	private boolean connected;
 	private boolean running;
 	private String name;
 	
@@ -28,6 +29,10 @@ public class MySQLManager_SHELL implements com.FileManagerX.Interfaces.IDBManage
 			return false;
 		}
 		this.unit = unit;
+		return true;
+	}
+	public boolean setIsRunning(boolean running) {
+		this.running = running;
 		return true;
 	}
 	
@@ -51,17 +56,23 @@ public class MySQLManager_SHELL implements com.FileManagerX.Interfaces.IDBManage
 	private void initThis() {
 		this.database = null;
 		this.unit = Unit.SHELL;
-		this.running = false;
+		this.connected = false;
 		this.name = "";
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public boolean isConnected() {
+		return this.connected;
+	}
+	public boolean isRunning() {
 		return this.running;
 	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public boolean connect() {
-		this.running = false;
+		this.connected = false;
 		
 		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config(this.database.getUrl().replace('\\', '|'));
 		String ip_port = c.fetchFirstString();
@@ -90,10 +101,10 @@ public class MySQLManager_SHELL implements com.FileManagerX.Interfaces.IDBManage
 			return false;
 		}
 		
-		return this.running = true;
+		return this.connected = true;
 	}
 	public boolean disconnect() {
-		this.running = false;
+		this.connected = false;
 		if(statement != null) {
 			try {
 				statement.close();
@@ -143,7 +154,7 @@ public class MySQLManager_SHELL implements com.FileManagerX.Interfaces.IDBManage
 		}
 	}
 	public boolean exists() {
-		return this.running;
+		return this.connected;
 	}
 	public boolean clear() {
 		return true;

@@ -25,6 +25,9 @@ public class Manager implements com.FileManagerX.Interfaces.IDBManager {
 		this.unit = unit;
 		return true;
 	}
+	public boolean setIsRunning(boolean running) {
+		return true;
+	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -35,7 +38,11 @@ public class Manager implements com.FileManagerX.Interfaces.IDBManager {
 		return this.unit;
 	}
 	public com.FileManagerX.Interfaces.IDBManager getUnitMananger() {
-		return this.managers.searchUnit(unit);
+		return null;
+	}
+	public com.FileManagerX.Interfaces.IDBManager getUnitMananger(Unit unit) {
+		com.FileManagerX.Interfaces.IDBManager dbm = this.managers.nextIdleManager(unit);
+		return dbm;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -45,16 +52,21 @@ public class Manager implements com.FileManagerX.Interfaces.IDBManager {
 	}
 	private void initThis() {
 		this.database = null;
-		this.unit = Unit.BaseFile;
+		this.unit = Unit.MANAGER;
 		this.managers = com.FileManagerX.Factories.DataBaseFactory.createManagers();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean isConnected() {
-		com.FileManagerX.Interfaces.IDBManager dbm = this.managers.searchUnit(unit);
-		return dbm == null ? false : dbm.isConnected();
+		return true;
 	}
+	public boolean isRunning() {
+		return false;
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	public boolean connect() {
 		if(com.FileManagerX.BasicEnums.DataBaseType.MySQL.equals(this.database.getType())) {
 			this.createManager_MySQL();
@@ -68,8 +80,10 @@ public class Manager implements com.FileManagerX.Interfaces.IDBManager {
 		
 		boolean ok = false;
 		for(com.FileManagerX.Interfaces.IDBManager dbm : this.managers.getContent()) {
-			dbm.setDBInfo(database);
-			ok |= dbm.connect();
+			if(!dbm.isConnected()) {
+				dbm.setDBInfo(database);
+				ok |= dbm.connect();
+			}
 		}
 		return ok;
 	}
@@ -132,32 +146,98 @@ public class Manager implements com.FileManagerX.Interfaces.IDBManager {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public Object querys(Object conditions) {
-		com.FileManagerX.Interfaces.IDBManager dbm = this.managers.searchUnit(this.unit);
-		return dbm == null ? null : dbm.querys(conditions);
+		return null;
 	}
 	public Object query(Object conditions) {
-		com.FileManagerX.Interfaces.IDBManager dbm = this.managers.searchUnit(this.unit);
-		return dbm == null ? null : dbm.query(conditions);
+		return null;
 	}
 	public Object updates(Object items) {
-		com.FileManagerX.Interfaces.IDBManager dbm = this.managers.searchUnit(this.unit);
-		return dbm == null ? null : dbm.updates(items);
+		return null;
 	}
 	public boolean update(Object item) {
-		com.FileManagerX.Interfaces.IDBManager dbm = this.managers.searchUnit(this.unit);
-		return dbm == null ? false : dbm.update(item);
+		return false;
 	}
 	public Object removes(Object items) {
-		com.FileManagerX.Interfaces.IDBManager dbm = this.managers.searchUnit(this.unit);
-		return dbm == null ? null : dbm.removes(items);
+		return null;
 	}
 	public boolean remove(Object item) {
-		com.FileManagerX.Interfaces.IDBManager dbm = this.managers.searchUnit(this.unit);
-		return dbm == null ? false : dbm.remove(item);
+		return false;
 	}
 	public long size() {
-		com.FileManagerX.Interfaces.IDBManager dbm = this.managers.searchUnit(this.unit);
-		return dbm == null ? 0 : dbm.size();
+		return 0;
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public Object querys(Object conditions, com.FileManagerX.DataBase.Unit unit) {
+		com.FileManagerX.Interfaces.IDBManager dbm = this.getUnitMananger(unit);
+		if(dbm == null) {
+			return null;
+		}
+		dbm.setIsRunning(true);
+		Object res = dbm.querys(conditions);
+		dbm.setIsRunning(false);
+		return res;
+	}
+	public Object query(Object conditions, com.FileManagerX.DataBase.Unit unit) {
+		com.FileManagerX.Interfaces.IDBManager dbm = this.getUnitMananger(unit);
+		if(dbm == null) {
+			return null;
+		}
+		dbm.setIsRunning(true);
+		Object res = dbm.query(conditions);
+		dbm.setIsRunning(false);
+		return res;
+	}
+	public Object updates(Object items, com.FileManagerX.DataBase.Unit unit) {
+		com.FileManagerX.Interfaces.IDBManager dbm = this.getUnitMananger(unit);
+		if(dbm == null) {
+			return null;
+		}
+		dbm.setIsRunning(true);
+		Object res = dbm.updates(items);
+		dbm.setIsRunning(false);
+		return res;
+	}
+	public boolean update(Object item, com.FileManagerX.DataBase.Unit unit) {
+		com.FileManagerX.Interfaces.IDBManager dbm = this.getUnitMananger(unit);
+		if(dbm == null) {
+			return false;
+		}
+		dbm.setIsRunning(true);
+		boolean res = dbm.update(item);
+		dbm.setIsRunning(false);
+		return res;
+	}
+	public Object removes(Object items, com.FileManagerX.DataBase.Unit unit) {
+		com.FileManagerX.Interfaces.IDBManager dbm = this.getUnitMananger(unit);
+		if(dbm == null) {
+			return null;
+		}
+		dbm.setIsRunning(true);
+		Object res = dbm.removes(items);
+		dbm.setIsRunning(false);
+		return res;
+	}
+	public boolean remove(Object item, com.FileManagerX.DataBase.Unit unit) {
+		com.FileManagerX.Interfaces.IDBManager dbm = this.getUnitMananger(unit);
+		if(dbm == null) {
+			return false;
+		}
+		dbm.setIsRunning(true);
+		boolean res = dbm.remove(item);
+		dbm.setIsRunning(false);
+		return res;
+	}
+	public long size(com.FileManagerX.DataBase.Unit unit) {
+		com.FileManagerX.Interfaces.IDBManager dbm = this.getUnitMananger(unit);
+		if(dbm == null) {
+			return -1;
+		}
+		dbm.setIsRunning(true);
+		long res = dbm.size();
+		dbm.setIsRunning(false);
+		return res;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -178,6 +258,7 @@ public class Manager implements com.FileManagerX.Interfaces.IDBManager {
 		this.managers.add(new com.FileManagerX.DataBase.MySQLManager_Invitation());
 		this.managers.add(new com.FileManagerX.DataBase.MySQLManager_CFG());
 		this.managers.add(new com.FileManagerX.DataBase.MySQLManager_Chat());
+		this.managers.add(new com.FileManagerX.DataBase.MySQLManager_Group());
 	}
 	private void createManager_TXT() {
 		this.managers.clear();
@@ -193,6 +274,9 @@ public class Manager implements com.FileManagerX.Interfaces.IDBManager {
 		this.managers.add(new com.FileManagerX.DataBase.TXTManager_Gif());
 		this.managers.add(new com.FileManagerX.DataBase.TXTManager_Music());
 		this.managers.add(new com.FileManagerX.DataBase.TXTManager_Invitation());
+		this.managers.add(new com.FileManagerX.DataBase.TXTManager_CFG());
+		this.managers.add(new com.FileManagerX.DataBase.TXTManager_Chat());
+		this.managers.add(new com.FileManagerX.DataBase.TXTManager_Group());
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

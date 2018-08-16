@@ -305,6 +305,7 @@ public class CFG extends com.FileManagerX.BasicModels.BaseFile {
 		this.error |= !this.loadServer_Configurations();
 		this.error |= !this.loadServer_ThisMachine();
 		this.error |= !this.loadServer_ThisUser();
+		this.error |= !this.loadServer_StartScanners();
 		this.error |= !this.loadServer_DBManager();
 		this.error |= !this.loadServer_Supports();
 		this.error |= !this.loadServer_MyMachine();
@@ -358,6 +359,7 @@ public class CFG extends com.FileManagerX.BasicModels.BaseFile {
 		this.error |= !this.loadDepot_Configurations();
 		this.error |= !this.loadDepot_ThisMachine();
 		this.error |= !this.loadDepot_ThisUser();
+		this.error |= !this.loadDepot_StartScanners();
 		this.error |= !this.loadDepot_DBManager();
 		this.error |= !this.loadDepot_BuildConnection();
 		this.error |= !this.loadDepot_Supports();
@@ -486,6 +488,13 @@ public class CFG extends com.FileManagerX.BasicModels.BaseFile {
 		Datas.ThisUser.copyReference(user);
 		Datas.ServerUser.copyReference(user);
 		
+		return true;
+	}
+	private boolean loadServer_StartScanners() {
+		com.FileManagerX.Interfaces.IScanner scannerTCP_IPV4 = com.FileManagerX.Factories.CommunicatorFactory.createScanner();
+		scannerTCP_IPV4.setServerMachineInfo(com.FileManagerX.Globals.Datas.ThisMachine);
+		scannerTCP_IPV4.setSocket(com.FileManagerX.BasicEnums.SocketType.IPV4_TCP);
+		scannerTCP_IPV4.startProcess();
 		return true;
 	}
 	private boolean loadServer_DBManager() {
@@ -960,6 +969,13 @@ public class CFG extends com.FileManagerX.BasicModels.BaseFile {
 		Datas.ThisUser.copyReference(user);
 		Datas.ThisUser.setIndex(Configurations.This_UserIndex);
 		
+		return true;
+	}
+	private boolean loadDepot_StartScanners() {
+		com.FileManagerX.Interfaces.IScanner scannerTCP_IPV4 = com.FileManagerX.Factories.CommunicatorFactory.createScanner();
+		scannerTCP_IPV4.setServerMachineInfo(com.FileManagerX.Globals.Datas.ThisMachine);
+		scannerTCP_IPV4.setSocket(com.FileManagerX.BasicEnums.SocketType.IPV4_TCP);
+		scannerTCP_IPV4.startProcess();
 		return true;
 	}
 	private boolean loadDepot_DBManager() {

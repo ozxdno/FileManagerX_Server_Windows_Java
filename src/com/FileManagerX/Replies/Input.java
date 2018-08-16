@@ -112,13 +112,10 @@ public class Input extends BaseReply {
 			return false;
 		}
 		
-		com.FileManagerX.Operator.Operator op = com.FileManagerX.Globals.Datas.Operators.search(index);
+		com.FileManagerX.Operator.Operator op = com.FileManagerX.Globals.Datas.Operators.searchOperatorIndex(index);
 		if(op == null) {
 			op = new com.FileManagerX.Operator.Operator();
-			op.setThis(com.FileManagerX.BasicEnums.OperateType.INPUT, 0, false, true, false, false, 
-					"", new java.util.ArrayList<>());
-			op.register();
-			
+			op.setType(com.FileManagerX.BasicEnums.OperateType.INPUT);
 			op.setSource(this);
 			op.startProcess();
 			return true;

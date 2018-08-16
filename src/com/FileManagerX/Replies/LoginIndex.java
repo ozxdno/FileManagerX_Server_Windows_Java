@@ -10,12 +10,12 @@ public class LoginIndex extends BaseReply {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	private int index;
+	private long index;
 	private int count;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public boolean setLoginIndex(int index) {
+	public boolean setLoginIndex(long index) {
 		this.index = index;
 		return true;
 	}
@@ -26,7 +26,7 @@ public class LoginIndex extends BaseReply {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public int getLoginIndex() {
+	public long getLoginIndex() {
 		return this.index;
 	}
 	public int getCount() {
@@ -45,13 +45,13 @@ public class LoginIndex extends BaseReply {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public boolean setThis(int index, int count) {
+	public boolean setThis(long index, int count) {
 		boolean ok = true;
 		ok &= this.setLoginIndex(index);
 		ok &= this.setCount(count);
 		return ok;
 	}
-	public boolean setThis(int index, int count, com.FileManagerX.Interfaces.IConnection connection) {
+	public boolean setThis(long index, int count, com.FileManagerX.Interfaces.IConnection connection) {
 		boolean ok = true;
 		ok &= this.getBasicMessagePackage().setThis(connection.getClientConnection());
 		ok &= this.setConnection(connection);
@@ -114,22 +114,25 @@ public class LoginIndex extends BaseReply {
 	public boolean executeInLocal() {
 		
 		if(!this.isOK()) {
-			this.getConnection().disconnect();
+			this.getConnection().exitProcess();
 			return false;
 		}
 		
-		if(com.FileManagerX.Globals.Datas.Server.getNext_ConnectionIndex() > this.index) {
+		if(com.FileManagerX.Globals.Configurations.Next_ConnectionIndex > this.index) {
 			this.count--;
 			if(this.count < 0) {
 				this.setThis(false, FAILED_OVER_COUNT);
 				return false;
 			}
 			else {
+				this.getConnection().setIndex();
 				
+				com.FileManagerX.Commands.LoginIndex li = new com.FileManagerX.Commands.LoginIndex();
+				li.setThis(this.getConnection().getIndex(), count, this.getConnection());
+				return li.send();
 			}
 		}
 		
-		com.FileManagerX.Globals.Datas.Server.setNext_ConnectionIndex(index);
 		this.getConnection().setIndex(index);
 		this.getConnection().getBrother().setIndex(index);
 		return true;

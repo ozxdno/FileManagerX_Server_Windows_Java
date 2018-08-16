@@ -1,48 +1,7 @@
 package com.FileManagerX.Communicator;
 
-import java.util.Collections;
-import java.util.Comparator;
-
-public class ClientConnections implements com.FileManagerX.Interfaces.IClientConnections {
-
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	private java.util.LinkedList<com.FileManagerX.Interfaces.IClientConnection> connections;
-	private long permitIdle;
-	private int Next_ConnectionIndex;
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public boolean setConnections(java.util.LinkedList<com.FileManagerX.Interfaces.IClientConnection> connections) {
-		if(connections == null) {
-			return false;
-		}
-		this.connections = connections;
-		return true;
-	}
-	public boolean setPermitIdle(long permitIdle) {
-		if(permitIdle > 0) {
-			this.permitIdle = permitIdle;
-			return true;
-		}
-		return false;
-	}
-	public boolean setNext_ConnectionIndex(int nextIndex) {
-		this.Next_ConnectionIndex = nextIndex;
-		return true;
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public java.util.LinkedList<com.FileManagerX.Interfaces.IClientConnection> getConnections() {
-		return this.connections;
-	}
-	public long getPermitIdle() {
-		return this.permitIdle;
-	}
-	public int getNext_ConnectionIndex() {
-		return this.Next_ConnectionIndex;
-	}
+public class ClientConnections extends com.FileManagerX.Processes.Manager
+	<com.FileManagerX.Interfaces.IClientConnection> {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -50,171 +9,86 @@ public class ClientConnections implements com.FileManagerX.Interfaces.IClientCon
 		initThis();
 	}
 	private void initThis() {
-		if(this.connections == null) {
-			this.connections = new java.util.LinkedList<>();
-		}
-		this.connections.clear();
-		this.permitIdle = com.FileManagerX.Globals.Configurations.TimeForClientPermitIdle;
-		this.Next_ConnectionIndex = 0;
+		;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public int size() {
-		return this.connections.size();
-	}
-	public void clear() {
-		this.removeAllConnections();
-		initThis();
-	}
-	public boolean add(Object item) {
-		if(item == null) {
-			return false;
-		}
-		try {
-			this.connections.add((com.FileManagerX.Interfaces.IClientConnection)item);
-			return false;
-		} catch(Exception e) {
-			return true;
-		}
-	}
-	public java.util.LinkedList<com.FileManagerX.Interfaces.IClientConnection> getContent() {
-		return this.connections;
-	}
-	
-	/**
-	 * Sort By ConnectionIndex
-	 * 
-	 */
-	@SuppressWarnings("unchecked")
-	public boolean sortIncrease() {
-		@SuppressWarnings("rawtypes")
-		Comparator c = new Comparator<com.FileManagerX.Interfaces.IClientConnection>() {
-			public int compare(com.FileManagerX.Interfaces.IClientConnection e1,
-					com.FileManagerX.Interfaces.IClientConnection e2) {
-				return e1.getIndex() > e2.getIndex() ? 1 : -1;
-			}
-		};
+	public int indexOfConnectionIndex(long index, com.FileManagerX.BasicEnums.ConnectionType type) {
+		if(type == null) { return -1; }
 		
-		try {
-			Collections.sort(this.connections, c);
-			return true;
-		} catch(Exception e) {
-			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(
-					"Error in Compare",e.toString());
-			return false;
-		}
-	}
-	
-	/**
-	 * Sort ConnectionIndex
-	 * 
-	 */
-	@SuppressWarnings("unchecked")
-	public boolean sortDecrease() {
-		@SuppressWarnings("rawtypes")
-		Comparator c = new Comparator<com.FileManagerX.Interfaces.IClientConnection>() {
-			public int compare(com.FileManagerX.Interfaces.IClientConnection e1,
-					com.FileManagerX.Interfaces.IClientConnection e2) {
-				return e1.getIndex() > e2.getIndex() ? -1 : 1;
-			}
-		};
-		
-		try {
-			Collections.sort(this.connections, c);
-			return true;
-		} catch(Exception e) {
-			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register("Error in Compare",e.toString());
-			return false;
-		}
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public synchronized void removeIdleConnections() {
-		for(int i=this.connections.size() - 1; i>=0; i--) {
-			if(!this.connections.get(i).isRunning()) {
-				this.connections.remove(i);
-				continue;
-			}
-		}
-	}
-	public synchronized void removeAllConnections() {
-		for(int i=this.connections.size()-1; i>=0; i--) {
-			this.connections.get(i).disconnect();
-			this.connections.remove(i);
-		}
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public int indexOf(int index) {
 		int i = -1;
-		for(com.FileManagerX.Interfaces.IClientConnection c : this.connections) {
+		for(com.FileManagerX.Interfaces.IClientConnection c : this.getContent()) {
 			i++;
-			if(c.getIndex() == index) {
+			if(c.getIndex() == index && type.contains(c.getType())) {
 				return i;
 			}
 		}
 		return -1;
 	}
-	public com.FileManagerX.Interfaces.IClientConnection search(int index) {
-		for(com.FileManagerX.Interfaces.IClientConnection c : this.connections) {
-			if(c.getIndex() == index) {
+	public com.FileManagerX.Interfaces.IClientConnection searchConnectionIndex(long index, 
+			com.FileManagerX.BasicEnums.ConnectionType type) {
+		for(com.FileManagerX.Interfaces.IClientConnection c : this.getContent()) {
+			if(c.getIndex() == index && type.contains(c.getType())) {
 				return c;
 			}
 		}
 		return null;
 	}
-	public com.FileManagerX.Interfaces.IClientConnection fetch(int index) {
-		java.util.Iterator<com.FileManagerX.Interfaces.IClientConnection> it = this.connections.iterator();
+	public com.FileManagerX.Interfaces.IClientConnection fetchConnectionIndex(long index, 
+			com.FileManagerX.BasicEnums.ConnectionType type) {
+		java.util.Iterator<com.FileManagerX.Interfaces.IClientConnection> it = this.getContent().iterator();
 		while(it.hasNext()) {
 			com.FileManagerX.Interfaces.IClientConnection c = it.next();
-			if(c.getIndex() == index) {
+			if(c.getIndex() == index && type.contains(c.getType())) {
 				it.remove();
 				return c;
 			}
 		}
 		return null;
 	}
-	public void delete(int index) {
-		this.fetch(index);
+	public void deleteConnectionIndex(long index, com.FileManagerX.BasicEnums.ConnectionType type) {
+		this.fetchConnectionIndex(index, type);
 	}
 	
-	public int indexOf(long index) {
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public int indexOfMachineIndex(long index, com.FileManagerX.BasicEnums.ConnectionType type) {
 		int i = -1;
-		for(com.FileManagerX.Interfaces.IClientConnection c : this.connections) {
+		for(com.FileManagerX.Interfaces.IClientConnection c : this.getContent()) {
 			i++;
 			if(c.getServerMachineInfo().getIndex() == index && 
-					c.getType().equals(com.FileManagerX.BasicEnums.ConnectionType.TRANSPORT_COMMAND)) {
+					type.contains(c.getType())) {
 				return i;
 			}
 		}
 		return -1;
 	}
-	public com.FileManagerX.Interfaces.IClientConnection search(long index) {
-		for(com.FileManagerX.Interfaces.IClientConnection c : this.connections) {
+	public com.FileManagerX.Interfaces.IClientConnection searchMachineIndex(long index, 
+			com.FileManagerX.BasicEnums.ConnectionType type) {
+		for(com.FileManagerX.Interfaces.IClientConnection c : this.getContent()) {
 			if(c.getServerMachineInfo().getIndex() == index &&
-					c.getType().equals(com.FileManagerX.BasicEnums.ConnectionType.TRANSPORT_COMMAND)) {
+					type.contains(c.getType())) {
 				return c;
 			}
 		}
 		return null;
 	}
-	public com.FileManagerX.Interfaces.IClientConnection fetch(long index) {
-		java.util.Iterator<com.FileManagerX.Interfaces.IClientConnection> it = this.connections.iterator();
+	public com.FileManagerX.Interfaces.IClientConnection fetchMachineIndex(long index,
+			com.FileManagerX.BasicEnums.ConnectionType type) {
+		java.util.Iterator<com.FileManagerX.Interfaces.IClientConnection> it = this.getContent().iterator();
 		while(it.hasNext()) {
 			com.FileManagerX.Interfaces.IClientConnection c = it.next();
 			if(c.getServerMachineInfo().getIndex() == index &&
-					c.getType().equals(com.FileManagerX.BasicEnums.ConnectionType.TRANSPORT_COMMAND)) {
+					type.contains(c.getType())) {
 				it.remove();
 				return c;
 			}
 		}
 		return null;
 	}
-	public void delete(long index) {
-		this.fetch(index);
+	public void deleteMachineIndex(long index, com.FileManagerX.BasicEnums.ConnectionType type) {
+		this.fetchMachineIndex(index, type);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

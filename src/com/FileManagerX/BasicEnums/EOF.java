@@ -5,6 +5,7 @@ public enum EOF {
 	N('\n'),
 	R('\r'),
 	S('|' ),
+	T('\\'),
 	;
 	
 	private byte eof;

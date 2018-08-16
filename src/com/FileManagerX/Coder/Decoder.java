@@ -26,6 +26,9 @@ public class Decoder {
 	public final static String Decode_String2String(String str) {
 		return new String(DECODE.decode(str.getBytes()));
 	}
+	public final static String Decode_DataBaseString2String(String str) {
+		return new String(DECODE.decode(str.getBytes()));
+	}
 	public final static com.FileManagerX.Interfaces.ITransport Decode_Byte2Transport(byte[] bytes) {
 		try {
 			String s = new String(bytes);

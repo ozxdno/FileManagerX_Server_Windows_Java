@@ -5,6 +5,7 @@ public class BaseCommand implements com.FileManagerX.Interfaces.ICommand {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public final static String FAILED_WRONG_INPUT = "Convert String to Target Object Failed";
+	public final static String FAILED_NO_TARGET = "Not Find Dest Machine";
 	
 	public final static String FAILED_NOT_CONNECT = "Connection is NULL or Not Running";
 	public final static String FAILED_NOT_LOGIN_USER = "Not Login User";
@@ -215,7 +216,7 @@ public class BaseCommand implements com.FileManagerX.Interfaces.ICommand {
 		return this.bmp.getSourMachineIndex() == com.FileManagerX.Globals.Configurations.This_MachineIndex;
 	}
 	public boolean isArriveDestMachine() {
-		return this.bmp.isBroadCast() ||
+		return this.getBasicMessagePackage().getBroadcast().getNeedExecute() ||
 				this.bmp.getDestMachineIndex() == com.FileManagerX.Globals.Configurations.This_MachineIndex;
 	}
 	

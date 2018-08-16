@@ -142,8 +142,6 @@ public class LoginMachine extends BaseCommand {
 		
 		this.getConnection().getServerConnection().setClientMachineInfo(this.machineInfo);
 		this.getConnection().getClientConnection().setServerMachineInfo(this.machineInfo);
-		this.getConnection().getServerConnection().setConnectionName();
-		this.getConnection().getClientConnection().setConnectionName();
 		this.getReply().setMachineInfo(this.machineInfo);
 		return true;
 	}

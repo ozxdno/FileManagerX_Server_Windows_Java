@@ -2,18 +2,17 @@ package com.FileManagerX.Commands;
 
 import com.FileManagerX.BasicEnums.UserPriority;
 import com.FileManagerX.BasicModels.Config;
-import com.FileManagerX.Globals.Datas;
 
 public class LoginIndex extends BaseCommand {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	private int index;
+	private long index;
 	private int count;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public boolean setLoginIndex(int index) {
+	public boolean setLoginIndex(long index) {
 		this.index = index;
 		return true;
 	}
@@ -22,13 +21,13 @@ public class LoginIndex extends BaseCommand {
 		return true;
 	}
 	
-	public boolean setThis(int index, int count) {
+	public boolean setThis(long index, int count) {
 		boolean ok = true;
 		ok &= this.setLoginIndex(index);
 		ok &= this.setCount(count);
 		return ok;
 	}
-	public boolean setThis(int index, int count, com.FileManagerX.Interfaces.IConnection connection) {
+	public boolean setThis(long index, int count, com.FileManagerX.Interfaces.IConnection connection) {
 		boolean ok = true;
 		ok &= this.getBasicMessagePackage().setThis(connection.getClientConnection());
 		ok &= this.setConnection(connection);
@@ -38,7 +37,7 @@ public class LoginIndex extends BaseCommand {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public int getLoginIndex() {
+	public long getLoginIndex() {
 		return this.index;
 	}
 	public int getCount() {
@@ -141,12 +140,11 @@ public class LoginIndex extends BaseCommand {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean executeInLocal() {
-		int loginIndex = this.getConnection().getIndex();
+		long loginIndex = this.getConnection().getIndex();
 		if(loginIndex < this.index) {
 			loginIndex = this.index;
 		}
 		
-		Datas.Server.setNext_ConnectionIndex(loginIndex);
 		this.getConnection().setIndex(loginIndex);
 		this.getConnection().getBrother().setIndex(loginIndex);
 		this.getReply().setThis(index, count);

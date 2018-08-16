@@ -5,6 +5,7 @@ public class Chat implements com.FileManagerX.Interfaces.IPublic {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	private long index;
+	private com.FileManagerX.BasicEnums.ChatType type;
 	private long time;
 	private long sourUser;
 	private long destUser;
@@ -20,6 +21,13 @@ public class Chat implements com.FileManagerX.Interfaces.IPublic {
 	}
 	public boolean setIndex() {
 		this.index = ++com.FileManagerX.Globals.Configurations.Next_ChatIndex;
+		return true;
+	}
+	public boolean setType(com.FileManagerX.BasicEnums.ChatType type) {
+		if(type == null) {
+			return false;
+		}
+		this.type = type;
 		return true;
 	}
 	public boolean setTime(long time) {
@@ -62,6 +70,9 @@ public class Chat implements com.FileManagerX.Interfaces.IPublic {
 	public long getIndex() {
 		return index;
 	}
+	public com.FileManagerX.BasicEnums.ChatType getType() {
+		return type;
+	}
 	public long getTime() {
 		return time;
 	}
@@ -88,6 +99,7 @@ public class Chat implements com.FileManagerX.Interfaces.IPublic {
 	}
 	private void initThis() {
 		this.index = 0;
+		this.type = com.FileManagerX.BasicEnums.ChatType.ONE_ONE;
 		this.time = com.FileManagerX.Tools.Time.getTicks();
 		this.sourUser = 0;
 		this.destUser = 0;

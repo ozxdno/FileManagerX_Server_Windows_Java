@@ -6,7 +6,12 @@ package com.FileManagerX.Communicator;
  * @author ozxdno
  *
  */
-public class ServerConnection extends Thread implements com.FileManagerX.Interfaces.IServerConnection {
+public class ServerConnection extends com.FileManagerX.Processes.BasicProcess
+	implements com.FileManagerX.Interfaces.IServerConnection {
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public final static String ERROR_SOCKET_BUILD_FAILED = "Socket is Error";
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -15,19 +20,12 @@ public class ServerConnection extends Thread implements com.FileManagerX.Interfa
 	private com.FileManagerX.BasicModels.User serverUser;
 	private com.FileManagerX.BasicModels.User clientUser;
 	private com.FileManagerX.BasicEnums.ConnectionType type;
-	private int index;
-	private String name;
+	private long index;
 	
 	private com.FileManagerX.Interfaces.ISocketC socket;
-	private boolean abort;
-	private boolean running;
 	
 	private String receiveString;
 	private String sendString;
-	
-	private long lastOperationTime;
-	private long permitIdle;
-	private long maxFlow;
 	
 	private java.util.HashMap<Long, com.FileManagerX.Interfaces.IReply> reps;
 	private com.FileManagerX.Interfaces.IConnection brother;
@@ -69,36 +67,23 @@ public class ServerConnection extends Thread implements com.FileManagerX.Interfa
 		this.type = type;
 		return true;
 	}
-	public boolean setIndex(int index) {
+	public boolean setIndex(long index) {
 		this.index = index;
 		return true;
 	}
 	public boolean setIndex() {
-		if(com.FileManagerX.Globals.Datas.Server != null) {
-			this.index = com.FileManagerX.Globals.Datas.Server.getNext_ConnectionIndex() + 1;
-			com.FileManagerX.Globals.Datas.Server.setNext_ConnectionIndex(index);
-		}
+		this.index = ++com.FileManagerX.Globals.Configurations.Next_ConnectionIndex;
 		return true;
 	}
-	public boolean setConnectionName(String name) {
-		if(name == null) {
-			com.FileManagerX.BasicEnums.ErrorType.COMMON_SET_WRONG_VALUE.register("name = NULL");
-			return false;
-		}
-		if(name.length() == 0) {
-			com.FileManagerX.BasicEnums.ErrorType.COMMON_SET_WRONG_VALUE.register("name is Empty");
+	public boolean setName() {
+		if(socket == null) {
 			return false;
 		}
 		
-		this.name = name;
-		return true;
-	}
-	public boolean setConnectionName() {
-		String name = this.clientMachineInfo.getName();
-		if(name.length() == 0) {
-			name = "No Name";
-		}
-		return this.setConnectionName(name);
+		String name = "<-" + 
+				socket.getClientMachineInfo().getIp() + ":" +
+				socket.getClientMachineInfo().getPort();
+		return super.setName(name);
 	}
 	
 	public boolean setReceiveString(String str) {
@@ -121,42 +106,15 @@ public class ServerConnection extends Thread implements com.FileManagerX.Interfa
 			return false;
 		}
 		this.socket = socket;
+		this.setName();
 		return true;
 	}
 	public boolean setSocket(com.FileManagerX.BasicEnums.SocketType type) {
 		this.socket = type.getSocketC();
 		this.socket.setServerMachineInfo(this.clientMachineInfo);
-		return this.socket.setSocket();
-	}
-	public boolean setAbort(boolean abort) {
-		this.abort = abort;
-		return true;
-	}
-	
-	public boolean setLastOperationTime(long lastOperationTime) {
-		if(lastOperationTime < 0) {
-			return false;
-		}
-		this.lastOperationTime = lastOperationTime;
-		return true;
-	}
-	public boolean setLastOperationTime() {
-		this.lastOperationTime = com.FileManagerX.Tools.Time.getTicks();
-		return true;
-	}
-	public boolean setPermitIdle(long idle) {
-		if(idle < 0) {
-			return false;
-		}
-		this.permitIdle = idle;
-		return true;
-	}
-	public boolean setMaxFlow(long maxFlow) {
-		if(maxFlow < 0) {
-			return false;
-		}
-		this.maxFlow = maxFlow;
-		return true;
+		boolean ok = this.socket.setSocket();
+		this.setName();
+		return ok;
 	}
 	
 	public boolean setBrother(com.FileManagerX.Interfaces.IConnection brother) {
@@ -184,21 +142,12 @@ public class ServerConnection extends Thread implements com.FileManagerX.Interfa
 	public com.FileManagerX.BasicEnums.ConnectionType getType() {
 		return this.type;
 	}
-	public int getIndex() {
+	public long getIndex() {
 		return this.index;
-	}
-	public String getConnectionName() {
-		return this.name;
 	}
 	
 	public com.FileManagerX.Interfaces.ISocketC getSocket() {
 		return this.socket;
-	}
-	public boolean isAbort() {
-		return this.abort;
-	}
-	public boolean isRunning() {
-		return this.running;
 	}
 	
 	public String getReceiveString() {
@@ -206,16 +155,6 @@ public class ServerConnection extends Thread implements com.FileManagerX.Interfa
 	}
 	public String getSendString() {
 		return this.sendString;
-	}
-	
-	public long getLastOperationTime() {
-		return this.lastOperationTime;
-	}
-	public long getPermitIdle() {
-		return this.permitIdle;
-	}
-	public long getMaxFlow() {
-		return this.maxFlow;
 	}
 	
 	public com.FileManagerX.Interfaces.IConnection getBrother() {
@@ -234,131 +173,105 @@ public class ServerConnection extends Thread implements com.FileManagerX.Interfa
 		initThis();
 	}
 	private void initThis() {
-		serverMachineInfo = new com.FileManagerX.BasicModels.MachineInfo();
-		clientMachineInfo = new com.FileManagerX.BasicModels.MachineInfo();
-		serverUser = null;
-		clientUser = null;
-		type = com.FileManagerX.BasicEnums.ConnectionType.TRANSPORT_COMMAND;
-		index = 0;
-		name = "";
+		this.serverMachineInfo = new com.FileManagerX.BasicModels.MachineInfo();
+		this.clientMachineInfo = new com.FileManagerX.BasicModels.MachineInfo();
+		this.serverUser = null;
+		this.clientUser = null;
+		this.type = com.FileManagerX.BasicEnums.ConnectionType.TRANSPORT_COMMAND;
+		this.setIndex();
 		
 		this.socket = null;
-		this.abort = false;
-		this.running = false;
+		this.setRunnable(new RunImpl());
 		
 		this.receiveString = null;
 		this.sendString = null;
 		
-		this.setLastOperationTime();
-		this.permitIdle = com.FileManagerX.Globals.Configurations.TimeForServerPermitIdle;
-		this.setName("TCP Server Connection");
-		
 		this.reps = new java.util.HashMap<>();
-	}
-	public void run() {
-		abort = false;
-		running = true;
-		if(socket == null) {
-			running = false;
-			return;
-		}
-		
-		try {
-			super.setName(
-					"<-" + 
-					this.socket.getClientMachineInfo().getIp() + ":" +
-					this.socket.getClientMachineInfo().getPort()
-					);
-			this.name = this.clientMachineInfo.getName();
-			
-		} catch(Exception e) {
-			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register("Set Name Failed", e.toString());
-		}
-		
-		com.FileManagerX.Globals.Datas.Processes.add(this);
-		java.util.LinkedList<Byte> buffer = new java.util.LinkedList<>();
-		byte[] recebytes = new byte[(int) com.FileManagerX.Globals.Configurations.MaxConnectionFlow];
-		
-		while(!abort && !socket.isClosed()) {
-			try {
-				
-				int length = this.socket.receive(recebytes);
-				for(int i=0; i<length; i++) {
-					if(recebytes[i] == com.FileManagerX.BasicEnums.EOF.N.getSpecial()) {
-						byte[] temp = new byte[buffer.size()];
-						int cnt = 0;
-						for(Byte b : buffer) { temp[cnt++] = b; }
-						buffer.clear();
-						this.receiveString = new String(temp);
-						com.FileManagerX.Interfaces.ITransport t =
-								com.FileManagerX.Coder.Decoder.Decode_Byte2Transport(temp);
-						
-						// 记录
-						if(com.FileManagerX.Globals.Configurations.Record) { this.record(); }
-						
-						// 处理
-						if(t instanceof com.FileManagerX.Commands.Unsupport) {
-							;
-						}
-						else if(t instanceof com.FileManagerX.Replies.Unsupport) {
-							;
-						}
-						else {
-							t.setConnection(this);
-							if(!t.isTimeOut() && t.isArriveTargetMachine()) { this.execute(t); }
-							if(!t.isTimeOut() && t.isDeliver()) { t.deliver(); }
-						}
-						
-						// 特殊记录
-						if(!com.FileManagerX.Globals.Configurations.Record &&
-								(t == null || t.getBasicMessagePackage().isRecord())) {
-							this.record();
-						}
-					}
-					buffer.add(recebytes[i]);
-				}
-				
-				// 清理缓存
-				try {
-					for(com.FileManagerX.Interfaces.IReply r : reps.values()) {
-						long permit = 2 * r.getBasicMessagePackage().getPermitIdle();
-						if(permit < 0) { permit = Long.MAX_VALUE; }
-						if(com.FileManagerX.Tools.Time.getTicks() - r.getBasicMessagePackage().getReceiveTime() > permit) {
-							if(!com.FileManagerX.Globals.Configurations.Record) {
-								r.setFailedReason("No Receiver to Accept");
-								r.setOK(false);
-								this.record(r);
-							}
-							reps.remove(r.getBasicMessagePackage().getIndex());
-						}
-					}
-				}catch(Exception e) {
-					;
-				}
-				
-			} catch(Exception e) {
-				com.FileManagerX.BasicEnums.ErrorType.COMMUNICATOR_RUNNING_FAILED.register(e.toString());
-				break;
-			}
-		}
-		
-		this.running = false;
-		this.brother.setAbort(true);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	private class RunImpl implements com.FileManagerX.Processes.BasicProcess.Runnable {
+		public String run() {
+			if(socket == null) {
+				return ERROR_SOCKET_BUILD_FAILED;
+			}
+			
+			java.util.LinkedList<Byte> buffer = new java.util.LinkedList<>();
+			byte[] recebytes = new byte[(int) com.FileManagerX.Globals.Configurations.MaxConnectionFlow];
+			
+			while(!isAbort() && !socket.isClosed()) {
+				try {
+					
+					int length = socket.receive(recebytes);
+					for(int i=0; i<length; i++) {
+						if(recebytes[i] == com.FileManagerX.BasicEnums.EOF.N.getSpecial()) {
+							byte[] temp = new byte[buffer.size()];
+							int cnt = 0;
+							for(Byte b : buffer) { temp[cnt++] = b; }
+							buffer.clear();
+							receiveString = new String(temp);
+							com.FileManagerX.Interfaces.ITransport t =
+									com.FileManagerX.Coder.Decoder.Decode_Byte2Transport(temp);
+							
+							// 记录
+							if(com.FileManagerX.Globals.Configurations.Record) { record(); }
+							
+							// 处理
+							if(t instanceof com.FileManagerX.Commands.Unsupport) {
+								;
+							}
+							else if(t instanceof com.FileManagerX.Replies.Unsupport) {
+								;
+							}
+							else {
+								t.setConnection(ServerConnection.this);
+								if(!t.isTimeOut() && t.isArriveTargetMachine()) { execute(t); }
+								if(!t.isTimeOut() && t.isDeliver()) { t.deliver(); }
+							}
+							
+							// 特殊记录
+							if(!com.FileManagerX.Globals.Configurations.Record &&
+									(t == null || t.getBasicMessagePackage().isRecord())) {
+								record();
+							}
+						}
+						buffer.add(recebytes[i]);
+					}
+					
+					// 清理缓存
+					try {
+						for(com.FileManagerX.Interfaces.IReply r : reps.values()) {
+							long permit = 2 * r.getBasicMessagePackage().getPermitIdle();
+							if(permit < 0) { permit = Long.MAX_VALUE; }
+							if(com.FileManagerX.Tools.Time.getTicks() - r.getBasicMessagePackage().getReceiveTime() > permit) {
+								if(!com.FileManagerX.Globals.Configurations.Record) {
+									r.setFailedReason("No Receiver to Accept");
+									r.setOK(false);
+									record(r);
+								}
+								reps.remove(r.getBasicMessagePackage().getIndex());
+							}
+						}
+					}catch(Exception e) {
+						;
+					}
+					
+				} catch(Exception e) {
+					com.FileManagerX.BasicEnums.ErrorType.COMMUNICATOR_RUNNING_FAILED.register(
+							"[" + getName() + "] " + e.toString());
+					brother.exitProcess();
+					return e.toString();
+				}
+			}
+			
+			brother.exitProcess();
+			return null;
+		}
+	}
 	
-	public boolean connect() {
-		if(this.running) { return true; }
-		if(this.socket == null || this.socket.isClosed()) { return false; }
-		this.start();
-		com.FileManagerX.Tools.Time.waitUntil(100);
-		return this.running;
-	}
-	public void disconnect() {
-		this.socket.close();
-		this.abort = true;
-	}
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public String login() {
 		return this.brother == null ? "ServerConnection No Brother" : this.brother.login();
 	}
@@ -367,7 +280,7 @@ public class ServerConnection extends Thread implements com.FileManagerX.Interfa
 		return this.brother == null ? false : this.brother.send(send);
 	}
 	public boolean store(com.FileManagerX.Interfaces.IReply reply) {
-		if(this.reps.get(reply.getBasicMessagePackage().getIndex()) == null) {
+		if(this.isRunning() && this.reps.get(reply.getBasicMessagePackage().getIndex()) == null) {
 			reply.getBasicMessagePackage().setReceiveTime(com.FileManagerX.Tools.Time.getTicks());
 			this.reps.put(reply.getBasicMessagePackage().getIndex(), reply);
 		}
@@ -378,7 +291,7 @@ public class ServerConnection extends Thread implements com.FileManagerX.Interfa
 		com.FileManagerX.Interfaces.IReply rep = null;
 		long start = com.FileManagerX.Tools.Time.getTicks();
 		
-		while(com.FileManagerX.Tools.Time.getTicks() - start < wait && this.running) {
+		while(com.FileManagerX.Tools.Time.getTicks() - start < wait && this.isRunning()) {
 			com.FileManagerX.Tools.Time.sleepUntil(1);
 			rep = reps.remove(index);
 			if(rep != null) {
@@ -394,59 +307,28 @@ public class ServerConnection extends Thread implements com.FileManagerX.Interfa
 	public com.FileManagerX.Interfaces.IReply fetch(long index) {
 		return reps.remove(index);
 	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public boolean isFinished() {
-		return !this.running;
-	}
-	public boolean isStop() {
-		return !this.running;
-	}
-	
-	public boolean initialize(Object infos) {
-		return true;
-	}
-	
-	public boolean startProcess() {
-		return this.connect();
-	}
-	public boolean stopProcess() {
-		this.disconnect();
-		return true;
-	}
-	public boolean continueProcess() {
-		return false;
-	}
-	public boolean restartProcess() {
-		return this.connect();
-	}
-	public boolean exitProcess() {
-		this.disconnect();
-		return true;
-	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	private void record() {
 		com.FileManagerX.BasicModels.Record r = new com.FileManagerX.BasicModels.Record();
 		r.setType(com.FileManagerX.BasicEnums.RecordType.SERVER_REC);
-		r.setConnectionName(name);
-		r.setThreadName(super.getName());
+		r.setConnectionName(this.getName());
+		r.setThreadName(this.getName());
 		r.setContent(this.receiveString);
 		com.FileManagerX.Globals.Datas.Records.add(r);
 	}
 	private void record(com.FileManagerX.Interfaces.IReply rep) {
 		com.FileManagerX.BasicModels.Record r = new com.FileManagerX.BasicModels.Record();
 		r.setType(com.FileManagerX.BasicEnums.RecordType.SERVER_REC);
-		r.setConnectionName(name);
-		r.setThreadName(super.getName());
+		r.setConnectionName(this.getName());
+		r.setThreadName(this.getName());
 		r.setContent('X' + rep.output());
 		com.FileManagerX.Globals.Datas.Records.add(r);
 	}
 	
 	private void execute(com.FileManagerX.Interfaces.ITransport receive) {
-		com.FileManagerX.Executor.Executor ex = com.FileManagerX.Globals.Datas.Executors.searchIdleExecutor();
+		com.FileManagerX.Executor.Executor ex = com.FileManagerX.Globals.Datas.Executors.nextIdleExecutor();
 		ex.setReceive(receive);
 		ex.restartProcess();
 	}

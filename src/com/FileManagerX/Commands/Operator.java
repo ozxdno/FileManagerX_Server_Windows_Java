@@ -128,7 +128,7 @@ public class Operator extends BaseCommand {
 
 	public boolean executeInLocal() {
 		
-		com.FileManagerX.Operator.Operator op = Datas.Operators.search(this.operator.getIndex());
+		com.FileManagerX.Operator.Operator op = Datas.Operators.searchOperatorIndex(this.operator.getIndex());
 		if(op == null) {
 			this.operator.setSource(this);
 			boolean ok = this.operator.startProcess();

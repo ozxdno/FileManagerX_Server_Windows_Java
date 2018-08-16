@@ -142,6 +142,8 @@ public class Managers implements com.FileManagerX.Interfaces.IDBManagers {
 		}
 	}
 	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	public int indexOfDepotName(String depotName) {
 		for(int i=0; i<content.size(); i++) {
 			if(content.get(i).getDBInfo().getDepotInfo().getName().equals(depotName)) {
@@ -174,6 +176,8 @@ public class Managers implements com.FileManagerX.Interfaces.IDBManagers {
 			this.content.remove(index);
 		}
 	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public int indexOfDataBaseIndex(long idx) {
 		for(int i=0; i<content.size(); i++) {
@@ -208,6 +212,8 @@ public class Managers implements com.FileManagerX.Interfaces.IDBManagers {
 		}
 	}
 	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public int indexOfDepotIndex(long idx) {
 		for(int i=0; i<content.size(); i++) {
 			if(content.get(i).getDBInfo().getDepotInfo().getIndex() == idx) {
@@ -241,6 +247,8 @@ public class Managers implements com.FileManagerX.Interfaces.IDBManagers {
 		}
 	}
 	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public int indexOfMachineName(String machineName) {
 		for(int i=0; i<content.size(); i++) {
 			if(content.get(i).getDBInfo().getMachineInfo().getName().equals(machineName)) {
@@ -274,6 +282,8 @@ public class Managers implements com.FileManagerX.Interfaces.IDBManagers {
 		}
 	}
 	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public int indexOfMachineIndex(long idx) {
 		for(int i=0; i<content.size(); i++) {
 			if(content.get(i).getDBInfo().getMachineInfo().getIndex() == idx) {
@@ -307,6 +317,8 @@ public class Managers implements com.FileManagerX.Interfaces.IDBManagers {
 		}
 	}
 	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public int indexOfMachineIP(String machineIP) {
 		for(int i=0; i<content.size(); i++) {
 			if(content.get(i).getDBInfo().getMachineInfo().getIp().equals(machineIP)) {
@@ -340,6 +352,8 @@ public class Managers implements com.FileManagerX.Interfaces.IDBManagers {
 		}
 	}
 	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public int indexOfDataBaseUrl(String dbUrl) {
 		for(int i=0; i<content.size(); i++) {
 			if(content.get(i).getDBInfo().getUrl().equals(dbUrl)) {
@@ -373,6 +387,8 @@ public class Managers implements com.FileManagerX.Interfaces.IDBManagers {
 		}
 	}
 	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public int indexOfDepotUrl(String depotUrl) {
 		for(int i=0; i<content.size(); i++) {
 			if(content.get(i).getDBInfo().getDepotInfo().getUrl().equals(depotUrl)) {
@@ -406,6 +422,8 @@ public class Managers implements com.FileManagerX.Interfaces.IDBManagers {
 		}
 	}
 	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public int indexOfUnit(Unit unit) {
 		for(int i=0; i<content.size(); i++) {
 			if(content.get(i).getUnit().equals(unit)) {
@@ -453,6 +471,56 @@ public class Managers implements com.FileManagerX.Interfaces.IDBManagers {
 			this.content.get(i).disconnect();
 			this.content.remove(i);
 		}
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public com.FileManagerX.Interfaces.IDBManager nextIdleManager(Unit unit) {
+		java.util.LinkedList<com.FileManagerX.Interfaces.IDBManager> runningManagers = 
+				new java.util.LinkedList<>();
+		
+		com.FileManagerX.BasicEnums.DataBaseType type = com.FileManagerX.BasicEnums.DataBaseType.TXT;
+		int amount = 0;
+		for(com.FileManagerX.Interfaces.IDBManager dbm : this.content) {
+			if(!dbm.getUnit().equals(unit)) {
+				continue;
+			}
+			type = dbm.getDBInfo().getType();
+			amount++;
+			if(dbm.isConnected() && !dbm.isRunning()) {
+				return dbm;
+			}
+			else {
+				runningManagers.add(dbm);
+			}
+		}
+		
+		if(amount < com.FileManagerX.Globals.Configurations.DataBaseConnectionPoolSize) {
+			if(com.FileManagerX.BasicEnums.DataBaseType.TXT.equals(type)) {
+				if(amount == 0) {
+					com.FileManagerX.Interfaces.IDBManager dbm = unit.getManager(type);
+					dbm.connect();
+					if(dbm.isConnected() && !dbm.isRunning()) {
+						this.add(dbm);
+						return dbm;
+					}
+				}
+			}
+			else {
+				com.FileManagerX.Interfaces.IDBManager dbm = unit.getManager(type);
+				dbm.connect();
+				if(dbm.isConnected() && !dbm.isRunning()) {
+					this.add(dbm);
+					return dbm;
+				}
+			}
+		}
+		
+		if(runningManagers.size() == 0) {
+			return null;
+		}
+		int index = (int) (com.FileManagerX.Tools.Time.getTicks() % runningManagers.size());
+		return runningManagers.get(index);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

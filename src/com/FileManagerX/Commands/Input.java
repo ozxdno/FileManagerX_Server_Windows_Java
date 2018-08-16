@@ -143,12 +143,10 @@ public class Input extends BaseCommand {
 
 	public boolean executeInLocal() {
 		
-		com.FileManagerX.Operator.Operator op = com.FileManagerX.Globals.Datas.Operators.search(index);
+		com.FileManagerX.Operator.Operator op = com.FileManagerX.Globals.Datas.Operators.searchOperatorIndex(index);
 		
 		if(op == null) {
 			op = new com.FileManagerX.Operator.Operator();
-			op.setThis(OperateType.INPUT, Long.MAX_VALUE, false, true, false, false, "",
-					new java.util.ArrayList<>());
 			
 			this.index = op.getIndex();
 			this.iop.setType(com.FileManagerX.BasicEnums.IOPType.READ_DEST);

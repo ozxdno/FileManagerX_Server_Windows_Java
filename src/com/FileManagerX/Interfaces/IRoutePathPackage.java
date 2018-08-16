@@ -19,6 +19,7 @@ public interface IRoutePathPackage extends IPublic {
 	public boolean setDestMachine(long dest);
 	public boolean setDeliverMachines(java.util.List<Long> machines);
 	public boolean setDeliverMachine(long deliver);
+	public boolean setDeliverMachine(long depth, long deliver);
 	
 	public boolean setThis(long sourMachine, long destMachine);
 	
@@ -34,11 +35,16 @@ public interface IRoutePathPackage extends IPublic {
 	public long getDestMachine();
 	public java.util.List<Long> getDeliverMachines();
 	public long getDeliverMachine();
+	public long getDeliverMachine(long depth);
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public void reverse();
-	public void add(long machine);
+	public void addDeliverMachine(long machine);
+	public com.FileManagerX.Interfaces.IClientConnection nextServerConnection();
+	public void backToMachine(long machine);
+	public void backToMachine();
+	public boolean passed(long machine);
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

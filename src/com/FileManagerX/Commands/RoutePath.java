@@ -28,7 +28,8 @@ public class RoutePath extends BaseCommand {
 			com.FileManagerX.Interfaces.IConnection connection) {
 		boolean ok = true;
 		ok &= this.getBasicMessagePackage().setThis(connection.getClientConnection());
-		ok &= this.getBasicMessagePackage().setIsBroadCast(true);
+		ok &= this.getBasicMessagePackage().getBroadcast().setType(
+				com.FileManagerX.BasicEnums.BroadcastType.TO_ALL);
 		ok &= this.setConnection(connection);
 		ok &= this.setThis(rrp);
 		return ok;

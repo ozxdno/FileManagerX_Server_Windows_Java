@@ -146,22 +146,7 @@ public class BaseReply implements com.FileManagerX.Interfaces.IReply {
 	}
 	
 	public boolean deliver() {
-		com.FileManagerX.Interfaces.IClientConnection c = com.FileManagerX.Globals.Datas.Client.search(
-				this.bmp.getSourMachineIndex());
-		if(c == null) {
-			this.setFailedReason("Target Machine is Offline");
-			this.setOK(false);
-			return false;
-		}
-		
-		boolean ok = c.send(this);
-		if(!ok) {
-			this.setFailedReason("Deliver Commmand Failed");
-			this.setOK(false);
-			return false;
-		}
-		
-		return true;
+		return com.FileManagerX.Deliver.Deliver.deliver(this);
 	}
 	public boolean deliverToServer() {
 		return com.FileManagerX.Deliver.Deliver.deliverToServer(this);
@@ -195,7 +180,8 @@ public class BaseReply implements com.FileManagerX.Interfaces.IReply {
 		return com.FileManagerX.Globals.Configurations.IsServer;
 	}
 	public boolean isDeliver() {
-		return !this.isArriveDestMachine();
+		return !com.FileManagerX.BasicEnums.BroadcastType.TO_ONE.equals(this.bmp.getBroadcast().getType()) ||
+				this.bmp.getDestMachineIndex() != com.FileManagerX.Globals.Configurations.This_MachineIndex;
 	}
 	public boolean isTimeOut() {
 		return com.FileManagerX.Tools.Time.getTicks() - this.getBasicMessagePackage().getSendTime() >
@@ -206,7 +192,8 @@ public class BaseReply implements com.FileManagerX.Interfaces.IReply {
 		return this.bmp.getSourMachineIndex() == com.FileManagerX.Globals.Configurations.This_MachineIndex;
 	}
 	public boolean isArriveDestMachine() {
-		return this.bmp.getDestMachineIndex() == com.FileManagerX.Globals.Configurations.This_MachineIndex;
+		return this.getBasicMessagePackage().getBroadcast().getNeedExecute() ||
+				this.bmp.getDestMachineIndex() == com.FileManagerX.Globals.Configurations.This_MachineIndex;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

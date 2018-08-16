@@ -19,27 +19,13 @@ public class CommunicatorFactory {
 	
 	public final static com.FileManagerX.Interfaces.IServerConnection createServerConnection() {
 		com.FileManagerX.Interfaces.IServerConnection s = new com.FileManagerX.Communicator.ServerConnection();
-		s.setIndex();
 		return s;
 	}
 	
 	public final static com.FileManagerX.Interfaces.IClientConnection createClientConnection() {
 		com.FileManagerX.Interfaces.IClientConnection c = new com.FileManagerX.Communicator.ClientConnection();
-		c.setIndex();
 		return c;
 	}
-	
-	public final static com.FileManagerX.Interfaces.IServerConnections createServerConnections() {
-		com.FileManagerX.Interfaces.IServerConnections s = new com.FileManagerX.Communicator.ServerConnections();
-		return s;
-	}
-	
-	public final static com.FileManagerX.Interfaces.IClientConnections createClientConnections() {
-		com.FileManagerX.Interfaces.IClientConnections c = new com.FileManagerX.Communicator.ClientConnections();
-		return c;
-	}
-	
-	
 	
 	public final static boolean createRunningClientConnection() {
 		
@@ -59,7 +45,7 @@ public class CommunicatorFactory {
 		if(com.FileManagerX.Globals.Datas.ServerConnection.isRunning()) { return true; }
 		
 		com.FileManagerX.Globals.Datas.ServerConnection.setSocket(com.FileManagerX.BasicEnums.SocketType.IPV4_TCP);
-		com.FileManagerX.Globals.Datas.ServerConnection.connect();
+		com.FileManagerX.Globals.Datas.ServerConnection.startProcess();
 		ok = com.FileManagerX.Globals.Datas.ServerConnection.isRunning();
 		if(!ok) { return false; }
 		
@@ -71,7 +57,7 @@ public class CommunicatorFactory {
 		scon.setType(com.FileManagerX.BasicEnums.ConnectionType.TRANSPORT_COMMAND);
 		
 		scon.setSocket(com.FileManagerX.Globals.Datas.ServerConnection.getSocket());
-		scon.connect();
+		scon.startProcess();
 		ok = scon.isRunning();
 		if(!ok) { return false; }
 		
@@ -89,7 +75,7 @@ public class CommunicatorFactory {
 		ccon.setServerMachineInfo(server);
 		ccon.setClientMachineInfo(client);
 		ccon.setSocket(type);
-		ccon.connect();
+		ccon.startProcess();
 		boolean ok = ccon.isRunning();
 		
 		if(ok) {
@@ -97,7 +83,7 @@ public class CommunicatorFactory {
 			scon.setServerMachineInfo(client);
 			scon.setClientMachineInfo(server);
 			scon.setSocket(ccon.getSocket());
-			scon.connect();
+			scon.startProcess();
 			ok = scon.isRunning();
 			
 			ccon.setBrother(scon);

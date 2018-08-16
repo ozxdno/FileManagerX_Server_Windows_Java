@@ -5,12 +5,12 @@ import com.FileManagerX.Processes.*;
 
 public class ProcessFactory {
 
+	public final static IProcess createBasic() {
+		return new BasicProcess();
+	}
 	public final static IProcess createMain() {
-		return new Main();
+		return new MainProcess();
 	}
 	
-	public final static IProcessManager createManager() {
-		return new com.FileManagerX.Processes.Manager();
-	}
 	
 }

@@ -5,12 +5,9 @@ public class Deliver {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public final static boolean deliver(com.FileManagerX.Interfaces.ITransport t) {
-		if(t.getBasicMessagePackage().isBroadCast() && (t instanceof com.FileManagerX.Interfaces.ICommand)) {
-			return broadcast(t);
-		}
-		else {
-			return p2p(t);
-		}
+		
+		boolean bc = t.getBasicMessagePackage().getBroadcast().broadcast();
+		return bc ? broadcast(t) : p2p(t);
 	}
 	
 	public final static boolean deliverToServer(com.FileManagerX.Interfaces.ITransport t) {
@@ -35,36 +32,25 @@ public class Deliver {
 		// depth + 1
 		long prevMachine = t.getBasicMessagePackage().getRoutePathPackage().getDeliverMachine();
 		t.getBasicMessagePackage().getRoutePathPackage().setMoreDepth();
-		t.getBasicMessagePackage().getRoutePathPackage().add(0);
+		t.getBasicMessagePackage().getRoutePathPackage().addDeliverMachine(0);
 		
-		// deliver to other leafs
+		long gateMachine = t.getBasicMessagePackage().getBroadcast().getDestMachine();
+		
+		// 分发给子连接
 		for(com.FileManagerX.Interfaces.IClientConnection con : 
-			com.FileManagerX.Globals.Datas.OtherServers.getConnections()) {
-			
-			// next target
+			com.FileManagerX.Globals.Datas.Client.getContent()) {
 			long next = con.getServerMachineInfo().getIndex();
 			
-			// from this leaf, so will not send again.
 			if(next == prevMachine) { continue; }
+			if(t.getBasicMessagePackage().getRoutePathPackage().passed(gateMachine)) { continue; }
 			
-			// reset deliver machine
 			t.getBasicMessagePackage().getRoutePathPackage().setDeliverMachine(next);
 			con.send(t);
 		}
 		
-		// deliver to server
-		if(true) {
-			com.FileManagerX.Interfaces.IClientConnection con = com.FileManagerX.Globals.Datas.ServerConnection;
-			long next = con.getServerMachineInfo().getIndex();
-			if(next != prevMachine) { 
-				t.getBasicMessagePackage().getRoutePathPackage().setDeliverMachine(next);
-				con.send(t);
-			}
-		}
-		
-		// return
 		return true;
 	}
+	
 	public final static boolean p2p(com.FileManagerX.Interfaces.ITransport t) {
 		
 		// Time is out
@@ -73,45 +59,108 @@ public class Deliver {
 			return true;
 		}
 		
-		// if found next connection, deliver by found.
-		long nextMachine = t.getBasicMessagePackage().getRoutePathPackage().getDeliverMachine();
-		if(true) {
-			com.FileManagerX.Interfaces.IClientConnection con = 
-					com.FileManagerX.Globals.Datas.Client.search(nextMachine);
-			if(con != null) {
-				t.getBasicMessagePackage().getRoutePathPackage().setMoreDepth();
-				return con.send(t);
+		//
+		com.FileManagerX.Interfaces.IRoutePathPackage rrp = t.getBasicMessagePackage().getRoutePathPackage();
+		com.FileManagerX.Interfaces.IClientConnection con = null;
+		long sourMachine = 0;
+		long prevMachine = 0;
+		long nextMachine = 0;
+		
+		// 获取信息
+		if(rrp.getDepth() > 1) {
+			prevMachine = rrp.getDeliverMachine(rrp.getDepth()-1);
+		}
+		rrp.backToMachine();
+		if(rrp.getDepth() > 1) {
+			sourMachine = rrp.getDeliverMachine(rrp.getDepth()-1);
+		}
+		
+		// 第一次到达该节点，判断该节点下有没有目标机器。
+		if(sourMachine == 0 || sourMachine == prevMachine) {
+			nextMachine = rrp.getDestMachine();
+			con = com.FileManagerX.Globals.Datas.Client.searchMachineIndex(
+					nextMachine,
+					com.FileManagerX.BasicEnums.ConnectionType.TRANSPORT_COMMAND
+				);
+			if(con != null) { return con.send(t); }
+		}
+		
+		// 获取下一个连接。
+		if(sourMachine == 0 || sourMachine == prevMachine) {
+			if(com.FileManagerX.Globals.Datas.OtherServers.size() == 0) {
+				long server = com.FileManagerX.Globals.Configurations.Server_MachineIndex;
+				if(server == sourMachine) {
+					con = null;
+				}
+				else {
+					con = com.FileManagerX.Globals.Datas.ServerConnection;
+				}
+			}
+			else {
+				con = com.FileManagerX.Globals.Datas.OtherServers.getContent().get(0);
+				if(con.getServerMachineInfo().getIndex() == sourMachine) {
+					if(com.FileManagerX.Globals.Datas.OtherServers.size() == 1) {
+						con = com.FileManagerX.Globals.Datas.ServerConnection;
+					}
+					else {
+						con = com.FileManagerX.Globals.Datas.OtherServers.getContent().get(1);
+					}
+				}
+			}
+		}
+		else {
+			for(int i=0; i<com.FileManagerX.Globals.Datas.OtherServers.size(); i++) {
+				com.FileManagerX.Interfaces.IClientConnection c = 
+						com.FileManagerX.Globals.Datas.OtherServers.getContent().get(i);
+				if(c != t.getConnection()) {
+					continue;
+				}
+				if(i == com.FileManagerX.Globals.Datas.OtherServers.size()-1) {
+					long server = com.FileManagerX.Globals.Configurations.Server_MachineIndex;
+					if(server == sourMachine) {
+						con = null;
+					}
+					else {
+						con = com.FileManagerX.Globals.Datas.ServerConnection;
+					}
+				}
+				else {
+					con = com.FileManagerX.Globals.Datas.OtherServers.getContent().get(i);
+				}
 			}
 		}
 		
-		// deliver to other servers
-		t.getBasicMessagePackage().getRoutePathPackage().setMoreDepth();
-		long prevMachine = nextMachine;
-		for(com.FileManagerX.Interfaces.IClientConnection con : 
-			com.FileManagerX.Globals.Datas.OtherServers.getConnections()) {
-			
-			// next target
-			long next = con.getServerMachineInfo().getIndex();
-			
-			// from this leaf, so will not send again.
-			if(next == prevMachine) { continue; }
-			
-			// reset deliver machine
-			t.getBasicMessagePackage().getRoutePathPackage().setDeliverMachine(next);
+		// 找到了
+		if(con != null && con.isRunning()) {
+			rrp.setMoreDepth();
+			rrp.addDeliverMachine(con.getServerMachineInfo().getIndex());
 			return con.send(t);
 		}
 		
-		// deliver to server
-		if(true) {
-			com.FileManagerX.Interfaces.IClientConnection con = com.FileManagerX.Globals.Datas.ServerConnection;
-			long next = con.getServerMachineInfo().getIndex();
-			if(next != prevMachine) { 
-				t.getBasicMessagePackage().getRoutePathPackage().setDeliverMachine(next);
-				con.send(t);
+		// 又到了初始目标
+		if(com.FileManagerX.Globals.Configurations.This_MachineIndex == rrp.getSourMachine()) {
+			if(t instanceof com.FileManagerX.Interfaces.IReply) { // discard
+				return true;
 			}
+			com.FileManagerX.Commands.BaseCommand cmd = (com.FileManagerX.Commands.BaseCommand)t;
+			cmd.getReply().setFailedReason(com.FileManagerX.Commands.BaseCommand.FAILED_NO_TARGET);
+			cmd.getReply().setOK(false);
+			cmd.getReply().send();
+			return true;
 		}
 		
-		// not found any server to deal this transport, discard it.
+		// 返回源目标
+		con = com.FileManagerX.Globals.Datas.Client.searchMachineIndex(
+				sourMachine,
+				com.FileManagerX.BasicEnums.ConnectionType.TRANSPORT_COMMAND
+			);
+		if(con != null && con.isRunning()) {
+			rrp.setMoreDepth();
+			rrp.addDeliverMachine(con.getServerMachineInfo().getIndex());
+			return con.send(t);
+		}
+		
+		// 从源处来，返回去却找不到源了，丢弃。
 		return true;
 	}
 	

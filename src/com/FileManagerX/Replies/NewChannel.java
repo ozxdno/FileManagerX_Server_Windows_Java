@@ -6,18 +6,18 @@ public class NewChannel extends BaseReply {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	private int index;
+	private long index;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public boolean setIndex(int index) {
+	public boolean setIndex(long index) {
 		this.index = index;
 		return true;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public int getIndex() {
+	public long getIndex() {
 		return this.index;
 	}
 	
@@ -32,12 +32,12 @@ public class NewChannel extends BaseReply {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public boolean setThis(int index) {
+	public boolean setThis(long index) {
 		boolean ok = true;
 		ok &= this.setIndex(index);
 		return ok;
 	}
-	public boolean setThis(int index, com.FileManagerX.Interfaces.IConnection connection) {
+	public boolean setThis(long index, com.FileManagerX.Interfaces.IConnection connection) {
 		boolean ok = true;
 		ok &= this.getBasicMessagePackage().setThis(connection.getClientConnection());
 		ok &= this.setConnection(connection);

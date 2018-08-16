@@ -113,14 +113,14 @@ public class Datas {
 			com.FileManagerX.Factories.CommunicatorFactory.createClientConnection();
 	
 	/**
-	 * 其他可用的服务器的连接<br>
+	 * 其他可用的服务器的连接，不包含上级服务器。<br>
 	 * <br>
 	 * 假设其中一个子服务器 A 呈交上来一个处理不了的命令,<br>
 	 * 该服务器会询问其他服务器，<br>
 	 * 
 	 */
-	public final static com.FileManagerX.Interfaces.IClientConnections OtherServers = 
-			com.FileManagerX.Factories.CommunicatorFactory.createClientConnections();
+	public final static com.FileManagerX.Communicator.ClientConnections OtherServers = 
+			new com.FileManagerX.Communicator.ClientConnections();
 	/**
 	 * 所有的本地 Depot 的管理器，Depot 包含如下信息：
 	 * 
@@ -134,20 +134,20 @@ public class Datas {
 	/**
 	 * 扫描器
 	 */
-	public final static com.FileManagerX.Interfaces.IScanner Scanner = 
-			com.FileManagerX.Factories.CommunicatorFactory.createScanner();
+	public final static com.FileManagerX.Communicator.Scanners Scanners = 
+			new com.FileManagerX.Communicator.Scanners();
 	/**
 	 * 这台机器向外通信时，作为服务器端使用
 	 * 
 	 */
-	public final static com.FileManagerX.Interfaces.IServerConnections Server = 
-			com.FileManagerX.Factories.CommunicatorFactory.createServerConnections();
+	public final static com.FileManagerX.Communicator.ServerConnections Server = 
+			new com.FileManagerX.Communicator.ServerConnections();
 	/**
 	 * 这台机器向外通信时，作为客户端使用
 	 * 
 	 */
-	public final static com.FileManagerX.Interfaces.IClientConnections Client = 
-			com.FileManagerX.Factories.CommunicatorFactory.createClientConnections();
+	public final static com.FileManagerX.Communicator.ClientConnections Client = 
+			new com.FileManagerX.Communicator.ClientConnections();
 	
 	/**
 	 * 所有操作的列表
@@ -164,8 +164,8 @@ public class Datas {
 	/**
 	 * 所有正在运行的线程。
 	 */
-	public final static com.FileManagerX.Interfaces.IProcessManager Processes =
-			com.FileManagerX.Factories.ProcessFactory.createManager();
+	public final static com.FileManagerX.Processes.Manager<com.FileManagerX.Interfaces.IProcess> Processes =
+			new com.FileManagerX.Processes.Manager<>();
 	
 	/**
 	 * 一个简易窗体，用于测试各个命令。

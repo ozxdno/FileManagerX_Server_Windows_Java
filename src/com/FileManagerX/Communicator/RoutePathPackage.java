@@ -99,6 +99,24 @@ public class RoutePathPackage implements com.FileManagerX.Interfaces.IRoutePathP
 		this.deliverMachines.set((int)depth-1, deliver);
 		return true;
 	}
+	public boolean setDeliverMachine(long depth, long deliver) {
+		if(depth < 0) {
+			return false;
+		}
+		if(depth > this.deliverMachines.size() + 1) {
+			return false;
+		}
+		
+		if(depth == 0) {
+			this.sourMachine = deliver;
+		}
+		if(depth == this.deliverMachines.size() + 1) {
+			this.destMachine = deliver;
+		}
+		
+		this.deliverMachines.set((int)depth-1, deliver);
+		return true;
+	}
 	
 	public boolean setThis(long sourMachine, long destMachine) {
 		boolean ok = true;
@@ -106,7 +124,7 @@ public class RoutePathPackage implements com.FileManagerX.Interfaces.IRoutePathP
 		ok &= this.setDestMachine(destMachine);
 		this.deliverMachines.clear();
 		if(this.destMachine != com.FileManagerX.Globals.Configurations.Server_MachineIndex) {
-			this.add(com.FileManagerX.Globals.Configurations.Server_MachineIndex);
+			this.addDeliverMachine(com.FileManagerX.Globals.Configurations.Server_MachineIndex);
 		}
 		return ok;
 	}
@@ -154,6 +172,24 @@ public class RoutePathPackage implements com.FileManagerX.Interfaces.IRoutePathP
 		}
 		return this.deliverMachines.get((int) (this.depth-1));
 	}
+	public long getDeliverMachine(long depth) {
+		if(this.deliverMachines.size() == 0) {
+			return 0;
+		}
+		if(depth < 0) {
+			return 0;
+		}
+		if(depth > this.deliverMachines.size() + 1) {
+			return 0;
+		}
+		if(depth == 0) {
+			return this.sourMachine;
+		}
+		if(depth == this.deliverMachines.size() + 1) {
+			return this.destMachine;
+		}
+		return this.deliverMachines.get((int) (depth-1));
+	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -199,6 +235,7 @@ public class RoutePathPackage implements com.FileManagerX.Interfaces.IRoutePathP
 		c.addToBottom(this.destMachine);
 		c.addToBottom(com.FileManagerX.Tools.String.link(
 				com.FileManagerX.Tools.List2Array.toLongArray(deliverMachines), " "));
+		
 		return c.output();
 	}
 	public String input(String in) {
@@ -265,8 +302,69 @@ public class RoutePathPackage implements com.FileManagerX.Interfaces.IRoutePathP
 			this.deliverMachines.set(size-1-i, temp);
 		}
 	}
-	public void add(long machine) {
+	public void addDeliverMachine(long machine) {
 		this.deliverMachines.add(machine);
+	}
+	public com.FileManagerX.Interfaces.IClientConnection nextServerConnection() {
+		
+		long prevServer = this.deliverMachines.size() == 0 ? 0 :
+			this.deliverMachines.get(this.deliverMachines.size()-1);
+		
+		for(com.FileManagerX.Interfaces.IClientConnection con :
+			com.FileManagerX.Globals.Datas.OtherServers.getContent()) {
+			
+			if(!con.isRunning()) {
+				continue;
+			}
+			if(con.getServerMachineInfo().getIndex() > prevServer) {
+				return con;
+			}
+		}
+		
+		return com.FileManagerX.Globals.Datas.ServerConnection;
+	}
+	public void backToMachine(long machine) {
+		int index = -1;
+		for(int i=0; i<this.deliverMachines.size(); i++) {
+			if(this.deliverMachines.get(i) == machine) {
+				index = i;
+				break;
+			}
+		}
+		if(index == -1) {
+			return;
+		}
+		for(int i=index+1; i<this.deliverMachines.size(); i++) {
+			this.deliverMachines.remove(index+1);
+		}
+		this.depth = this.deliverMachines.size();
+	}
+	public void backToMachine() {
+		long machine = com.FileManagerX.Globals.Configurations.This_MachineIndex;
+		
+		int index = -1;
+		for(int i=0; i<this.deliverMachines.size(); i++) {
+			if(this.deliverMachines.get(i) == machine) {
+				index = i;
+				break;
+			}
+		}
+		if(index == -1) {
+			return;
+		}
+		for(int i=index+1; i<this.deliverMachines.size(); i++) {
+			this.deliverMachines.remove(index+1);
+		}
+		this.depth = this.deliverMachines.size();
+	}
+	public boolean passed(long machine) {
+		if(machine == this.sourMachine) {
+			return true;
+		}
+		for(long m : this.deliverMachines) {
+			if(m == machine) { return true; }
+		}
+		return false;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

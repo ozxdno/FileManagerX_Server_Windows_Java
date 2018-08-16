@@ -2,37 +2,25 @@ package com.FileManagerX.Processes;
 
 import com.FileManagerX.Interfaces.*;
 
-public class Manager implements IProcessManager {
+public class Manager<T extends IProcess> implements com.FileManagerX.Interfaces.ICollection {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	private java.util.LinkedList<IProcess> processes;
-	private java.util.LinkedList<Long> startTime;
-	private long permitIdle;
+	private java.util.List<T> processes;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public java.util.LinkedList<IProcess> getContent() {
+	public java.util.List<T> getContent() {
 		return processes;
 	}
-	public long getPermitIdle() {
-		return this.permitIdle;
-	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public boolean setContent(java.util.LinkedList<IProcess> processes) {
+	public boolean setContent(java.util.List<T> processes) {
 		if(processes == null) {
 			return false;
 		}
 		this.processes = processes;
-		return true;
-	}
-	public boolean setPermitIdle(long idle) {
-		if(idle < 0) {
-			idle = 0;
-		}
-		this.permitIdle = idle;
 		return true;
 	}
 	
@@ -44,14 +32,13 @@ public class Manager implements IProcessManager {
 	public void clear() {
 		this.processes.clear();
 	}
+	@SuppressWarnings("unchecked")
 	public boolean add(Object item) {
 		if(item == null) {
 			return false;
 		}
 		if(item instanceof IProcess) {
-			this.processes.add((IProcess)item);
-			this.startTime.add(com.FileManagerX.Tools.Time.getTicks());
-			return true;
+			this.processes.add((T)item);
 		}
 		return false;
 	}
@@ -73,10 +60,6 @@ public class Manager implements IProcessManager {
 			this.processes = new java.util.LinkedList<>();
 		}
 		this.processes.clear();
-		if(this.startTime == null) {
-			this.startTime = new java.util.LinkedList<>();
-		}
-		this.startTime.clear();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -86,15 +69,11 @@ public class Manager implements IProcessManager {
 			return;
 		}
 		try {
-			java.util.Iterator<IProcess> it1 = this.processes.iterator();
-			java.util.Iterator<Long> it2 = this.startTime.iterator();
-			while(it1.hasNext() && it2.hasNext()) {
-				IProcess p = it1.next();
-				it2.next();
-				
-				if(p.isFinished()) {
-					it1.remove();
-					it2.remove();
+			java.util.Iterator<T> it = this.processes.iterator();
+			while(it.hasNext()) {
+				T p = it.next();
+				if(!p.isRunning() || p.isIdle()) {
+					it.remove();
 				}
 			}
 		} catch(Exception e) {
@@ -107,9 +86,8 @@ public class Manager implements IProcessManager {
 		}
 		try {
 			while(!this.processes.isEmpty()) {
-				IProcess p = this.processes.removeFirst();
+				IProcess p = this.processes.remove(0);
 				p.exitProcess();
-				this.startTime.removeFirst();
 			}
 		} catch(Exception e) {
 			;
@@ -118,45 +96,76 @@ public class Manager implements IProcessManager {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public int indexOf(String threadName) {
+	public int indexOfName(String name) {
 		int i = -1;
 		for(IProcess p : this.processes) {
-			Thread t = (Thread)p;
 			i++;
-			if(t.getName().equals(threadName)) {
+			if(p.getName().equals(name)) {
 				return i;
 			}
 		}
 		return -1;
 	}
-	public IProcess search(String threadName) {
+	public IProcess searchName(String name) {
 		for(IProcess p : this.processes) {
-			Thread t = (Thread)p;
-			if(t.getName().equals(threadName)) {
+			if(p.getName().equals(name)) {
 				return p;
 			}
 		}
 		return null;
 	}
-	public IProcess fetch(String threadName) {
+	public IProcess fetchName(String name) {
 		
-		
-		java.util.Iterator<IProcess> it1 = this.processes.iterator();
-		java.util.Iterator<Long> it2 = this.startTime.iterator();
-		while(it1.hasNext() && it2.hasNext()) {
-			IProcess p = it1.next();
-			it2.next();
-			
-			if(((Thread)p).getName().equals(threadName)) {
-				it1.remove();
-				it2.remove();
+		java.util.Iterator<T> it = this.processes.iterator();
+		while(it.hasNext()) {
+			IProcess p = it.next();
+			if(p.getName().equals(name)) {
+				it.remove();
 				return p;
 			}
 		}
 		return null;
 	}
-	public void delete(String threadName) {
-		IProcess p = this.fetch(threadName);
+	public void deleteName(String name) {
+		IProcess p = this.fetchName(name);
+		if(p != null) {
+			p.exitProcess();
+		}
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public int indexOfProcessIndex(long index) {
+		int i = -1;
+		for(IProcess p : this.processes) {
+			i++;
+			if(p.getProcessIndex() == index) {
+				return i;
+			}
+		}
+		return -1;
+	}
+	public IProcess searchProcessIndex(long index) {
+		for(IProcess p : this.processes) {
+			if(p.getProcessIndex() == index) {
+				return p;
+			}
+		}
+		return null;
+	}
+	public IProcess fetchProcessIndex(long index) {
+		java.util.Iterator<T> it = this.processes.iterator();
+		while(it.hasNext()) {
+			IProcess p = it.next();
+			if(p.getProcessIndex() == index) {
+				it.remove();
+				return p;
+			}
+		}
+		return null;
+	}
+	public void deleteProcessIndex(long index) {
+		IProcess p = this.fetchProcessIndex(index);
 		if(p != null) {
 			p.exitProcess();
 		}

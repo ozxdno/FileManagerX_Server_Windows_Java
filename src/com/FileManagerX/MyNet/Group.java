@@ -4,6 +4,7 @@ public class Group implements com.FileManagerX.Interfaces.IPublic {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	private long index;
 	private java.util.List<User> users;
 	private String name;
 	private int amount;
@@ -11,6 +12,14 @@ public class Group implements com.FileManagerX.Interfaces.IPublic {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	public boolean setIndex(long index) {
+		this.index = index;
+		return true;
+	}
+	public boolean setIndex() {
+		this.index = ++com.FileManagerX.Globals.Configurations.Next_GroupIndex;
+		return true;
+	}
 	public boolean setUsers(java.util.List<User> users) {
 		if(users == null) {
 			return false;
@@ -45,6 +54,9 @@ public class Group implements com.FileManagerX.Interfaces.IPublic {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	public long getIndex() {
+		return this.index;
+	}
 	public java.util.List<User> getUsers() {
 		return this.users;
 	}
@@ -81,6 +93,7 @@ public class Group implements com.FileManagerX.Interfaces.IPublic {
 	public String output() {
 		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config();
 		c.setField("Net-" + this.getClass().getSimpleName());
+		c.addToBottom(this.index);
 		c.addToBottom(this.name);
 		c.addToBottom(this.users.size());
 		c.addToBottom(this.limit);
@@ -89,6 +102,8 @@ public class Group implements com.FileManagerX.Interfaces.IPublic {
 	public String input(String in) {
 		try {
 			com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config(in);
+			this.index = c.fetchFirstLong();
+			if(!c.getIsOK()) { return null; }
 			this.name = c.fetchFirstString();
 			if(!c.getIsOK()) { return null; }
 			this.amount = c.fetchFirstInt();
@@ -103,10 +118,10 @@ public class Group implements com.FileManagerX.Interfaces.IPublic {
 		}
 	}
 	public void copyReference(Object o) {
-		
+		;
 	}
 	public void copyValue(Object o) {
-		
+		;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

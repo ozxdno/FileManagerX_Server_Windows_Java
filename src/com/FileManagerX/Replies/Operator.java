@@ -97,26 +97,14 @@ public class Operator extends BaseReply {
 			return false;
 		}
 		
-		com.FileManagerX.Operator.Operator op = Datas.Operators.search(this.operator.getIndex());
+		com.FileManagerX.Operator.Operator op = Datas.Operators.searchOperatorIndex(this.operator.getIndex());
 		if(op == null) {
-			boolean ok = this.operator.startProcess();
-			if(!ok) {
-				this.setFailedReason("Start Operator Failed");
-				this.setOK(false);
-				return false;
-			}
+			this.operator.setSource(this);
+			this.operator.startProcess();
 		}
 		else {
-			if(this.operator.isRestart()) {
-				op.copyReference(this.operator);
-				boolean ok = op.restartProcess();
-				if(!ok) {
-					this.setFailedReason("Restart Operator Failed");
-					this.setOK(false);
-					return false;
-				}
-			}
-			this.operator = op;
+			op.setSource(this);
+			op.copyReference(this.operator);
 		}
 		
 		return true;

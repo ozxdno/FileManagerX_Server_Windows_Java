@@ -96,14 +96,12 @@ public class LoginMachine extends BaseReply {
 	public boolean executeInLocal() {
 		
 		if(!this.isOK()) {
-			this.getConnection().disconnect();
+			this.getConnection().exitProcess();
 			return false;
 		}
 		
 		this.getConnection().getServerConnection().setServerMachineInfo(this.machineInfo);
 		this.getConnection().getClientConnection().setClientMachineInfo(this.machineInfo);
-		this.getConnection().getServerConnection().setConnectionName();
-		this.getConnection().getClientConnection().setConnectionName();
 		
 		Configurations.This_MachineIndex = this.machineInfo.getIndex();
 		Datas.ThisMachine.copyValue(this.machineInfo);

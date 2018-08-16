@@ -22,7 +22,7 @@ public class LoginConnection extends BaseReply {
 	public boolean executeInLocal() {
 		
 		if(!this.isOK()) {
-			this.getConnection().disconnect();
+			this.getConnection().exitProcess();
 			return false;
 		}
 		

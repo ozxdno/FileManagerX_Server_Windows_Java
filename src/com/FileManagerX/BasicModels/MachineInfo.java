@@ -11,6 +11,9 @@ public class MachineInfo implements com.FileManagerX.Interfaces.IPublic {
 	private String ip;
 	private int port;
 	
+	private com.FileManagerX.BasicEnums.MachineType type;
+	private com.FileManagerX.BasicEnums.MachineState state;
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public long getIndex() {
@@ -33,6 +36,13 @@ public class MachineInfo implements com.FileManagerX.Interfaces.IPublic {
 	}
 	public String getUrl() {
 		return ip + ":" + String.valueOf(port);
+	}
+	
+	public com.FileManagerX.BasicEnums.MachineType getType() {
+		return type;
+	}
+	public com.FileManagerX.BasicEnums.MachineState getState() {
+		return state;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -124,6 +134,21 @@ public class MachineInfo implements com.FileManagerX.Interfaces.IPublic {
 	}
 	public boolean setPort() {
 		this.port = 40000;
+		return true;
+	}
+	
+	public boolean setType(com.FileManagerX.BasicEnums.MachineType type) {
+		if(type == null) {
+			return false;
+		}
+		this.type = type;
+		return true;
+	}
+	public boolean setState(com.FileManagerX.BasicEnums.MachineState state) {
+		if(state == null) {
+			return false;
+		}
+		this.state = state;
 		return true;
 	}
 	

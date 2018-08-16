@@ -6,18 +6,28 @@ import com.FileManagerX.Globals.*;
 import com.FileManagerX.Interfaces.*;
 import com.FileManagerX.Factories.*;
 
-public class Scanner extends Thread implements IScanner {
+public class Scanner extends com.FileManagerX.Processes.BasicProcess implements IScanner {
 
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public final static String ERROR_SOCKET_BUILD_FAILED = "Socket is Error";
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	private MachineInfo serverMachineInfo;
-	
 	private com.FileManagerX.Interfaces.ISocketS socket;
-	private boolean abort;
-	private boolean running;
+	private long index;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	public boolean setIndex(long index) {
+		this.index = index;
+		return true;
+	}
+	public boolean setIndex() {
+		this.index = ++com.FileManagerX.Globals.Configurations.Next_ScannerIndex;
+		return true;
+	}
 	public boolean setServerMachineInfo(MachineInfo serverMachineInfo) {
 		if(serverMachineInfo == null) {
 			return false;
@@ -31,32 +41,35 @@ public class Scanner extends Thread implements IScanner {
 			return false;
 		}
 		this.socket = socket;
+		this.setName();
 		return true;
 	}
 	public boolean setSocket(com.FileManagerX.BasicEnums.SocketType type) {
 		this.socket = type.getSocketS();
 		this.socket.setServerMachineInfo(this.serverMachineInfo);
-		return this.socket.setSocket();
+		boolean ok = this.socket.setSocket();
+		this.setName();
+		return ok;
 	}
-	public boolean setAbort(boolean abort) {
-		this.abort = abort;
-		return true;
+	public boolean setName() {
+		if(socket == null) {
+			return false;
+		}
+		String name = "@" + Scanner.this.serverMachineInfo.getIp() + ":" +
+				Scanner.this.serverMachineInfo.getPort();
+		return super.setName(name);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	public long getIndex() {
+		return index;
+	}
 	public MachineInfo getServerMachineInfo() {
 		return this.serverMachineInfo;
 	}
-	
 	public com.FileManagerX.Interfaces.ISocketS getSocket() {
 		return this.socket;
-	}
-	public boolean isAbort() {
-		return this.abort;
-	}
-	public boolean isRunning() {
-		return this.running;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,111 +78,46 @@ public class Scanner extends Thread implements IScanner {
 		initThis();
 	}
 	private void initThis() {
-		serverMachineInfo = Datas.ServerMachine;
-		
-		socket = null;
-		abort = false;
-		running = false;
-	}
-	public void run() {
-		abort = false;
-		running = true;
-		if(socket == null) {
-			running = false;
-			return;
-		}
-		
-		this.setName("@" + this.serverMachineInfo.getIp() + ":" + this.serverMachineInfo.getPort());
-		com.FileManagerX.Globals.Datas.Processes.add(this);
-		
-		while(!abort && !socket.isClosed() && !com.FileManagerX.Globals.Configurations.Close) {
-			try {
-				com.FileManagerX.Interfaces.ISocketC clientSocket = socket.receive();
-				
-				// loginConnection 完成最后的添加工作。
-				// 信息不完全会导致 Connections 检索产生错误。
-				
-				IServerConnection sc = CommunicatorFactory.createServerConnection();
-				sc.setSocket(clientSocket);
-				sc.setServerMachineInfo(serverMachineInfo);
-				sc.connect();
-				//if(sc.isRunning()) { Datas.Server.add(sc); }
-				
-				IClientConnection cc = CommunicatorFactory.createClientConnection();
-				cc.setIndex(sc.getIndex());
-				cc.setSocket(clientSocket);
-				cc.setClientMachineInfo(serverMachineInfo);
-				cc.connect();
-				//if(cc.isRunning()) { Datas.Client.add(cc); }
-				
-				sc.setBrother(cc);
-				cc.setBrother(sc);
-				
-			}catch(Exception e) {
-				ErrorType.COMMUNICATOR_RUNNING_FAILED.register("Server Scanner Running Failed", e.toString());
-			}
-		}
-		running = false;
+		this.serverMachineInfo = Datas.ServerMachine;
+		this.socket = null;
+		this.setRunnable(new RunImpl());
+		this.setIndex();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public boolean connect() {
-		if(this.running) { return true; }
-		this.start();
-		com.FileManagerX.Tools.Time.sleepUntil(10);
-		return running;
-	}
-	public void disconnect() {
-		try {
-			if(socket != null) {
-				socket.close();
+	private class RunImpl implements com.FileManagerX.Processes.BasicProcess.Runnable {
+		public String run() {
+			if(Scanner.this.socket == null) {
+				return ERROR_SOCKET_BUILD_FAILED;
 			}
-		}catch(Exception e) {
-			;
-		}
-		while(running) {
-			com.FileManagerX.Tools.Time.sleepUntil(1);
-			abort = true;
-		}
-		try {
-			if(socket != null) {
-				socket.close();
+			
+			while(!isAbort() && !socket.isClosed() && !com.FileManagerX.Globals.Configurations.Close) {
+				try {
+					com.FileManagerX.Interfaces.ISocketC clientSocket = socket.receive();
+					
+					IServerConnection sc = CommunicatorFactory.createServerConnection();
+					sc.setSocket(clientSocket);
+					sc.setServerMachineInfo(serverMachineInfo);
+					sc.startProcess();
+					
+					IClientConnection cc = CommunicatorFactory.createClientConnection();
+					cc.setIndex(sc.getIndex());
+					cc.setSocket(clientSocket);
+					cc.setClientMachineInfo(serverMachineInfo);
+					cc.startProcess();
+					
+					sc.setBrother(cc);
+					cc.setBrother(sc);
+					
+				}catch(Exception e) {
+					ErrorType.COMMUNICATOR_RUNNING_FAILED.register("Server Scanner Running Failed", e.toString());
+					return e.toString();
+				}
 			}
-		}catch(Exception e) {
-			;
+			
+			return null;
 		}
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public boolean isFinished() {
-		return !this.running;
-	}
-	public boolean isStop() {
-		return !this.running;
-	}
-	
-	public boolean initialize(Object infos) {
-		return true;
-	}
-	
-	public boolean startProcess() {
-		return this.connect();
-	}
-	public boolean stopProcess() {
-		this.disconnect();
-		return true;
-	}
-	public boolean continueProcess() {
-		return false;
-	}
-	public boolean restartProcess() {
-		return this.connect();
-	}
-	public boolean exitProcess() {
-		this.disconnect();
-		return true;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

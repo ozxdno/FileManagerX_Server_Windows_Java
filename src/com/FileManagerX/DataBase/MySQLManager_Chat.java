@@ -8,41 +8,42 @@ public class MySQLManager_Chat implements com.FileManagerX.Interfaces.IDBManager
 
 	private com.FileManagerX.BasicModels.DataBaseInfo database;
 	private com.FileManagerX.DataBase.Unit unit;
+	private boolean connected;
 	private boolean running;
-	private String name;
+	private String chatName;
+	private String contentName;
+	private long nextContentIndex;
 	
 	private Connection connection;
 	private Statement statement;
 	
-	private String[] items = new String[] {
+	private String[] itemsChat = new String[] {
 			"Index",
-			"LoginName",
-			"NickName",
-			"Password",
-			"Email",
-			"Phone",
-			"State",
-			"Priority",
-			"Level",
-			"Experience",
-			"PhotoUrl",
-			"Coins",
-			"Money"
+			"Type",
+			"Time",
+			"SourUser",
+			"DestUser",
+			"SourGroup",
+			"DestGroup",
+			"Content"
 	};
-	String[] types = new String[] {
+	private String[] typesChat = new String[] {
 			"BIGINT UNIQUE",
-			"VARCHAR(100) UNIQUE",
-			"VARCHAR(100)",
-			"VARCHAR(100)",
-			"VARCHAR(1024) UNIQUE",
-			"VARCHAR(100) UNIQUE",
-			"VARCHAR(100)",
-			"VARCHAR(100)",
 			"VARCHAR(100)",
 			"BIGINT",
-			"VARCHAR(1024)",
 			"BIGINT",
-			"DOUBLE"
+			"BIGINT",
+			"BIGINT",
+			"BIGINT",
+			"BIGINT"
+	};
+	private String[] itemsContent = new String[] {
+			"Index",
+			"Content"
+	};
+	private String[] typesContent = new String[] {
+			"BIGINT UNIQUE",
+			"VARCHAR(10240)"
 	};
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -59,6 +60,10 @@ public class MySQLManager_Chat implements com.FileManagerX.Interfaces.IDBManager
 			return false;
 		}
 		this.unit = unit;
+		return true;
+	}
+	public boolean setIsRunning(boolean running) {
+		this.running = running;
 		return true;
 	}
 	
@@ -82,17 +87,25 @@ public class MySQLManager_Chat implements com.FileManagerX.Interfaces.IDBManager
 	private void initThis() {
 		this.database = null;
 		this.unit = Unit.Chat;
-		this.running = false;
-		this.name = "Chats";
+		this.connected = false;
+		this.chatName = "Chats";
+		this.contentName = "ChatContents";
+		this.nextContentIndex = this.nextContentIndex();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public boolean isConnected() {
+		return this.connected;
+	}
+	public boolean isRunning() {
 		return this.running;
 	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public boolean connect() {
-		this.running = false;
+		this.connected = false;
 		
 		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config(this.database.getUrl().replace('\\', '|'));
 		String ip_port = c.fetchFirstString();
@@ -120,10 +133,10 @@ public class MySQLManager_Chat implements com.FileManagerX.Interfaces.IDBManager
 			return false;
 		}
 		
-		return this.running = true;
+		return this.connected = true;
 	}
 	public boolean disconnect() {
-		this.running = false;
+		this.connected = false;
 		if(statement != null) {
 			try {
 				statement.close();
@@ -153,10 +166,18 @@ public class MySQLManager_Chat implements com.FileManagerX.Interfaces.IDBManager
 	public boolean create() {
 		if(this.exists()) { return true; }
 		
+		boolean ok = true;
+		ok &= this.createChat();
+		ok &= this.createContent();
+		return ok;
+	}
+	public boolean createChat() {
+		if(this.existsChat()) { return true; }
+		
 		try {
-			String exp = "CREATE TABLE " + this.name + " (";
-			for(int i=0; i<items.length; i++) {
-				exp += "`" + items[i] + "` " + types[i] + " NOT NULL, ";
+			String exp = "CREATE TABLE " + this.chatName + " (";
+			for(int i=0; i<itemsChat.length; i++) {
+				exp += "`" + itemsChat[i] + "` " + typesChat[i] + " NOT NULL, ";
 			}
 			exp = exp.substring(0, exp.length()-2);
 			exp += ");";
@@ -164,24 +185,73 @@ public class MySQLManager_Chat implements com.FileManagerX.Interfaces.IDBManager
 			return true;
 		} catch(Exception e) {
 			com.FileManagerX.BasicEnums.ErrorType.DB_OPERATE_FAILED.register
-				("Create Table " + name + " Failed", e.toString());
+				("Create Table " + chatName + " Failed", e.toString());
+			return false;
+		}
+	}
+	public boolean createContent() {
+		if(this.existsContent()) { return true; }
+		
+		try {
+			String exp = "CREATE TABLE " + this.contentName + " (";
+			for(int i=0; i<itemsContent.length; i++) {
+				exp += "`" + itemsContent[i] + "` " + typesContent[i] + " NOT NULL, ";
+			}
+			exp = exp.substring(0, exp.length()-2);
+			exp += ");";
+			statement.executeUpdate(exp);
+			return true;
+		} catch(Exception e) {
+			com.FileManagerX.BasicEnums.ErrorType.DB_OPERATE_FAILED.register
+				("Create Table " + contentName + " Failed", e.toString());
 			return false;
 		}
 	}
 	public boolean delete() {
-		String exp = "DROP TABLE " + name;
+		boolean ok = true;
+		ok &= this.deleteChat();
+		ok &= this.deleteContent();
+		return ok;
+	}
+	public boolean deleteChat() {
+		String exp = "DROP TABLE " + chatName;
 		try {
 			statement.execute(exp);
 			return true;
 		} catch(Exception e) {
 			com.FileManagerX.BasicEnums.ErrorType.DB_OPERATE_FAILED.register
-				("Delete Table " + name + " Failed", e.toString());
+				("Delete Table " + chatName + " Failed", e.toString());
+			return false;
+		}
+	}
+	public boolean deleteContent() {
+		String exp = "DROP TABLE " + contentName;
+		try {
+			statement.execute(exp);
+			return true;
+		} catch(Exception e) {
+			com.FileManagerX.BasicEnums.ErrorType.DB_OPERATE_FAILED.register
+				("Delete Table " + contentName + " Failed", e.toString());
 			return false;
 		}
 	}
 	public boolean exists() {
+		boolean ok = true;
+		ok &= this.existsChat();
+		ok &= this.existsContent();
+		return ok;
+	}
+	public boolean existsChat() {
 		try {
-			ResultSet set = this.connection.getMetaData().getTables(null, null, this.name, null);
+			ResultSet set = this.connection.getMetaData().getTables(null, null, this.chatName, null);
+			return set.next();
+		} catch(Exception e) {
+			return false;
+		}
+	}
+	public boolean existsContent() {
+		try {
+			ResultSet set = this.connection.getMetaData().getTables(null, null, this.contentName, null);
 			return set.next();
 		} catch(Exception e) {
 			return false;
@@ -193,7 +263,7 @@ public class MySQLManager_Chat implements com.FileManagerX.Interfaces.IDBManager
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public com.FileManagerX.BasicCollections.Users querys(Object conditions) {
+	public com.FileManagerX.BasicCollections.Chats querys(Object conditions) {
 		if(conditions == null) {
 			return null;
 		}
@@ -217,39 +287,34 @@ public class MySQLManager_Chat implements com.FileManagerX.Interfaces.IDBManager
 		else {
 			return null;
 		}
-		String exp = "SELECT * FROM " + this.name + " " + con + ";";
+		String exp = "SELECT * FROM " + this.chatName + " " + con + ";";
 		try {
 			ResultSet set = statement.executeQuery(exp);
-			com.FileManagerX.BasicCollections.Users us = new com.FileManagerX.BasicCollections.Users();
+			com.FileManagerX.BasicCollections.Chats cs = new com.FileManagerX.BasicCollections.Chats();
 			int cnt = 0;
 			
 			while(set.next()) {
-				com.FileManagerX.BasicModels.User u = new com.FileManagerX.BasicModels.User();
-				u.setIndex(set.getLong("Index"));
-				u.setLoginName(set.getString("LoginName"));
-				u.setNickName(set.getString("NickName"));
-				u.setPassword(set.getString("Password"));
-				u.setEmail(set.getString("Email"));
-				u.setPhone(set.getString("Phone"));
-				u.setState(com.FileManagerX.BasicEnums.UserState.valueOf(set.getString("State")));
-				u.setPriority(com.FileManagerX.BasicEnums.UserPriority.valueOf(set.getString("Priority")));
-				u.setLevel(com.FileManagerX.BasicEnums.UserLevel.valueOf(set.getString("Level")));
-				u.setExperience(set.getLong("Experience"));
-				u.setPhotoUrl(set.getString("PhotoUrl"));
-				u.setCoins(set.getLong("Coins"));
-				u.setMoney(set.getDouble("Money"));
-				us.add(u);
+				com.FileManagerX.BasicModels.Chat c = new com.FileManagerX.BasicModels.Chat();
+				c.setIndex(set.getLong(1));
+				c.setType(com.FileManagerX.BasicEnums.ChatType.valueOf(set.getString(2)));
+				c.setTime(set.getLong(3));
+				c.setSourUser(set.getLong(4));
+				c.setDestUser(set.getLong(5));
+				c.setSourGroup(set.getLong(6));
+				c.setDestGroup(set.getLong(7));
+				c.setContent(this.queryContent(set.getLong(8)));
+				cs.add(c);
 				
 				if(++cnt > com.FileManagerX.Globals.Configurations.DataBaseQueryLimit) { break; }
 			}
 			
-			return us;
+			return cs;
 		}catch(Exception e) {
 			com.FileManagerX.BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
 			return null;
 		}
 	}
-	public com.FileManagerX.BasicModels.User query(Object conditions) {
+	public com.FileManagerX.BasicModels.Chat query(Object conditions) {
 		if(conditions == null) {
 			return null;
 		}
@@ -273,26 +338,21 @@ public class MySQLManager_Chat implements com.FileManagerX.Interfaces.IDBManager
 		else {
 			return null;
 		}
-		String exp = "SELECT * FROM " + this.name + " " + con + ";";
+		String exp = "SELECT * FROM " + this.chatName + " " + con + ";";
 		try {
 			ResultSet set = statement.executeQuery(exp);
 			
 			if(set.next()) {
-				com.FileManagerX.BasicModels.User u = new com.FileManagerX.BasicModels.User();
-				u.setIndex(set.getLong("Index"));
-				u.setLoginName(set.getString("LoginName"));
-				u.setNickName(set.getString("NickName"));
-				u.setPassword(set.getString("Password"));
-				u.setEmail(set.getString("Email"));
-				u.setPhone(set.getString("Phone"));
-				u.setState(com.FileManagerX.BasicEnums.UserState.valueOf(set.getString("State")));
-				u.setPriority(com.FileManagerX.BasicEnums.UserPriority.valueOf(set.getString("Priority")));
-				u.setLevel(com.FileManagerX.BasicEnums.UserLevel.valueOf(set.getString("Level")));
-				u.setExperience(set.getLong("Experience"));
-				u.setPhotoUrl(set.getString("PhotoUrl"));
-				u.setCoins(set.getLong("Coins"));
-				u.setMoney(set.getDouble("Money"));
-				return u;
+				com.FileManagerX.BasicModels.Chat c = new com.FileManagerX.BasicModels.Chat();
+				c.setIndex(set.getLong(1));
+				c.setType(com.FileManagerX.BasicEnums.ChatType.valueOf(set.getString(2)));
+				c.setTime(set.getLong(3));
+				c.setSourUser(set.getLong(4));
+				c.setDestUser(set.getLong(5));
+				c.setSourGroup(set.getLong(6));
+				c.setDestGroup(set.getLong(7));
+				c.setContent(this.queryContent(set.getLong(8)));
+				return c;
 			}
 			
 			return null;
@@ -301,21 +361,21 @@ public class MySQLManager_Chat implements com.FileManagerX.Interfaces.IDBManager
 			return null;
 		}
 	}
-	public com.FileManagerX.BasicCollections.Users updates(Object items) {
+	public com.FileManagerX.BasicCollections.Chats updates(Object items) {
 		if(items == null) {
 			return null;
 		}
-		if(!(items instanceof com.FileManagerX.BasicCollections.Users)) {
+		if(!(items instanceof com.FileManagerX.BasicCollections.Chats)) {
 			return null;
 		}
-		com.FileManagerX.BasicCollections.Users users = (com.FileManagerX.BasicCollections.Users)items;
-		if(users.size() == 0) {
-			return users;
+		com.FileManagerX.BasicCollections.Chats chats = (com.FileManagerX.BasicCollections.Chats)items;
+		if(chats.size() == 0) {
+			return chats;
 		}
 		
-		com.FileManagerX.BasicCollections.Users errors = new com.FileManagerX.BasicCollections.Users();
-		for(com.FileManagerX.BasicModels.User u : users.getContent()) {
-			if(!this.update(u)) { errors.add(u); }
+		com.FileManagerX.BasicCollections.Chats errors = new com.FileManagerX.BasicCollections.Chats();
+		for(com.FileManagerX.BasicModels.Chat c : chats.getContent()) {
+			if(!this.update(c)) { errors.add(c); }
 		}
 		return errors;
 	}
@@ -323,53 +383,48 @@ public class MySQLManager_Chat implements com.FileManagerX.Interfaces.IDBManager
 		if(item == null) {
 			return false;
 		}
-		if(!(item instanceof com.FileManagerX.BasicModels.User)) {
+		if(!(item instanceof com.FileManagerX.BasicModels.Chat)) {
 			return false;
 		}
 		
-		com.FileManagerX.BasicModels.User user = (com.FileManagerX.BasicModels.User)item;
+		com.FileManagerX.BasicModels.Chat chat = (com.FileManagerX.BasicModels.Chat)item;
 		String exp = "";
 		QueryCondition qc = new QueryCondition();
 		qc.setItemName("Index");
 		qc.setSign(Sign.EQUAL);
-		qc.setValue(String.valueOf(user.getIndex()));
-		com.FileManagerX.BasicModels.User exists = (user.getIndex() >=0 && user.getIndex() <= com.FileManagerX.Globals.Configurations.Next_UserIndex) ? 
-				this.query(qc) :
-				null;
+		qc.setValue(String.valueOf(chat.getIndex()));
+		com.FileManagerX.BasicModels.Chat exists = (chat.getIndex() >=0 &&
+				chat.getIndex() <= com.FileManagerX.Globals.Configurations.Next_UserIndex) ? 
+						this.query(qc) :
+						null
+			;
+		
+		long contentIndex = this.updateContent(chat.getContent());
+		
 		if(exists == null) {
-			user.setIndex();
-			exp = "INSERT INTO " + this.name + " VALUES(" +
-				String.valueOf(user.getIndex()) + ", " +
-				"'" + user.getLoginName() + "', " +
-				"'" + user.getNickName() + "', " +
-				"'" + user.getPassword() + "', " +
-				"'" + user.getEmail() + "', " +
-				"'" + user.getPhone() + "', " +
-				"'" + user.getState().toString() + "', " +
-				"'" + user.getPriority().toString() + "', " +
-				"'" + user.getLevel().toString() + "', " +
-				String.valueOf(user.getExperience()) + ", " +
-				"'" + user.getPhotoUrl().replace("\\", "\\\\") + "', " +
-				String.valueOf(user.getCoins()) + ", " +
-				String.valueOf(user.getMoney()) +
+			chat.setIndex();
+			exp = "INSERT INTO " + this.chatName + " VALUES(" +
+				chat.getIndex() + ", " +
+				"'" + chat.getType() + "', " +
+				chat.getTime() + ", " +
+				chat.getSourUser() + ", " +
+				chat.getDestUser() + ", " +
+				chat.getSourGroup() + ", " +
+				chat.getDestGroup() + ", " +
+				contentIndex +
 				");";
 		}
 		else {
-			exp = "UPDATE " + this.name + " SET " +
-				"`Index` = " + String.valueOf(user.getIndex()) + ", " +
-				"`LoginName` = '" + user.getLoginName() + "', " + 
-				"`NickName` = '" + user.getNickName() + "', " + 
-				"`Password` = '" + user.getPassword() + "', " + 
-				"`Email` = '" + user.getEmail() + "', " + 
-				"`Phone` = '" + user.getPhone() + "', " + 
-				"`State` = '" + user.getState().toString() + "', " +
-				"`Priority` = '" + user.getPriority().toString() + "', " +
-				"`Level` = '" + user.getLevel().toString() + "', " +
-				"`Experience` = " + String.valueOf(user.getExperience()) + ", " +
-				"`PhotoUrl` = '" + user.getPhotoUrl().replace("\\", "\\\\") + "', " + 
-				"`Coins` = " + String.valueOf(user.getCoins()) + " " +
+			exp = "UPDATE " + this.chatName + " SET " +
+				"`Index` = " + chat.getIndex() + ", " +
+				"`Type` = '" + chat.getType().toString() + "', " + 
+				"`Index` = " + chat.getSourUser() + ", " +
+				"`Index` = " + chat.getDestUser() + ", " +
+				"`Index` = " + chat.getSourGroup() + ", " +
+				"`Index` = " + chat.getDestGroup() + ", " +
+				"`Index` = " + chat.getContent() + " " +
 				"WHERE " + 
-				"`Index` = " + String.valueOf(user.getIndex()) +
+				"`Index` = " + chat.getIndex() +
 				";";
 		}
 		try {
@@ -381,21 +436,21 @@ public class MySQLManager_Chat implements com.FileManagerX.Interfaces.IDBManager
 			return false;
 		}
 	}
-	public com.FileManagerX.BasicCollections.Users removes(Object items) {
+	public com.FileManagerX.BasicCollections.Chats removes(Object items) {
 		if(items == null) {
 			return null;
 		}
-		if(!(items instanceof com.FileManagerX.BasicCollections.Users)) {
+		if(!(items instanceof com.FileManagerX.BasicCollections.Chats)) {
 			return null;
 		}
-		com.FileManagerX.BasicCollections.Users users = (com.FileManagerX.BasicCollections.Users)items;
-		if(users.size() == 0) {
-			return users;
+		com.FileManagerX.BasicCollections.Chats chats = (com.FileManagerX.BasicCollections.Chats)items;
+		if(chats.size() == 0) {
+			return chats;
 		}
 		
-		com.FileManagerX.BasicCollections.Users errors = new com.FileManagerX.BasicCollections.Users();
-		for(com.FileManagerX.BasicModels.User u : users.getContent()) {
-			if(!this.remove(u)) { errors.add(u); }
+		com.FileManagerX.BasicCollections.Chats errors = new com.FileManagerX.BasicCollections.Chats();
+		for(com.FileManagerX.BasicModels.Chat c : chats.getContent()) {
+			if(!this.remove(c)) { errors.add(c); }
 		}
 		return errors;
 	}
@@ -405,8 +460,8 @@ public class MySQLManager_Chat implements com.FileManagerX.Interfaces.IDBManager
 		if(item == null) {
 			return false;
 		}
-		if(item instanceof com.FileManagerX.BasicModels.User) {
-			index = ((com.FileManagerX.BasicModels.User)item).getIndex();
+		if(item instanceof com.FileManagerX.BasicModels.Chat) {
+			index = ((com.FileManagerX.BasicModels.Chat)item).getIndex();
 		}
 		else if(item instanceof Long) {
 			index = (long)item;
@@ -420,7 +475,7 @@ public class MySQLManager_Chat implements com.FileManagerX.Interfaces.IDBManager
 		}
 		
 		try {
-			String exp = "DELETE FROM " + this.name + " WHERE `Index` = " + String.valueOf(index) + ";";
+			String exp = "DELETE FROM " + this.chatName + " WHERE `Index` = " + String.valueOf(index) + ";";
 			this.statement.execute(exp);
 			return true;
 		} catch(Exception e) {
@@ -430,11 +485,71 @@ public class MySQLManager_Chat implements com.FileManagerX.Interfaces.IDBManager
 	}
 	public long size() {
 		try {
-			String exp = "SELECT * FROM " + this.name + ";";
+			String exp = "SELECT * FROM " + this.chatName + ";";
 			ResultSet set = this.statement.executeQuery(exp);
 			long cnt = 0;
 			while(set.next()) { cnt++; }
 			return cnt;
+			
+		} catch(Exception e) {
+			com.FileManagerX.BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
+			return 0;
+		}
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public String queryContent(long index) {
+		String exp = "SELECT * FROM " + this.contentName + " WHERE INDEX = " + index + ";";
+		try {
+			ResultSet set = statement.executeQuery(exp);
+			if(set.next()) {
+				return com.FileManagerX.Coder.Decoder.Decode_DataBaseString2String(set.getString(2));
+			}
+			return null;
+		}catch(Exception e) {
+			com.FileManagerX.BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
+			return null;
+		}
+	}
+	public long updateContent(String content) {
+		if(content == null) {
+			content = "";
+		}
+		content = com.FileManagerX.Coder.Encoder.Encode_String2DataBaseString(content);
+		String exp = "SELECT * FROM " + this.contentName + " WHERE Content = '" + content + "';";
+		try {
+			ResultSet set = statement.executeQuery(exp);
+			if(set.next()) {
+				return set.getLong(1);
+			}
+			else {
+				this.nextContentIndex++;
+				exp = "INSERT INTO " + this.contentName + " VALUES(" +
+						this.nextContentIndex + ", " +
+						"'" + content + "'" +
+						");";
+				statement.execute("SET SQL_SAFE_UPDATES = 0;");
+				statement.execute(exp);
+				return this.nextContentIndex;
+			}
+		}catch(Exception e) {
+			com.FileManagerX.BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
+			return -1;
+		}
+	}
+	public long nextContentIndex() {
+		try {
+			String exp = "SELECT * FROM " + this.contentName + ";";
+			ResultSet set = this.statement.executeQuery(exp);
+			this.nextContentIndex = 0;
+			while(set.next()) { 
+				long index = set.getLong(1);
+				if(index > this.nextContentIndex) {
+					this.nextContentIndex = index;
+				}
+			}
+			return this.nextContentIndex;
 			
 		} catch(Exception e) {
 			com.FileManagerX.BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());

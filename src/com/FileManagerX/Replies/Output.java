@@ -103,17 +103,7 @@ public class Output extends Operator {
 			return false;
 		}
 		
-		com.FileManagerX.Operator.Operator op = com.FileManagerX.Globals.Datas.Operators.search(index);
-		if(op == null) {
-			op = new com.FileManagerX.Operator.Operator();
-			op.register();
-			op.setSource(this);
-			return op.startProcess();
-		}
-		else {
-			((Output)op.getSource()).iop.copyReference(iop);
-			return op.restartProcess();
-		}
+		return true;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

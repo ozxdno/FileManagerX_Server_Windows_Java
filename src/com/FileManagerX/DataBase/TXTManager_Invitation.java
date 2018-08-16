@@ -6,6 +6,7 @@ public class TXTManager_Invitation implements com.FileManagerX.Interfaces.IDBMan
 
 	private com.FileManagerX.BasicModels.DataBaseInfo database;
 	private com.FileManagerX.DataBase.Unit unit;
+	private boolean connected;
 	private boolean running;
 	private String name;
 	
@@ -26,6 +27,10 @@ public class TXTManager_Invitation implements com.FileManagerX.Interfaces.IDBMan
 			return false;
 		}
 		this.unit = unit;
+		return true;
+	}
+	public synchronized boolean setIsRunning(boolean running) {
+		this.running = running;
 		return true;
 	}
 	
@@ -49,21 +54,27 @@ public class TXTManager_Invitation implements com.FileManagerX.Interfaces.IDBMan
 	private void initThis() {
 		this.database = null;
 		this.unit = Unit.BaseFile;
-		this.running = false;
+		this.connected = false;
 		this.name = "Invitations";
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public synchronized boolean isConnected() {
+		return this.connected;
+	}
+	public synchronized boolean isRunning() {
 		return this.running;
 	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public synchronized boolean connect() {
 		this.load();
-		return this.running = this.exists();
+		return this.connected = this.exists();
 	}
 	public synchronized boolean disconnect() {
-		return this.running = false;
+		return this.connected = false;
 	}
 	public synchronized boolean load() {
 		this.invitations = new com.FileManagerX.BasicCollections.Invitations();
