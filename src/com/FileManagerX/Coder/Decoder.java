@@ -27,7 +27,7 @@ public class Decoder {
 		return new String(DECODE.decode(str.getBytes()));
 	}
 	public final static String Decode_DataBaseString2String(String str) {
-		return new String(DECODE.decode(str.getBytes()));
+		return str;
 	}
 	public final static com.FileManagerX.Interfaces.ITransport Decode_Byte2Transport(byte[] bytes) {
 		try {
@@ -36,7 +36,7 @@ public class Decoder {
 			s = s.substring(1);
 			
 			com.FileManagerX.BasicEnums.CMDType cmdType = com.FileManagerX.BasicEnums.CMDType.valueOf(
-					com.FileManagerX.Tools.String.getField(s)
+					com.FileManagerX.Tools.StringUtil.getField_FV(s)
 				);
 			com.FileManagerX.Interfaces.ITransport t = isCMD ?
 					cmdType.getCommand() :

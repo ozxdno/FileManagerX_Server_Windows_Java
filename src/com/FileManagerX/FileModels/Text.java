@@ -3,7 +3,7 @@ package com.FileManagerX.FileModels;
 import java.io.*;
 import java.util.*;
 
-public class Text extends com.FileManagerX.BasicModels.BaseFile {
+public class Text extends com.FileManagerX.BasicModels.File {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 
@@ -30,14 +30,6 @@ public class Text extends com.FileManagerX.BasicModels.BaseFile {
 	public Text() {
 		initThis();
 	}
-	public Text(String url){
-		super(url);
-		initThis();
-	}
-	public Text(File localFile) {
-		super(localFile);
-		initThis();
-	}
 	private void initThis() {
 		if(content == null) {
 			content = new ArrayList<String>();
@@ -53,6 +45,58 @@ public class Text extends com.FileManagerX.BasicModels.BaseFile {
 	}
 	public String toString() {
 		return super.toString();
+	}
+	public com.FileManagerX.BasicModels.Config toConfig() {
+		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config();
+		c.setField(this.getClass().getSimpleName());
+		c.addToBottom(this.content.size());
+		for(String s : this.content) {
+			c.addToBottom_Encode(s);
+		}
+		return c;
+	}
+	public String output() {
+		return this.toConfig().output();
+	}
+	public com.FileManagerX.BasicModels.Config input(String in) {
+		return this.input(new com.FileManagerX.BasicModels.Config(in));
+	}
+	public com.FileManagerX.BasicModels.Config input(com.FileManagerX.BasicModels.Config c) {
+		if(c == null) { return null; }
+		this.content.clear();
+		
+		if(!c.getIsOK()) { return c; }
+		int amount = c.fetchFirstInt();
+		if(!c.getIsOK()) { return c; }
+		for(int i=0; i<amount; i++) {
+			this.content.add(c.fetchFirstString_Decode());
+			if(!c.getIsOK()) { return c; }
+		}
+		return c;
+	}
+	public void copyReference(Object o) {
+		if(o == null) { return; }
+		if(o instanceof Text) {
+			super.copyReference(o);
+			Text t = (Text)o;
+			this.content = t.content;
+			return;
+		}
+		if(o instanceof com.FileManagerX.BasicModels.File) {
+			super.copyReference(o);
+		}
+	}
+	public void copyValue(Object o) {
+		if(o == null) { return; }
+		if(o instanceof Text) {
+			super.copyValue(o);
+			Text t = (Text)o;
+			this.content = t.content;
+			return;
+		}
+		if(o instanceof com.FileManagerX.BasicModels.File) {
+			super.copyValue(o);
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////	

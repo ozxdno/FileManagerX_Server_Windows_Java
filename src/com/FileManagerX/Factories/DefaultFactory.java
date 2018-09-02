@@ -8,10 +8,15 @@ public class DefaultFactory {
 
 	public final static MachineInfo createDefaultMachineInfo() {
 		MachineInfo def = new MachineInfo();
-		def.setIndex(Configurations.Next_MachineIndex + 1);
+		def.setIndex(-1);
 		def.setIp();
+		def.setMac();
 		def.setName();
 		def.setPort();
+		
+		def.setType(com.FileManagerX.Globals.Configurations.MachineType);
+		def.setState(com.FileManagerX.BasicEnums.MachineState.RUNNING);
+		
 		return def;
 	}
 	
@@ -26,14 +31,14 @@ public class DefaultFactory {
 	public final static DepotInfo createDefaultDepotInfo() {
 		
 		DepotInfo def = new DepotInfo();
-		def.setIndex(Configurations.Next_DepotIndex + 1);
+		def.setIndex(-1);
 		def.setMachineInfo(Datas.ThisMachine);
 		def.setName(def.getMachineInfo().getName());
 		def.setState(DepotState.Running);
 		def.setUrl("");
 		
 		DataBaseInfo db = new DataBaseInfo();
-		db.setIndex(Configurations.Next_DataBaseIndex + 1);
+		db.setIndex(-1);
 		db.setName(def.getMachineInfo().getName());
 		db.setMachineInfo(Datas.ThisMachine);
 		db.setType(DataBaseType.TXT);

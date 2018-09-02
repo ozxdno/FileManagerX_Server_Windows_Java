@@ -1,0 +1,2 @@
+DataBaseInfo = 1|1|FileManagerX|TXT|1|1|DESKTOP-ASFUOAO||127.0.0.1|40000|SERVER|RUNNING|D:\Space_For_Project\FileManagerX\Server\Windows_Java\dbs\0
+DataBaseInfo = 2|2|DataBaseName3|TXT|1|1|DESKTOP-ASFUOAO||127.0.0.1|40000|SERVER|RUNNING|D:\Space_For_Project\FileManagerX\Server\Windows_Java\dbs\2

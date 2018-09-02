@@ -69,12 +69,13 @@ public class Client_IPV4_TCP implements com.FileManagerX.Interfaces.ISocketC {
 		try {
 			byte[] mac = java.net.NetworkInterface.getByInetAddress(this.socket.getInetAddress()).
 					getHardwareAddress();
-				this.client.setIndex(-1);
-				this.client.setUserIndex(com.FileManagerX.Globals.Configurations.This_MachineIndex);
-				this.client.setMac(mac);
-				this.client.setIp(this.socket.getInetAddress().getHostAddress());
-				this.client.setPort(this.socket.getPort());
-				return true;
+			this.client = new com.FileManagerX.BasicModels.MachineInfo();
+			this.client.copyValue(this.server);
+			this.client.setUserIndex(com.FileManagerX.Globals.Configurations.This_MachineIndex);
+			this.client.setMac(mac);
+			this.client.setIp(this.socket.getInetAddress().getHostAddress());
+			this.client.setPort(this.socket.getPort());
+			return true;
 		} catch(Exception e) {
 			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
 			return false;

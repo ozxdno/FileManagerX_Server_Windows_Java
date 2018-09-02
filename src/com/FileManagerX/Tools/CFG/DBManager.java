@@ -1,0 +1,121 @@
+package com.FileManagerX.Tools.CFG;
+
+public class DBManager {
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public final static boolean load(com.FileManagerX.FileModels.CFG cfg) {
+		com.FileManagerX.BasicModels.DepotInfo depot = 
+				com.FileManagerX.Factories.ServerFactory.createServerDepotInfo();
+		com.FileManagerX.BasicModels.DataBaseInfo database =
+				depot.getDBInfo();
+		
+		try {
+			com.FileManagerX.BasicModels.Config c = cfg.getConfigs().fetchByField("LocalDataBaseInfos");
+			com.FileManagerX.BasicEnums.DataBaseType type = 
+					com.FileManagerX.BasicEnums.DataBaseType.valueOf(c.fetchFirstString());
+			database.setType(type);
+			database.setUrl(c.fetchFirstString());
+		}catch(Exception e) {
+			database.setType(com.FileManagerX.BasicEnums.DataBaseType.TXT);
+			database.setUrl("");
+		}
+		try {
+			java.lang.String url = cfg.getConfigs().fetchByField("LocalDepotInfos").getString();
+			depot.setUrl(url);
+		}catch(Exception e) {
+			;
+		}
+		
+		if(database.getType().equals(com.FileManagerX.BasicEnums.DataBaseType.TXT)) {
+			java.io.File dbFolder = new java.io.File(database.getUrl());
+			if(!dbFolder.exists() || !dbFolder.isDirectory()) {
+				java.lang.String url = com.FileManagerX.Tools.Pathes.getFolder_DBS(0);
+				boolean ok = com.FileManagerX.Tools.Pathes.createFolder_DBS(0);
+				if(!ok) {
+					com.FileManagerX.BasicEnums.ErrorType.COMMON_FILE_OPERATE_FAILED.register(
+							"Create Folder_DBS:0 Failed");
+					return false;
+				}
+				database.setUrl(url);
+			}
+		}
+		
+		com.FileManagerX.Globals.Datas.DBManager.setDBInfo(database);
+		com.FileManagerX.Globals.Datas.DBManager.connect();
+		if(!com.FileManagerX.Globals.Datas.DBManager.isConnected()) {
+			com.FileManagerX.BasicEnums.ErrorType.DB_CONNECT_FAILED.register();
+			return false;
+		}
+		
+		com.FileManagerX.Globals.Datas.DBManager.update(
+				com.FileManagerX.Globals.Datas.ThisMachine,
+				com.FileManagerX.DataBase.Unit.Machine
+			);
+		com.FileManagerX.Globals.Datas.DBManager.update(
+				depot,
+				com.FileManagerX.DataBase.Unit.Depot
+			);
+		com.FileManagerX.Globals.Datas.DBManager.update(
+				database,
+				com.FileManagerX.DataBase.Unit.DataBase
+			);
+		
+		database.setDepotInfo(depot);
+		depot.setDBInfo(database);
+		database.setDepotIndex();
+		depot.setDBIndex();
+		return true;
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public final static boolean save(com.FileManagerX.FileModels.CFG cfg) {
+		String line = "";
+		
+		cfg.getContent().add(line);
+		line = "/*************************************************** Local Manager ***************************************************/";
+		cfg.getContent().add(line);
+		line = "";
+		cfg.getContent().add(line);
+		
+		line = "Example: LocalDataBaseInfos = [DataBaseType]|[Url]";
+		cfg.getContent().add(line);
+		line = "Example: LocalDepotInfos = [Url]";
+		cfg.getContent().add(line);
+		line = "";
+		cfg.getContent().add(line);
+		
+		line = "LocalDataBaseInfos = " + com.FileManagerX.Globals.Datas.DBManager.getDBInfo().getType().toString() +
+				"|" +
+				com.FileManagerX.Globals.Datas.DBManager.getDBInfo().getUrl();
+		cfg.getContent().add(line);
+		line = "LocalDepotInfos = " + com.FileManagerX.Globals.Datas.DBManager.getDBInfo().getDepotInfo().getUrl();
+		cfg.getContent().add(line);
+		line = "";
+		cfg.getContent().add(line);
+		
+		return true;
+	}
+	public final static boolean saveNew(com.FileManagerX.FileModels.CFG cfg) {
+		String line = "";
+		
+		cfg.getContent().add(line);
+		line = "/*************************************************** Local Manager ***************************************************/";
+		cfg.getContent().add(line);
+		line = "";
+		cfg.getContent().add(line);
+		
+		line = "Example: LocalDataBaseInfos = [DataBaseType]|[Url]";
+		cfg.getContent().add(line);
+		line = "         LocalDepotInfos = [Url]";
+		cfg.getContent().add(line);
+		line = "";
+		cfg.getContent().add(line);
+		
+		return true;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+}

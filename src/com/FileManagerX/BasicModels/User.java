@@ -67,8 +67,7 @@ public class User implements com.FileManagerX.Interfaces.IPublic {
 		return true;
 	}
 	public boolean setIndex() {
-		this.index = com.FileManagerX.Globals.Configurations.Next_UserIndex + 1;
-		com.FileManagerX.Globals.Configurations.Next_UserIndex = this.index;
+		this.index = com.FileManagerX.Globals.Configurations.Next_UserIndex();
 		return true;
 	}
 	public boolean setLoginName(String loginName) {
@@ -178,7 +177,7 @@ public class User implements com.FileManagerX.Interfaces.IPublic {
 	public String toString() {
 		return nickName;
 	}
-	public String output() {
+	public Config toConfig() {
 		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config("User = ");
 		c.addToBottom(index);
 		c.addToBottom(loginName);
@@ -193,74 +192,93 @@ public class User implements com.FileManagerX.Interfaces.IPublic {
 		c.addToBottom(photoUrl);
 		c.addToBottom(coins);
 		c.addToBottom(money);
-		return c.output();
+		return c;
 	}
-	public String input(String in) {
+	public String output() {
+		return this.toConfig().output();
+	}
+	public Config input(String in) {
+		return this.input(new Config(in));
+	}
+	public Config input(Config c) {
+		if(c == null) { return null; }
+		
 		try {
-			com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config(in);
+			if(!c.getIsOK()) { return c; }
 			index = c.fetchFirstLong();
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			loginName = c.fetchFirstString();
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			nickName = c.fetchFirstString();
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			password = c.fetchFirstString();
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			email = c.fetchFirstString();
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			phone = c.fetchFirstString();
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			state = com.FileManagerX.BasicEnums.UserState.valueOf(c.fetchFirstString());
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			priority = com.FileManagerX.BasicEnums.UserPriority.valueOf(c.fetchFirstString());
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			level = com.FileManagerX.BasicEnums.UserLevel.valueOf(c.fetchFirstString());
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			experience = c.fetchFirstLong();
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			photoUrl = c.fetchFirstString();
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			coins = c.fetchFirstLong();
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			money = c.fetchFirstDouble();
-			if(!c.getIsOK()) { return null; }
-			return c.output();
+			if(!c.getIsOK()) { return c; }
+			return c;
 		} catch(Exception e) {
 			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
-			return null;
+			c.setIsOK(false);
+			return c;
 		}
 	}
 	public void copyReference(Object o) {
-		User u = (User)o;
-		this.index = u.index;
-		this.loginName = u.loginName;
-		this.nickName = u.nickName;
-		this.password = u.password;
-		this.email = u.email;
-		this.phone = u.phone;
-		this.state = u.state;
-		this.priority = u.priority;
-		this.level = u.level;
-		this.experience = u.experience;
-		this.photoUrl = u.photoUrl;
-		this.coins = u.coins;
-		this.money = u.money;
+		if(o == null) { return; }
+		
+		if(o instanceof User) {
+			User u = (User)o;
+			this.index = u.index;
+			this.loginName = u.loginName;
+			this.nickName = u.nickName;
+			this.password = u.password;
+			this.email = u.email;
+			this.phone = u.phone;
+			this.state = u.state;
+			this.priority = u.priority;
+			this.level = u.level;
+			this.experience = u.experience;
+			this.photoUrl = u.photoUrl;
+			this.coins = u.coins;
+			this.money = u.money;
+			return;
+		}
 	}
 	public void copyValue(Object o) {
-		User u = (User)o;
-		this.index = u.index;
-		this.loginName = new String(u.loginName);
-		this.nickName = new String(u.nickName);
-		this.password = new String(u.password);
-		this.email = new String(u.email);
-		this.phone = new String(u.phone);
-		this.state = u.state;
-		this.priority = u.priority;
-		this.level = u.level;
-		this.experience = u.experience;
-		this.photoUrl = new String(u.photoUrl);
-		this.coins = u.coins;
-		this.money = u.money;
+		if(o == null) { return; }
+		
+		if(o instanceof User) {
+			User u = (User)o;
+			this.index = u.index;
+			this.loginName = new String(u.loginName);
+			this.nickName = new String(u.nickName);
+			this.password = new String(u.password);
+			this.email = new String(u.email);
+			this.phone = new String(u.phone);
+			this.state = u.state;
+			this.priority = u.priority;
+			this.level = u.level;
+			this.experience = u.experience;
+			this.photoUrl = new String(u.photoUrl);
+			this.coins = u.coins;
+			this.money = u.money;
+			return;
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

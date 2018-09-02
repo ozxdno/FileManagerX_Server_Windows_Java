@@ -54,4 +54,14 @@ public class Array2List {
 		}
 		return res;
 	}
+	public final static <T> ArrayList<T> toAnyList(T[] array) {
+		ArrayList<T> res = new ArrayList<>();
+		if(array == null || array.length == 0) {
+			return res;
+		}
+		for(int i=0; i<array.length; i++) {
+			res.add(array[i]);
+		}
+		return res;
+	}
 }

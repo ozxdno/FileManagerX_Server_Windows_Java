@@ -1,121 +1,23 @@
 package com.FileManagerX.BasicCollections;
 
-import java.util.*;
+public class Chats extends BasicHashMap<com.FileManagerX.BasicModels.Chat, Long> {
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-public class Chats implements com.FileManagerX.Interfaces.IPublic, com.FileManagerX.Interfaces.ICollection {
+	public Long getKey(com.FileManagerX.BasicModels.Chat item) {
+		return item == null ? null : item.getIndex();
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	private List<com.FileManagerX.BasicModels.Chat> content;
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	public boolean setContent(List<com.FileManagerX.BasicModels.Chat> content) {
-		if(content == null) {
-			com.FileManagerX.BasicEnums.ErrorType.COMMON_SET_WRONG_VALUE.register("content is NULL");
-			return false;
-		}
-		this.content = content;
-		return true;
+	public com.FileManagerX.BasicModels.Chat createT() {
+		return new com.FileManagerX.BasicModels.Chat();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	public List<com.FileManagerX.BasicModels.Chat> getContent() {
-		return this.content;
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	public Chats() {
-		initThis();
-	}
-	private void initThis() {
-		if(content == null) {
-			content = new ArrayList<com.FileManagerX.BasicModels.Chat>();
-		}
-		content.clear();
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	public void clear() {
-		initThis();
-	}
-	@Override
-	public String toString() {
-		if(content == null || content.size() == 0) {
-			return "Empty";
-		}
-		String res = content.get(0).toString();
-		for(int i=1; i<content.size(); i++) {
-			res += ", " + content.get(i).toString();
-		}
-		return res;
-	}
-	public String output() {
-		if(content == null || content.size() == 0) {
-			return "";
-		}
-		String res = this.getClass().getSimpleName() + " = " + com.FileManagerX.Tools.String.getValue(this.getContent().get(0).output());
-		for(int i=1; i<this.content.size(); i++) {
-			res += "|" + com.FileManagerX.Tools.String.getValue(this.getContent().get(i).output());
-		}
-		return res;
-	}
-	public String input(String in) {
-		initThis();
-		String out = "";
-		while(true) {
-			if(in == null) { break; }
-			if(com.FileManagerX.Tools.String.clearLRSpace(com.FileManagerX.Tools.String.getValue(in)).length() == 0) { break; }
-			
-			com.FileManagerX.BasicModels.Chat e = new com.FileManagerX.BasicModels.Chat();
-			out = e.input(in);
-			if(out == null) { break; }
-			this.content.add(e);
-			in = out;
-		}
-		return in;
-	}
-	public void copyReference(Object o) {
-		Chats m = (Chats)o;
-		this.content = m.content;
-	}
-	public void copyValue(Object o) {
-		Chats m = (Chats)o;
-		initThis();
-		for(int i=0; i<m.getContent().size(); i++) {
-			com.FileManagerX.BasicModels.Chat im = new com.FileManagerX.BasicModels.Chat();
-			im.copyValue(m.getContent().get(i));
-			this.content.add(im);
-		}
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	public int size() {
-		return content.size();
-	}
-	public boolean add(Object item) {
-		if(item == null) {
-			return false;
-		}
-		try {
-			this.content.add((com.FileManagerX.BasicModels.Chat)item);
-			return true;
-		} catch(Exception e) {
-			return false;
-		}
-	}
-	/**
-	 * Sort By Time
-	 * 
-	 */
-	@SuppressWarnings("unchecked")
-	public boolean sortIncrease() {
-		@SuppressWarnings("rawtypes")
-		Comparator c = new Comparator<com.FileManagerX.BasicModels.Chat>() {
+
+	public java.util.Comparator<com.FileManagerX.BasicModels.Chat> getACmpByTime() {
+		return new java.util.Comparator<com.FileManagerX.BasicModels.Chat>() {
 			public int compare(com.FileManagerX.BasicModels.Chat e1, com.FileManagerX.BasicModels.Chat e2) {
 				if(e1.getTime() > e2.getTime()) {
 					return 1;
@@ -124,24 +26,9 @@ public class Chats implements com.FileManagerX.Interfaces.IPublic, com.FileManag
 				}
 			}
 		};
-		
-		try {
-			Collections.sort(this.getContent(), c);
-			return true;
-		} catch(Exception e) {
-			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register("Error in Compare",e.toString());
-			return false;
-		}
 	}
-	
-	/**
-	 * Sort By Time
-	 * 
-	 */
-	@SuppressWarnings("unchecked")
-	public boolean sortDecrease() {
-		@SuppressWarnings("rawtypes")
-		Comparator c = new Comparator<com.FileManagerX.BasicModels.Chat>() {
+	public java.util.Comparator<com.FileManagerX.BasicModels.Chat> getDCmpByTime() {
+		return new java.util.Comparator<com.FileManagerX.BasicModels.Chat>() {
 			public int compare(com.FileManagerX.BasicModels.Chat e1, com.FileManagerX.BasicModels.Chat e2) {
 				if(e1.getTime() > e2.getTime()) {
 					return -1;
@@ -150,78 +37,106 @@ public class Chats implements com.FileManagerX.Interfaces.IPublic, com.FileManag
 				}
 			}
 		};
-		
-		try {
-			Collections.sort(this.getContent(), c);
-			return true;
-		} catch(Exception e) {
-			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(com.FileManagerX.BasicEnums.ErrorLevel.Error,"Error in Compare",e.toString());
-			return false;
-		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public int indexOf(String content) {
-		for(int i=0; i<this.content.size(); i++) {
-			if(this.content.get(i).getContent().equals(content)) {
-				return i;
+	public com.FileManagerX.BasicModels.Chat searchByContent(String content) {
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.BasicModels.Chat> it = this.getIterator();
+		while(it.hasNext()) {
+			com.FileManagerX.BasicModels.Chat c = it.getNext();
+			if(c.getContent().equals(content)) {
+				return c;
 			}
 		}
-		return -1;
+		return null;
 	}
-	public com.FileManagerX.BasicModels.Chat search(String content) {
-		int index = this.indexOf(content);
-		if(index < 0) {
-			return null;
+	public com.FileManagerX.BasicModels.Chat fetchByContent(String content) {
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.BasicModels.Chat> it = this.getIterator();
+		while(it.hasNext()) {
+			com.FileManagerX.BasicModels.Chat c = it.getNext();
+			if(c.getContent().equals(content)) {
+				it.remove();
+				return c;
+			}
 		}
-		return this.content.get(index);
-	}
-	public com.FileManagerX.BasicModels.Chat fetch(String content) {
-		int index = this.indexOf(content);
-		if(index < 0) {
-			return null;
-		}
-		com.FileManagerX.BasicModels.Chat i = this.content.get(index);
-		this.content.remove(index);
-		return i;
-	}
-	public void delete(String content) {
-		int index = this.indexOf(content);
-		if(index >= 0) {
-			this.content.remove(index);
-		}
+		return null;
 	}
 	
-	public int indexOf(long time) {
-		for(int i=0; i<content.size(); i++) {
-			if(content.get(i).getTime() == time) {
-				return i;
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public com.FileManagerX.BasicModels.Chat searchByTime(long time) {
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.BasicModels.Chat> it = this.getIterator();
+		while(it.hasNext()) {
+			com.FileManagerX.BasicModels.Chat c = it.getNext();
+			if(c.getTime() == time) {
+				return c;
 			}
 		}
-		return -1;
+		return null;
 	}
-	public com.FileManagerX.BasicModels.Chat search(long time) {
-		int index = this.indexOf(time);
-		if(index < 0) {
-			return null;
+	public com.FileManagerX.BasicModels.Chat fetchByTime(long time) {
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.BasicModels.Chat> it = this.getIterator();
+		while(it.hasNext()) {
+			com.FileManagerX.BasicModels.Chat c = it.getNext();
+			if(c.getTime() == time) {
+				it.remove();
+				return c;
+			}
 		}
-		return content.get(index);
+		return null;
 	}
-	public com.FileManagerX.BasicModels.Chat fetch(long time) {
-		int index = this.indexOf(time);
-		if(index < 0) {
-			return null;
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public Chats searchesByTimeBefore(long time) {
+		Chats chats = new Chats();
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.BasicModels.Chat> it = this.getIterator();
+		while(it.hasNext()) {
+			com.FileManagerX.BasicModels.Chat c = it.getNext();
+			if(c.getTime() < time) {
+				chats.add(c);
+			}
 		}
-		com.FileManagerX.BasicModels.Chat i = content.get(index);
-		content.remove(index);
-		return i;
+		return chats;
 	}
-	public void delete(long time) {
-		int index = this.indexOf(time);
-		if(index >= 0) {
-			content.remove(index);
+	public Chats fetchesByTimeBefore(long time) {
+		Chats chats = new Chats();
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.BasicModels.Chat> it = this.getIterator();
+		while(it.hasNext()) {
+			com.FileManagerX.BasicModels.Chat c = it.getNext();
+			if(c.getTime() < time) {
+				it.remove();
+				chats.add(c);
+			}
 		}
+		return chats;
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public Chats searchesByTimeBehind(long time) {
+		Chats chats = new Chats();
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.BasicModels.Chat> it = this.getIterator();
+		while(it.hasNext()) {
+			com.FileManagerX.BasicModels.Chat c = it.getNext();
+			if(c.getTime() > time) {
+				chats.add(c);
+			}
+		}
+		return chats;
+	}
+	public Chats fetchesByTimeBehind(long time) {
+		Chats chats = new Chats();
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.BasicModels.Chat> it = this.getIterator();
+		while(it.hasNext()) {
+			com.FileManagerX.BasicModels.Chat c = it.getNext();
+			if(c.getTime() > time) {
+				it.remove();
+				chats.add(c);
+			}
+		}
+		return chats;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

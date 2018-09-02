@@ -9,6 +9,7 @@ public class Broadcast implements com.FileManagerX.Interfaces.IPublic {
 	private boolean arrive;
 	private long depth;
 	private long dest;
+	private long gate;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -87,7 +88,7 @@ public class Broadcast implements com.FileManagerX.Interfaces.IPublic {
 	public String toString() {
 		return this.output();
 	}
-	public String output() {
+	public com.FileManagerX.BasicModels.Config toConfig() {
 		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config();
 		c.setField(this.getClass().getSimpleName());
 		c.addToBottom(this.type.toString());
@@ -95,29 +96,39 @@ public class Broadcast implements com.FileManagerX.Interfaces.IPublic {
 		c.addToBottom(this.arrive);
 		c.addToBottom(this.depth);
 		c.addToBottom(this.dest);
-		return c.output();
+		return c;
 	}
-	public String input(String in) {
+	public String output() {
+		return this.toConfig().output();
+	}
+	public com.FileManagerX.BasicModels.Config input(String in) {
+		return this.input(new com.FileManagerX.BasicModels.Config(in));
+	}
+	public com.FileManagerX.BasicModels.Config input(com.FileManagerX.BasicModels.Config c) {
+		if(c == null) { return null; }
 		try {
-			com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config(in);
+			if(!c.getIsOK()) { return c; }
 			this.type = com.FileManagerX.BasicEnums.BroadcastType.valueOf(c.fetchFirstString());
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			this.execute = c.fetchFirstBoolean();
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			this.arrive = c.fetchFirstBoolean();
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			this.depth = c.fetchFirstLong();
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			this.dest = c.fetchFirstLong();
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			
-			return c.output();
+			return c;
 		} catch(Exception e) {
 			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
-			return null;
+			e.printStackTrace();
+			c.setIsOK(false);
+			return c;
 		}
 	}
 	public void copyReference(Object o) {
+		if(o == null) { return; }
 		if(o instanceof Broadcast) {
 			Broadcast bc = (Broadcast)o;
 			this.type = bc.type;
@@ -125,9 +136,11 @@ public class Broadcast implements com.FileManagerX.Interfaces.IPublic {
 			this.arrive = bc.arrive;
 			this.depth = bc.depth;
 			this.dest = bc.dest;
+			return;
 		}
 	}
 	public void copyValue(Object o) {
+		if(o == null) { return; }
 		if(o instanceof Broadcast) {
 			Broadcast bc = (Broadcast)o;
 			this.execute = bc.execute;
@@ -135,6 +148,7 @@ public class Broadcast implements com.FileManagerX.Interfaces.IPublic {
 			this.type = bc.type;
 			this.depth = bc.depth;
 			this.dest = bc.dest;
+			return;
 		}
 	}
 	

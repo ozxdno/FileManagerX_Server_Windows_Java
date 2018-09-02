@@ -145,15 +145,26 @@ public class BaseCommand implements com.FileManagerX.Interfaces.ICommand {
 	public String toString() {
 		return this.output();
 	}
-	public String output() {
+	public com.FileManagerX.BasicModels.Config toConfig() {
 		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config();
 		c.setField(this.getClass().getSimpleName());
-		c.addToBottom(new com.FileManagerX.BasicModels.Config(this.bmp.output()));
-		
-		return c.output();
+		c.addToBottom(this.bmp.toConfig());
+		return c;
 	}
-	public String input(String in) {
-		return this.bmp.input(in);
+	public String output() {
+		return this.toConfig().output();
+	}
+	public com.FileManagerX.BasicModels.Config input(String in) {
+		return this.input(new com.FileManagerX.BasicModels.Config(in));
+	}
+	public com.FileManagerX.BasicModels.Config input(com.FileManagerX.BasicModels.Config c) {
+		if(c == null) { return null; }
+		
+		if(!c.getIsOK()) { return c; }
+		c = this.bmp.input(c);
+		if(!c.getIsOK()) { return c; }
+		
+		return c;
 	}
 	public void copyReference(Object o) {
 		BaseCommand c = (BaseCommand)o;
@@ -185,7 +196,7 @@ public class BaseCommand implements com.FileManagerX.Interfaces.ICommand {
 		return this.connection == null ? false : this.connection.send(this);
 	}
 	public com.FileManagerX.Interfaces.IReply receive() {
-		return this.connection.getServerConnection().receive(
+		return this.connection.receive(
 				this.getBasicMessagePackage().getIndex(),
 				this.getBasicMessagePackage().getPermitIdle());
 	}
@@ -305,13 +316,15 @@ public class BaseCommand implements com.FileManagerX.Interfaces.ICommand {
 			return true;
 		}
 		if(this.isArriveServer()) {
-			com.FileManagerX.Globals.Datas.DBManager.setUnit(com.FileManagerX.DataBase.Unit.User);
-			suser = (com.FileManagerX.BasicModels.User)
-					com.FileManagerX.Globals.Datas.DBManager.query("[&] Index = " + this.bmp.getSourUserIndex());
+			com.FileManagerX.Globals.Datas.DBManager.query(
+					"[&] Index = " + this.bmp.getSourUserIndex(),
+					suser,
+					com.FileManagerX.DataBase.Unit.User
+				);
 		}
 		else {
 			com.FileManagerX.Commands.QueryUnit qu = new com.FileManagerX.Commands.QueryUnit();
-			qu.setThis(com.FileManagerX.DataBase.Unit.User, "[&] Index = " + this.bmp.getSourUserIndex(), connection);
+			qu.setThis(com.FileManagerX.DataBase.Unit.User, "[&] index = " + this.bmp.getSourUserIndex(), connection);
 			qu.send();
 			com.FileManagerX.Replies.QueryUnit rep = (com.FileManagerX.Replies.QueryUnit)qu.receive();
 			suser = (rep == null || !rep.isOK()) ? null : (com.FileManagerX.BasicModels.User)rep.getResult();
@@ -330,9 +343,11 @@ public class BaseCommand implements com.FileManagerX.Interfaces.ICommand {
 			return true;
 		}
 		if(this.isArriveServer()) {
-			com.FileManagerX.Globals.Datas.DBManager.setUnit(com.FileManagerX.DataBase.Unit.Machine);
-			smachine = (com.FileManagerX.BasicModels.MachineInfo)
-					com.FileManagerX.Globals.Datas.DBManager.query("[&] Index = " + this.bmp.getSourMachineIndex());
+			com.FileManagerX.Globals.Datas.DBManager.query(
+					"[&] Index = " + this.bmp.getSourMachineIndex(),
+					smachine,
+					com.FileManagerX.DataBase.Unit.Machine
+				);
 		}
 		else {
 			com.FileManagerX.Commands.QueryUnit qu = new com.FileManagerX.Commands.QueryUnit();
@@ -353,7 +368,7 @@ public class BaseCommand implements com.FileManagerX.Interfaces.ICommand {
 	}
 	public boolean isSourDepotIndexExist() {
 		com.FileManagerX.Interfaces.IDBManager dbm = 
-				com.FileManagerX.Globals.Datas.DBManagers.searchDepotIndex(bmp.getSourDepotIndex());
+				com.FileManagerX.Globals.Datas.DBManagers.searchByDepotIndex(bmp.getSourDepotIndex());
 		if(dbm == null) {
 			reply.setOK(false);
 			reply.setFailedReason(FAILED_NO_SOUR_DEPOT);
@@ -365,7 +380,7 @@ public class BaseCommand implements com.FileManagerX.Interfaces.ICommand {
 	}
 	public boolean isSourDataBaseIndexExist() {
 		com.FileManagerX.Interfaces.IDBManager dbm = 
-				com.FileManagerX.Globals.Datas.DBManagers.searchDepotIndex(bmp.getSourDepotIndex());
+				com.FileManagerX.Globals.Datas.DBManagers.searchByDepotIndex(bmp.getSourDepotIndex());
 		if(dbm == null) {
 			reply.setOK(false);
 			reply.setFailedReason(FAILED_NO_SOUR_DATABASE);
@@ -384,9 +399,11 @@ public class BaseCommand implements com.FileManagerX.Interfaces.ICommand {
 			return true;
 		}
 		if(this.isArriveServer()) {
-			com.FileManagerX.Globals.Datas.DBManager.setUnit(com.FileManagerX.DataBase.Unit.User);
-			duser = (com.FileManagerX.BasicModels.User)
-					com.FileManagerX.Globals.Datas.DBManager.query("[&] Index = " + this.bmp.getDestUserIndex());
+			com.FileManagerX.Globals.Datas.DBManager.query(
+					"[&] Index = " + this.bmp.getDestUserIndex(),
+					duser,
+					com.FileManagerX.DataBase.Unit.User
+				);
 		}
 		else {
 			com.FileManagerX.Commands.QueryUnit qu = new com.FileManagerX.Commands.QueryUnit();
@@ -409,9 +426,11 @@ public class BaseCommand implements com.FileManagerX.Interfaces.ICommand {
 			return true;
 		}
 		if(this.isArriveServer()) {
-			com.FileManagerX.Globals.Datas.DBManager.setUnit(com.FileManagerX.DataBase.Unit.Machine);
-			dmachine = (com.FileManagerX.BasicModels.MachineInfo)
-					com.FileManagerX.Globals.Datas.DBManager.query("[&] Index = " + this.bmp.getDestMachineIndex());
+			com.FileManagerX.Globals.Datas.DBManager.query(
+					"[&] index = " + this.bmp.getDestMachineIndex(),
+					dmachine,
+					com.FileManagerX.DataBase.Unit.Machine
+				);
 		}
 		else {
 			com.FileManagerX.Commands.QueryUnit qu = new com.FileManagerX.Commands.QueryUnit();
@@ -432,7 +451,7 @@ public class BaseCommand implements com.FileManagerX.Interfaces.ICommand {
 	}
 	public boolean isDestDepotIndexExist() {
 		com.FileManagerX.Interfaces.IDBManager dbm = 
-				com.FileManagerX.Globals.Datas.DBManagers.searchDepotIndex(bmp.getDestDepotIndex());
+				com.FileManagerX.Globals.Datas.DBManagers.searchByDepotIndex(bmp.getDestDepotIndex());
 		if(dbm == null) {
 			reply.setOK(false);
 			reply.setFailedReason(FAILED_NO_DEST_DEPOT);
@@ -444,7 +463,7 @@ public class BaseCommand implements com.FileManagerX.Interfaces.ICommand {
 	}
 	public boolean isDestDataBaseIndexExist() {
 		com.FileManagerX.Interfaces.IDBManager dbm = 
-				com.FileManagerX.Globals.Datas.DBManagers.searchDepotIndex(bmp.getDestDepotIndex());
+				com.FileManagerX.Globals.Datas.DBManagers.searchByDepotIndex(bmp.getDestDepotIndex());
 		if(dbm == null) {
 			reply.setOK(false);
 			reply.setFailedReason(FAILED_NO_DEST_DATABASE);

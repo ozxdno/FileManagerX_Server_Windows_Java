@@ -72,11 +72,6 @@ public class LoginConnection extends BaseCommand {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean executeInLocal() {
-		if(com.FileManagerX.Globals.Datas.Client.size() > com.FileManagerX.Globals.Configurations.ConnectionLimit) {
-			this.getReply().setThis(false, FAILED_CONNECTION_LIMIT);
-			return false;
-		}
-		
 		Datas.Server.add(this.getConnection().getServerConnection());
 		Datas.Client.add(this.getConnection().getClientConnection());
 		return true;

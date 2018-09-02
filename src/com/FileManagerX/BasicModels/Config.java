@@ -1,6 +1,5 @@
 package com.FileManagerX.BasicModels;
 
-
 public class Config implements com.FileManagerX.Interfaces.IPublic {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -35,8 +34,7 @@ public class Config implements com.FileManagerX.Interfaces.IPublic {
 			items = new String[0];
 			return false;
 		}
-		line = com.FileManagerX.Tools.String.getFirstLine(line);
-		line = com.FileManagerX.Tools.String.clearLRSpace(line);
+		line = com.FileManagerX.Tools.StringUtil.clearSepMarkLR(line);
 		int idx = line.indexOf('=');
 		if(idx < 0) {
 			field = "";
@@ -59,7 +57,7 @@ public class Config implements com.FileManagerX.Interfaces.IPublic {
 		if(field == null) {
 			return false;
 		}
-		field = com.FileManagerX.Tools.String.clearLRSpace(field);
+		field = com.FileManagerX.Tools.StringUtil.clearSepMarkLR(field);
 		this.field = field;
 		return true;
 	}
@@ -67,13 +65,14 @@ public class Config implements com.FileManagerX.Interfaces.IPublic {
 		if(value == null) {
 			return false;
 		}
-		value = com.FileManagerX.Tools.String.clearLRSpace(value);
+		value = com.FileManagerX.Tools.StringUtil.clearSepMarkLR(value);
 		this.value = value;
 		if(this.value.length() == 0) {
 			this.items = new String[0];
 			return true;
 		}
-		this.items = com.FileManagerX.Tools.String.split(value, '|');
+		java.util.ArrayList<String> strs = com.FileManagerX.Tools.StringUtil.split2string(value, "|");
+		this.items = com.FileManagerX.Tools.List2Array.toStringArray(strs);
 		return true;
 	}
 	public boolean setItems(String[] items) {
@@ -89,6 +88,10 @@ public class Config implements com.FileManagerX.Interfaces.IPublic {
 			value += items[i] + "|";
 		}
 		value = value.substring(0, value.length()-1);
+		return true;
+	}
+	public boolean setIsOK(boolean ok) {
+		this.ok = ok;
 		return true;
 	}
 	
@@ -120,52 +123,62 @@ public class Config implements com.FileManagerX.Interfaces.IPublic {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
+	public void clear() {
+		initThis();
+	}
 	public String toString() {
-		if(field.length() == 0 && value.length() == 0) {
-			return "Empty";
-		}
-		if(field.length() == 0) {
-			return value;
-		}
-		return field + " = " + value;
+		return this.field.length() == 0 ? "No Name" : this.field;
+	}
+	public Config toConfig() {
+		return this;
 	}
 	public String output() {
 		return field + " = " + value;
 	}
-	public String input(String in) {
-		if(in == null) {
-			return null;
-		}
+	public Config input(String in) {
 		this.setLine(in);
-		return "";
+		return this;
+	}
+	public Config input(Config c) {
+		if(c == null) { return null; }
+		this.copyValue(c);
+		return this;
 	}
 	public void copyReference(Object o) {
-		Config c = (Config)o;
-		this.field = c.field;
-		this.value = c.value;
-		this.items = c.items;
-		this.ok = c.ok;
+		if(o == null) { return; }
+		
+		if(o instanceof Config) {
+			Config c = (Config)o;
+			this.field = c.field;
+			this.value = c.value;
+			this.items = c.items;
+			this.ok = c.ok;
+			return;
+		}
 	}
 	public void copyValue(Object o) {
-		Config c = (Config)o;
-		this.field = new String(c.field);
-		this.value = new String(c.value);
-		this.ok = c.ok;
-		this.items = new String[c.items.length];
-		for(int i=0; i<items.length; i++) {
-			this.items[i] = new String(c.items[i]);
+		if(o == null) { return; }
+		
+		if(o instanceof Config) {
+			Config c = (Config)o;
+			this.field = new String(c.field);
+			this.value = new String(c.value);
+			this.ok = c.ok;
+			this.items = new String[c.items.length];
+			for(int i=0; i<items.length; i++) {
+				this.items[i] = new String(c.items[i]);
+			}
 		}
 	}
 	
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public void clear() {
-		initThis();
-	}
 	public boolean isEmpty() {
-		return this.field.length() == 0 && this.value.length() == 0;
+		return this.value.length() == 0;
 	}
 	
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public boolean getBoolean() {
 		try {
 			ok = true;
@@ -206,6 +219,17 @@ public class Config implements com.FileManagerX.Interfaces.IPublic {
 		ok = true;
 		return value;
 	}
+	public String getEncodeString() {
+		ok = true;
+		return com.FileManagerX.Coder.Encoder.Encode_String2String(field);
+	}
+	public String getDecodeString() {
+		ok = true;
+		return com.FileManagerX.Coder.Decoder.Decode_String2String(field);
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	public boolean getBoolean(int item) {
 		try {
 			ok = true;
@@ -255,6 +279,35 @@ public class Config implements com.FileManagerX.Interfaces.IPublic {
 			return null;
 		}
 	}
+	public String getEncodeString(int item) {
+		if(value != null && value.length() == 0 && item == 0) {
+			return "";
+		}
+		
+		try {
+			ok = true;
+			return com.FileManagerX.Coder.Encoder.Encode_String2String(items[item]);
+		} catch(Exception e) {
+			ok = false;
+			return null;
+		}
+	}
+	public String getDecodeString(int item) {
+		if(value != null && value.length() == 0 && item == 0) {
+			return "";
+		}
+		
+		try {
+			ok = true;
+			return com.FileManagerX.Coder.Decoder.Decode_String2String(items[item]);
+		} catch(Exception e) {
+			ok = false;
+			return null;
+		}
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public boolean[] getBooleanList() {
 		boolean[] list = new boolean[items.length];
 		try {
@@ -311,6 +364,24 @@ public class Config implements com.FileManagerX.Interfaces.IPublic {
 		ok = true;
 		return items;
 	}
+	public String[] getEncodeStringList() {
+		ok = true;
+		String[] list = new String[items.length];
+		for(int i=0; i<items.length; i++) {
+			list[i] = com.FileManagerX.Coder.Encoder.Encode_String2String(items[i]);
+		}
+		return list;
+	}
+	public String[] getDecodeStringList() {
+		ok = true;
+		String[] list = new String[items.length];
+		for(int i=0; i<items.length; i++) {
+			list[i] = com.FileManagerX.Coder.Decoder.Decode_String2String(items[i]);
+		}
+		return list;
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public void addToTop(String item) {
 		if(item == null) {
@@ -348,6 +419,30 @@ public class Config implements com.FileManagerX.Interfaces.IPublic {
 		}
 		this.setValue(c.value + "|" + value);
 	}
+	
+	public void addToTop_Encode(String item) {
+		if(item == null) {
+			ok = false;
+			return;
+		}
+		item = com.FileManagerX.Coder.Encoder.Encode_String2String(item);
+		value = value.length() == 0 ? item : item + "|" + value;
+		ok = true;
+		setValue( value );
+	}
+	public void addToTop_Decode(String item) {
+		if(item == null) {
+			ok = false;
+			return;
+		}
+		item = com.FileManagerX.Coder.Decoder.Decode_String2String(item);
+		value = value.length() == 0 ? item : item + "|" + value;
+		ok = true;
+		setValue( value );
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	public void addToBottom(String item) {
 		if(item == null) {
 			ok = false;
@@ -386,12 +481,35 @@ public class Config implements com.FileManagerX.Interfaces.IPublic {
 		this.setValue(value);
 	}
 	
+	public void addToBottom_Encode(String item) {
+		if(item == null) {
+			ok = false;
+			return;
+		}
+		item = com.FileManagerX.Coder.Encoder.Encode_String2String(item);
+		value = value.length() == 0 ? item : value + "|" + item;
+		ok = true;
+		setValue( value );
+	}
+	public void addToBottom_Decode(String item) {
+		if(item == null) {
+			ok = false;
+			return;
+		}
+		item = com.FileManagerX.Coder.Decoder.Decode_String2String(item);
+		value = value.length() == 0 ? item : value + "|" + item;
+		ok = true;
+		setValue( value );
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public boolean fetchFirstBoolean() {
 		boolean res = false;
 		try {
 			res = Double.parseDouble(items[0]) != 0;
 			ok = true;
-			setValue(com.FileManagerX.Tools.String.link(items, "|", 1, items.length-1));
+			setValue(com.FileManagerX.Tools.StringUtil.link(items, "|", 1, items.length-1));
 			return res;
 		} catch(Exception e) {
 			ok = false;
@@ -403,7 +521,7 @@ public class Config implements com.FileManagerX.Interfaces.IPublic {
 		try {
 			res = Integer.parseInt(items[0]);
 			ok = true;
-			setValue(com.FileManagerX.Tools.String.link(items, "|", 1, items.length-1));
+			setValue(com.FileManagerX.Tools.StringUtil.link(items, "|", 1, items.length-1));
 			return res;
 		} catch(Exception e) {
 			ok = false;
@@ -415,7 +533,7 @@ public class Config implements com.FileManagerX.Interfaces.IPublic {
 		try {
 			res = Long.parseLong(items[0]);
 			ok = true;
-			setValue(com.FileManagerX.Tools.String.link(items, "|", 1, items.length-1));
+			setValue(com.FileManagerX.Tools.StringUtil.link(items, "|", 1, items.length-1));
 			return res;
 		} catch(Exception e) {
 			ok = false;
@@ -427,7 +545,7 @@ public class Config implements com.FileManagerX.Interfaces.IPublic {
 		try {
 			res = Double.parseDouble(items[0]);
 			ok = true;
-			setValue(com.FileManagerX.Tools.String.link(items, "|", 1, items.length-1));
+			setValue(com.FileManagerX.Tools.StringUtil.link(items, "|", 1, items.length-1));
 			return res;
 		} catch(Exception e) {
 			ok = false;
@@ -443,7 +561,7 @@ public class Config implements com.FileManagerX.Interfaces.IPublic {
 		try {
 			res = items[0];
 			ok = true;
-			setValue(com.FileManagerX.Tools.String.link(items, "|", 1, items.length-1));
+			setValue(com.FileManagerX.Tools.StringUtil.link(items, "|", 1, items.length-1));
 			return res;
 		} catch(Exception e) {
 			ok = false;
@@ -460,19 +578,55 @@ public class Config implements com.FileManagerX.Interfaces.IPublic {
 			ok = false;
 			amount =  0;
 		}
-		String c1 = com.FileManagerX.Tools.String.link(items, "|", 0, amount-1);
-		String c2 = com.FileManagerX.Tools.String.link(items, "|", amount, items.length-1);
+		String c1 = com.FileManagerX.Tools.StringUtil.link(items, "|", 0, amount-1);
+		String c2 = com.FileManagerX.Tools.StringUtil.link(items, "|", amount, items.length-1);
 		this.setValue(c2);
 		Config c = new Config();
 		c.setValue(c1);
 		return c;
 	}
+	
+	public String fetchFirstString_Encode() {
+		if(value != null && value.length() == 0) {
+			ok = true;
+			return "";
+		}
+		String res = "";
+		try {
+			res = items[0];
+			ok = true;
+			setValue(com.FileManagerX.Tools.StringUtil.link(items, "|", 1, items.length-1));
+			return com.FileManagerX.Coder.Encoder.Encode_String2String(res);
+		} catch(Exception e) {
+			ok = false;
+			return res;
+		}
+	}
+	public String fetchFirstString_Decode() {
+		if(value != null && value.length() == 0) {
+			ok = true;
+			return "";
+		}
+		String res = "";
+		try {
+			res = items[0];
+			ok = true;
+			setValue(com.FileManagerX.Tools.StringUtil.link(items, "|", 1, items.length-1));
+			return com.FileManagerX.Coder.Decoder.Decode_String2String(res);
+		} catch(Exception e) {
+			ok = false;
+			return res;
+		}
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public boolean fetchLastBoolean() {
 		boolean res = false;
 		try {
 			res = Double.parseDouble(items[items.length-1]) != 0;
 			ok = true;
-			setValue(com.FileManagerX.Tools.String.link(items, "|", 0, items.length-2));
+			setValue(com.FileManagerX.Tools.StringUtil.link(items, "|", 0, items.length-2));
 			return res;
 		} catch(Exception e) {
 			ok = false;
@@ -484,7 +638,7 @@ public class Config implements com.FileManagerX.Interfaces.IPublic {
 		try {
 			res = Integer.parseInt(items[items.length-1]);
 			ok = true;
-			setValue(com.FileManagerX.Tools.String.link(items, "|", 0, items.length-2));
+			setValue(com.FileManagerX.Tools.StringUtil.link(items, "|", 0, items.length-2));
 			return res;
 		} catch(Exception e) {
 			ok = false;
@@ -496,7 +650,7 @@ public class Config implements com.FileManagerX.Interfaces.IPublic {
 		try {
 			res = Long.parseLong(items[items.length-1]);
 			ok = true;
-			setValue(com.FileManagerX.Tools.String.link(items, "|", 0, items.length-2));
+			setValue(com.FileManagerX.Tools.StringUtil.link(items, "|", 0, items.length-2));
 			return res;
 		} catch(Exception e) {
 			ok = false;
@@ -508,7 +662,7 @@ public class Config implements com.FileManagerX.Interfaces.IPublic {
 		try {
 			res = Double.parseDouble(items[items.length-1]);
 			ok = true;
-			setValue(com.FileManagerX.Tools.String.link(items, "|", 0, items.length-2));
+			setValue(com.FileManagerX.Tools.StringUtil.link(items, "|", 0, items.length-2));
 			return res;
 		} catch(Exception e) {
 			ok = false;
@@ -524,7 +678,7 @@ public class Config implements com.FileManagerX.Interfaces.IPublic {
 		try {
 			res = items[items.length-1];
 			ok = true;
-			setValue(com.FileManagerX.Tools.String.link(items, "|", 0, items.length-2));
+			setValue(com.FileManagerX.Tools.StringUtil.link(items, "|", 0, items.length-2));
 			return res;
 		} catch(Exception e) {
 			ok = false;
@@ -541,12 +695,45 @@ public class Config implements com.FileManagerX.Interfaces.IPublic {
 			ok = false;
 			amount =  0;
 		}
-		String c1 = com.FileManagerX.Tools.String.link(items, "|", 0, items.length - amount - 1);
-		String c2 = com.FileManagerX.Tools.String.link(items, "|", items.length - amount, items.length-1);
+		String c1 = com.FileManagerX.Tools.StringUtil.link(items, "|", 0, items.length - amount - 1);
+		String c2 = com.FileManagerX.Tools.StringUtil.link(items, "|", items.length - amount, items.length-1);
 		this.setValue(c1);
 		Config c = new Config();
 		c.setValue(c2);
 		return c;
+	}
+	
+	public String fetchLastString_Encode() {
+		if(value != null && value.length() == 0) {
+			ok = true;
+			return "";
+		}
+		String res = "";
+		try {
+			res = items[items.length-1];
+			ok = true;
+			setValue(com.FileManagerX.Tools.StringUtil.link(items, "|", 0, items.length-2));
+			return com.FileManagerX.Coder.Encoder.Encode_String2String(res);
+		} catch(Exception e) {
+			ok = false;
+			return res;
+		}
+	}
+	public String fetchLastString_Decode() {
+		if(value != null && value.length() == 0) {
+			ok = true;
+			return "";
+		}
+		String res = "";
+		try {
+			res = items[items.length-1];
+			ok = true;
+			setValue(com.FileManagerX.Tools.StringUtil.link(items, "|", 0, items.length-2));
+			return com.FileManagerX.Coder.Decoder.Decode_String2String(res);
+		} catch(Exception e) {
+			ok = false;
+			return res;
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

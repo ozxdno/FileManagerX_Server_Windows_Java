@@ -55,22 +55,33 @@ public class RemoveUnits extends BaseReply {
 	public String toString() {
 		return this.output();
 	}
-	public String output() {
+	public com.FileManagerX.BasicModels.Config toConfig() {
 		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config();
 		c.setField(this.getClass().getSimpleName());
-		c.addToBottom(new com.FileManagerX.BasicModels.Config(super.output()));
-		c.addToBottom(com.FileManagerX.Coder.Encoder.Encode_String2String(this.results.output()));
-		return c.output();
+		c.addToBottom(super.toConfig());
+		c.addToBottom(this.results.toConfig());
+		return c;
 	}
-	public String input(String in) {
-		in = super.input(in);
-		if(in == null) { return null; }
-		
-		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config(in);
-		this.results.input(com.FileManagerX.Coder.Decoder.Decode_String2String(c.fetchFirstString()));
-		if(!c.getIsOK()) { return null; }
-		
-		return c.output();
+	public String output() {
+		return this.toConfig().output();
+	}
+	public com.FileManagerX.BasicModels.Config input(String in) {
+		return this.input(new com.FileManagerX.BasicModels.Config(in));
+	}
+	public com.FileManagerX.BasicModels.Config input(com.FileManagerX.BasicModels.Config c) {
+		if(c == null) { return null; }
+		try {
+			if(!c.getIsOK()) { return c; }
+			c = super.input(c);
+			if(!c.getIsOK()) { return c; }
+			c = this.results.input(c);
+			if(!c.getIsOK()) { return c; }
+			return c;
+		} catch(Exception e) {
+			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
+			c.setIsOK(false);
+			return c;
+		}
 	}
 	public void copyReference(Object o) {
 		if(o instanceof RemoveUnits) {

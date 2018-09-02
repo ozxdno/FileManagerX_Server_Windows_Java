@@ -10,6 +10,7 @@ public class MachineInfo implements com.FileManagerX.Interfaces.IPublic {
 	private String mac;
 	private String ip;
 	private int port;
+	private String path;
 	
 	private com.FileManagerX.BasicEnums.MachineType type;
 	private com.FileManagerX.BasicEnums.MachineState state;
@@ -37,6 +38,9 @@ public class MachineInfo implements com.FileManagerX.Interfaces.IPublic {
 	public String getUrl() {
 		return ip + ":" + String.valueOf(port);
 	}
+	public String getPath() {
+		return this.path;
+	}
 	
 	public com.FileManagerX.BasicEnums.MachineType getType() {
 		return type;
@@ -52,8 +56,7 @@ public class MachineInfo implements com.FileManagerX.Interfaces.IPublic {
 		return true;
 	}
 	public boolean setIndex() {
-		this.index = com.FileManagerX.Globals.Configurations.Next_MachineIndex + 1;
-		com.FileManagerX.Globals.Configurations.Next_MachineIndex = index;
+		this.index = com.FileManagerX.Globals.Configurations.Next_MachineIndex();
 		return true;
 	}
 	public boolean setUserIndex(long index) {
@@ -66,13 +69,7 @@ public class MachineInfo implements com.FileManagerX.Interfaces.IPublic {
 	}
 	public boolean setName() {
 		try {
-			byte[] macAddress = java.net.NetworkInterface.getByInetAddress(java.net.InetAddress.getLocalHost()).
-					getHardwareAddress();
-			this.name = Integer.toHexString(macAddress[0] & 0xFF);
-			for(int i=1; i<macAddress.length; i++) {
-				this.name += '-' + Integer.toHexString(macAddress[i] & 0xFF);
-			}
-			this.name = this.name.toUpperCase();
+			this.name = java.net.InetAddress.getLocalHost().getHostName();
 			return true;
 		} catch(Exception e) {
 			return false;
@@ -136,6 +133,13 @@ public class MachineInfo implements com.FileManagerX.Interfaces.IPublic {
 		this.port = 40000;
 		return true;
 	}
+	public boolean setPath(String path) {
+		if(path == null) {
+			return false;
+		}
+		this.path = path;
+		return true;
+	}
 	
 	public boolean setType(com.FileManagerX.BasicEnums.MachineType type) {
 		if(type == null) {
@@ -181,9 +185,13 @@ public class MachineInfo implements com.FileManagerX.Interfaces.IPublic {
 	private void initThis() {
 		index = -1;
 		userIndex = com.FileManagerX.Globals.Configurations.This_UserIndex;
+		mac = "";
 		name = "";
 		ip = "";
 		port = -1;
+		path = "";
+		type = com.FileManagerX.BasicEnums.MachineType.TEMPORARY;
+		state = com.FileManagerX.BasicEnums.MachineState.RUNNING;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -191,7 +199,6 @@ public class MachineInfo implements com.FileManagerX.Interfaces.IPublic {
 	public void clear() {
 		initThis();
 	}
-	@Override
 	public String toString() {
 		String name = this.name;
 		if(name == null || name.length() == 0) {
@@ -203,55 +210,89 @@ public class MachineInfo implements com.FileManagerX.Interfaces.IPublic {
 		}
 		return "[" + name + "] " + ip + ":" + String.valueOf(port);
 	}
-	public String output() {
-		Config c = new Config("Machine = ");
+	public Config toConfig() {
+		Config c = new Config();
+		c.setField(this.getClass().getSimpleName());
 		c.addToBottom(index);
 		c.addToBottom(userIndex);
 		c.addToBottom(name);
 		c.addToBottom(mac);
 		c.addToBottom(ip);
 		c.addToBottom(port);
-		return c.output();
+		c.addToBottom(path);
+		c.addToBottom(this.type.toString());
+		c.addToBottom(this.state.toString());
+		return c;
 	}
-	public String input(String in) {
-		Config c = new Config(in);
-		this.index = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		this.userIndex = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		this.name = c.fetchFirstString();
-		if(!c.getIsOK()) { return null; }
-		this.mac = c.fetchFirstString();
-		if(!c.getIsOK()) { return null; }
-		this.ip = c.fetchFirstString();
-		if(!c.getIsOK()) { return null; }
-		this.port = c.fetchFirstInt();
-		if(!c.getIsOK()) { return null; }
-		return c.output();
+	public String output() {
+		return this.toConfig().output();
+	}
+	public Config input(String in) {
+		return this.input(new Config(in));
+	}
+	public Config input(Config c) {
+		if(c == null) { return null; }
+		
+		try {
+			if(!c.getIsOK()) { return c; }
+			this.index = c.fetchFirstLong();
+			if(!c.getIsOK()) { return c; }
+			this.userIndex = c.fetchFirstLong();
+			if(!c.getIsOK()) { return c; }
+			this.name = c.fetchFirstString();
+			if(!c.getIsOK()) { return c; }
+			this.mac = c.fetchFirstString();
+			if(!c.getIsOK()) { return c; }
+			this.ip = c.fetchFirstString();
+			if(!c.getIsOK()) { return c; }
+			this.port = c.fetchFirstInt();
+			if(!c.getIsOK()) { return c; }
+			this.path = c.fetchFirstString();
+			if(!c.getIsOK()) { return c; }
+			this.type = com.FileManagerX.BasicEnums.MachineType.valueOf(c.fetchFirstString());
+			if(!c.getIsOK()) { return c; }
+			this.state = com.FileManagerX.BasicEnums.MachineState.valueOf(c.fetchFirstString());
+			if(!c.getIsOK()) { return c; }
+			return c;
+		} catch(Exception e) {
+			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
+			c.setIsOK(false);
+			return c;
+		}
 	}
 	public void copyReference(Object o) {
-		MachineInfo m = (MachineInfo)o;
-		this.index = m.index;
-		this.userIndex = m.userIndex;
-		this.name = m.name;
-		this.mac = m.mac;
-		this.ip = m.ip;
-		this.port = m.port;
+		if(o == null) { return; }
+		
+		if(o instanceof MachineInfo) {
+			MachineInfo m = (MachineInfo)o;
+			this.index = m.index;
+			this.userIndex = m.userIndex;
+			this.name = m.name;
+			this.mac = m.mac;
+			this.ip = m.ip;
+			this.port = m.port;
+			this.path = m.path;
+			this.type = m.type;
+			this.state = m.state;
+			return;
+		}
 	}
 	public void copyValue(Object o) {
-		MachineInfo m = (MachineInfo)o;
-		this.index = m.index;
-		this.userIndex = m.userIndex;
-		this.name = new String(m.name);
-		this.mac = new String(m.mac);
-		this.ip = new String(m.ip);
-		this.port = m.port;
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	public boolean isLocal() {
-		return this.index == com.FileManagerX.Globals.Configurations.This_MachineIndex;
+		if(o == null) { return; }
+		
+		if(o instanceof MachineInfo) {
+			MachineInfo m = (MachineInfo)o;
+			this.index = m.index;
+			this.userIndex = m.userIndex;
+			this.name = new String(m.name);
+			this.mac = new String(m.mac);
+			this.ip = new String(m.ip);
+			this.port = m.port;
+			this.path = new String(m.path);
+			this.type = m.type;
+			this.state = m.state;
+			return;
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

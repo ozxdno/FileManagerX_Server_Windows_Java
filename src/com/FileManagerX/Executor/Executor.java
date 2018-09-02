@@ -14,7 +14,7 @@ public class Executor extends com.FileManagerX.Processes.BasicProcess {
 		return true;
 	}
 	public boolean setIndex() {
-		this.index = ++com.FileManagerX.Globals.Configurations.Next_ExecutorIndex;
+		this.index = com.FileManagerX.Globals.Configurations.Next_ExecutorIndex();
 		return true;
 	}
 	public boolean setReceive(com.FileManagerX.Interfaces.ITransport receive) {

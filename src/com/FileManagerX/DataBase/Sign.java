@@ -19,4 +19,12 @@ public enum Sign {
 	public String getSignString() {
 		return sign;
 	}
+	public static Sign toSign(String str) {
+		for(Sign sign : Sign.values()) {
+			if(sign.getSignString().equals(str)) {
+				return sign;
+			}
+		}
+		return null;
+	}
 }

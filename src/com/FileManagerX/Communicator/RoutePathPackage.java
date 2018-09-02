@@ -13,6 +13,8 @@ public class RoutePathPackage implements com.FileManagerX.Interfaces.IRoutePathP
 	
 	private long depth;
 	private java.util.List<Long> deliverMachines;
+	private java.util.ArrayList<Long> checkedMachines;
+	
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -115,6 +117,13 @@ public class RoutePathPackage implements com.FileManagerX.Interfaces.IRoutePathP
 		}
 		
 		this.deliverMachines.set((int)depth-1, deliver);
+		return true;
+	}
+	public boolean setCheckedMachines(java.util.ArrayList<Long> checkedMachines) {
+		if(checkedMachines == null) {
+			return false;
+		}
+		this.checkedMachines = checkedMachines;
 		return true;
 	}
 	
@@ -224,7 +233,7 @@ public class RoutePathPackage implements com.FileManagerX.Interfaces.IRoutePathP
 		s += this.destMachine;
 		return s;
 	}
-	public String output() {
+	public com.FileManagerX.BasicModels.Config toConfig() {
 		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config();
 		c.setField(this.getClass().getSimpleName());
 		c.addToBottom(this.startTime);
@@ -233,33 +242,41 @@ public class RoutePathPackage implements com.FileManagerX.Interfaces.IRoutePathP
 		c.addToBottom(this.depth);
 		c.addToBottom(this.sourMachine);
 		c.addToBottom(this.destMachine);
-		c.addToBottom(com.FileManagerX.Tools.String.link(
-				com.FileManagerX.Tools.List2Array.toLongArray(deliverMachines), " "));
-		
-		return c.output();
+		c.addToBottom(com.FileManagerX.Tools.StringUtil.link(
+				com.FileManagerX.Tools.List2Array.toLongArray(deliverMachines), " ")
+			);
+		return c;
 	}
-	public String input(String in) {
-		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config(in);
+	public String output() {
+		return this.toConfig().output();
+	}
+	public com.FileManagerX.BasicModels.Config input(String in) {
+		return this.input(new com.FileManagerX.BasicModels.Config(in));
+	}
+	public com.FileManagerX.BasicModels.Config input(com.FileManagerX.BasicModels.Config c) {
+		if(c == null) { return null; }
 		
+		if(!c.getIsOK()) { return c; }
 		this.startTime = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
+		if(!c.getIsOK()) { return c; }
 		this.arriveTime = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
+		if(!c.getIsOK()) { return c; }
 		this.backTime = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
+		if(!c.getIsOK()) { return c; }
 		this.depth = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
+		if(!c.getIsOK()) { return c; }
 		this.sourMachine = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
+		if(!c.getIsOK()) { return c; }
 		this.destMachine = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		this.deliverMachines = com.FileManagerX.Tools.Array2List.toLongList(
-				com.FileManagerX.Tools.String.splitToLongArray(c.fetchFirstString(), ' '));
-		if(!c.getIsOK()) { return null; }
+		if(!c.getIsOK()) { return c; }
+		this.deliverMachines = com.FileManagerX.Tools.StringUtil.split2long(c.fetchFirstString(), " ");
+		if(!c.getIsOK()) { return c; }
 		
-		return c.output();
+		return c;
 	}
 	public void copyReference(Object o) {
+		if(o == null) { return; }
+		
 		if(o instanceof RoutePathPackage) {
 			RoutePathPackage rpp = (RoutePathPackage)o;
 			this.startTime = rpp.startTime;
@@ -269,9 +286,12 @@ public class RoutePathPackage implements com.FileManagerX.Interfaces.IRoutePathP
 			this.sourMachine = rpp.sourMachine;
 			this.destMachine = rpp.destMachine;
 			this.deliverMachines = rpp.deliverMachines;
+			return;
 		}
 	}
 	public void copyValue(Object o) {
+		if(o == null) { return; }
+		
 		if(o instanceof RoutePathPackage) {
 			RoutePathPackage rpp = (RoutePathPackage)o;
 			this.startTime = rpp.startTime;
@@ -282,6 +302,7 @@ public class RoutePathPackage implements com.FileManagerX.Interfaces.IRoutePathP
 			this.destMachine = rpp.destMachine;
 			this.deliverMachines.clear();
 			this.deliverMachines.addAll(rpp.deliverMachines);
+			return;
 		}
 	}
 
@@ -304,24 +325,6 @@ public class RoutePathPackage implements com.FileManagerX.Interfaces.IRoutePathP
 	}
 	public void addDeliverMachine(long machine) {
 		this.deliverMachines.add(machine);
-	}
-	public com.FileManagerX.Interfaces.IClientConnection nextServerConnection() {
-		
-		long prevServer = this.deliverMachines.size() == 0 ? 0 :
-			this.deliverMachines.get(this.deliverMachines.size()-1);
-		
-		for(com.FileManagerX.Interfaces.IClientConnection con :
-			com.FileManagerX.Globals.Datas.OtherServers.getContent()) {
-			
-			if(!con.isRunning()) {
-				continue;
-			}
-			if(con.getServerMachineInfo().getIndex() > prevServer) {
-				return con;
-			}
-		}
-		
-		return com.FileManagerX.Globals.Datas.ServerConnection;
 	}
 	public void backToMachine(long machine) {
 		int index = -1;

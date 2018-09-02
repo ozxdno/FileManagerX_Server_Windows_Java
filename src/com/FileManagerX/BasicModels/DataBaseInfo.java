@@ -9,8 +9,7 @@ public class DataBaseInfo implements com.FileManagerX.Interfaces.IPublic{
 	private String name;
 	private com.FileManagerX.BasicEnums.DataBaseType type;
 	private MachineInfo machineInfo;
-	private String url; // TXT DataBase: Local url
-						// SQL DataBase: ip:port\loginname\password\databasename
+	private String url;
 	private com.FileManagerX.BasicModels.DepotInfo depotInfo;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -20,8 +19,7 @@ public class DataBaseInfo implements com.FileManagerX.Interfaces.IPublic{
 		return true;
 	}
 	public boolean setIndex() {
-		this.index = com.FileManagerX.Globals.Configurations.Next_DataBaseIndex + 1;
-		com.FileManagerX.Globals.Configurations.Next_DataBaseIndex = this.index;
+		this.index = com.FileManagerX.Globals.Configurations.Next_DataBaseIndex();
 		return true;
 	}
 	public boolean setDepotIndex(long depotIndex) {
@@ -93,19 +91,18 @@ public class DataBaseInfo implements com.FileManagerX.Interfaces.IPublic{
 	}
 	
 	public com.FileManagerX.Interfaces.IDBManager getManager() {
-		com.FileManagerX.Interfaces.IDBManager m = com.FileManagerX.Globals.Datas.DBManagers.searchDataBaseIndex(this.index);
+		com.FileManagerX.Interfaces.IDBManager m = 
+				com.FileManagerX.Globals.Datas.DBManagers.searchByDataBaseIndex(this.index);
 		if(m != null) {
 			return m;
 		}
 		
 		m = com.FileManagerX.Factories.DataBaseFactory.createManager();
 		m.setDBInfo(this);
-		m.connect();
 		return m;
 	}
 	public com.FileManagerX.Interfaces.IDBChecker getChecker() {
 		com.FileManagerX.Interfaces.IDBChecker c = com.FileManagerX.Factories.DataBaseFactory.createChecker();
-		c.setDBManager(this.getManager());
 		return c;
 	}
 	
@@ -140,65 +137,78 @@ public class DataBaseInfo implements com.FileManagerX.Interfaces.IPublic{
 		}
 		return "[" + name + "] " + this.url;
 	}
-	public String output() {
-		Config c = new Config("DataBaseInfo = ");
-		c.addToBottom(index);
-		c.addToBottom(depotIndex);
+	public Config toConfig() {
+		Config c = new Config();
+		c.setField(this.getClass().getSimpleName());
+		c.addToBottom(this.index);
+		c.addToBottom(this.depotIndex);
 		c.addToBottom(this.name);
 		c.addToBottom(this.type.toString());
-		c.addToBottom(new Config(this.machineInfo.output()));
-		c.addToBottom(url);
-		return c.output();
+		c.addToBottom(this.machineInfo.toConfig());
+		c.addToBottom(this.url);
+		return c;
 	}
-	public String input(String in) {
+	public String output() {
+		return this.toConfig().output();
+	}
+	public Config input(String in) {
+		return this.input(new Config(in));
+	}
+	public Config input(Config c) {
+		if(c == null) { return null; }
+		
 		try {
-			Config c = new Config(in);
+			if(!c.getIsOK()) { return c; }
 			this.index = c.fetchFirstLong();
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			this.depotIndex = c.fetchFirstLong();
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			this.name = c.fetchFirstString();
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			this.type = com.FileManagerX.BasicEnums.DataBaseType.valueOf(c.fetchFirstString());
-			if(!c.getIsOK()) { return null; }
-			in = this.machineInfo.input(c.output());
-			if(in == null) { return null; }
-			c.setLine(in);
+			if(!c.getIsOK()) { return c; }
+			c = this.machineInfo.input(c);
+			if(!c.getIsOK()) { return c; }
 			this.url = c.fetchFirstString();
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			
-			return c.output();
+			return c;
 		} catch(Exception e) {
 			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
-			return null;
+			c.setIsOK(false);
+			return c;
 		}
 	}
 	public void copyReference(Object o) {
-		DataBaseInfo d = (DataBaseInfo)o;
-		this.index = d.index;
-		this.depotIndex = d.depotIndex;
-		this.type = d.type;
-		this.depotInfo = d.depotInfo;
-		this.machineInfo = d.machineInfo;
-		this.url = d.url;
-		this.name = d.name;
+		if(o == null) { return; }
+		
+		if(o instanceof DataBaseInfo) {
+			DataBaseInfo d = (DataBaseInfo)o;
+			this.index = d.index;
+			this.depotIndex = d.depotIndex;
+			this.type = d.type;
+			this.depotInfo = d.depotInfo;
+			this.machineInfo = d.machineInfo;
+			this.url = d.url;
+			this.name = d.name;
+			return;
+		}
 	}
 	public void copyValue(Object o) {
-		DataBaseInfo d = (DataBaseInfo)o;
-		this.index = d.index;
-		this.depotIndex = d.depotIndex;
-		this.type = d.type;
-		this.depotInfo = d.depotInfo;
-		this.machineInfo.copyValue(d.machineInfo);
-		this.url = new String(d.url);
-		this.name = new String(d.name);
+		if(o == null) { return; }
+		
+		if(o instanceof DataBaseInfo) {
+			DataBaseInfo d = (DataBaseInfo)o;
+			this.index = d.index;
+			this.depotIndex = d.depotIndex;
+			this.type = d.type;
+			this.depotInfo = d.depotInfo;
+			this.machineInfo.copyValue(d.machineInfo);
+			this.url = new String(d.url);
+			this.name = new String(d.name);
+			return;
+		}
 	}
 	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public boolean isLocal() {
-		return this.machineInfo.isLocal();
-	}
-
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

@@ -59,7 +59,7 @@ public class CommunicatorFactory {
 		scon.setSocket(com.FileManagerX.Globals.Datas.ServerConnection.getSocket());
 		scon.startProcess();
 		ok = scon.isRunning();
-		if(!ok) { return false; }
+		if(!ok) { com.FileManagerX.Globals.Datas.ServerConnection.exitProcess(); return false; }
 		
 		com.FileManagerX.Globals.Datas.ServerConnection.setBrother(scon);
 		scon.setBrother(com.FileManagerX.Globals.Datas.ServerConnection);
@@ -85,6 +85,7 @@ public class CommunicatorFactory {
 			scon.setSocket(ccon.getSocket());
 			scon.startProcess();
 			ok = scon.isRunning();
+			if(!ok) { ccon.exitProcess(); return null; }
 			
 			ccon.setBrother(scon);
 			scon.setBrother(ccon);

@@ -1,6 +1,5 @@
 package com.FileManagerX.Commands;
 
-import com.FileManagerX.BasicModels.Config;
 import com.FileManagerX.Replies.BaseReply;
 
 public class Unsupport extends BaseCommand {
@@ -63,24 +62,33 @@ public class Unsupport extends BaseCommand {
 	public String toString() {
 		return this.output();
 	}
-	public String output() {
-		Config c = new Config();
+	public com.FileManagerX.BasicModels.Config toConfig() {
+		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config();
 		c.setField(this.getClass().getSimpleName());
-		c.addToBottom(new Config(super.output()));
-		c.addToBottom(com.FileManagerX.Coder.Encoder.Encode_String2String(this.content));
-		return c.output();
+		c.addToBottom(super.toConfig());
+		c.addToBottom_Encode(this.content);
+		return c;
 	}
-	public String input(String in) {
-		in = super.input(in);
-		if(in == null) {
-			return null;
+	public String output() {
+		return this.toConfig().output();
+	}
+	public com.FileManagerX.BasicModels.Config input(String in) {
+		return this.input(new com.FileManagerX.BasicModels.Config(in));
+	}
+	public com.FileManagerX.BasicModels.Config input(com.FileManagerX.BasicModels.Config c) {
+		if(c == null) { return null; }
+		try {
+			if(!c.getIsOK()) { return c; }
+			c = super.input(c);
+			if(!c.getIsOK()) { return c; }
+			this.content = c.fetchFirstString_Decode();
+			if(!c.getIsOK()) { return c; }
+			return c;
+		} catch(Exception e) {
+			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
+			c.setIsOK(false);
+			return c;
 		}
-		
-		Config c = new Config(in);
-		this.content = com.FileManagerX.Coder.Decoder.Decode_String2String(c.fetchFirstString());
-		if(!c.getIsOK()) { return null; }
-		
-		return c.output();
 	}
 	public void copyReference(Object o) {
 		if(o instanceof Unsupport) {

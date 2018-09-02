@@ -1,15 +1,7 @@
 package com.FileManagerX.BasicModels;
 
-import java.io.*;
+public class File implements com.FileManagerX.Interfaces.IPublic {
 
-/**
- * Tags 用空格作区分
- * 
- * @author ozxdno
- *
- */
-public class BaseFile implements com.FileManagerX.Interfaces.IPublic {
-	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	private long index;
@@ -92,8 +84,7 @@ public class BaseFile implements com.FileManagerX.Interfaces.IPublic {
 		return true;
 	}
 	public boolean setIndex() {
-		this.index = com.FileManagerX.Globals.Configurations.Next_FileIndex + 1;
-		com.FileManagerX.Globals.Configurations.Next_FileIndex = this.index;
+		this.index = com.FileManagerX.Globals.Configurations.Next_FileIndex();
 		return true;
 	}
 	public boolean setFather(long father) {
@@ -157,15 +148,9 @@ public class BaseFile implements com.FileManagerX.Interfaces.IPublic {
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	public BaseFile() {
+
+	public File() {
 		initThis();
-	}
-	public BaseFile(String url) {
-		initThis(new File(url));
-	}
-	public BaseFile(File localFile) {
-		initThis(localFile);
 	}
 	private void initThis() {
 		index = -1;
@@ -181,37 +166,19 @@ public class BaseFile implements com.FileManagerX.Interfaces.IPublic {
 		score = 0;
 		tags = "";
 	}
-	private void initThis(File localFile) {
-		index = -1;
-		father = -1;
-		machine = -1;
-		depot = -1;
-		database = -1;
-		url = localFile.getAbsolutePath();
-		type = localFile.isDirectory() ? com.FileManagerX.BasicEnums.FileType.Folder : 
-			(com.FileManagerX.Globals.Datas.Supports.search(this.getExtension()) == null ? 
-					com.FileManagerX.BasicEnums.FileType.Unsupport :
-					com.FileManagerX.Globals.Datas.Supports.search(this.getExtension()).getType());
-		state = com.FileManagerX.BasicEnums.FileState.NotExistInRemote;
-		modify = localFile.lastModified();
-		length = localFile.isDirectory() ? 0 : localFile.length();
-		score = 0;
-		tags = "";
-	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	public void clear() {
 		initThis();
 	}
-	@Override
 	public String toString() {
 		if(url == null || url.length() == 0) {
-			return "[Undefined]";
+			return "No Name";
 		}
-		return this.url;
+		return this.getName();
 	}
-	public String output() {
+	public Config toConfig() {
 		Config c = new Config( "BaseFile = " );
 		c.addToBottom(this.index);
 		c.addToBottom(this.father);
@@ -225,90 +192,143 @@ public class BaseFile implements com.FileManagerX.Interfaces.IPublic {
 		c.addToBottom(this.length);
 		c.addToBottom(this.score);
 		c.addToBottom(this.tags);
-		return c.output();
+		return c;
 	}
-	public String input(String in) {
-		Config c = new Config( in );
-		this.index = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		this.father = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		this.machine = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		this.depot = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		this.database = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		this.url = c.fetchFirstString();
-		if(!c.getIsOK()) { return null; }
+	public String output() {
+		return this.toConfig().output();
+	}
+	public Config input(String in) {
+		return this.input(new Config(in));
+	}
+	public Config input(Config c) {
+		if(c == null) { return null; }
+		
 		try {
+			if(!c.getIsOK()) { return c; }
+			this.index = c.fetchFirstLong();
+			if(!c.getIsOK()) { return c; }
+			this.father = c.fetchFirstLong();
+			if(!c.getIsOK()) { return c; }
+			this.machine = c.fetchFirstLong();
+			if(!c.getIsOK()) { return c; }
+			this.depot = c.fetchFirstLong();
+			if(!c.getIsOK()) { return c; }
+			this.database = c.fetchFirstLong();
+			if(!c.getIsOK()) { return c; }
+			this.url = c.fetchFirstString();
+			if(!c.getIsOK()) { return c; }
 			this.type = com.FileManagerX.BasicEnums.FileType.valueOf(c.fetchFirstString());
-			if(!c.getIsOK()) { return null; }
-		} catch(Exception e) {
-			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
-			return null;
-		}
-		try {
+			if(!c.getIsOK()) { return c; }
 			this.state = com.FileManagerX.BasicEnums.FileState.valueOf(c.fetchFirstString());
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
+			this.modify = c.fetchFirstLong();
+			if(!c.getIsOK()) { return c; }
+			this.length = c.fetchFirstLong();
+			if(!c.getIsOK()) { return c; }
+			this.score = c.fetchFirstInt();
+			if(!c.getIsOK()) { return c; }
+			this.tags = c.fetchFirstString();
+			if(!c.getIsOK()) { return c; }
+			
+			return c;
 		} catch(Exception e) {
 			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
-			return null;
+			c.setIsOK(false);
+			return c;
 		}
-		
-		this.modify = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		this.length = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		this.score = c.fetchFirstInt();
-		if(!c.getIsOK()) { return null; }
-		this.tags = c.fetchFirstString();
-		if(!c.getIsOK()) { return null; }
-		
-		return c.output();
 	}
 	public void copyReference(Object o) {
-		BaseFile model = (BaseFile)o;
-		this.index = model.index;
-		this.father = model.father;
-		this.url = model.url;
-		this.type = model.type;
-		this.state = model.state;
-		this.modify = model.modify;
-		this.length = model.length;
-		this.tags = model.tags;
+		if(o == null) { return; }
+		
+		if(o instanceof File) {
+			File model = (File)o;
+			this.index = model.index;
+			this.machine = model.machine;
+			this.database = model.database;
+			this.depot = model.depot;
+			this.father = model.father;
+			this.url = model.url;
+			this.type = model.type;
+			this.state = model.state;
+			this.modify = model.modify;
+			this.length = model.length;
+			this.tags = model.tags;
+		}
 	}
 	public void copyValue(Object o) {
-		BaseFile model = (BaseFile)o;
-		this.index = model.index;
-		this.father = model.father;
-		this.url = new String(model.url);
-		this.type = model.type;
-		this.state = model.state;
-		this.modify = model.modify;
-		this.length = model.length;
-		this.tags = new String(model.tags);
+		if(o == null) { return; }
+		
+		if(o instanceof File) {
+			File model = (File)o;
+			this.index = model.index;
+			this.machine = model.machine;
+			this.database = model.database;
+			this.depot = model.depot;
+			this.father = model.father;
+			this.url = new String(model.url);
+			this.type = model.type;
+			this.state = model.state;
+			this.modify = model.modify;
+			this.length = model.length;
+			this.tags = new String(model.tags);
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	public BaseFile toSpecific() {
-		if(type == com.FileManagerX.BasicEnums.FileType.Picture) {
+
+	public boolean exists() {
+		java.io.File f = new java.io.File(this.url);
+		if(!f.exists()) {
+			return false;
+		}
+		if(com.FileManagerX.BasicEnums.FileType.Folder.equals(this.type)) {
+			return f.isDirectory();
+		}
+		else {
+			return f.isFile();
+		}
+	}
+	public boolean loadBasicInfo() {
+		java.io.File f = new java.io.File(this.url);
+		if(!f.exists()) {
+			return false;
 		}
 		
-		return this;
+		if(f.isDirectory()) {
+			url = f.getAbsolutePath();
+			type = com.FileManagerX.BasicEnums.FileType.Folder;
+			modify = f.lastModified();
+			length = 0;
+			return true;
+		}
+		else {
+			url = f.getAbsolutePath();
+			type = com.FileManagerX.BasicEnums.FileType.Unsupport;
+			modify = f.lastModified();
+			length = f.length();
+			return true;
+		}
 	}
-	public boolean exists() {
-		File f = new File(url);
-		return f.exists();
-	}
-	public boolean prepare() {
-		return true;
-	}
-	public boolean load() {
-		return false;
+	public boolean loadBasicInfo(java.io.File f) {
+		if(f==null || !f.exists()) {
+			return false;
+		}
+		
+		if(f.isDirectory()) {
+			url = f.getAbsolutePath();
+			type = com.FileManagerX.BasicEnums.FileType.Folder;
+			modify = f.lastModified();
+			length = 0;
+			return true;
+		}
+		else {
+			url = f.getAbsolutePath();
+			type = com.FileManagerX.BasicEnums.FileType.Unsupport;
+			modify = f.lastModified();
+			length = f.length();
+			return true;
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
-

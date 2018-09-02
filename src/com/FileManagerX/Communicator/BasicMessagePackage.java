@@ -32,19 +32,19 @@ public class BasicMessagePackage implements com.FileManagerX.Interfaces.IBasicMe
 	private long permitIdle;
 	private long sendTime;
 	private long receiveTime;
-	private com.FileManagerX.Interfaces.IRoutePathPackage rrp;
+	private com.FileManagerX.Interfaces.IRoutePathPackage rpp;
 	
 	private static long nextIndex = 0;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean setSourMachineIndex(long index) {
-		this.rrp.setSourMachine(index);
+		this.rpp.setSourMachine(index);
 		this.sourMachineIndex = index;
 		return true;
 	}
 	public boolean setDestMachineIndex(long index) {
-		this.rrp.setDestMachine(index);
+		this.rpp.setDestMachine(index);
 		this.broadcast.setDestMachine(index);
 		this.destMachineIndex = index;
 		return true;
@@ -178,15 +178,15 @@ public class BasicMessagePackage implements com.FileManagerX.Interfaces.IBasicMe
 		this.receiveTime = com.FileManagerX.Tools.Time.getTicks();
 		return true;
 	}
-	public boolean setRoutPathPackage(com.FileManagerX.Interfaces.IRoutePathPackage rrp) {
-		if(rrp == null) {
+	public boolean setRoutPathPackage(com.FileManagerX.Interfaces.IRoutePathPackage rpp) {
+		if(rpp == null) {
 			return false;
 		}
-		this.rrp = rrp;
+		this.rpp = rpp;
 		return true;
 	}
 	public boolean setRoutePathPackage() {
-		return this.rrp.setThis(this.sourMachineIndex, this.destMachineIndex);
+		return this.rpp.setThis(this.sourMachineIndex, this.destMachineIndex);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -266,7 +266,7 @@ public class BasicMessagePackage implements com.FileManagerX.Interfaces.IBasicMe
 		return this.receiveTime;
 	}
 	public com.FileManagerX.Interfaces.IRoutePathPackage getRoutePathPackage() {
-		return this.rrp;
+		return this.rpp;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -301,7 +301,7 @@ public class BasicMessagePackage implements com.FileManagerX.Interfaces.IBasicMe
 		this.broadcast = new com.FileManagerX.Deliver.Broadcast();
 		
 		this.permitIdle = com.FileManagerX.Globals.Configurations.TimeForPermitIdle_Transport;
-		this.rrp = com.FileManagerX.Factories.CommunicatorFactory.createRRP();
+		this.rpp = com.FileManagerX.Factories.CommunicatorFactory.createRRP();
 		this.sendTime = com.FileManagerX.Tools.Time.getTicks();
 		this.receiveTime = com.FileManagerX.Tools.Time.getTicks();
 	}
@@ -338,7 +338,7 @@ public class BasicMessagePackage implements com.FileManagerX.Interfaces.IBasicMe
 		return "[Machine]: " + this.sourMachineIndex + "->" + this.destMachineIndex + 
 			  ", [Address]: " + this.ip1 + ":" + this.port1 + "->" + this.ip2 + ":" + this.port2;
 	}
-	public String output() {
+	public com.FileManagerX.BasicModels.Config toConfig() {
 		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config();
 		c.setField(this.getClass().getSimpleName());
 		c.addToBottom(this.index);
@@ -346,7 +346,7 @@ public class BasicMessagePackage implements com.FileManagerX.Interfaces.IBasicMe
 		c.addToBottom(this.priority);
 		c.addToBottom(this.isRecord);
 		c.addToBottom(this.isDircet);
-		c.addToBottom(new com.FileManagerX.BasicModels.Config(this.broadcast.output()));
+		c.addToBottom(this.broadcast.toConfig());
 		c.addToBottom(this.sourMachineIndex);
 		c.addToBottom(this.destMachineIndex);
 		c.addToBottom(this.sourDepotIndex);
@@ -363,123 +363,133 @@ public class BasicMessagePackage implements com.FileManagerX.Interfaces.IBasicMe
 		c.addToBottom(this.permitIdle);
 		c.addToBottom(this.sendTime);
 		c.addToBottom(this.receiveTime);
-		c.addToBottom(new com.FileManagerX.BasicModels.Config(this.rrp.output()));
-		
-		return c.output();
+		c.addToBottom(this.rpp.toConfig());
+		return c;
 	}
-	public String input(String in) {
-		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config(in);
+	public String output() {
+		return this.toConfig().output();
+	}
+	public com.FileManagerX.BasicModels.Config input(String in) {
+		return this.input(new com.FileManagerX.BasicModels.Config(in));
+	}
+	public com.FileManagerX.BasicModels.Config input(com.FileManagerX.BasicModels.Config c) {
+		if(c == null) { return null; }
+		
+		if(!c.getIsOK()) { return c; }
 		this.index = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
+		if(!c.getIsOK()) { return c; }
 		this.id = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
+		if(!c.getIsOK()) { return c; }
 		this.priority = c.fetchFirstInt();
-		if(!c.getIsOK()) { return null; }
+		if(!c.getIsOK()) { return c; }
 		this.isRecord = c.fetchFirstBoolean();
-		if(!c.getIsOK()) { return null; }
+		if(!c.getIsOK()) { return c; }
 		this.isDircet = c.fetchFirstBoolean();
-		if(!c.getIsOK()) { return null; }
-		
-		in = this.broadcast.input(c.output());
-		if(in == null) {
-			return null;
-		}
-		c = new com.FileManagerX.BasicModels.Config(in);
-		
+		if(!c.getIsOK()) { return c; }
+		c = this.broadcast.input(c);
+		if(!c.getIsOK()) { return c; }
 		this.sourMachineIndex = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
+		if(!c.getIsOK()) { return c; }
 		this.destMachineIndex = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
+		if(!c.getIsOK()) { return c; }
 		this.sourDepotIndex = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
+		if(!c.getIsOK()) { return c; }
 		this.destDepotIndex = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
+		if(!c.getIsOK()) { return c; }
 		this.sourDataBaseIndex = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
+		if(!c.getIsOK()) { return c; }
 		this.destDataBaseIndex = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
+		if(!c.getIsOK()) { return c; }
 		this.sourUserIndex = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
+		if(!c.getIsOK()) { return c; }
 		this.destUserIndex = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
+		if(!c.getIsOK()) { return c; }
 		this.ip1 = c.fetchFirstString();
-		if(!c.getIsOK()) { return null; }
+		if(!c.getIsOK()) { return c; }
 		this.ip2 = c.fetchFirstString();
-		if(!c.getIsOK()) { return null; }
+		if(!c.getIsOK()) { return c; }
 		this.port1 = c.fetchFirstInt();
-		if(!c.getIsOK()) { return null; }
+		if(!c.getIsOK()) { return c; }
 		this.port2 = c.fetchFirstInt();
-		if(!c.getIsOK()) { return null; }
+		if(!c.getIsOK()) { return c; }
 		this.password = c.fetchFirstString();
-		if(!c.getIsOK()) { return null; }
+		if(!c.getIsOK()) { return c; }
 		this.permitIdle = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
+		if(!c.getIsOK()) { return c; }
 		this.sendTime = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
+		if(!c.getIsOK()) { return c; }
 		this.receiveTime = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		
-		return this.rrp.input(c.output());
+		if(!c.getIsOK()) { return c; }
+		c = this.rpp.input(c);
+		if(!c.getIsOK()) { return c; }
+		return c;
 	}
 	public void copyReference(Object o) {
-		BasicMessagePackage bmp = (BasicMessagePackage)o;
-		this.sourMachineIndex = bmp.sourMachineIndex;
-		this.destMachineIndex = bmp.destMachineIndex;
-		this.sourDepotIndex = bmp.destDepotIndex;
-		this.destDepotIndex = bmp.destDepotIndex;
-		this.sourDataBaseIndex = bmp.sourDataBaseIndex;
-		this.destDataBaseIndex = bmp.destDataBaseIndex;
-		this.sourUserIndex = bmp.sourUserIndex;
-		this.destUserIndex = bmp.destUserIndex;
-		
-		this.ip1 = bmp.ip1;
-		this.ip2 = bmp.ip2;
-		this.port1 = bmp.port1;
-		this.port2 = bmp.port2;
-		this.password = bmp.password;
-		
-		this.index = bmp.index;
-		this.id = bmp.id;
-		this.priority = bmp.priority;
-		
-		this.isRecord = bmp.isRecord;
-		this.isDircet = bmp.isDircet;
-		this.broadcast.copyReference(bmp.broadcast);
-		
-		this.permitIdle = bmp.permitIdle;
-		this.sendTime = bmp.sendTime;
-		this.receiveTime = bmp.receiveTime;
-		this.rrp = bmp.rrp;
+		if(o == null) { return; }
+		if(o instanceof BasicMessagePackage) {
+			BasicMessagePackage bmp = (BasicMessagePackage)o;
+			this.sourMachineIndex = bmp.sourMachineIndex;
+			this.destMachineIndex = bmp.destMachineIndex;
+			this.sourDepotIndex = bmp.destDepotIndex;
+			this.destDepotIndex = bmp.destDepotIndex;
+			this.sourDataBaseIndex = bmp.sourDataBaseIndex;
+			this.destDataBaseIndex = bmp.destDataBaseIndex;
+			this.sourUserIndex = bmp.sourUserIndex;
+			this.destUserIndex = bmp.destUserIndex;
+			
+			this.ip1 = bmp.ip1;
+			this.ip2 = bmp.ip2;
+			this.port1 = bmp.port1;
+			this.port2 = bmp.port2;
+			this.password = bmp.password;
+			
+			this.index = bmp.index;
+			this.id = bmp.id;
+			this.priority = bmp.priority;
+			
+			this.isRecord = bmp.isRecord;
+			this.isDircet = bmp.isDircet;
+			this.broadcast.copyReference(bmp.broadcast);
+			
+			this.permitIdle = bmp.permitIdle;
+			this.sendTime = bmp.sendTime;
+			this.receiveTime = bmp.receiveTime;
+			this.rpp = bmp.rpp;
+			return;
+		}
 	}
 	public void copyValue(Object o) {
-		BasicMessagePackage bmp = (BasicMessagePackage)o;
-		this.sourMachineIndex = bmp.sourMachineIndex;
-		this.destMachineIndex = bmp.destMachineIndex;
-		this.sourDepotIndex = bmp.destDepotIndex;
-		this.destDepotIndex = bmp.destDepotIndex;
-		this.sourDataBaseIndex = bmp.sourDataBaseIndex;
-		this.destDataBaseIndex = bmp.destDataBaseIndex;
-		this.sourUserIndex = bmp.sourUserIndex;
-		this.destUserIndex = bmp.destUserIndex;
-		
-		this.ip1 = new String(bmp.ip1);
-		this.ip2 = new String(bmp.ip2);
-		this.port1 = bmp.port1;
-		this.port2 = bmp.port2;
-		this.password = new String(bmp.password);
-		
-		this.index = bmp.index;
-		this.id = bmp.id;
-		this.priority = bmp.priority;
-		
-		this.isRecord = bmp.isRecord;
-		this.isDircet = bmp.isDircet;
-		this.broadcast.copyValue(bmp.broadcast);
-		
-		this.permitIdle = bmp.permitIdle;
-		this.sendTime = bmp.sendTime;
-		this.receiveTime = bmp.receiveTime;
-		this.rrp.copyValue(bmp.rrp);
+		if(o == null) { return; }
+		if(o instanceof BasicMessagePackage) {
+			BasicMessagePackage bmp = (BasicMessagePackage)o;
+			this.sourMachineIndex = bmp.sourMachineIndex;
+			this.destMachineIndex = bmp.destMachineIndex;
+			this.sourDepotIndex = bmp.destDepotIndex;
+			this.destDepotIndex = bmp.destDepotIndex;
+			this.sourDataBaseIndex = bmp.sourDataBaseIndex;
+			this.destDataBaseIndex = bmp.destDataBaseIndex;
+			this.sourUserIndex = bmp.sourUserIndex;
+			this.destUserIndex = bmp.destUserIndex;
+			
+			this.ip1 = new String(bmp.ip1);
+			this.ip2 = new String(bmp.ip2);
+			this.port1 = bmp.port1;
+			this.port2 = bmp.port2;
+			this.password = new String(bmp.password);
+			
+			this.index = bmp.index;
+			this.id = bmp.id;
+			this.priority = bmp.priority;
+			
+			this.isRecord = bmp.isRecord;
+			this.isDircet = bmp.isDircet;
+			this.broadcast.copyValue(bmp.broadcast);
+			
+			this.permitIdle = bmp.permitIdle;
+			this.sendTime = bmp.sendTime;
+			this.receiveTime = bmp.receiveTime;
+			this.rpp.copyValue(bmp.rpp);
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

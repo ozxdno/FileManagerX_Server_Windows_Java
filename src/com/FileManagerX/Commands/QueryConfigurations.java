@@ -25,28 +25,6 @@ public class QueryConfigurations extends BaseCommand {
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	public void clear() {
-		super.clear();
-		initThis();
-	}
-	public String toString() {
-		return this.output();
-	}
-	public String output() {
-		return super.output();
-	}
-	public String input(String in) {
-		return super.input(in);
-	}
-	public void copyReference(Object o) {
-		super.copyReference(o);
-	}
-	public void copyValue(Object o) {
-		super.copyValue(o);
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean execute() {
 		if(!this.isConnected()) {

@@ -34,7 +34,7 @@ public class Pathes {
 		}
 	}
 	public final static java.lang.String getJarPath() {
-		com.FileManagerX.BasicModels.BaseFile f = new com.FileManagerX.BasicModels.BaseFile();
+		com.FileManagerX.BasicModels.File f = new com.FileManagerX.BasicModels.File();
 		return f.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
 	}
 	
@@ -72,50 +72,6 @@ public class Pathes {
 		//return getFolder_CFG() + "\\FileManagerX_Depot.cfg";
 		//return getFolder_CFG() + "\\FileManagerX_Client.cfg";
 		return getFolder_CFG() + "\\FileManagerX.cfg";
-	}
-	
-	
-	public final static boolean createServerCFG() {
-		java.io.File cfg = new java.io.File(getFile_CFG());
-		if(cfg.exists() && cfg.isFile()) {
-			return true;
-		}
-		
-		com.FileManagerX.Interfaces.IDepotManager dm = com.FileManagerX.Factories.DepotFactory.createManager();
-		dm.setUncheck(true);
-		if(!dm.createFile(com.FileManagerX.Tools.Pathes.getFile_CFG())) {
-			return false;
-		}
-		
-		return com.FileManagerX.Globals.Datas.CFG.saveCFGCore(com.FileManagerX.BasicEnums.StartType.Server, true);
-	}
-	public final static boolean createDepotCFG() {
-		java.io.File cfg = new java.io.File(getFile_CFG());
-		if(cfg.exists() && cfg.isFile()) {
-			return true;
-		}
-		
-		com.FileManagerX.Interfaces.IDepotManager dm = com.FileManagerX.Factories.DepotFactory.createManager();
-		dm.setUncheck(true);
-		if(!dm.createFile(com.FileManagerX.Tools.Pathes.getFile_CFG())) {
-			return false;
-		}
-		
-		return com.FileManagerX.Globals.Datas.CFG.saveCFGCore(com.FileManagerX.BasicEnums.StartType.Depot, true);
-	}
-	public final static boolean createClientCFG() {
-		java.io.File cfg = new java.io.File(getFile_CFG());
-		if(cfg.exists() && cfg.isFile()) {
-			return true;
-		}
-		
-		com.FileManagerX.Interfaces.IDepotManager dm = com.FileManagerX.Factories.DepotFactory.createManager();
-		dm.setUncheck(true);
-		if(!dm.createFile(com.FileManagerX.Tools.Pathes.getFile_CFG())) {
-			return false;
-		}
-		
-		return com.FileManagerX.Globals.Datas.CFG.saveCFGCore(com.FileManagerX.BasicEnums.StartType.Client, true);
 	}
 	
 	public final static boolean createFolder_CFG() {
@@ -176,21 +132,6 @@ public class Pathes {
 		ok &= createFolder_TMP_0();
 		ok &= createFolder_TMP_0_Screen();
 		ok &= createFolder_TMP_0_Match();
-		
-		return ok;
-	}
-	public final static boolean createAll(com.FileManagerX.BasicEnums.StartType type) {
-		boolean ok = createAll();
-		
-		if(com.FileManagerX.BasicEnums.StartType.Server.equals(type)) {
-			ok &= createServerCFG();
-		}
-		if(com.FileManagerX.BasicEnums.StartType.Depot.equals(type)) {
-			ok &= createDepotCFG();
-		}
-		if(com.FileManagerX.BasicEnums.StartType.Client.equals(type)) {
-			ok &= createClientCFG();
-		}
 		
 		return ok;
 	}

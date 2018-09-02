@@ -1,6 +1,6 @@
 package com.FileManagerX.Globals;
 
-public class Datas {
+public final class Datas {
 
 	/**
 	 * 错误列表，每天的错误都将保存在：日期.log 的文件中。
@@ -31,14 +31,14 @@ public class Datas {
 	 * 
 	 */
 	public final static com.FileManagerX.FileModels.CFG CFG = 
-			new com.FileManagerX.FileModels.CFG(com.FileManagerX.Tools.Pathes.getFile_CFG());
+			new com.FileManagerX.FileModels.CFG();
 	
 	/**
 	 * 本台机器的机器信息
 	 * 
 	 */
 	public final static com.FileManagerX.BasicModels.MachineInfo ThisMachine = 
-			new com.FileManagerX.BasicModels.MachineInfo();
+			com.FileManagerX.Factories.DefaultFactory.createDefaultMachineInfo();
 	
 	/**
 	 * 用户信息
@@ -122,6 +122,12 @@ public class Datas {
 	public final static com.FileManagerX.Communicator.ClientConnections OtherServers = 
 			new com.FileManagerX.Communicator.ClientConnections();
 	/**
+	 * 该服务器的可达客户端
+	 * 
+	 */
+	public final static com.FileManagerX.BasicCollections.MachineInfos OtherClients =
+			new com.FileManagerX.BasicCollections.MachineInfos();
+	/**
 	 * 所有的本地 Depot 的管理器，Depot 包含如下信息：
 	 * 
 	 * Folders;
@@ -129,8 +135,8 @@ public class Datas {
 	 * Pixels;
 	 * 
 	 */
-	public final static com.FileManagerX.Interfaces.IDBManagers DBManagers = 
-			com.FileManagerX.Factories.DataBaseFactory.createManagers();
+	public final static com.FileManagerX.DataBase.Managers DBManagers = 
+			new com.FileManagerX.DataBase.Managers();
 	/**
 	 * 扫描器
 	 */

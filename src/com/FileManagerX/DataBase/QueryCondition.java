@@ -9,6 +9,8 @@ public class QueryCondition implements com.FileManagerX.Interfaces.IPublic {
 	private String value;
 	private Relation relation;
 	
+	private Object content;
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean setItemName(String itemName) {
@@ -53,6 +55,49 @@ public class QueryCondition implements com.FileManagerX.Interfaces.IPublic {
 		return this.relation;
 	}
 	
+	public String getValue_String() {
+		return this.value;
+	}
+	public boolean getValue_Boolean() {
+		try {
+			if(content == null) { content = Integer.parseInt(this.value) != 0; }
+			return (boolean)content;
+		} catch(Exception e) {
+			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
+			return false;
+		}
+	}
+	public int getValue_Integer() {
+		try {
+			if(content == null) { content = Integer.parseInt(this.value); }
+			return (int)content;
+		} catch(Exception e) {
+			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
+			return 0;
+		}
+	}
+	public long getValue_Long() {
+		try {
+			if(content == null) { content = Long.parseLong(this.value); }
+			return (long)content;
+		} catch(Exception e) {
+			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
+			return 0;
+		}
+	}
+	public double getValue_Double() {
+		try {
+			if(content == null) { content = Double.parseDouble(this.value); }
+			return (double)content;
+		} catch(Exception e) {
+			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
+			return 0;
+		}
+	}
+	public String getValue_Enum() {
+		return this.value;
+	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public QueryCondition() {
@@ -71,122 +116,90 @@ public class QueryCondition implements com.FileManagerX.Interfaces.IPublic {
 		initThis();
 	}
 	public String toString() {
-		return "[" + this.relation.getRelationString() + "] " + 
-				this.itemName + " " + 
-				this.sign.getSignString() + " " +
+		return this.toConfig().getValue();
+	}
+	public com.FileManagerX.BasicModels.Config toConfig() {
+		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config();
+		c.setField(this.getClass().getSimpleName());
+		String str = "[" + this.relation.getRelationString() + "] " +
+				this.itemName + " " +
+				"= " +
 				this.value;
+		c.addToBottom(str);
+		return c;
 	}
 	public String output() {
-		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config("Query Condition = ");
-		c.addToBottom(this.itemName);
-		c.addToBottom(this.sign.toString());
-		c.addToBottom(this.value);
-		c.addToBottom(this.relation.toString());
-		return c.output();
+		return this.toConfig().output();
 	}
-	public String input(String in) {
+	public com.FileManagerX.BasicModels.Config input(String in) {
+		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config(in);
+		return this.input(c);
+	}
+	public com.FileManagerX.BasicModels.Config input(com.FileManagerX.BasicModels.Config c) {
+		if(c == null) { return null; }
+		
+		if(!c.getIsOK()) { return c; }
+		String exp = c.fetchFirstString();
+		if(!c.getIsOK()) { return c; }
+		
 		try {
-			com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config(in);
-			this.itemName = c.fetchFirstString();
-			if(!c.getIsOK()) { return null; }
-			this.sign = Sign.valueOf(c.fetchFirstString());
-			if(!c.getIsOK()) { return null; }
-			this.value = c.fetchFirstString();
-			if(!c.getIsOK()) { return null; }
-			this.relation = Relation.valueOf(c.fetchFirstString());
-			if(!c.getIsOK()) { return null; }
-			return c.output();
+			com.FileManagerX.Tools.StringUtil su = new com.FileManagerX.Tools.StringUtil();
+			su.expression = exp;
+			su.bracketL = '[';
+			su.bracketR = ']';
+			
+			this.relation = Relation.toRelation(su.getNextArg_Brackets());
+			if(this.relation == null) {
+				com.FileManagerX.BasicEnums.ErrorType.OTHERS.register("Relation is Wrong");
+				c.setIsOK(false);
+				return c;
+			}
+			
+			su = su.getNextStringUtil();
+			String item = su.getNextArg_String();
+			if(item == null || item.length() == 0) {
+				com.FileManagerX.BasicEnums.ErrorType.OTHERS.register("No ItemName");
+				c.setIsOK(false);
+				return c;
+			}
+			this.itemName = item;
+			
+			su = su.getNextStringUtil();
+			this.sign = Sign.toSign(su.getNextArg_String());
+			if(this.sign == null) {
+				com.FileManagerX.BasicEnums.ErrorType.OTHERS.register("Sign is Wrong");
+				c.setIsOK(false);
+				return c;
+			}
+			
+			su = su.getNextStringUtil();
+			this.value = su.expression;
+			
+			return c;
 		} catch(Exception e) {
 			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
-			return null;
+			c.setIsOK(false);
+			return c;
 		}
 	}
 	public void copyReference(Object o) {
-		QueryCondition q = (QueryCondition)o;
-		this.itemName = q.itemName;
-		this.sign = q.sign;
-		this.value = q.value;
-		this.relation = q.relation;
+		if(o == null) { return; }
+		if(o instanceof QueryCondition) {
+			QueryCondition q = (QueryCondition)o;
+			this.itemName = q.itemName;
+			this.sign = q.sign;
+			this.value = q.value;
+			this.relation = q.relation;
+		}
 	}
 	public void copyValue(Object o) {
-		QueryCondition q = (QueryCondition)o;
-		this.itemName = new String(q.itemName);
-		this.sign = q.sign;
-		this.value = new String(q.value);
-		this.relation = q.relation;
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	/**
-	 * 只允许有一个空格作为分割符
-	 * 
-	 * @param str 导入字符串
-	 */
-	public boolean stringToThis(String str) {
-		this.clear();
-		try {
-			if(str == null || str.length() == 0) {
-				return true;
-			}
-			str = com.FileManagerX.Tools.String.clearLRSpace(str);
-			
-			int idx = str.indexOf(' ');
-			String r = str.substring(0, idx);
-			str = str.substring(idx+1);
-			idx = str.indexOf(' ');
-			String n = str.substring(0, idx);
-			str = str.substring(idx+1);
-			idx = str.indexOf(' ');
-			String s = str.substring(0, idx);
-			str = str.substring(idx+1);
-			String v = str;
-			
-			if(r.equals("[&]")) {
-				this.relation = Relation.AND;
-			}
-			else if(r.equals("[|]")) {
-				this.relation = Relation.OR;
-			}
-			else {
-				return false;
-			}
-			
-			this.itemName = n;
-			
-			if(s.equals("=")) {
-				this.sign = Sign.EQUAL;
-			}
-			else if(s.equals("!=")) {
-				this.sign = Sign.NOT_EQUAL;
-			}
-			else if(s.equals(">")) {
-				this.sign = Sign.GREATER;
-			}
-			else if(s.equals(">=")) {
-				this.sign = Sign.GREATER_OR_EQUAL;
-			}
-			else if(s.equals("<")) {
-				this.sign = Sign.LESS;
-			}
-			else if(s.equals("<=")) {
-				this.sign = Sign.LESS_OR_EQUAL;
-			}
-			else if(s.equals("LIKE")) {
-				this.sign = Sign.LIKE;
-			}
-			else if(s.equals("CONTAIN")) {
-				this.sign = Sign.CONTAIN;
-			}
-			else {
-				return false;
-			}
-			
-			this.value = v;
-			return true;
-		} catch(Exception e) {
-			//com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
-			return false;
+		if(o == null) { return; }
+		if(o instanceof QueryCondition) {
+			QueryCondition q = (QueryCondition)o;
+			this.itemName = new String(q.itemName);
+			this.sign = q.sign;
+			this.value = new String(q.value);
+			this.relation = q.relation;
 		}
 	}
 	

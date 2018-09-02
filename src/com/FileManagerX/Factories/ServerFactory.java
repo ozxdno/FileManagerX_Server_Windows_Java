@@ -12,11 +12,16 @@ public class ServerFactory {
 	
 	public final static com.FileManagerX.BasicModels.MachineInfo createServerMachine() {
 		MachineInfo def = new MachineInfo();
-		def.setIndex(1);
+		def.setIndex(com.FileManagerX.Globals.Configurations.This_MachineIndex);
 		def.setUserIndex(1);
-		def.setIp("172.24.136.41");
+		def.setMac();
+		def.setIp();
 		def.setName();
 		def.setPort(40000);
+		
+		def.setType(com.FileManagerX.BasicEnums.MachineType.SERVER);
+		def.setState(com.FileManagerX.BasicEnums.MachineState.RUNNING);
+		
 		return def;
 	}
 	

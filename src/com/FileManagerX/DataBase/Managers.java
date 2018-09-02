@@ -1,27 +1,33 @@
 package com.FileManagerX.DataBase;
 
-import java.util.*;
-
-public class Managers implements com.FileManagerX.Interfaces.IDBManagers {
+public class Managers implements com.FileManagerX.Interfaces.ICollection
+	<com.FileManagerX.Interfaces.IDBManager, Long> {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	private List<com.FileManagerX.Interfaces.IDBManager> content;
-	
+	private java.util.LinkedList<com.FileManagerX.Interfaces.IDBManager> content;
+	private com.FileManagerX.BasicModels.DataBaseInfo database;
+
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	public boolean setContent(List<com.FileManagerX.Interfaces.IDBManager> content) {
-		if(content == null) {
+
+	public boolean setDBInfo(com.FileManagerX.BasicModels.DataBaseInfo database) {
+		if(database == null) {
 			return false;
 		}
-		this.content = content;
+		this.database = database;
 		return true;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public List<com.FileManagerX.Interfaces.IDBManager> getContent() {
-		return this.content;
+	public com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IDBManager> getIterator() {
+		return new IteratorImpl();
+	}
+	public Long getKey(com.FileManagerX.Interfaces.IDBManager item) {
+		return item == null ? null : item.getDBInfo().getIndex();
+	}
+	public com.FileManagerX.BasicModels.DataBaseInfo getDBInfo() {
+		return this.database;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -30,10 +36,7 @@ public class Managers implements com.FileManagerX.Interfaces.IDBManagers {
 		initThis();
 	}
 	private void initThis() {
-		if(content == null) {
-			content = new ArrayList<com.FileManagerX.Interfaces.IDBManager>();
-		}
-		content.clear();
+		this.content = new java.util.LinkedList<>();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -44,429 +47,285 @@ public class Managers implements com.FileManagerX.Interfaces.IDBManagers {
 	public void clear() {
 		initThis();
 	}
-	public boolean add(Object item) {
-		if(item == null) {
-			return false;
-		}
-		try {
-			content.add((com.FileManagerX.Interfaces.IDBManager)item);
-			return true;
-		} catch(Exception e) {
-			return false;
-		}
+	public boolean add(com.FileManagerX.Interfaces.IDBManager item) {
+		this.content.add(item);
+		return true;
 	}
-	/**
-	 * Sort By DataBaseIndex
-	 * 
-	 */
-	@SuppressWarnings("unchecked")
-	public boolean sortIncrease() {
-		@SuppressWarnings("rawtypes")
-		Comparator c = new Comparator<com.FileManagerX.Interfaces.IDBManager>() {
-			public int compare(com.FileManagerX.Interfaces.IDBManager e1, com.FileManagerX.Interfaces.IDBManager e2) {
-				if(e1.getDBInfo().getIndex() > e2.getDBInfo().getIndex()) {
-					return 1;
-				} else {
-					return -1;
-				}
-			}
-		};
-		
-		try {
-			Collections.sort(this.getContent(), c);
-			return true;
-		} catch(Exception e) {
-			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(com.FileManagerX.BasicEnums.ErrorLevel.Error,"Error in Compare",e.toString());
-			return false;
-		}
-	}
-	
-	/**
-	 * Sort By DataBaseIndex
-	 * 
-	 */
-	@SuppressWarnings("unchecked")
-	public boolean sortDecrease() {
-		@SuppressWarnings("rawtypes")
-		Comparator c = new Comparator<com.FileManagerX.Interfaces.IDBManager>() {
-			public int compare(com.FileManagerX.Interfaces.IDBManager e1, com.FileManagerX.Interfaces.IDBManager e2) {
-				if(e1.getDBInfo().getIndex() > e2.getDBInfo().getIndex()) {
-					return -1;
-				} else {
-					return 1;
-				}
-			}
-		};
-		
-		try {
-			Collections.sort(this.getContent(), c);
-			return true;
-		} catch(Exception e) {
-			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(com.FileManagerX.BasicEnums.ErrorLevel.Error,"Error in Compare",e.toString());
-			return false;
-		}
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	public int indexOfDataBaseName(String dbName) {
-		for(int i=0; i<content.size(); i++) {
-			if(content.get(i).getDBInfo().getName().equals(dbName)) {
-				return i;
-			}
-		}
-		return -1;
-	}
-	public com.FileManagerX.Interfaces.IDBManager searchDataBaseName(String dbName) {
-		int index = this.indexOfDataBaseName(dbName);
-		if(index < 0) {
-			return null;
-		}
-		return content.get(index);
-	}
-	public com.FileManagerX.Interfaces.IDBManager fetchDataBaseName(String dbName) {
-		int index = this.indexOfDataBaseName(dbName);
-		if(index < 0) {
-			return null;
-		}
-		com.FileManagerX.Interfaces.IDBManager i = content.get(index);
-		this.content.get(index).disconnect();
-		this.content.remove(index);
-		return i;
-	}
-	public void deleteDataBaseName(String dbName) {
-		int index = this.indexOfDataBaseName(dbName);
-		if(index >= 0) {
-			this.content.get(index).disconnect();
-			this.content.remove(index);
-		}
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	public int indexOfDepotName(String depotName) {
-		for(int i=0; i<content.size(); i++) {
-			if(content.get(i).getDBInfo().getDepotInfo().getName().equals(depotName)) {
-				return i;
-			}
-		}
-		return -1;
-	}
-	public com.FileManagerX.Interfaces.IDBManager searchDepotName(String depotName) {
-		int index = this.indexOfDepotName(depotName);
-		if(index < 0) {
-			return null;
-		}
-		return content.get(index);
-	}
-	public com.FileManagerX.Interfaces.IDBManager fetchDepotName(String depotName) {
-		int index = this.indexOfDepotName(depotName);
-		if(index < 0) {
-			return null;
-		}
-		com.FileManagerX.Interfaces.IDBManager i = content.get(index);
-		this.content.get(index).disconnect();
-		this.content.remove(index);
-		return i;
-	}
-	public void deleteDepotName(String depotName) {
-		int index = this.indexOfDepotName(depotName);
-		if(index >= 0) {
-			this.content.get(index).disconnect();
-			this.content.remove(index);
-		}
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	public int indexOfDataBaseIndex(long idx) {
-		for(int i=0; i<content.size(); i++) {
-			if(content.get(i).getDBInfo().getIndex() == idx) {
-				return i;
-			}
-		}
-		return -1;
-	}
-	public com.FileManagerX.Interfaces.IDBManager searchDataBaseIndex(long idx) {
-		int index = this.indexOfDataBaseIndex(idx);
-		if(index < 0) {
-			return null;
-		}
-		return content.get(index);
-	}
-	public com.FileManagerX.Interfaces.IDBManager fetchDataBaseIndex(long idx) {
-		int index = this.indexOfDataBaseIndex(idx);
-		if(index < 0) {
-			return null;
-		}
-		com.FileManagerX.Interfaces.IDBManager i = content.get(index);
-		this.content.get(index).disconnect();
-		this.content.remove(index);
-		return i;
-	}
-	public void deleteDataBaseIndex(long idx) {
-		int index = this.indexOfDataBaseIndex(idx);
-		if(index >= 0) {
-			this.content.get(index).disconnect();
-			this.content.remove(index);
-		}
+	public boolean sort(java.util.Comparator<com.FileManagerX.Interfaces.IDBManager> c) {
+		return false;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public int indexOfDepotIndex(long idx) {
-		for(int i=0; i<content.size(); i++) {
-			if(content.get(i).getDBInfo().getDepotInfo().getIndex() == idx) {
-				return i;
+	public String toString() {
+		return this.database.toString();
+	}
+	public com.FileManagerX.BasicModels.Config toConfig() {
+		return null;
+	}
+	public String output() {
+		return "";
+	}
+	public com.FileManagerX.BasicModels.Config input(String in) {
+		return null;
+	}
+	public com.FileManagerX.BasicModels.Config input(com.FileManagerX.BasicModels.Config c) {
+		return null;
+	}
+	public void copyReference(Object o) {
+		;
+	}
+	public void copyValue(Object o) {
+		;
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public com.FileManagerX.Interfaces.IDBManager searchByKey(Long key) {
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IDBManager> it = this.getIterator();
+		while(it.hasNext()) {
+			if(key.equals(this.getKey(it.getNext()))) {
+				return it.getNext();
 			}
 		}
-		return -1;
+		return null;
 	}
-	public com.FileManagerX.Interfaces.IDBManager searchDepotIndex(long idx) {
-		int index = this.indexOfDepotIndex(idx);
-		if(index < 0) {
-			return null;
+	public com.FileManagerX.Interfaces.IDBManager fetchByKey(Long key) {
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IDBManager> it = this.getIterator();
+		while(it.hasNext()) {
+			com.FileManagerX.Interfaces.IDBManager dbm = it.getNext();
+			if(key.equals(this.getKey(dbm))) {
+				it.remove();
+				return dbm;
+			}
 		}
-		return content.get(index);
+		return null;
 	}
-	public com.FileManagerX.Interfaces.IDBManager fetchDepotIndex(long idx) {
-		int index = this.indexOfDepotIndex(idx);
-		if(index < 0) {
-			return null;
+	public Managers searchesByKey(Long key) {
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IDBManager> it = this.getIterator();
+		Managers res = new Managers();
+		while(it.hasNext()) {
+			if(key.equals(this.getKey(it.getNext()))) {
+				res.add(it.getNext());
+			}
 		}
-		com.FileManagerX.Interfaces.IDBManager i = content.get(index);
-		this.content.get(index).disconnect();
-		this.content.remove(index);
-		return i;
+		return res;
 	}
-	public void deleteDepotIndex(long idx) {
-		int index = this.indexOfDepotIndex(idx);
-		if(index >= 0) {
-			this.content.get(index).disconnect();
-			this.content.remove(index);
+	public Managers fetchesByKey(Long key) {
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IDBManager> it = this.getIterator();
+		Managers res = new Managers();
+		while(it.hasNext()) {
+			if(key.equals(this.getKey(it.getNext()))) {
+				res.add(it.getNext());
+				it.remove();
+			}
 		}
+		return res;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public int indexOfMachineName(String machineName) {
-		for(int i=0; i<content.size(); i++) {
-			if(content.get(i).getDBInfo().getMachineInfo().getName().equals(machineName)) {
-				return i;
+	public com.FileManagerX.Interfaces.IDBManager searchByCount(int count) {
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IDBManager> it = this.getIterator();
+		while(it.hasNext()) {
+			com.FileManagerX.Interfaces.IDBManager dbm = it.getNext();
+			if(--count < 0) {
+				return dbm;
 			}
 		}
-		return -1;
+		return null;
 	}
-	public com.FileManagerX.Interfaces.IDBManager searchMachineName(String machineName) {
-		int index = this.indexOfMachineName(machineName);
-		if(index < 0) {
-			return null;
+	public com.FileManagerX.Interfaces.IDBManager fetchByCount(int count) {
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IDBManager> it = this.getIterator();
+		while(it.hasNext()) {
+			com.FileManagerX.Interfaces.IDBManager dbm = it.getNext();
+			if(--count < 0) {
+				it.remove();
+				return dbm;
+			}
 		}
-		return content.get(index);
+		return null;
 	}
-	public com.FileManagerX.Interfaces.IDBManager fetchMachineName(String machineName) {
-		int index = this.indexOfMachineName(machineName);
-		if(index < 0) {
-			return null;
+	public Managers searchesByCount(int bg, int ed) {
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IDBManager> it = this.getIterator();
+		Managers res = new Managers();
+		if(bg < 0) { bg = 0; }
+		if(ed >= this.size()) { ed = this.size()-1; }
+		int cnt = 0;
+		while(it.hasNext()) {
+			if(cnt < bg) { cnt++; continue; }
+			if(cnt <= ed) { res.add(it.getNext()); cnt++; continue; }
+			if(cnt > ed) { break; }
 		}
-		com.FileManagerX.Interfaces.IDBManager i = content.get(index);
-		this.content.get(index).disconnect();
-		this.content.remove(index);
-		return i;
+		return res;
 	}
-	public void deleteMachineName(String machineName) {
-		int index = this.indexOfMachineName(machineName);
-		if(index >= 0) {
-			this.content.get(index).disconnect();
-			this.content.remove(index);
+	public Managers fetchesByCount(int bg, int ed) {
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IDBManager> it = this.getIterator();
+		Managers res = new Managers();
+		if(bg < 0) { bg = 0; }
+		if(ed >= this.size()) { ed = this.size()-1; }
+		int cnt = 0;
+		while(it.hasNext()) {
+			if(cnt < bg) { cnt++; continue; }
+			if(cnt <= ed) { res.add(it.getNext()); it.remove(); cnt++; continue; }
+			if(cnt > ed) { break; }
 		}
+		return res;
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public com.FileManagerX.Interfaces.IDBManager searchByDataBaseIndex(long database) {
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IDBManager> it = this.getIterator();
+		while(it.hasNext()) {
+			com.FileManagerX.Interfaces.IDBManager dbm = it.getNext();
+			if(dbm.getDBInfo().getIndex() == database) {
+				return dbm;
+			}
+		}
+		return null;
+	}
+	public com.FileManagerX.Interfaces.IDBManager fetchByDataBaseIndex(long database) {
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IDBManager> it = this.getIterator();
+		while(it.hasNext()) {
+			com.FileManagerX.Interfaces.IDBManager dbm = it.getNext();
+			if(dbm.getDBInfo().getIndex() == database) {
+				it.remove();
+				return dbm;
+			}
+		}
+		return null;
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public com.FileManagerX.Interfaces.IDBManager searchByDepotIndex(long depot) {
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IDBManager> it = this.getIterator();
+		while(it.hasNext()) {
+			com.FileManagerX.Interfaces.IDBManager dbm = it.getNext();
+			if(dbm.getDBInfo().getDepotIndex() == depot) {
+				return dbm;
+			}
+		}
+		return null;
+	}
+	public com.FileManagerX.Interfaces.IDBManager fetchByDepotIndex(long depot) {
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IDBManager> it = this.getIterator();
+		while(it.hasNext()) {
+			com.FileManagerX.Interfaces.IDBManager dbm = it.getNext();
+			if(dbm.getDBInfo().getDepotIndex() == depot) {
+				it.remove();
+				return dbm;
+			}
+		}
+		return null;
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public com.FileManagerX.Interfaces.IDBManager searchByDataBaseName(String name) {
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IDBManager> it = this.getIterator();
+		while(it.hasNext()) {
+			com.FileManagerX.Interfaces.IDBManager dbm = it.getNext();
+			if(dbm.getDBInfo().getName().equals(name)) {
+				return dbm;
+			}
+		}
+		return null;
+	}
+	public com.FileManagerX.Interfaces.IDBManager fetchByDataBaseName(String name) {
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IDBManager> it = this.getIterator();
+		while(it.hasNext()) {
+			com.FileManagerX.Interfaces.IDBManager dbm = it.getNext();
+			if(dbm.getDBInfo().getName().equals(name)) {
+				it.remove();
+				return dbm;
+			}
+		}
+		return null;
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public com.FileManagerX.Interfaces.IDBManager searchByDepotName(String name) {
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IDBManager> it = this.getIterator();
+		while(it.hasNext()) {
+			com.FileManagerX.Interfaces.IDBManager dbm = it.getNext();
+			if(dbm.getDBInfo().getDepotInfo().getName().equals(name)) {
+				return dbm;
+			}
+		}
+		return null;
+	}
+	public com.FileManagerX.Interfaces.IDBManager fetchByDepotName(String name) {
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IDBManager> it = this.getIterator();
+		while(it.hasNext()) {
+			com.FileManagerX.Interfaces.IDBManager dbm = it.getNext();
+			if(dbm.getDBInfo().getDepotInfo().getName().equals(name)) {
+				it.remove();
+				return dbm;
+			}
+		}
+		return null;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public int indexOfMachineIndex(long idx) {
-		for(int i=0; i<content.size(); i++) {
-			if(content.get(i).getDBInfo().getMachineInfo().getIndex() == idx) {
-				return i;
+	public com.FileManagerX.Interfaces.IDBManager searchByUnit(Unit unit) {
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IDBManager> it = this.getIterator();
+		while(it.hasNext()) {
+			com.FileManagerX.Interfaces.IDBManager dbm = it.getNext();
+			if(dbm.getUnit().equals(unit)) {
+				return dbm;
 			}
 		}
-		return -1;
+		return null;
 	}
-	public com.FileManagerX.Interfaces.IDBManager searchMachineIndex(long idx) {
-		int index = this.indexOfMachineIndex(idx);
-		if(index < 0) {
-			return null;
+	public com.FileManagerX.Interfaces.IDBManager fetchByUnit(Unit unit) {
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IDBManager> it = this.getIterator();
+		while(it.hasNext()) {
+			com.FileManagerX.Interfaces.IDBManager dbm = it.getNext();
+			if(dbm.getUnit().equals(unit)) {
+				it.remove();
+				return dbm;
+			}
 		}
-		return content.get(index);
+		return null;
 	}
-	public com.FileManagerX.Interfaces.IDBManager fetchMachineIndex(long idx) {
-		int index = this.indexOfMachineIndex(idx);
-		if(index < 0) {
-			return null;
+	public Managers searchesByUnit(Unit unit) {
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IDBManager> it = this.getIterator();
+		Managers managers = new Managers();
+		while(it.hasNext()) {
+			com.FileManagerX.Interfaces.IDBManager dbm = it.getNext();
+			if(dbm.getUnit().equals(unit)) {
+				managers.add(dbm);
+			}
 		}
-		com.FileManagerX.Interfaces.IDBManager i = content.get(index);
-		this.content.get(index).disconnect();
-		this.content.remove(index);
-		return i;
+		return managers;
 	}
-	public void deleteMachineIndex(long idx) {
-		int index = this.indexOfMachineIndex(idx);
-		if(index >= 0) {
-			this.content.get(index).disconnect();
-			this.content.remove(index);
+	public Managers fetchesByUnit(Unit unit) {
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IDBManager> it = this.getIterator();
+		Managers managers = new Managers();
+		while(it.hasNext()) {
+			com.FileManagerX.Interfaces.IDBManager dbm = it.getNext();
+			if(dbm.getUnit().equals(unit)) {
+				managers.add(dbm);
+				it.remove();
+			}
 		}
+		return managers;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public int indexOfMachineIP(String machineIP) {
-		for(int i=0; i<content.size(); i++) {
-			if(content.get(i).getDBInfo().getMachineInfo().getIp().equals(machineIP)) {
-				return i;
-			}
-		}
-		return -1;
-	}
-	public com.FileManagerX.Interfaces.IDBManager searchMachineIP(String machineIP) {
-		int index = this.indexOfMachineIP(machineIP);
-		if(index < 0) {
-			return null;
-		}
-		return content.get(index);
-	}
-	public com.FileManagerX.Interfaces.IDBManager fetchMachineIP(String machineIP) {
-		int index = this.indexOfMachineIP(machineIP);
-		if(index < 0) {
-			return null;
-		}
-		com.FileManagerX.Interfaces.IDBManager i = content.get(index);
-		this.content.get(index).disconnect();
-		this.content.remove(index);
-		return i;
-	}
-	public void deleteMachineIP(String machineIP) {
-		int index = this.indexOfMachineIP(machineIP);
-		if(index >= 0) {
-			this.content.get(index).disconnect();
-			this.content.remove(index);
-		}
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public int indexOfDataBaseUrl(String dbUrl) {
-		for(int i=0; i<content.size(); i++) {
-			if(content.get(i).getDBInfo().getUrl().equals(dbUrl)) {
-				return i;
-			}
-		}
-		return -1;
-	}
-	public com.FileManagerX.Interfaces.IDBManager searchDataBaseUrl(String dbUrl) {
-		int index = this.indexOfDataBaseUrl(dbUrl);
-		if(index < 0) {
-			return null;
-		}
-		return content.get(index);
-	}
-	public com.FileManagerX.Interfaces.IDBManager fetchDataBaseUrl(String dbUrl) {
-		int index = this.indexOfDataBaseUrl(dbUrl);
-		if(index < 0) {
-			return null;
-		}
-		com.FileManagerX.Interfaces.IDBManager i = content.get(index);
-		this.content.get(index).disconnect();
-		this.content.remove(index);
-		return i;
-	}
-	public void deleteDataBaseUrl(String dbUrl) {
-		int index = this.indexOfDataBaseUrl(dbUrl);
-		if(index >= 0) {
-			this.content.get(index).disconnect();
-			this.content.remove(index);
-		}
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public int indexOfDepotUrl(String depotUrl) {
-		for(int i=0; i<content.size(); i++) {
-			if(content.get(i).getDBInfo().getDepotInfo().getUrl().equals(depotUrl)) {
-				return i;
-			}
-		}
-		return -1;
-	}
-	public com.FileManagerX.Interfaces.IDBManager searchDepotUrl(String depotUrl) {
-		int index = this.indexOfDepotUrl(depotUrl);
-		if(index < 0) {
-			return null;
-		}
-		return content.get(index);
-	}
-	public com.FileManagerX.Interfaces.IDBManager fetchDepotUrl(String depotUrl) {
-		int index = this.indexOfDepotUrl(depotUrl);
-		if(index < 0) {
-			return null;
-		}
-		com.FileManagerX.Interfaces.IDBManager i = content.get(index);
-		this.content.get(index).disconnect();
-		this.content.remove(index);
-		return i;
-	}
-	public void deleteDepotUrl(String depotUrl) {
-		int index = this.indexOfDepotUrl(depotUrl);
-		if(index >= 0) {
-			this.content.get(index).disconnect();
-			this.content.remove(index);
-		}
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public int indexOfUnit(Unit unit) {
-		for(int i=0; i<content.size(); i++) {
-			if(content.get(i).getUnit().equals(unit)) {
-				return i;
-			}
-		}
-		return -1;
-	}
-	public com.FileManagerX.Interfaces.IDBManager searchUnit(Unit unit) {
-		int index = this.indexOfUnit(unit);
-		if(index < 0) {
-			return null;
-		}
-		return content.get(index);
-	}
-	public com.FileManagerX.Interfaces.IDBManager fetchUnit(Unit unit) {
-		int index = this.indexOfUnit(unit);
-		if(index < 0) {
-			return null;
-		}
-		com.FileManagerX.Interfaces.IDBManager i = content.get(index);
-		this.content.get(index).disconnect();
-		this.content.remove(index);
-		return i;
-	}
-	public void deleteUnit(Unit unit) {
-		int index = this.indexOfUnit(unit);
-		if(index >= 0) {
-			this.content.get(index).disconnect();
-			this.content.remove(index);
-		}
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public void removeIdleDBManagers() {
+	public synchronized void removeIdleManagers() {
 		for(int i=this.content.size()-1; i>=0; i--) {
 			if(!this.content.get(i).isConnected()) {
 				this.content.remove(i);
 			}
 		}
 	}
-	public void removeAllDBManagers() {
+	public synchronized void removeAllManagers() {
 		for(int i=this.content.size()-1; i>=0; i--) {
 			this.content.get(i).disconnect();
 			this.content.remove(i);
@@ -476,51 +335,93 @@ public class Managers implements com.FileManagerX.Interfaces.IDBManagers {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public com.FileManagerX.Interfaces.IDBManager nextIdleManager(Unit unit) {
-		java.util.LinkedList<com.FileManagerX.Interfaces.IDBManager> runningManagers = 
-				new java.util.LinkedList<>();
+		if(unit == null) { return null; }
 		
-		com.FileManagerX.BasicEnums.DataBaseType type = com.FileManagerX.BasicEnums.DataBaseType.TXT;
-		int amount = 0;
-		for(com.FileManagerX.Interfaces.IDBManager dbm : this.content) {
-			if(!dbm.getUnit().equals(unit)) {
-				continue;
-			}
-			type = dbm.getDBInfo().getType();
-			amount++;
+		Managers managers = this.searchesByUnit(unit);
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IDBManager> it = managers.getIterator();
+		while(it.hasNext()) {
+			com.FileManagerX.Interfaces.IDBManager dbm = it.getNext();
 			if(dbm.isConnected() && !dbm.isRunning()) {
 				return dbm;
 			}
-			else {
-				runningManagers.add(dbm);
-			}
 		}
 		
-		if(amount < com.FileManagerX.Globals.Configurations.DataBaseConnectionPoolSize) {
-			if(com.FileManagerX.BasicEnums.DataBaseType.TXT.equals(type)) {
-				if(amount == 0) {
-					com.FileManagerX.Interfaces.IDBManager dbm = unit.getManager(type);
-					dbm.connect();
-					if(dbm.isConnected() && !dbm.isRunning()) {
-						this.add(dbm);
-						return dbm;
+		if(database.getType().equals(com.FileManagerX.BasicEnums.DataBaseType.TXT)) {
+			if(managers.size() > 0) {
+				return managers.fetchByCount(com.FileManagerX.Tools.Random.SimpleRandomNumber(0, managers.size()-1));
+			}
+			else {
+				if(Unit.File.equals(unit)) {
+					TXTManager_File dbm = new TXTManager_File();
+					com.FileManagerX.Interfaces.IDBManager dbmf = this.searchByUnit(Unit.Folder);
+					if(dbmf == null) {
+						dbmf = new TXTManager_Folder();
+						this.add(dbmf);
+						dbmf.setDBInfo(database);
+						dbmf.connect();
 					}
-				}
-			}
-			else {
-				com.FileManagerX.Interfaces.IDBManager dbm = unit.getManager(type);
-				dbm.connect();
-				if(dbm.isConnected() && !dbm.isRunning()) {
+					dbm.setFoldersManager(dbmf);
 					this.add(dbm);
-					return dbm;
+					dbm.setDBInfo(database);
+					dbm.connect();
+					return (dbm.isConnected() && !dbm.isRunning()) ? dbm : null;
 				}
+				
+				com.FileManagerX.Interfaces.IDBManager dbm = unit.getManager
+						(com.FileManagerX.BasicEnums.DataBaseType.TXT);
+				this.add(dbm);
+				dbm.setDBInfo(database);
+				dbm.connect();
+				return (dbm.isConnected() && !dbm.isRunning()) ? dbm : null;
 			}
 		}
 		
-		if(runningManagers.size() == 0) {
-			return null;
+		if(database.getType().equals(com.FileManagerX.BasicEnums.DataBaseType.MySQL)) {
+			if(managers.size() < com.FileManagerX.Globals.Configurations.LimitForJDBC) {
+				if(Unit.File.equals(unit)) {
+					MySQLManager_File dbm = new MySQLManager_File();
+					com.FileManagerX.Interfaces.IDBManager dbmf = this.searchByUnit(Unit.Folder);
+					if(dbmf == null) {
+						dbmf = new MySQLManager_Folder();
+						this.add(dbmf);
+						dbmf.setDBInfo(database);
+						dbmf.connect();
+					}
+					dbm.setFoldersManager(dbmf);
+					this.add(dbm);
+					dbm.setDBInfo(database);
+					dbm.connect();
+					return (dbm.isConnected() && !dbm.isRunning()) ? dbm : null;
+				}
+				com.FileManagerX.Interfaces.IDBManager dbm = unit.getManager(this.database.getType());
+				this.add(dbm);
+				dbm.setDBInfo(database);
+				dbm.connect();
+				return (dbm.isConnected() && !dbm.isRunning()) ? dbm : null;
+			}
+			else {
+				return managers.fetchByCount(com.FileManagerX.Tools.Random.SimpleRandomNumber(0, managers.size()-1));
+			}
 		}
-		int index = (int) (com.FileManagerX.Tools.Time.getTicks() % runningManagers.size());
-		return runningManagers.get(index);
+		
+		return null;
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	private class IteratorImpl implements com.FileManagerX.Interfaces.IIterator
+		<com.FileManagerX.Interfaces.IDBManager> {
+		private java.util.Iterator<com.FileManagerX.Interfaces.IDBManager> iterator = content.iterator();
+		
+		public boolean hasNext() {
+			return iterator.hasNext();
+		}
+		public com.FileManagerX.Interfaces.IDBManager getNext() {
+			return iterator.next();
+		}
+		public void remove() {
+			iterator.remove();
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,6 +1,6 @@
 package com.FileManagerX.FileModels;
 
-public class Xml extends com.FileManagerX.BasicModels.BaseFile {
+public class Xml extends com.FileManagerX.BasicModels.File {
 	
 	private com.FileManagerX.Tools.Xml.Node current;
 	private com.FileManagerX.Tools.Xml.Node root;

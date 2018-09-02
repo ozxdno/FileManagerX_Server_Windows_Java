@@ -1,24 +1,27 @@
 package com.FileManagerX.BasicModels;
 
-import java.io.*;
-
-public class Folder extends BaseFile implements com.FileManagerX.Interfaces.IPublic {
+public class Folder extends File implements com.FileManagerX.Interfaces.IPublic {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	private com.FileManagerX.BasicCollections.Folders subfolders;
-	private com.FileManagerX.BasicCollections.BaseFiles subfiles;
+	private java.util.ArrayList<com.FileManagerX.BasicModels.Folder> subfolders;
+	private java.util.ArrayList<com.FileManagerX.BasicModels.File> subfiles;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public boolean setSubFolders(com.FileManagerX.BasicCollections.Folders subfolders) {
+	public boolean setIndex() {
+		this.setIndex(com.FileManagerX.Globals.Configurations.Next_FolderIndex());
+		return true;
+	}
+	
+	public boolean setSubFolders(java.util.ArrayList<com.FileManagerX.BasicModels.Folder> subfolders) {
 		if(subfolders == null) {
 			return false;
 		}
 		this.subfolders = subfolders;
 		return true;
 	}
-	public boolean setSubFiles(com.FileManagerX.BasicCollections.BaseFiles subfiles) {
+	public boolean setSubFiles(java.util.ArrayList<com.FileManagerX.BasicModels.File> subfiles) {
 		if(subfiles == null) {
 			return false;
 		}
@@ -28,10 +31,10 @@ public class Folder extends BaseFile implements com.FileManagerX.Interfaces.IPub
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public com.FileManagerX.BasicCollections.Folders getSubfolders() {
+	public java.util.ArrayList<com.FileManagerX.BasicModels.Folder> getSubfolders() {
 		return this.subfolders;
 	}
-	public com.FileManagerX.BasicCollections.BaseFiles getSubfiles() {
+	public java.util.ArrayList<com.FileManagerX.BasicModels.File> getSubfiles() {
 		return this.subfiles;
 	}
 	
@@ -40,71 +43,59 @@ public class Folder extends BaseFile implements com.FileManagerX.Interfaces.IPub
 	public Folder() {
 		initThis();
 	}
-	public Folder(String url) {
-		super(url);
-		initThis();
-	}
-	public Folder(File localFile) {
-		super(localFile);
-		initThis();
-	}
 	private void initThis() {
-		if(this.subfolders == null) {
-			this.subfolders = new com.FileManagerX.BasicCollections.Folders();
-		}
-		if(this.subfiles == null) {
-			this.subfiles = new com.FileManagerX.BasicCollections.BaseFiles();
-		}
-		this.subfolders.clear();
-		this.subfiles.clear();
+		this.subfolders = new java.util.ArrayList<>();
+		this.subfiles = new java.util.ArrayList<>();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	@Override
 	public void clear() {
+		super.clear();
 		initThis();
 	}
-	@Override
 	public String toString() {
-		String subfolders = "Subfolders: Empty";
-		if(this.subfolders.size() != 0) {
-			subfolders = "Subfolders: " + this.subfolders.getContent().get(0).getName();
-			for(int i=1; i<this.subfolders.size(); i++) {
-				subfolders += ", " + this.subfolders.getContent().get(i).getName();
-			}
-		}
-		String subfiles = "Subfiles: Empty";
-		if(this.subfiles.size() != 0) {
-			subfiles = "Subfiles: " + this.subfiles.getContent().get(0).getName();
-			for(int i=1; i<this.subfiles.size(); i++) {
-				subfiles += ", " + this.subfiles.getContent().get(i).getName();
-			}
-		}
-		
-		return subfolders + "; " + subfiles;
+		return this.getName();
 	}
-	@Override
+	public Config toConfig() {
+		return super.toConfig();
+	}
 	public String output() {
-		return this.getClass().getSimpleName() + " = " + new com.FileManagerX.BasicModels.Config(super.output()).getValue();
+		return super.output();
 	}
-	@Override
-	public String input(String in) {
+	public Config input(String in) {
 		return super.input(in);
 	}
-	@Override
-	public void copyReference(Object o) {
-		Folder f = (Folder)o;
-		super.copyReference(f);
-		this.subfolders = f.subfolders;
-		this.subfiles = f.subfiles;
+	public Config input(Config c) {
+		return super.input(c);
 	}
-	@Override
+	public void copyReference(Object o) {
+		if(o == null) { return; }
+		
+		if(o instanceof Folder) {
+			Folder f = (Folder)o;
+			super.copyReference(f);
+			this.subfolders = f.subfolders;
+			this.subfiles = f.subfiles;
+			return;
+		}
+		if(o instanceof File) {
+			super.copyReference(o);
+			return;
+		}
+	}
 	public void copyValue(Object o) {
-		Folder f = (Folder)o;
-		super.copyValue(f);
-		this.subfolders = f.subfolders;
-		this.subfiles = f.subfiles;
+		if(o == null) { return; }
+		
+		if(o instanceof Folder) {
+			Folder f = (Folder)o;
+			super.copyValue(f);
+			return;
+		}
+		if(o instanceof File) {
+			super.copyValue(o);
+			return;
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -118,8 +109,9 @@ public class Folder extends BaseFile implements com.FileManagerX.Interfaces.IPub
 		java.io.File[] subs = folder.listFiles();
 		for(java.io.File i : subs) {
 			if(i.isDirectory()) {
-				Folder f = new Folder(i);
-				f.setIndex();
+				Folder f = new Folder();
+				f.loadBasicInfo(i);
+				f.setIndex(-1);
 				f.setFather(this.getIndex());
 				f.setMachine(this.getMachine());
 				f.setDepot(this.getDepot());
@@ -128,48 +120,15 @@ public class Folder extends BaseFile implements com.FileManagerX.Interfaces.IPub
 				this.subfolders.add(f);
 			}
 			if(i.isFile()) {
-				BaseFile f = new BaseFile(i);
-				f.setIndex();
+				File f = new File();
+				f.loadBasicInfo(i);
+				f.setIndex(-1);
 				f.setFather(this.getIndex());
 				f.setMachine(this.getMachine());
 				f.setDepot(this.getDepot());
 				f.setDataBase(this.getDataBase());
-				f = f.toSpecific();
 				this.subfiles.add(f);
 			}
-		}
-		
-		return true;
-	}
-	public boolean load(com.FileManagerX.BasicCollections.BaseFiles total) {
-		if(this.subfolders.size() == 0 && this.subfiles.size() == 0) { this.load(); }
-		
-		java.util.Stack<Folder> stack = new java.util.Stack<>();
-		stack.push(this);
-		while(!stack.isEmpty()) {
-			Folder next = stack.pop();
-			
-			for(Folder f : next.subfolders.getContent()) { stack.push(f); }
-			total.getContent().addAll(next.subfiles.getContent());
-			total.add(next);
-		}
-		
-		return true;
-	}
-	public boolean load(
-			com.FileManagerX.BasicCollections.Folders folders, 
-			com.FileManagerX.BasicCollections.BaseFiles files
-			) {
-		if(this.subfolders.size() == 0 && this.subfiles.size() == 0) { this.load(); }
-		
-		java.util.Stack<Folder> stack = new java.util.Stack<>();
-		stack.push(this);
-		while(!stack.isEmpty()) {
-			Folder next = stack.pop();
-			
-			for(Folder f : next.subfolders.getContent()) { stack.push(f); }
-			files.getContent().addAll(next.subfiles.getContent());
-			folders.add(next);
 		}
 		
 		return true;

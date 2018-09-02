@@ -94,30 +94,35 @@ public class BaseReply implements com.FileManagerX.Interfaces.IReply {
 	public String toString() {
 		return this.output();
 	}
-	public String output() {
+	public com.FileManagerX.BasicModels.Config toConfig() {
 		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config();
 		c.setField(this.getClass().getSimpleName());
-		c.addToBottom(new com.FileManagerX.BasicModels.Config(this.bmp.output()));
-		c.addToBottom(ok);
-		c.addToBottom(failedReason);
-		return c.output();
+		c.addToBottom(this.bmp.toConfig());
+		c.addToBottom(this.ok);
+		c.addToBottom(this.failedReason);
+		return c;
 	}
-	public String input(String in) {
-		in = this.bmp.input(in);
-		if(in == null) {
-			return null;
-		}
-		
+	public String output() {
+		return this.toConfig().output();
+	}
+	public com.FileManagerX.BasicModels.Config input(String in) {
+		return this.input(new com.FileManagerX.BasicModels.Config(in));
+	}
+	public com.FileManagerX.BasicModels.Config input(com.FileManagerX.BasicModels.Config c) {
+		if(c == null) { return null; }
 		try {
-			com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config(in);
+			if(!c.getIsOK()) { return c; }
+			c = this.bmp.input(c);
+			if(!c.getIsOK()) { return c; }
 			this.ok = c.fetchFirstBoolean();
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			this.failedReason = c.fetchFirstString();
-			if(!c.getIsOK()) { return null; }
-			return c.output();
+			if(!c.getIsOK()) { return c; }
+			return c;
 		} catch(Exception e) {
 			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
-			return null;
+			c.setIsOK(false);
+			return c;
 		}
 	}
 	public void copyReference(Object o) {

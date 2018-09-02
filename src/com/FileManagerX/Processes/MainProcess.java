@@ -1,11 +1,7 @@
 package com.FileManagerX.Processes;
 
-import com.FileManagerX.BasicEnums.DataBaseType;
-import com.FileManagerX.BasicEnums.StartType;
 import com.FileManagerX.Globals.Configurations;
 import com.FileManagerX.Globals.Datas;
-import com.FileManagerX.Interfaces.IDBChecker;
-import com.FileManagerX.Interfaces.IDBManager;
 
 public class MainProcess extends BasicProcess {
 	
@@ -37,10 +33,12 @@ public class MainProcess extends BasicProcess {
 	private boolean parepare() {
 		
 		// create other folders and files
-		com.FileManagerX.Tools.Pathes.createAll(Configurations.StartType);
+		com.FileManagerX.Tools.Pathes.createAll();
 		
 		// load CFG file
-		com.FileManagerX.Globals.Datas.CFG.load();
+		com.FileManagerX.Globals.Datas.CFG.setUrl(com.FileManagerX.Tools.Pathes.getFile_CFG());
+		com.FileManagerX.Globals.Datas.CFG.loadBasicInfo();
+		com.FileManagerX.Globals.Datas.CFG.loadFromLocal();
 		
 		// Set Form Title
 		if(Datas.Form_Test != null) {
@@ -48,21 +46,9 @@ public class MainProcess extends BasicProcess {
 					"FileManagerX" + 
 					" [" + Configurations.This_MachineIndex + "]" +
 					" - " + 
-					Configurations.StartType.toString() + " : " + 
+					Configurations.MachineType.toString() + " : " + 
 					Datas.ThisUser.getNickName()
 					);
-		}
-		
-		// check server
-		if(Configurations.StartType.equals(StartType.Server)) {
-			IDBChecker dbc = Datas.DBManager.getDBInfo().getChecker();
-			dbc.checkServer();
-		}
-		
-		// check local depots
-		for(IDBManager dbm : Datas.DBManagers.getContent()) {
-			IDBChecker dbc = dbm.getDBInfo().getChecker();
-			dbc.checkNotServer();
 		}
 		
 		// add server dbm to dbms
@@ -78,12 +64,20 @@ public class MainProcess extends BasicProcess {
 		
 		// save CFG before execute tasks
 		if(!com.FileManagerX.Globals.Datas.CFG.isErrorOccurs()) {
-			com.FileManagerX.Globals.Datas.CFG.save();
+			com.FileManagerX.Globals.Datas.CFG.saveToLocal();
 		}
 		
-		
-		// save Errors before execute tasks
+		Datas.Records.save();
 		Datas.Errors.save();
+		
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IDBManager> it = 
+				com.FileManagerX.Globals.Datas.DBManagers.getIterator();
+		while(it.hasNext()) {
+			com.FileManagerX.Interfaces.IDBManager dbm = it.getNext();
+			if(dbm.getDBInfo().getType().equals(com.FileManagerX.BasicEnums.DataBaseType.TXT)) {
+				dbm.save();
+			}
+		}
 		
 		return true;
 	}
@@ -96,6 +90,7 @@ public class MainProcess extends BasicProcess {
 			Datas.Records.save(100);
 			Datas.Errors.save(100);
 			
+			Datas.Scanners.removeIdleProcesses();
 			Datas.Server.removeIdleProcesses();
 			Datas.Client.removeIdleProcesses();
 			Datas.Operators.removeIdleProcesses();
@@ -109,7 +104,7 @@ public class MainProcess extends BasicProcess {
 	private boolean finish() {
 		// save CFG
 		if(!com.FileManagerX.Globals.Datas.CFG.isErrorOccurs()) {
-			com.FileManagerX.Globals.Datas.CFG.save();
+			com.FileManagerX.Globals.Datas.CFG.saveToLocal();
 		}
 		
 		// save Errors
@@ -119,11 +114,12 @@ public class MainProcess extends BasicProcess {
 		Datas.Records.save();
 		
 		// save DataBases
-		for(IDBManager dbm : Datas.DBManagers.getContent()) {
-			if(dbm.getDBInfo().getType().equals(DataBaseType.TXT)) {
-				dbm.save();
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IDBManager> it = 
+				com.FileManagerX.Globals.Datas.DBManagers.getIterator();
+		while(it.hasNext()) {
+			if(it.getNext().getDBInfo().getType().equals(com.FileManagerX.BasicEnums.DataBaseType.TXT)) {
+				it.getNext().save();
 			}
-			dbm.disconnect();
 		}
 		
 		// Close Form

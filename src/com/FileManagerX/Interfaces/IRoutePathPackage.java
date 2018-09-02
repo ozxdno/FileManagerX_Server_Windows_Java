@@ -41,7 +41,6 @@ public interface IRoutePathPackage extends IPublic {
 
 	public void reverse();
 	public void addDeliverMachine(long machine);
-	public com.FileManagerX.Interfaces.IClientConnection nextServerConnection();
 	public void backToMachine(long machine);
 	public void backToMachine();
 	public boolean passed(long machine);

@@ -7,8 +7,7 @@ public class DepotInfo implements com.FileManagerX.Interfaces.IPublic {
 	private long index;
 	private long dbIndex;
 	private com.FileManagerX.BasicModels.MachineInfo machineInfo;
-	private String url; // TXT: files exist at
-						// SQL: files exist at
+	private String url;
 	private com.FileManagerX.BasicModels.DataBaseInfo dbInfo;
 	private String name;
 	private com.FileManagerX.BasicEnums.DepotState state;
@@ -20,8 +19,7 @@ public class DepotInfo implements com.FileManagerX.Interfaces.IPublic {
 		return true;
 	}
 	public boolean setIndex() {
-		this.index = com.FileManagerX.Globals.Configurations.Next_DepotIndex + 1;
-		com.FileManagerX.Globals.Configurations.Next_DepotIndex = this.index;
+		this.index = com.FileManagerX.Globals.Configurations.Next_DepotIndex();
 		return true;
 	}
 	public boolean setDBIndex(long dbIndex) {
@@ -135,63 +133,76 @@ public class DepotInfo implements com.FileManagerX.Interfaces.IPublic {
 		}
 		return "[" + name + "] " + url;
 	}
-	public String output() {
-		Config c = new Config("DepotInfo = ");
-		c.addToBottom(index);
-		c.addToBottom(new Config(this.machineInfo.output()));
-		c.addToBottom(url);
+	public Config toConfig() {
+		Config c = new Config();
+		c.setField(this.getClass().getSimpleName());
+		c.addToBottom(this.index);
+		c.addToBottom(this.machineInfo.toConfig());
+		c.addToBottom(this.url);
 		c.addToBottom(this.dbIndex);
-		c.addToBottom(name);
-		c.addToBottom(state.toString());
-		return c.output();
+		c.addToBottom(this.name);
+		c.addToBottom(this.state.toString());
+		return c;
 	}
-	public String input(String in) {
+	public String output() {
+		return this.toConfig().output();
+	}
+	public Config input(String in) {
+		return this.input(new Config(in));
+	}
+	public Config input(Config c) {
+		if(c == null) { return null; }
+		
 		try {
-			Config c = new Config(in);
+			if(!c.getIsOK()) { return c; }
 			this.index = c.fetchFirstLong();
-			if(!c.getIsOK()) { return null; }
-			in = this.machineInfo.input(c.output());
-			if(in == null) { return null; }
-			c.setLine(in);
+			if(!c.getIsOK()) { return c; }
+			c = this.machineInfo.input(c);
+			if(!c.getIsOK()) { return c; }
 			this.url = c.fetchFirstString();
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			this.dbIndex = c.fetchFirstLong();
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			this.name = c.fetchFirstString();
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			this.state = com.FileManagerX.BasicEnums.DepotState.valueOf(c.fetchFirstString());
-			if(!c.getIsOK()) { return null; }
-			return c.output();
+			if(!c.getIsOK()) { return c; }
+			return c;
 		} catch(Exception e) {
 			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
-			return null;
+			c.setIsOK(false);
+			return c;
 		}
 	}
 	public void copyReference(Object o) {
-		DepotInfo d = (DepotInfo)o;
-		this.index = d.index;
-		this.machineInfo = d.machineInfo;
-		this.url = d.url;
-		this.dbIndex = d.dbIndex;
-		this.dbInfo = d.dbInfo;
-		this.name = d.name;
-		this.state = d.state;
+		if(o == null) { return; }
+		
+		if(o instanceof DepotInfo) {
+			DepotInfo d = (DepotInfo)o;
+			this.index = d.index;
+			this.machineInfo = d.machineInfo;
+			this.url = d.url;
+			this.dbIndex = d.dbIndex;
+			this.dbInfo = d.dbInfo;
+			this.name = d.name;
+			this.state = d.state;
+			return;
+		}
 	}
 	public void copyValue(Object o) {
-		DepotInfo d = (DepotInfo)o;
-		this.index = d.index;
-		this.machineInfo.copyValue(d.machineInfo);;
-		this.url = new String(d.url);
-		this.dbIndex = d.dbIndex;
-		this.dbInfo = d.dbInfo;
-		this.name = new String(d.name);
-		this.state = d.state;
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	public boolean isLocal() {
-		return this.machineInfo.isLocal();
+		if(o == null) { return; }
+		
+		if(o instanceof DepotInfo) {
+			DepotInfo d = (DepotInfo)o;
+			this.index = d.index;
+			this.machineInfo.copyValue(d.machineInfo);;
+			this.url = new String(d.url);
+			this.dbIndex = d.dbIndex;
+			this.dbInfo = d.dbInfo;
+			this.name = new String(d.name);
+			this.state = d.state;
+			return;
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

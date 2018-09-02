@@ -1,7 +1,5 @@
 package com.FileManagerX.Replies;
 
-import com.FileManagerX.BasicModels.*;
-
 public class QueryUnit extends BaseReply {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -57,19 +55,33 @@ public class QueryUnit extends BaseReply {
 	public String toString() {
 		return this.output();
 	}
-	public String output() {
-		Config c = new Config();
+	public com.FileManagerX.BasicModels.Config toConfig() {
+		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config();
 		c.setField(this.getClass().getSimpleName());
-		c.addToBottom(new Config(super.output()));
-		c.addToBottom(new Config(this.result.output()));
-		return c.output();
+		c.addToBottom(super.toConfig());
+		c.addToBottom(this.result.toConfig());
+		return c;
 	}
-	public String input(String in) {
-		in = super.input(in);
-		if(in == null) {
-			return null;
+	public String output() {
+		return this.toConfig().output();
+	}
+	public com.FileManagerX.BasicModels.Config input(String in) {
+		return this.input(new com.FileManagerX.BasicModels.Config(in));
+	}
+	public com.FileManagerX.BasicModels.Config input(com.FileManagerX.BasicModels.Config c) {
+		if(c == null) { return null; }
+		try {
+			if(!c.getIsOK()) { return c; }
+			c = super.input(c);
+			if(!c.getIsOK()) { return c; }
+			c = this.result.input(c);
+			if(!c.getIsOK()) { return c; }
+			return c;
+		} catch(Exception e) {
+			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
+			c.setIsOK(false);
+			return c;
 		}
-		return this.result.input(in);
 	}
 	public void copyReference(Object o) {
 		super.copyReference(o);

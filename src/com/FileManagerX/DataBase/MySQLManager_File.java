@@ -1,80 +1,20 @@
 package com.FileManagerX.DataBase;
 
-import java.sql.*;
-
-public class MySQLManager_File implements com.FileManagerX.Interfaces.IDBManager {
+public class MySQLManager_File extends com.FileManagerX.DataBase.MySQLManager_ANY
+	<com.FileManagerX.BasicModels.File, Long> {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	private com.FileManagerX.BasicModels.DataBaseInfo database;
-	private com.FileManagerX.DataBase.Unit unit;
-	private boolean connected;
-	private boolean running;
-	private String name;
-	
-	private Connection connection;
-	private Statement statement;
-	
-	private String[] items = new String[] {
-			"Index",
-			"Father",
-			"Machine",
-			"Depot",
-			"DataBase",
-			"Url",
-			"Type",
-			"State",
-			"Modify",
-			"Length",
-			"Score",
-			"Tags"
-	};
-	private String[] types = new String[] {
-			"BIGINT UNIQUE",
-			"BIGINT",
-			"BIGINT",
-			"BIGINT",
-			"BIGINT",
-			"VARCHAR(1024)",
-			"VARCHAR(100)",
-			"VARCHAR(100)",
-			"BIGINT",
-			"BIGINT",
-			"INT",
-			"VARCHAR(1024)"
-	};
+	private com.FileManagerX.Interfaces.IDBManager foldersManager;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public boolean setDBInfo(com.FileManagerX.BasicModels.DataBaseInfo database) {
-		if(database == null) {
+	public boolean setFoldersManager(com.FileManagerX.Interfaces.IDBManager foldersManager) {
+		if(foldersManager == null) {
 			return false;
 		}
-		this.database = database;
+		this.foldersManager = foldersManager;
 		return true;
-	}
-	public boolean setUnit(com.FileManagerX.DataBase.Unit unit) {
-		if(unit == null) {
-			return false;
-		}
-		this.unit = unit;
-		return true;
-	}
-	public boolean setIsRunning(boolean running) {
-		this.running = running;
-		return true;
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public com.FileManagerX.BasicModels.DataBaseInfo getDBInfo() {
-		return this.database;
-	}
-	public com.FileManagerX.DataBase.Unit getUnit() {
-		return this.unit;
-	}
-	public com.FileManagerX.Interfaces.IDBManager getUnitMananger() {
-		return this;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -83,369 +23,133 @@ public class MySQLManager_File implements com.FileManagerX.Interfaces.IDBManager
 		initThis();
 	}
 	private void initThis() {
-		this.database = null;
-		this.unit = Unit.BaseFile;
-		this.connected = false;
-		this.name = "Files";
+		this.setName("Files");
+		this.setUnit(Unit.File);
+		this.reflect();
+		this.setKey("index");
+	}
+	public com.FileManagerX.BasicModels.File createT() {
+		return new com.FileManagerX.BasicModels.File();
+	}
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public Object querys2(Object conditions) {
+		com.FileManagerX.BasicCollections.Files res = new com.FileManagerX.BasicCollections.Files();
+		this.querys(conditions, res);
+		return res;
+	}
+	public Object query2(Object conditions) {
+		com.FileManagerX.BasicModels.File res = new com.FileManagerX.BasicModels.File();
+		this.query(conditions, res);
+		return res;
+	}
+	public Object removes2(Object items) {
+		com.FileManagerX.BasicCollections.Files res = new com.FileManagerX.BasicCollections.Files();
+		this.removes(items, res);
+		return res;
+	}
+	public Object updates2(Object items) {
+		com.FileManagerX.BasicCollections.Files res = new com.FileManagerX.BasicCollections.Files();
+		this.updates(items, res);
+		return res;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public boolean isConnected() {
-		return this.connected;
+	public Object readUnsupportField(String field, String value, Object target) {
+		if(field.equals("content")) {
+			com.FileManagerX.FileModels.CFG cfg = new com.FileManagerX.FileModels.CFG();
+			cfg.input(value);
+			return cfg.getContent();
+		}
+		if(field.equals("type")) {
+			return com.FileManagerX.BasicEnums.FileType.valueOf(value);
+		}
+		if(field.equals("state")) {
+			return com.FileManagerX.BasicEnums.FileState.valueOf(value);
+		}
+		return null;
 	}
-	public boolean isRunning() {
-		return this.running;
+	public String writeUnsupportField(String field, Object value, Object target) {
+		return "";
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public boolean connect() {
-		this.connected = false;
+	public boolean check() {
+		this.setIsRunning(true);
+		com.FileManagerX.Globals.Configurations.setNext_FileIndex(this.checkIndex());
 		
-		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config(this.database.getUrl().replace('\\', '|'));
-		String ip_port = c.fetchFirstString();
-		String loginName = c.fetchFirstString();
-		String password = c.fetchFirstString();
-		String dbName = c.fetchFirstString();
-		
-		String url = "jdbc:mysql://" + 
-				ip_port + "/" + 
-				dbName;
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			connection = DriverManager.getConnection(url, loginName, password);
-		}catch(Exception e) {
-			com.FileManagerX.BasicEnums.ErrorType.DB_CONNECT_FAILED.register(e.toString());
-			return false;
-		}
-		try {
-			statement = connection.createStatement();
-		}catch(Exception e) {
-			com.FileManagerX.BasicEnums.ErrorType.DB_CONNECT_FAILED.register(
-					
-					e.toString()
-					);
-			return false;
-		}
-		
-		return this.connected = true;
-	}
-	public boolean disconnect() {
-		this.connected = false;
-		if(statement != null) {
-			try {
-				statement.close();
-			}catch(Exception e) {
-				com.FileManagerX.BasicEnums.ErrorType.DB_DISCONNECT_FAILED.register(e.toString());
-				return false;
-			}
-		}
-		
-		if(connection != null) {
-			try {
-				connection.close();
-			}catch(Exception e) {
-				com.FileManagerX.BasicEnums.ErrorType.DB_DISCONNECT_FAILED.register(e.toString());
-				return false;
-			}
-		}
-		
-		return true;
-	}
-	public boolean load() {
-		return true;
-	}
-	public boolean save() {
-		return true;
-	}
-	public boolean create() {
-		if(this.exists()) { return true; }
-		
-		try {
-			String exp = "CREATE TABLE " + this.name + " (";
-			for(int i=0; i<items.length; i++) {
-				exp += "`" + items[i] + "` " + types[i] + " NOT NULL, ";
-			}
-			exp = exp.substring(0, exp.length()-2);
-			exp += ");";
-			statement.executeUpdate(exp);
-			return true;
-		} catch(Exception e) {
-			com.FileManagerX.BasicEnums.ErrorType.DB_OPERATE_FAILED.register
-				("Create Table " + name + " Failed", e.toString());
-			return false;
-		}
-	}
-	public boolean delete() {
-		String exp = "DROP TABLE " + name;
-		try {
-			statement.execute(exp);
-			return true;
-		} catch(Exception e) {
-			com.FileManagerX.BasicEnums.ErrorType.DB_OPERATE_FAILED.register
-				("Delete Table " + name + " Failed", e.toString());
-			return false;
-		}
-	}
-	public boolean exists() {
-		try {
-			ResultSet set = this.connection.getMetaData().getTables(null, null, this.name, null);
-			return set.next();
-		} catch(Exception e) {
-			return false;
-		}
-	}
-	public boolean clear() {
-		return this.delete();
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public com.FileManagerX.BasicCollections.BaseFiles querys(Object conditions) {
-		com.FileManagerX.BasicCollections.BaseFiles res = new com.FileManagerX.BasicCollections.BaseFiles();
-		if(conditions == null) {
-			return null;
-		}
-		String con = "";
-		if(conditions instanceof QueryConditions) {
-			con = MySQLManager_SHELL.queryConditionsToStatement((QueryConditions)conditions);
-		}
-		else if(conditions instanceof QueryCondition) {
-			con = MySQLManager_SHELL.queryConditionToStatement((QueryCondition)conditions);
-		}
-		else if(conditions instanceof String) {
-			QueryConditions qcs = new QueryConditions();
-			try {
-				qcs.stringToThis((String)conditions);
-			}catch(Exception e) {
-				com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
-				return null;
-			}
-			con = MySQLManager_SHELL.queryConditionsToStatement(qcs);
-		}
-		else {
-			return null;
-		}
-		String exp = "SELECT * FROM " + this.name + " " + con + ";";
-		try {
-			ResultSet set = statement.executeQuery(exp);
-			int cnt = 0;
-			
-			while(set.next()) {
-				com.FileManagerX.BasicModels.BaseFile f = new com.FileManagerX.BasicModels.BaseFile();
-				f.setIndex(set.getLong("Index"));
-				f.setFather(set.getLong("Father"));
-				f.setMachine(set.getLong("Machine"));
-				f.setDepot(set.getLong("Depot"));
-				f.setDataBase(set.getLong("DataBase"));
-				f.setUrl(set.getString("Url"));
-				f.setType(com.FileManagerX.BasicEnums.FileType.valueOf(set.getString("Type")));
-				f.setState(com.FileManagerX.BasicEnums.FileState.valueOf(set.getString("State")));
-				f.setModify(set.getLong("Modify"));
-				f.setLength(set.getLong("Length"));
-				f.setScore(set.getInt("Score"));
-				f.setTags(set.getString("Tags"));
-				res.add(f);
+		com.FileManagerX.BasicCollections.Files fs = new com.FileManagerX.BasicCollections.Files();
+		long maxIndex = 0;
+		this.querys("", fs);
+		while(fs.size() != 0) {
+			com.FileManagerX.Interfaces.IIterator<com.FileManagerX.BasicModels.File> it = fs.getIterator();
+			while(it.hasNext()) {
+				com.FileManagerX.BasicModels.File fd = it.getNext();
+				if(fd.getIndex() > maxIndex) {
+					maxIndex = fd.getIndex();
+				}
 				
-				if(++cnt > com.FileManagerX.Globals.Configurations.DataBaseQueryLimit) { break; }
+				java.io.File f = new java.io.File(fd.getUrl());
+				if(!f.exists() || !f.isFile()) {
+					this.remove(fd);
+					continue;
+				}
+				
+				boolean update = false;
+				if(!com.FileManagerX.BasicEnums.FileType.Folder.equals(fd.getType())) {
+					fd.setType(com.FileManagerX.BasicEnums.FileType.Folder);
+					update = true;
+				}
+				if(fd.getModify() != f.lastModified()) {
+					fd.setModify(f.lastModified());
+					update = true;
+				}
+				if(update) { this.update(fd); }
 			}
 			
-			return res;
-		}catch(Exception e) {
-			com.FileManagerX.BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
-			return res;
+			fs.clear();
+			this.query("qcs=1|[&] Index > " + maxIndex, fs);
 		}
-	}
-	public com.FileManagerX.BasicModels.BaseFile query(Object conditions) {
-		if(conditions == null) {
-			return null;
-		}
-		String con = "";
-		if(conditions instanceof QueryConditions) {
-			con = MySQLManager_SHELL.queryConditionsToStatement((QueryConditions)conditions);
-		}
-		else if(conditions instanceof QueryCondition) {
-			con = MySQLManager_SHELL.queryConditionToStatement((QueryCondition)conditions);
-		}
-		else if(conditions instanceof String) {
-			QueryConditions qcs = new QueryConditions();
-			try {
-				qcs.stringToThis((String)conditions);
-			}catch(Exception e) {
-				com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
-				return null;
+		
+		com.FileManagerX.BasicModels.Folder fd = new com.FileManagerX.BasicModels.Folder();
+		fd.setUrl(this.getDBInfo().getDepotInfo().getUrl());
+		fd.loadBasicInfo();
+		fd.setMachine(com.FileManagerX.Globals.Configurations.This_MachineIndex);
+		fd.setDataBase(this.getDBInfo().getIndex());
+		fd.setFather(-1);
+		fd.setDepot(this.getDBInfo().getDepotIndex());
+		fd.load();
+		
+		java.util.LinkedList<com.FileManagerX.BasicModels.Folder> fathers = new java.util.LinkedList<>();
+		if(fd.exists()) { fathers.add(fd); }
+		while(fathers.size() != 0 && this.foldersManager != null) {
+			com.FileManagerX.BasicModels.Folder father = fathers.remove(0);
+			java.util.ArrayList<com.FileManagerX.BasicModels.Folder> subfds = father.getSubfolders();
+			java.util.ArrayList<com.FileManagerX.BasicModels.File> subfs = father.getSubfiles();
+			
+			boolean existFather = foldersManager.query("qcs=1|[&] url = " + father.getUrl(), father);
+			if(!existFather) { existFather = foldersManager.update(father); }
+			if(existFather) {
+				java.util.Iterator<com.FileManagerX.BasicModels.Folder> it1 = subfds.iterator();
+				while(it1.hasNext()) {
+					com.FileManagerX.BasicModels.Folder subfd = it1.next();
+					subfd.setFather(father.getIndex());
+					fathers.add(subfd);
+				}
+				java.util.Iterator<com.FileManagerX.BasicModels.File> it2 = subfs.iterator();
+				while(it2.hasNext()) {
+					com.FileManagerX.BasicModels.File subf = it2.next();
+					subf.setFather(father.getIndex());
+					boolean ok = this.query("qcs=1|[&] url = " + subf.getUrl(), subf);
+					if(!ok) { this.update(subf); }
+				}
 			}
-			con = MySQLManager_SHELL.queryConditionsToStatement(qcs);
-		}
-		else {
-			return null;
-		}
-		String exp = "SELECT * FROM " + this.name + " " + con + ";";
-		try {
-			ResultSet set = statement.executeQuery(exp);
-			
-			if(set.next()) {
-				com.FileManagerX.BasicModels.BaseFile f = new com.FileManagerX.BasicModels.BaseFile();
-				f.setIndex(set.getLong("Index"));
-				f.setFather(set.getLong("Father"));
-				f.setMachine(set.getLong("Machine"));
-				f.setDepot(set.getLong("Depot"));
-				f.setDataBase(set.getLong("DataBase"));
-				f.setUrl(set.getString("Url"));
-				f.setType(com.FileManagerX.BasicEnums.FileType.valueOf(set.getString("Type")));
-				f.setState(com.FileManagerX.BasicEnums.FileState.valueOf(set.getString("State")));
-				f.setModify(set.getLong("Modify"));
-				f.setLength(set.getLong("Length"));
-				f.setScore(set.getInt("Score"));
-				f.setTags(set.getString("Tags"));
-				return f;
-			}
-			
-			return null;
-		}catch(Exception e) {
-			com.FileManagerX.BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
-			return null;
-		}
-	}
-	public com.FileManagerX.BasicCollections.BaseFiles updates(Object items) {
-		if(items == null) {
-			return null;
-		}
-		if(!(items instanceof com.FileManagerX.BasicCollections.BaseFiles)) {
-			return null;
-		}
-		com.FileManagerX.BasicCollections.BaseFiles files = (com.FileManagerX.BasicCollections.BaseFiles)items;
-		if(files.size() == 0) {
-			return files;
 		}
 		
-		com.FileManagerX.BasicCollections.BaseFiles errors = new com.FileManagerX.BasicCollections.BaseFiles();
-		for(com.FileManagerX.BasicModels.BaseFile f : files.getContent()) {
-			if(!this.update(f)) { errors.add(f); }
-		}
-		return errors;
-	}
-	public boolean update(Object item) {
-		if(item == null) {
-			return false;
-		}
-		if(!(item instanceof com.FileManagerX.BasicModels.BaseFile)) {
-			return false;
-		}
-		
-		com.FileManagerX.BasicModels.BaseFile file = (com.FileManagerX.BasicModels.BaseFile)item;
-		String exp = "";
-		QueryCondition qc = new QueryCondition();
-		qc.setItemName("Index");
-		qc.setSign(Sign.EQUAL);
-		qc.setValue(String.valueOf(file.getIndex()));
-		com.FileManagerX.BasicModels.BaseFile exists = (file.getIndex() >= 0 && file.getIndex() <= com.FileManagerX.Globals.Configurations.Next_FileIndex) ?
-				this.query(qc) :
-				null;
-		if(exists == null) {
-			file.setIndex();
-			exp = "INSERT INTO " + this.name + " VALUES(" +
-				String.valueOf(file.getIndex()) + ", " +
-				String.valueOf(file.getFather()) + ", " +
-				String.valueOf(file.getMachine()) + ", " +
-				String.valueOf(file.getDepot()) + ", " +
-				String.valueOf(file.getDataBase()) + ", " +
-				"'" + file.getUrl().replace("\\", "\\\\") + "', " +
-				"'" + file.getType().toString() + "', " +
-				"'" + file.getState().toString() + "', " +
-				String.valueOf(file.getModify()) + ", " +
-				String.valueOf(file.getLength()) + ", " +
-				String.valueOf(file.getScore()) + ", " +
-				"'" + file.getTags() + "'" +
-				");";
-		}
-		else {
-			exp = "UPDATE " + this.name + " SET " +
-				"`Index` = " + String.valueOf(file.getIndex()) + ", " +
-				"`Father` = " + String.valueOf(file.getFather()) + ", " +
-				"`Machine` = " + String.valueOf(file.getMachine()) + ", " +
-				"`Depot` = " + String.valueOf(file.getDepot()) + ", " +
-				"`DataBase` = " + String.valueOf(file.getDataBase()) + ", " +
-				"`Url` = '" + file.getUrl().replace("\\", "\\\\") + "', " + 
-				"`Type` = '" + file.getType().toString() + "', " +
-				"`State` = '" + file.getState().toString() + "', " +
-				"`Modify` = " + String.valueOf(file.getModify()) + ", " +
-				"`Length` = " + String.valueOf(file.getLength()) + ", " +
-				"`Score` = " + String.valueOf(file.getScore()) + ", " +
-				"`Tags` = '" + file.getTags() + "' " + 
-				"WHERE " + 
-				"`Index` = " + String.valueOf(file.getIndex()) +
-				";";
-		}
-		try {
-			statement.execute("SET SQL_SAFE_UPDATES = 0;");
-			statement.executeUpdate(exp);
-			return true;
-		}catch(Exception e) {
-			com.FileManagerX.BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString(), "exp = " + exp);
-			return false;
-		}
-	}
-	public com.FileManagerX.BasicCollections.BaseFiles removes(Object items) {
-		if(items == null) {
-			return null;
-		}
-		if(!(items instanceof com.FileManagerX.BasicCollections.BaseFiles)) {
-			return null;
-		}
-		com.FileManagerX.BasicCollections.BaseFiles files = (com.FileManagerX.BasicCollections.BaseFiles)items;
-		if(files.size() == 0) {
-			return files;
-		}
-		
-		com.FileManagerX.BasicCollections.BaseFiles errors = new com.FileManagerX.BasicCollections.BaseFiles();
-		for(com.FileManagerX.BasicModels.BaseFile f : files.getContent()) {
-			if(!this.remove(f)) { errors.add(f); }
-		}
-		return errors;
-	}
-	public boolean remove(Object item) {
-		long index = -1;
-		
-		if(item == null) {
-			return false;
-		}
-		if(item instanceof com.FileManagerX.BasicModels.BaseFile) {
-			index = ((com.FileManagerX.BasicModels.BaseFile)item).getIndex();
-		}
-		else if(item instanceof Long) {
-			index = (long)item;
-		}
-		else if(item instanceof Integer) {
-			index = (long)item;
-		}
-		else {
-			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register("Wrong type of Input");
-			return false;
-		}
-		
-		try {
-			String exp = "DELETE FROM " + this.name + " WHERE `Index` = " + String.valueOf(index) + ";";
-			this.statement.execute(exp);
-			return true;
-		} catch(Exception e) {
-			com.FileManagerX.BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
-			return true;
-		}
-	}
-	public long size() {
-		try {
-			String exp = "SELECT * FROM " + this.name + ";";
-			ResultSet set = this.statement.executeQuery(exp);
-			long cnt = 0;
-			while(set.next()) { cnt++; }
-			return cnt;
-			
-		} catch(Exception e) {
-			com.FileManagerX.BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString());
-			return 0;
-		}
+		this.setIsRunning(false);
+		return true;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -63,6 +63,13 @@ public class LoginServer extends BaseCommand {
 	public String toString() {
 		return this.output();
 	}
+	public com.FileManagerX.BasicModels.Config toConfig() {
+		Config c = new Config();
+		c.setField(this.getClass().getSimpleName());
+		c.addToBottom(super.toConfig());
+		c.addToBottom(this.machineInfo.toConfig());
+		return c;
+	}
 	public String output() {
 		Config c = new Config();
 		c.setField(this.getClass().getSimpleName());
@@ -70,12 +77,19 @@ public class LoginServer extends BaseCommand {
 		c.addToBottom(new Config(this.machineInfo.output()));
 		return c.output();
 	}
-	public String input(String in) {
-		in = super.input(in);
-		if(in == null) {
-			return null;
-		}
-		return this.machineInfo.input(in);
+	public com.FileManagerX.BasicModels.Config input(String in) {
+		return this.input(new com.FileManagerX.BasicModels.Config(in));
+	}
+	public com.FileManagerX.BasicModels.Config input(com.FileManagerX.BasicModels.Config c) {
+		if(c == null) { return null; }
+		
+		if(!c.getIsOK()) { return c; }
+		c = super.input(c);
+		if(!c.getIsOK()) { return c; }
+		c = this.machineInfo.input(c);
+		if(!c.getIsOK()) { return c; }
+		
+		return c;
 	}
 	public void copyReference(Object o) {
 		if(o instanceof LoginServer) {
@@ -108,18 +122,18 @@ public class LoginServer extends BaseCommand {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean executeInLocal() {
-		if(com.FileManagerX.Globals.Datas.Client.size() > com.FileManagerX.Globals.Configurations.ConnectionLimit) {
-			for(com.FileManagerX.Interfaces.IClientConnection con :
-				com.FileManagerX.Globals.Datas.OtherServers.getContent()) {
-				con.send(this);
+		if(com.FileManagerX.Globals.Datas.Client.size() > 
+				com.FileManagerX.Globals.Configurations.LimitForConnection) {
+			com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IClientConnection> it =
+					com.FileManagerX.Globals.Datas.OtherServers.getIterator();
+			while(it.hasNext()) {
+				it.getNext().send(this);
 			}
-			this.sendReply = false;
-			return false;
+			return this.sendReply = false;
 		}
 		else {
 			this.getReply().setMachineInfo(com.FileManagerX.Globals.Datas.ThisMachine);
-			this.sendReply = true;
-			return true;
+			return this.sendReply = true;
 		}
 	}
 	

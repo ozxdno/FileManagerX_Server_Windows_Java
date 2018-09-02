@@ -1,7 +1,13 @@
 package com.FileManagerX.Communicator;
 
-public class Scanners extends com.FileManagerX.Processes.Manager<Scanner> {
+public class Scanners extends com.FileManagerX.Processes.Manager<com.FileManagerX.Interfaces.IScanner> {
 
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public Long getKey(com.FileManagerX.Interfaces.IScanner item) {
+		return item == null ? null : item.getIndex();
+	}
 	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 }

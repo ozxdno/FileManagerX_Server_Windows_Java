@@ -20,7 +20,7 @@ public class Chat implements com.FileManagerX.Interfaces.IPublic {
 		return true;
 	}
 	public boolean setIndex() {
-		this.index = ++com.FileManagerX.Globals.Configurations.Next_ChatIndex;
+		this.index = com.FileManagerX.Globals.Configurations.Next_ChatIndex();
 		return true;
 	}
 	public boolean setType(com.FileManagerX.BasicEnums.ChatType type) {
@@ -114,10 +114,9 @@ public class Chat implements com.FileManagerX.Interfaces.IPublic {
 		initThis();
 	}
 	public String toString() {
-		String t = com.FileManagerX.Tools.Time.ticks2LongTime(this.time);
-		return "[" + t + "] " + this.content;
+		return this.content.length() == 0 ? "Empty" : this.content;
 	}
-	public String output() {
+	public Config toConfig() {
 		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config();
 		c.setField(this.getClass().getSimpleName());
 		c.addToBottom(this.index);
@@ -126,29 +125,45 @@ public class Chat implements com.FileManagerX.Interfaces.IPublic {
 		c.addToBottom(this.destUser);
 		c.addToBottom(this.sourGroup);
 		c.addToBottom(this.destGroup);
-		c.addToBottom(com.FileManagerX.Coder.Encoder.Encode_String2String(this.content));
-		return c.output();
+		c.addToBottom_Encode(this.content);
+		return c;
 	}
-	public String input(String in) {
-		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config(in);
-		this.index = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		this.time = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		this.sourUser = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		this.destUser = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		this.sourGroup = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		this.destGroup = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		this.content = com.FileManagerX.Coder.Decoder.Decode_String2String(c.fetchFirstString());
-		if(!c.getIsOK()) { return null; }
+	public String output() {
+		return this.toConfig().output();
+	}
+	public Config input(String in) {
+		return this.input(new Config(in));
+	}
+	public Config input(Config c) {
+		if(c == null) { return null; }
 		
-		return c.output();
+		try {
+			if(!c.getIsOK()) { return c; }
+			this.index = c.fetchFirstLong();
+			if(!c.getIsOK()) { return c; }
+			this.time = c.fetchFirstLong();
+			if(!c.getIsOK()) { return c; }
+			this.sourUser = c.fetchFirstLong();
+			if(!c.getIsOK()) { return c; }
+			this.destUser = c.fetchFirstLong();
+			if(!c.getIsOK()) { return c; }
+			this.sourGroup = c.fetchFirstLong();
+			if(!c.getIsOK()) { return c; }
+			this.destGroup = c.fetchFirstLong();
+			if(!c.getIsOK()) { return c; }
+			this.content = c.fetchFirstString_Decode();
+			if(!c.getIsOK()) { return c; }
+			
+			return c;
+		} catch(Exception e) {
+			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
+			c.setIsOK(false);
+			return c;
+		}
 	}
 	public void copyReference(Object o) {
+		if(o == null) { return; }
+		
 		if(o instanceof Chat) {
 			Chat c = (Chat)o;
 			this.index = c.index;
@@ -158,9 +173,12 @@ public class Chat implements com.FileManagerX.Interfaces.IPublic {
 			this.sourGroup = c.sourGroup;
 			this.destGroup = c.destGroup;
 			this.content = c.content;
+			return;
 		}
 	}
 	public void copyValue(Object o) {
+		if(o == null) { return; }
+		
 		if(o instanceof Chat) {
 			Chat c = (Chat)o;
 			this.index = c.index;
@@ -170,14 +188,9 @@ public class Chat implements com.FileManagerX.Interfaces.IPublic {
 			this.sourGroup = c.sourGroup;
 			this.destGroup = c.destGroup;
 			this.content = new String(c.content);
+			return;
 		}
 	}
 	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

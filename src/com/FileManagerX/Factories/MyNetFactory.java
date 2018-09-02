@@ -16,42 +16,43 @@ public class MyNetFactory {
 	}
 	
 	public final static com.FileManagerX.MyNet.Group createServerGroup(com.FileManagerX.MyNet.Net net) {
-		if(net.getGroups().size() > 0) {
-			return net.getGroups().get(0);
+		String name = "ServerGroup";
+		com.FileManagerX.MyNet.Group g = net.searchByKey(name);
+		if(g == null) {
+			g = new com.FileManagerX.MyNet.Group();
+			g.setName(name);
+			net.add(g);
 		}
-		else {
-			net.addGroup("ServerGroup");
-			return net.getGroups().get(0);
-		}
+		return g;
 	}
 	public final static com.FileManagerX.MyNet.Group createMyGroup(com.FileManagerX.MyNet.Net net) {
-		if(net.getGroups().size() > 1) {
-			return net.getGroups().get(1);
+		String name = "MyGroup";
+		com.FileManagerX.MyNet.Group g = net.searchByKey(name);
+		if(g == null) {
+			g = new com.FileManagerX.MyNet.Group();
+			g.setName(name);
+			net.add(g);
 		}
-		else {
-			createServerGroup(net);
-			net.addGroup("MyGroup");
-			return net.getGroups().get(1);
-		}
+		return g;
 	}
 	public final static com.FileManagerX.MyNet.Group createTempGroup(com.FileManagerX.MyNet.Net net) {
-		if(net.getGroups().size() > 2) {
-			return net.getGroups().get(2);
+		String name = "TempGroup";
+		com.FileManagerX.MyNet.Group g = net.searchByKey(name);
+		if(g == null) {
+			g = new com.FileManagerX.MyNet.Group();
+			g.setName(name);
+			net.add(g);
 		}
-		else {
-			createMyGroup(net);
-			net.addGroup("TempGroup");
-			return net.getGroups().get(2);
-		}
+		return g;
 	}
 	public final static com.FileManagerX.MyNet.Group createHideGroup(com.FileManagerX.MyNet.Net net) {
-		if(net.getGroups().size() > 2) {
-			return net.getGroups().get(2);
+		String name = "HideGroup";
+		com.FileManagerX.MyNet.Group g = net.searchByKey(name);
+		if(g == null) {
+			g = new com.FileManagerX.MyNet.Group();
+			g.setName(name);
+			net.add(g);
 		}
-		else {
-			createTempGroup(net);
-			net.addGroup("HideGroup");
-			return net.getGroups().get(2);
-		}
+		return g;
 	}
 }

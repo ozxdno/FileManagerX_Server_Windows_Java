@@ -1,6 +1,5 @@
 package com.FileManagerX.Commands;
 
-import com.FileManagerX.BasicModels.Config;
 import com.FileManagerX.BasicModels.MachineInfo;
 
 public class RegisterMachine extends BaseCommand {
@@ -62,19 +61,33 @@ public class RegisterMachine extends BaseCommand {
 	public String toString() {
 		return this.output();
 	}
-	public String output() {
-		Config c = new Config();
+	public com.FileManagerX.BasicModels.Config toConfig() {
+		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config();
 		c.setField(this.getClass().getSimpleName());
-		c.addToBottom(new Config(super.output()));
-		c.addToBottom(new Config(this.machineInfo.output()));
-		return c.output();
+		c.addToBottom(super.toConfig());
+		c.addToBottom(this.machineInfo.toConfig());
+		return c;
 	}
-	public String input(String in) {
-		in = super.input(in);
-		if(in == null) {
-			return null;
+	public String output() {
+		return this.toConfig().output();
+	}
+	public com.FileManagerX.BasicModels.Config input(String in) {
+		return this.input(new com.FileManagerX.BasicModels.Config(in));
+	}
+	public com.FileManagerX.BasicModels.Config input(com.FileManagerX.BasicModels.Config c) {
+		if(c == null) { return null; }
+		try {
+			if(!c.getIsOK()) { return c; }
+			c = super.input(c);
+			if(!c.getIsOK()) { return c; }
+			c = this.machineInfo.input(c);
+			if(!c.getIsOK()) { return c; }
+			return c;
+		} catch(Exception e) {
+			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
+			c.setIsOK(false);
+			return c;
 		}
-		return this.machineInfo.input(in);
 	}
 	public void copyReference(Object o) {
 		super.copyReference(o);
@@ -112,10 +125,11 @@ public class RegisterMachine extends BaseCommand {
 			return false;
 		}
 		
-		com.FileManagerX.Globals.Datas.DBManager.setUnit(com.FileManagerX.DataBase.Unit.Machine);
 		MachineInfo exm = (com.FileManagerX.BasicModels.MachineInfo)
-				com.FileManagerX.Globals.Datas.DBManager.query
-				("[&] Name = '" + this.machineInfo.getName() + "'");
+				com.FileManagerX.Globals.Datas.DBManager.query2(
+						"[&] Name = '" + this.machineInfo.getName() + "'",
+						com.FileManagerX.DataBase.Unit.Machine
+					);
 		if(exm != null) {
 			this.getReply().setThis(false, "Machine Existed");
 			return false;

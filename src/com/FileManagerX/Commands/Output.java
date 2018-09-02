@@ -1,7 +1,6 @@
 package com.FileManagerX.Commands;
 
 import com.FileManagerX.BasicEnums.UserPriority;
-import com.FileManagerX.BasicModels.*;
 import com.FileManagerX.Interfaces.*;
 
 public class Output extends BaseCommand {
@@ -59,29 +58,36 @@ public class Output extends BaseCommand {
 	public String toString() {
 		return this.output();
 	}
-	public String output() {
-		Config c = new Config();
+	public com.FileManagerX.BasicModels.Config toConfig() {
+		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config();
 		c.setField(this.getClass().getSimpleName());
-		c.addToBottom(new Config(super.output()));
-		c.addToBottom(new Config(this.iop.output()));
+		c.addToBottom(super.toConfig());
+		c.addToBottom(this.iop.toString());
 		c.addToBottom(this.index);
-		return c.output();
+		return c;
 	}
-	public String input(String in) {
-		in = super.input(in);
-		if(in == null) {
-			return null;
+	public String output() {
+		return this.toConfig().output();
+	}
+	public com.FileManagerX.BasicModels.Config input(String in) {
+		return this.input(new com.FileManagerX.BasicModels.Config(in));
+	}
+	public com.FileManagerX.BasicModels.Config input(com.FileManagerX.BasicModels.Config c) {
+		if(c == null) { return null; }
+		try {
+			if(!c.getIsOK()) { return c; }
+			c = super.input(c);
+			if(!c.getIsOK()) { return c; }
+			c = this.iop.input(c);
+			if(!c.getIsOK()) { return c; }
+			this.index = c.fetchFirstLong();
+			if(!c.getIsOK()) { return c; }
+			return c;
+		} catch(Exception e) {
+			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
+			c.setIsOK(false);
+			return c;
 		}
-		in = this.iop.input(in);
-		if(in == null) {
-			return null;
-		}
-		
-		Config c = new Config(in);
-		this.index = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		
-		return c.output();
 	}
 	public void copyReference(Object o) {
 		super.copyReference(o);

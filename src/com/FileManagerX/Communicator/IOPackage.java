@@ -1,14 +1,10 @@
 package com.FileManagerX.Communicator;
 
-import com.FileManagerX.BasicModels.Config;
-import com.FileManagerX.Interfaces.*;
-import com.FileManagerX.BasicEnums.*;
-
-public class IOPackage implements IIOPackage {
+public class IOPackage implements com.FileManagerX.Interfaces.IIOPackage {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	private IOPType type;
+	private com.FileManagerX.BasicEnums.IOPType type;
 	private boolean uncheck;
 	private boolean cover;
 	private String sourUrl;
@@ -22,7 +18,7 @@ public class IOPackage implements IIOPackage {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public boolean setType(IOPType type) {
+	public boolean setType(com.FileManagerX.BasicEnums.IOPType type) {
 		if(type == null) {
 			return false;
 		}
@@ -91,7 +87,7 @@ public class IOPackage implements IIOPackage {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public IOPType getType() {
+	public com.FileManagerX.BasicEnums.IOPType getType() {
 		return type;
 	}
 	public boolean isUncheck() {
@@ -136,14 +132,14 @@ public class IOPackage implements IIOPackage {
 		initThis();
 	}
 	private void initThis() {
-		type = IOPType.READ_SOUR;
+		type = com.FileManagerX.BasicEnums.IOPType.READ_SOUR;
 		uncheck = false;
 		cover = true;
 		this.sourUrl = "";
 		this.destUrl = "";
 		totalBytes = 0;
 		this.finishedBytes = 0;
-		this.maxFlow = com.FileManagerX.Globals.Configurations.MaxConnectionFlow;
+		this.maxFlow = com.FileManagerX.Globals.Configurations.LimitForIOPBuffer;
 		this.content = "";
 		
 		stream = null;
@@ -151,7 +147,8 @@ public class IOPackage implements IIOPackage {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public boolean setThis(IOPType type, boolean uncheck, boolean cover, String sourUrl, String destUrl,
+	public boolean setThis(com.FileManagerX.BasicEnums.IOPType type, boolean uncheck, boolean cover,
+			String sourUrl, String destUrl,
 			long finishedBytes, long maxFlow, String content) {
 		boolean ok = true;
 		ok &= this.setType(type);
@@ -191,8 +188,8 @@ public class IOPackage implements IIOPackage {
 				this.type.toString() + ": " +
 				this.content;
 	}
-	public String output() {
-		Config c = new Config();
+	public com.FileManagerX.BasicModels.Config toConfig() {
+		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config();
 		c.setField(this.getClass().getSimpleName());
 		c.addToBottom(this.type.toString());
 		c.addToBottom(this.uncheck);
@@ -202,55 +199,78 @@ public class IOPackage implements IIOPackage {
 		c.addToBottom(this.totalBytes);
 		c.addToBottom(this.finishedBytes);
 		c.addToBottom(this.maxFlow);
-		c.addToBottom(com.FileManagerX.Coder.Encoder.Encode_String2String(this.content));
-		return c.output();
+		c.addToBottom_Encode(this.content);
+		return c;
 	}
-	public String input(String in) {
-		Config c = new Config(in);
-		this.type = IOPType.valueOf(c.fetchFirstString());
-		if(!c.getIsOK()) { return null; }
-		this.uncheck = c.fetchFirstBoolean();
-		if(!c.getIsOK()) { return null; }
-		this.cover = c.fetchFirstBoolean();
-		if(!c.getIsOK()) { return null; }
-		this.sourUrl = c.fetchFirstString();
-		if(!c.getIsOK()) { return null; }
-		this.destUrl = c.fetchFirstString();
-		if(!c.getIsOK()) { return null; }
-		this.totalBytes = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		this.finishedBytes = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		this.maxFlow = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		this.content = com.FileManagerX.Coder.Decoder.Decode_String2String(c.fetchFirstString());
-		if(!c.getIsOK()) { return null; }
-		
-		return "";
+	public String output() {
+		return this.toConfig().output();
+	}
+	public com.FileManagerX.BasicModels.Config input(String in) {
+		return this.input(new com.FileManagerX.BasicModels.Config(in));
+	}
+	public com.FileManagerX.BasicModels.Config input(com.FileManagerX.BasicModels.Config c) {
+		if(c == null) { return c; }
+		try {
+			if(!c.getIsOK()) { return c; }
+			this.type = com.FileManagerX.BasicEnums.IOPType.valueOf(c.fetchFirstString());
+			if(!c.getIsOK()) { return c; }
+			this.uncheck = c.fetchFirstBoolean();
+			if(!c.getIsOK()) { return c; }
+			this.cover = c.fetchFirstBoolean();
+			if(!c.getIsOK()) { return c; }
+			this.sourUrl = c.fetchFirstString();
+			if(!c.getIsOK()) { return c; }
+			this.destUrl = c.fetchFirstString();
+			if(!c.getIsOK()) { return c; }
+			this.totalBytes = c.fetchFirstLong();
+			if(!c.getIsOK()) { return c; }
+			this.finishedBytes = c.fetchFirstLong();
+			if(!c.getIsOK()) { return c; }
+			this.maxFlow = c.fetchFirstLong();
+			if(!c.getIsOK()) { return c; }
+			this.content = c.fetchFirstString_Decode();
+			if(!c.getIsOK()) { return c; }
+			return c;
+		} catch(Exception e) {
+			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
+			e.printStackTrace();
+			c.setIsOK(false);
+			return c;
+		}
 	}
 	public void copyReference(Object o) {
-		IOPackage op = (IOPackage)o;
-		this.uncheck = op.uncheck;
-		//this.type = op.type;
-		this.cover = op.cover;
-		this.sourUrl = op.sourUrl;
-		this.destUrl = op.destUrl;
-		this.totalBytes = op.totalBytes;
-		//this.finishedBytes = op.finishedBytes;
-		this.maxFlow = op.maxFlow;
-		this.content = op.content;
+		if(o == null) { return; }
+		
+		if(o instanceof IOPackage) {
+			IOPackage op = (IOPackage)o;
+			this.uncheck = op.uncheck;
+			//this.type = op.type;
+			this.cover = op.cover;
+			this.sourUrl = op.sourUrl;
+			this.destUrl = op.destUrl;
+			this.totalBytes = op.totalBytes;
+			//this.finishedBytes = op.finishedBytes;
+			this.maxFlow = op.maxFlow;
+			this.content = op.content;
+			return;
+		}
 	}
 	public void copyValue(Object o) {
-		IOPackage op = (IOPackage)o;
-		this.uncheck = op.uncheck;
-		//this.type = op.type;
-		this.cover = op.cover;
-		this.sourUrl = new String(op.sourUrl);
-		this.destUrl = new String(op.destUrl);
-		this.totalBytes = op.totalBytes;
-		//this.finishedBytes = op.finishedBytes;
-		this.content = new String(op.content);
-		this.maxFlow = op.maxFlow;
+		if(o == null) { return; }
+		
+		if(o instanceof IOPackage) {
+			IOPackage op = (IOPackage)o;
+			this.uncheck = op.uncheck;
+			//this.type = op.type;
+			this.cover = op.cover;
+			this.sourUrl = new String(op.sourUrl);
+			this.destUrl = new String(op.destUrl);
+			this.totalBytes = op.totalBytes;
+			//this.finishedBytes = op.finishedBytes;
+			this.content = new String(op.content);
+			this.maxFlow = op.maxFlow;
+			return;
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

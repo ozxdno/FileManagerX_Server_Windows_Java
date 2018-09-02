@@ -37,15 +37,17 @@ public class Deliver {
 		long gateMachine = t.getBasicMessagePackage().getBroadcast().getDestMachine();
 		
 		// 分发给子连接
-		for(com.FileManagerX.Interfaces.IClientConnection con : 
-			com.FileManagerX.Globals.Datas.Client.getContent()) {
-			long next = con.getServerMachineInfo().getIndex();
-			
-			if(next == prevMachine) { continue; }
-			if(t.getBasicMessagePackage().getRoutePathPackage().passed(gateMachine)) { continue; }
-			
-			t.getBasicMessagePackage().getRoutePathPackage().setDeliverMachine(next);
-			con.send(t);
+		synchronized(com.FileManagerX.Globals.Datas.Client) {
+			com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IClientConnection> it =
+					com.FileManagerX.Globals.Datas.Client.getIterator();
+			while(it.hasNext()) {
+				com.FileManagerX.Interfaces.IClientConnection con = it.getNext();
+				long next = con.getServerMachineInfo().getIndex();
+				if(next == prevMachine) { continue; }
+				if(t.getBasicMessagePackage().getRoutePathPackage().passed(gateMachine)) { continue; }
+				t.getBasicMessagePackage().getRoutePathPackage().setDeliverMachine(next);
+				con.send(t);
+			}
 		}
 		
 		return true;
@@ -97,36 +99,24 @@ public class Deliver {
 				}
 			}
 			else {
-				con = com.FileManagerX.Globals.Datas.OtherServers.getContent().get(0);
-				if(con.getServerMachineInfo().getIndex() == sourMachine) {
-					if(com.FileManagerX.Globals.Datas.OtherServers.size() == 1) {
-						con = com.FileManagerX.Globals.Datas.ServerConnection;
-					}
-					else {
-						con = com.FileManagerX.Globals.Datas.OtherServers.getContent().get(1);
+				com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IClientConnection> it =
+						com.FileManagerX.Globals.Datas.OtherServers.getIterator();
+				while(it.hasNext()) {
+					con = it.getNext();
+					if(con.getServerMachineInfo().getIndex() != sourMachine) {
+						break;
 					}
 				}
 			}
 		}
 		else {
-			for(int i=0; i<com.FileManagerX.Globals.Datas.OtherServers.size(); i++) {
-				com.FileManagerX.Interfaces.IClientConnection c = 
-						com.FileManagerX.Globals.Datas.OtherServers.getContent().get(i);
-				if(c != t.getConnection()) {
+			com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IClientConnection> it =
+					com.FileManagerX.Globals.Datas.OtherServers.getIterator();
+			while(it.hasNext()) {
+				if(it.getNext() != t.getConnection()) {
 					continue;
 				}
-				if(i == com.FileManagerX.Globals.Datas.OtherServers.size()-1) {
-					long server = com.FileManagerX.Globals.Configurations.Server_MachineIndex;
-					if(server == sourMachine) {
-						con = null;
-					}
-					else {
-						con = com.FileManagerX.Globals.Datas.ServerConnection;
-					}
-				}
-				else {
-					con = com.FileManagerX.Globals.Datas.OtherServers.getContent().get(i);
-				}
+				con = it.hasNext() ? it.getNext() : null;
 			}
 		}
 		

@@ -75,24 +75,32 @@ public class LoginUser extends BaseCommand {
 	public String toString() {
 		return this.output();
 	}
-	public String output() {
+	public com.FileManagerX.BasicModels.Config toConfig() {
 		Config c = new Config();
 		c.setField(this.getClass().getSimpleName());
-		c.addToBottom(new Config(super.output()));
-		c.addToBottom(new Config(this.suser.output()));
-		c.addToBottom(new Config(this.cuser.output()));
-		return c.output();
+		c.addToBottom(super.toConfig());
+		c.addToBottom(this.suser.toConfig());
+		c.addToBottom(this.cuser.toConfig());
+		return c;
 	}
-	public String input(String in) {
-		in = super.input(in);
-		if(in == null) {
-			return null;
-		}
-		in = suser.input(in);
-		if(in == null) {
-			return null;
-		}
-		return this.cuser.input(in);
+	public String output() {
+		return this.toConfig().output();
+	}
+	public com.FileManagerX.BasicModels.Config input(String in) {
+		return this.input(new com.FileManagerX.BasicModels.Config(in));
+	}
+	public com.FileManagerX.BasicModels.Config input(com.FileManagerX.BasicModels.Config c) {
+		if(c == null) { return null; }
+		
+		if(!c.getIsOK()) { return c; }
+		c = super.input(c);
+		if(!c.getIsOK()) { return c; }
+		c = this.suser.input(c);
+		if(!c.getIsOK()) { return c; }
+		c = this.cuser.input(c);
+		if(!c.getIsOK()) { return c; }
+		
+		return c;
 	}
 	public void copyReference(Object o) {
 		super.copyReference(o);
@@ -124,12 +132,12 @@ public class LoginUser extends BaseCommand {
 
 	public boolean executeInLocal() {
 		if(this.isArriveServer()) {
-			com.FileManagerX.Globals.Datas.DBManager.setUnit(com.FileManagerX.DataBase.Unit.User);
-			this.cuser = (com.FileManagerX.BasicModels.User)
-					com.FileManagerX.Globals.Datas.DBManager.query
-					("[&] LoginName = '" + this.cuser.getLoginName() + "'");
+			com.FileManagerX.Globals.Datas.DBManager.query(
+					"[&] loginName = '" + this.cuser.getLoginName() + "'",
+					this.cuser,
+					com.FileManagerX.DataBase.Unit.User
+				);
 		}
-		
 		if(this.cuser == null) {
 			this.getReply().setFailedReason("User is NULL");
 			this.getReply().setOK(false);

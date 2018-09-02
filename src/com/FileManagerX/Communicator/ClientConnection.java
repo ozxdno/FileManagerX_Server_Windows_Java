@@ -11,7 +11,7 @@ public class ClientConnection extends com.FileManagerX.Processes.BasicProcess
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public final static String ERROR_SOCKET_BUILD_FAILED = "Socket is Error";
+	public final static String ERROR_SOCKET_CLOSED = "Not Open Socket";
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -72,13 +72,17 @@ public class ClientConnection extends com.FileManagerX.Processes.BasicProcess
 		return true;
 	}
 	public boolean setIndex() {
-		this.index = ++com.FileManagerX.Globals.Configurations.Next_ConnectionIndex;
+		this.index = com.FileManagerX.Globals.Configurations.Next_ConnectionIndex();
 		return true;
 	}
 	public boolean setName() {
-		if(this.socket == null) {
+		if(this.socket == null || this.socket.isClosed()) {
 			return false;
 		}
+		if(socket.getServerMachineInfo() == null || socket.getClientMachineInfo() == null) {
+			return false;
+		}
+		
 		String name = "->" + 
 				socket.getClientMachineInfo().getIp() + 
 				":" +
@@ -178,7 +182,6 @@ public class ClientConnection extends com.FileManagerX.Processes.BasicProcess
 		this.serverUser = null;
 		this.clientUser = null;
 		this.type = com.FileManagerX.BasicEnums.ConnectionType.TRANSPORT_COMMAND;
-		this.setIndex();
 		
 		this.socket = null;
 		this.setRunnable(new RunImpl());
@@ -195,10 +198,16 @@ public class ClientConnection extends com.FileManagerX.Processes.BasicProcess
 	private class RunImpl implements com.FileManagerX.Processes.BasicProcess.Runnable {
 		public String run() {
 			if(socket == null) {
-				return ERROR_SOCKET_BUILD_FAILED;
+				ClientConnection.this.setSocket(com.FileManagerX.BasicEnums.SocketType.IPV4_TCP);
 			}
 			
-			while(!isAbort() && !socket.isClosed()) {
+			if(socket.isClosed()) {
+				setIsAbort(true);
+				if(brother != null) { brother.exitProcess(); }
+				return ERROR_SOCKET_CLOSED;
+			}
+			
+			while(!isAbort() && !isStop() && !socket.isClosed()) {
 				try {
 					if(sends.isEmpty()) {
 						com.FileManagerX.Tools.Time.sleepUntil(10);
@@ -221,12 +230,16 @@ public class ClientConnection extends com.FileManagerX.Processes.BasicProcess
 				} catch(Exception e) {
 					com.FileManagerX.BasicEnums.ErrorType.COMMUNICATOR_RUNNING_FAILED.register(
 							"[" + getName() + "] " + e.toString());
-					brother.exitProcess();
+					setIsAbort(true);
+					if(brother != null) { brother.exitProcess(); }
+					socket.close();
 					return e.toString();
 				}
 			}
 			
-			brother.exitProcess();
+			setIsAbort(true);
+			if(brother != null) { brother.exitProcess(); }
+			socket.close();
 			return null;
 		}
 	}
@@ -236,6 +249,13 @@ public class ClientConnection extends com.FileManagerX.Processes.BasicProcess
 	public String login() {
 		
 		com.FileManagerX.Interfaces.IReply reply = null;
+		
+		com.FileManagerX.Commands.LoginServer ls = new com.FileManagerX.Commands.LoginServer();
+		ls.setThis(com.FileManagerX.Globals.Datas.ThisMachine, this);
+		ls.send();
+		reply = ls.receive();
+		if(reply == null) { return "LoginServer Failed: reply NULL"; }
+		if(!reply.isOK()) { return reply.getFailedReason(); }
 		
 		com.FileManagerX.Commands.LoginUser lu = new com.FileManagerX.Commands.LoginUser();
 		lu.setThis(com.FileManagerX.Globals.Datas.ThisUser, com.FileManagerX.Globals.Datas.ThisUser, this);

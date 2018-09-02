@@ -1,226 +1,113 @@
 package com.FileManagerX.BasicCollections;
 
-import java.util.*;
-
-public class DepotInfos implements com.FileManagerX.Interfaces.IPublic, com.FileManagerX.Interfaces.ICollection {
+public class DepotInfos extends BasicHashMap<com.FileManagerX.BasicModels.DepotInfo, Long> {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	private List<com.FileManagerX.BasicModels.DepotInfo> content;
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	public boolean setContent(List<com.FileManagerX.BasicModels.DepotInfo> content) {
-		if(content == null) {
-			return false;
-		}
-		this.content = content;
-		return true;
+
+	public Long getKey(com.FileManagerX.BasicModels.DepotInfo item) {
+		return item == null ? null : item.getIndex();
 	}
-	
+
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	public List<com.FileManagerX.BasicModels.DepotInfo> getContent() {
-		return this.content;
+
+	public com.FileManagerX.BasicModels.DepotInfo createT() {
+		return new com.FileManagerX.BasicModels.DepotInfo();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public DepotInfos() {
-		initThis();
-	}
-	private void initThis() {
-		if(content == null) {
-			content = new ArrayList<com.FileManagerX.BasicModels.DepotInfo>();
-		}
-		content.clear();
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	public void clear() {
-		initThis();
-	}
-	@Override
-	public String toString() {
-		if(content == null || content.size() == 0) {
-			return "Empty";
-		}
-		String res = content.get(0).toString();
-		for(int i=1; i<content.size(); i++) {
-			res += ", " + content.get(i).toString();
-		}
-		return res;
-	}
-	public String output() {
-		if(content == null || content.size() == 0) {
-			return "";
-		}
-		String res = this.getClass().getSimpleName() + " = " + com.FileManagerX.Tools.String.getValue(this.getContent().get(0).output());
-		for(int i=1; i<this.content.size(); i++) {
-			res += "|" + com.FileManagerX.Tools.String.getValue(this.getContent().get(i).output());
-		}
-		return res;
-	}
-	public String input(String in) {
-		initThis();
-		String out = "";
-		while(true) {
-			if(in == null) { break; }
-			if(com.FileManagerX.Tools.String.clearLRSpace(com.FileManagerX.Tools.String.getValue(in)).length() == 0) { break; }
-			
-			com.FileManagerX.BasicModels.DepotInfo e = new com.FileManagerX.BasicModels.DepotInfo();
-			out = e.input(in);
-			if(out == null) { break; }
-			this.content.add(e);
-			in = out;
-		}
-		return in;
-	}
-	public void copyReference(Object o) {
-		DepotInfos m = (DepotInfos)o;
-		this.content = m.content;
-	}
-	public void copyValue(Object o) {
-		DepotInfos m = (DepotInfos)o;
-		initThis();
-		for(int i=0; i<m.getContent().size(); i++) {
-			com.FileManagerX.BasicModels.DepotInfo im = new com.FileManagerX.BasicModels.DepotInfo();
-			im.copyValue(m.getContent().get(i));
-			this.content.add(im);
-		}
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	public int size() {
-		return content.size();
-	}
-	public boolean add(Object item) {
-		if(item == null) {
-			return false;
-		}
-		try {
-			this.content.add((com.FileManagerX.BasicModels.DepotInfo)item);
-			return true;
-		} catch(Exception e) {
-			return false;
-		}
-	}
-	/**
-	 * Sort By Index
-	 * 
-	 */
-	@SuppressWarnings("unchecked")
-	public boolean sortIncrease() {
-		@SuppressWarnings("rawtypes")
-		Comparator c = new Comparator<com.FileManagerX.BasicModels.DepotInfo>() {
-			public int compare(com.FileManagerX.BasicModels.DepotInfo e1, com.FileManagerX.BasicModels.DepotInfo e2) {
-				if(e1.getIndex() > e2.getIndex()) {
-					return 1;
-				} else {
-					return -1;
-				}
-			}
-		};
-		
-		try {
-			Collections.sort(this.getContent(), c);
-			return true;
-		} catch(Exception e) {
-			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(com.FileManagerX.BasicEnums.ErrorLevel.Error,"Error in Compare",e.toString());
-			return false;
-		}
-	}
-	
-	/**
-	 * Sort By Index
-	 * 
-	 */
-	@SuppressWarnings("unchecked")
-	public boolean sortDecrease() {
-		@SuppressWarnings("rawtypes")
-		Comparator c = new Comparator<com.FileManagerX.BasicModels.DepotInfo>() {
-			public int compare(com.FileManagerX.BasicModels.DepotInfo e1, com.FileManagerX.BasicModels.DepotInfo e2) {
-				if(e1.getIndex() > e2.getIndex()) {
-					return -1;
-				} else {
-					return 1;
-				}
-			}
-		};
-		
-		try {
-			Collections.sort(this.getContent(), c);
-			return true;
-		} catch(Exception e) {
-			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(com.FileManagerX.BasicEnums.ErrorLevel.Error,"Error in Compare",e.toString());
-			return false;
-		}
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	public int indexOf(String url) {
-		for(int i=0; i<content.size(); i++) {
-			if(content.get(i).getUrl().equals(url)) {
-				return i;
+	public com.FileManagerX.BasicModels.DepotInfo searchByIndex(long index) {
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.BasicModels.DepotInfo> it = this.getIterator();
+		while(it.hasNext()) {
+			com.FileManagerX.BasicModels.DepotInfo d = it.getNext();
+			if(d.getIndex() == index) {
+				return d;
 			}
 		}
-		return -1;
+		return null;
 	}
-	public com.FileManagerX.BasicModels.DepotInfo search(String url) {
-		int index = this.indexOf(url);
-		if(index < 0) {
-			return null;
-		}
-		return content.get(index);
-	}
-	public com.FileManagerX.BasicModels.DepotInfo fetch(String url) {
-		int index = this.indexOf(url);
-		if(index < 0) {
-			return null;
-		}
-		com.FileManagerX.BasicModels.DepotInfo i = content.get(index);
-		content.remove(index);
-		return i;
-	}
-	public void delete(String url) {
-		int index = this.indexOf(url);
-		if(index >= 0) {
-			content.remove(index);
-		}
-	}
-	
-	public int indexOf(long idx) {
-		for(int i=0; i<content.size(); i++) {
-			if(content.get(i).getIndex() == idx) {
-				return i;
+	public com.FileManagerX.BasicModels.DepotInfo fetchByIndex(long index) {
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.BasicModels.DepotInfo> it = this.getIterator();
+		while(it.hasNext()) {
+			com.FileManagerX.BasicModels.DepotInfo d = it.getNext();
+			if(d.getIndex() == index) {
+				it.remove();
+				return d;
 			}
 		}
-		return -1;
+		return null;
 	}
-	public com.FileManagerX.BasicModels.DepotInfo search(long idx) {
-		int index = this.indexOf(idx);
-		if(index < 0) {
-			return null;
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public com.FileManagerX.BasicModels.DepotInfo searchByDataBaseIndex(long index) {
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.BasicModels.DepotInfo> it = this.getIterator();
+		while(it.hasNext()) {
+			com.FileManagerX.BasicModels.DepotInfo d = it.getNext();
+			if(d.getDBIndex() == index) {
+				return d;
+			}
 		}
-		return content.get(index);
+		return null;
 	}
-	public com.FileManagerX.BasicModels.DepotInfo fetch(long idx) {
-		int index = this.indexOf(idx);
-		if(index < 0) {
-			return null;
+	public com.FileManagerX.BasicModels.DepotInfo fetchByDataBaseIndex(long index) {
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.BasicModels.DepotInfo> it = this.getIterator();
+		while(it.hasNext()) {
+			com.FileManagerX.BasicModels.DepotInfo d = it.getNext();
+			if(d.getDBIndex() == index) {
+				it.remove();
+				return d;
+			}
 		}
-		com.FileManagerX.BasicModels.DepotInfo i = content.get(index);
-		content.remove(index);
-		return i;
+		return null;
 	}
-	public void delete(long idx) {
-		int index = this.indexOf(idx);
-		if(index >= 0) {
-			content.remove(index);
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public com.FileManagerX.BasicModels.DepotInfo searchByUrl(String url) {
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.BasicModels.DepotInfo> it = this.getIterator();
+		while(it.hasNext()) {
+			com.FileManagerX.BasicModels.DepotInfo d = it.getNext();
+			if(d.getUrl().equals(url)) {
+				return d;
+			}
 		}
+		return null;
+	}
+	public com.FileManagerX.BasicModels.DepotInfo fetchByUrl(String url) {
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.BasicModels.DepotInfo> it = this.getIterator();
+		while(it.hasNext()) {
+			com.FileManagerX.BasicModels.DepotInfo d = it.getNext();
+			if(d.getUrl().equals(url)) {
+				it.remove();
+				return d;
+			}
+		}
+		return null;
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public com.FileManagerX.BasicModels.DepotInfo searchByName(String name) {
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.BasicModels.DepotInfo> it = this.getIterator();
+		while(it.hasNext()) {
+			com.FileManagerX.BasicModels.DepotInfo d = it.getNext();
+			if(d.getName().equals(name)) {
+				return d;
+			}
+		}
+		return null;
+	}
+	public com.FileManagerX.BasicModels.DepotInfo fetchByName(String name) {
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.BasicModels.DepotInfo> it = this.getIterator();
+		while(it.hasNext()) {
+			com.FileManagerX.BasicModels.DepotInfo d = it.getNext();
+			if(d.getName().equals(name)) {
+				it.remove();
+				return d;
+			}
+		}
+		return null;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

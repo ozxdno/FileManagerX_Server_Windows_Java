@@ -44,16 +44,9 @@ public class Encoder {
 		return new String(ENCODE.encode(str.getBytes(), spc, rep));
 	}
 	public final static String Encode_String2DataBaseString(String str) {
-		byte[] spc = new byte[] {
-				com.FileManagerX.BasicEnums.EOF.S.getSpecial(),
-				com.FileManagerX.BasicEnums.EOF.T.getSpecial()
-			};
-		byte[] rep = new byte[] {
-				com.FileManagerX.BasicEnums.EOF.S.getReplce(),
-				com.FileManagerX.BasicEnums.EOF.T.getReplce()
-			};
-		
-		return new String(ENCODE.encode(str.getBytes(), spc, rep));
+		if(str == null) { return ""; }
+		str = str.replace("\\", "\\\\");
+		return str;
 	}
 	
 	public final static byte[] Encode_Transport2Byte(com.FileManagerX.Interfaces.ITransport t) {

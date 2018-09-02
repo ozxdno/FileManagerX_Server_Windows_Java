@@ -35,13 +35,30 @@ public interface IDBManager {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public Object querys(Object conditions);
-	public Object query(Object conditions);
-	public Object updates(Object items);
+	public boolean querys(Object conditions, Object result);
+	public boolean query(Object conditions, Object result);
+	public boolean updates(Object items, Object errors);
 	public boolean update(Object item);
-	public Object removes(Object items);
+	public boolean removes(Object items, Object errors);
 	public boolean remove(Object item);
 	public long size();
+	
+	public default Object querys2(Object conditions) {
+		querys(conditions, null);
+		return null;
+	}
+	public default Object query2(Object conditions) {
+		querys(conditions, null);
+		return null;
+	}
+	public default Object removes2(Object items) {
+		removes(items, null);
+		return null;
+	}
+	public default Object updates2(Object items) {
+		updates(items, null);
+		return null;
+	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -72,20 +89,20 @@ public interface IDBManager {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public default Object querys(Object conditions, com.FileManagerX.DataBase.Unit unit) {
-		return querys(conditions);
+	public default boolean querys(Object conditions, Object result, com.FileManagerX.DataBase.Unit unit) {
+		return querys(conditions, result);
 	}
-	public default Object query(Object conditions, com.FileManagerX.DataBase.Unit unit) {
-		return query(conditions);
+	public default boolean query(Object conditions, Object result, com.FileManagerX.DataBase.Unit unit) {
+		return query(conditions, result);
 	}
-	public default Object updates(Object items, com.FileManagerX.DataBase.Unit unit) {
-		return updates(items);
+	public default boolean updates(Object items, Object errors, com.FileManagerX.DataBase.Unit unit) {
+		return updates(items, errors);
 	}
 	public default boolean update(Object item, com.FileManagerX.DataBase.Unit unit) {
 		return update(item);
 	}
-	public default Object removes(Object items, com.FileManagerX.DataBase.Unit unit) {
-		return removes(items);
+	public default boolean removes(Object items, Object errors, com.FileManagerX.DataBase.Unit unit) {
+		return removes(items, errors);
 	}
 	public default boolean remove(Object item, com.FileManagerX.DataBase.Unit unit) {
 		return remove(item);
@@ -93,6 +110,23 @@ public interface IDBManager {
 	public default long size(com.FileManagerX.DataBase.Unit unit) {
 		return size();
 	}
+
+	public default Object querys2(Object conditions, com.FileManagerX.DataBase.Unit unit) {
+		return querys2(conditions);
+	}
+	public default Object query2(Object conditions, com.FileManagerX.DataBase.Unit unit) {
+		return query2(conditions);
+	}
+	public default Object removes2(Object items, com.FileManagerX.DataBase.Unit unit) {
+		return removes2(items);
+	}
+	public default Object updates2(Object items, com.FileManagerX.DataBase.Unit unit) {
+		return updates2(items);
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public boolean check();
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

@@ -1,0 +1,2 @@
+DepotInfo = 1|1|1|DESKTOP-ASFUOAO||127.0.0.1|40000|SERVER|RUNNING||1|FileManagerX|Running
+DepotInfo = 2|1|1|DESKTOP-ASFUOAO||127.0.0.1|40000|SERVER|RUNNING|D:\Space_For_Media\Pictures\FMX_Test_Depot_A|2|DepotName3|Running

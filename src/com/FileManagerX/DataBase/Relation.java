@@ -13,4 +13,13 @@ public enum Relation {
 	public String getRelationString() {
 		return this.relation;
 	}
+	public static Relation toRelation(String str) {
+		if(AND.getRelationString().equals(str)) {
+			return AND;
+		}
+		if(OR.getRelationString().equals(str)) {
+			return OR;
+		}
+		return null;
+	}
 }

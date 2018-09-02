@@ -54,4 +54,16 @@ public class List2Array {
 		}
 		return res;
 	}
+	public final static <T> boolean toAnyArray(List<T> list, T[] result) {
+		if(list == null || list.size() == 0) {
+			return false;
+		}
+		if(list.size() != result.length) {
+			return false;
+		}
+		for(int i=0; i<list.size(); i++) {
+			result[i] = list.get(i);
+		}
+		return true;
+	}
 }

@@ -32,14 +32,25 @@ public class Server_IPV4_TCP implements com.FileManagerX.Interfaces.ISocketS {
 		return true;
 	}
 	public boolean setSocket() {
+		
 		try {
-			int port = this.server.getPort();
-			this.socket = new java.net.ServerSocket(port);
+			this.socket = new java.net.ServerSocket(this.server.getPort());
 			return true;
 		} catch(Exception e) {
 			com.FileManagerX.BasicEnums.ErrorType.COMMUNICATOR_BUILD_SOCKED_FAILED.register(e.toString());
-			return false;
 		}
+		
+		for(int i=65535; i>1023; i--) {
+			try {
+				this.socket = new java.net.ServerSocket(i);
+				this.server.setPort(i);
+				return true;
+			} catch(Exception e) {
+				com.FileManagerX.BasicEnums.ErrorType.COMMUNICATOR_BUILD_SOCKED_FAILED.register(e.toString());
+				continue;
+			}
+		}
+		return false;
 	}
 	public boolean setServerMachineInfo(com.FileManagerX.BasicModels.MachineInfo server) {
 		if(server == null) {

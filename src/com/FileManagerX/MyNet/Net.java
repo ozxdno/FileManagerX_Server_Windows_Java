@@ -1,22 +1,14 @@
 package com.FileManagerX.MyNet;
 
-public class Net implements com.FileManagerX.Interfaces.IPublic {
+public class Net extends com.FileManagerX.BasicCollections.BasicHashMap<Group, String> {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	private java.util.List<Group> groups;
 	private String name;
-	private int amount;
+	private int limit;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public boolean setGroups(java.util.List<Group> groups) {
-		if(groups == null) {
-			return false;
-		}
-		this.groups = groups;
-		return true;
-	}
 	public boolean setName(String name) {
 		if(name == null) {
 			return false;
@@ -27,24 +19,25 @@ public class Net implements com.FileManagerX.Interfaces.IPublic {
 		this.name = name;
 		return true;
 	}
-	public boolean setAmount(int amount) {
-		if(amount < 0) {
+	public boolean setLimit(int limit) {
+		if(limit < 0) {
 			return false;
 		}
-		this.amount = amount;
+		this.limit = limit;
 		return true;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public java.util.List<Group> getGroups() {
-		return this.groups;
-	}
 	public String getName() {
 		return this.name;
 	}
-	public int getAmount() {
-		return this.amount;
+	public int getLimit() {
+		return this.limit;
+	}
+
+	public String getKey(Group item) {
+		return item == null ? null : item.getName();
 	}
 	
 	public Manager getManager() {
@@ -59,104 +52,116 @@ public class Net implements com.FileManagerX.Interfaces.IPublic {
 		initThis();
 	}
 	private void initThis() {
-		this.groups = new java.util.ArrayList<>();
 		this.name = "Default Net";
-		this.amount = 0;
 		
 		com.FileManagerX.Factories.MyNetFactory.createServerGroup(this);
 		com.FileManagerX.Factories.MyNetFactory.createMyGroup(this);
 		com.FileManagerX.Factories.MyNetFactory.createTempGroup(this);
 		com.FileManagerX.Factories.MyNetFactory.createHideGroup(this);
 	}
+	public Group createT() {
+		return new Group();
+	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public void clear() {
+		super.clear();
 		initThis();
 	}
 	public String toString() {
 		return this.name;
 	}
-	public String output() {
-		String o = "MyNet" + " = " +
-				this.name.length() + "|" +
-				this.name + "|"  + 
-				this.groups.size() + "|";
-		return o;
+	public com.FileManagerX.BasicModels.Config toConfig() {
+		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config();
+		c.setField("Net-" + this.getClass().getSimpleName());
+		c.addToBottom(this.name);
+		c.addToBottom(this.limit);
+		return c;
 	}
-	public String input(String in) {
-		try {
-			in = com.FileManagerX.Tools.String.getValue(in);
-			
-			int idx = in.indexOf('|');
-			int nameLen = Integer.parseInt(in.substring(0, idx));
-			in = in.substring(idx + 1);
-			this.name = in.substring(0, nameLen);
-			in = in.substring(nameLen + 1);
-			
-			idx = in.indexOf('|');
-			int groupAmount = Integer.parseInt(in.substring(0, idx));
-			in = in.substring(idx + 1);
-			this.amount = groupAmount;
-			
-			return in;
-		} catch(Exception e) {
-			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
-			return null;
-		}
+	public String output() {
+		return this.toConfig().output();
+	}
+	public com.FileManagerX.BasicModels.Config input(String in) {
+		return this.input(new com.FileManagerX.BasicModels.Config(in));
+	}
+	public com.FileManagerX.BasicModels.Config input(com.FileManagerX.BasicModels.Config c) {
+		if(c == null) { return null; }
+		
+		if(!c.getIsOK()) { return c; }
+		this.name = c.fetchFirstString();
+		if(!c.getIsOK()) { return c; }
+		this.limit = c.fetchFirstInt();
+		if(!c.getIsOK()) { return c; }
+		
+		return c;
 	}
 	public void copyReference(Object o) {
-		
+		if(o == null) { return; }
+		if(o instanceof Net) {
+			super.copyReference(o);
+			Net n = (Net)o;
+			this.name = n.name;
+			this.limit = n.limit;
+			return;
+		}
 	}
 	public void copyValue(Object o) {
-		
+		if(o == null) { return; }
+		if(o instanceof Net) {
+			super.copyValue(o);
+			Net n = (Net)o;
+			this.name = new String(n.name);
+			this.limit = n.limit;
+			return;
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public boolean addGroup(Group group) {
-		if(group == null) {
-			return false;
-		}
-		this.groups.add(group);
-		return true;
-	}
-	public boolean addGroup(String groupName) {
-		for(Group g : this.groups) {
-			if(g.getName().equals(groupName)) {
-				return true;
-			}
-		}
-		Group g = new Group();
-		g.setName(groupName);
-		this.groups.add(g);
-		return true;
-	}
-	public boolean delGroup(String groupName) {
-		java.util.Iterator<Group> it = this.groups.iterator();
+	public Group searchByIndex(long index) {
+		com.FileManagerX.Interfaces.IIterator<Group> it = this.getIterator();
 		while(it.hasNext()) {
-			if(it.next().getName().equals(groupName)) {
-				it.remove();
-				return true;
-			}
-		}
-		return true;
-	}
-	public Group findGroup(String groupName) {
-		for(Group g : this.groups) {
-			if(g.getName().equals(groupName)) {
+			Group g = it.getNext();
+			if(g.getIndex() == index) {
 				return g;
 			}
 		}
 		return null;
 	}
+	public Group fetchByIndex(long index) {
+		com.FileManagerX.Interfaces.IIterator<Group> it = this.getIterator();
+		while(it.hasNext()) {
+			Group g = it.getNext();
+			if(g.getIndex() == index) {
+				it.remove();
+				return g;
+			}
+		}
+		return null;
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public Group searchByName(String name) {
+		return this.searchByKey(name);
+	}
+	public Group fetchByName(String name) {
+		return this.fetchByKey(name);
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	public void refresh() {
 		com.FileManagerX.Factories.MyNetFactory.createServerGroup(this);
 		com.FileManagerX.Factories.MyNetFactory.createMyGroup(this);
 		com.FileManagerX.Factories.MyNetFactory.createTempGroup(this);
 		com.FileManagerX.Factories.MyNetFactory.createHideGroup(this);
 		
-		for(Group g : this.groups) { g.refresh(); }
+		com.FileManagerX.Interfaces.IIterator<Group> it = this.getIterator();
+		while(it.hasNext()) {
+			it.getNext().refresh();
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

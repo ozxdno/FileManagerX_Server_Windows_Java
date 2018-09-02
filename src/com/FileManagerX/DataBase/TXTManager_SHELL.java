@@ -108,7 +108,7 @@ public class TXTManager_SHELL implements com.FileManagerX.Interfaces.IDBManager 
 			return false;
 		}
 		
-		java.io.File folder = new java.io.File(this.name);
+		java.io.File folder = new java.io.File(this.database.getUrl());
 		return folder.exists() && folder.isDirectory();
 	}
 	public synchronized boolean clear() {
@@ -117,20 +117,20 @@ public class TXTManager_SHELL implements com.FileManagerX.Interfaces.IDBManager 
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public synchronized Object querys(Object conditions) {
-		return null;
+	public synchronized boolean querys(Object conditions, Object result) {
+		return false;
 	}
-	public synchronized Object query(Object conditions) {
-		return null;
+	public synchronized boolean query(Object conditions, Object result) {
+		return false;
 	}
-	public synchronized Object updates(Object items) {
-		return null;
+	public synchronized boolean updates(Object items, Object errors) {
+		return false;
 	}
 	public synchronized boolean update(Object item) {
 		return false;
 	}
-	public synchronized Object removes(Object items) {
-		return null;
+	public synchronized boolean removes(Object items, Object errors) {
+		return false;
 	}
 	public synchronized boolean remove(Object item) {
 		return false;
@@ -141,173 +141,8 @@ public class TXTManager_SHELL implements com.FileManagerX.Interfaces.IDBManager 
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public final static boolean satisfyBoolean(boolean target, QueryCondition qc) {
-		if(qc.getSign().equals(Sign.EQUAL)) {
-			try {
-				return target == (Integer.parseInt(qc.getValue()) != 0);
-			} catch(Exception e) {
-				return false;
-			}
-		}
-		if(qc.getSign().equals(Sign.NOT_EQUAL)) {
-			try {
-				return target != (Integer.parseInt(qc.getValue()) != 0);
-			} catch(Exception e) {
-				return false;
-			}
-		}
-		return false;
-	}
-	public final static boolean satisfyInteger(int target, QueryCondition qc) {
-		if(qc.getSign().equals(Sign.EQUAL)) {
-			try {
-				return target == Integer.parseInt(qc.getValue());
-			} catch(Exception e) {
-				return false;
-			}
-		}
-		if(qc.getSign().equals(Sign.NOT_EQUAL)) {
-			try {
-				return target != Integer.parseInt(qc.getValue());
-			} catch(Exception e) {
-				return false;
-			}
-		}
-		if(qc.getSign().equals(Sign.GREATER)) {
-			try {
-				return target > Integer.parseInt(qc.getValue());
-			} catch(Exception e) {
-				return false;
-			}
-		}
-		if(qc.getSign().equals(Sign.LESS)) {
-			try {
-				return target < Integer.parseInt(qc.getValue());
-			} catch(Exception e) {
-				return false;
-			}
-		}
-		if(qc.getSign().equals(Sign.GREATER_OR_EQUAL)) {
-			try {
-				return target >= Integer.parseInt(qc.getValue());
-			} catch(Exception e) {
-				return false;
-			}
-		}
-		if(qc.getSign().equals(Sign.LESS_OR_EQUAL)) {
-			try {
-				return target <= Integer.parseInt(qc.getValue());
-			} catch(Exception e) {
-				return false;
-			}
-		}
-		return false;
-	}
-	public final static boolean satisfyLong(long target, QueryCondition qc) {
-		if(qc.getSign().equals(Sign.EQUAL)) {
-			try {
-				return target == Long.parseLong(qc.getValue());
-			} catch(Exception e) {
-				return false;
-			}
-		}
-		if(qc.getSign().equals(Sign.GREATER)) {
-			try {
-				return target > Long.parseLong(qc.getValue());
-			} catch(Exception e) {
-				return false;
-			}
-		}
-		if(qc.getSign().equals(Sign.LESS)) {
-			try {
-				return target < Long.parseLong(qc.getValue());
-			} catch(Exception e) {
-				return false;
-			}
-		}
-		if(qc.getSign().equals(Sign.GREATER_OR_EQUAL)) {
-			try {
-				return target >= Long.parseLong(qc.getValue());
-			} catch(Exception e) {
-				return false;
-			}
-		}
-		if(qc.getSign().equals(Sign.LESS_OR_EQUAL)) {
-			try {
-				return target <= Long.parseLong(qc.getValue());
-			} catch(Exception e) {
-				return false;
-			}
-		}
-		return false;
-	}
-	public final static boolean satisfyDouble(double target, QueryCondition qc) {
-		if(qc.getSign().equals(Sign.EQUAL)) {
-			try {
-				return target == Double.parseDouble(qc.getValue());
-			} catch(Exception e) {
-				return false;
-			}
-		}
-		if(qc.getSign().equals(Sign.GREATER)) {
-			try {
-				return target > Double.parseDouble(qc.getValue());
-			} catch(Exception e) {
-				return false;
-			}
-		}
-		if(qc.getSign().equals(Sign.LESS)) {
-			try {
-				return target < Double.parseDouble(qc.getValue());
-			} catch(Exception e) {
-				return false;
-			}
-		}
-		if(qc.getSign().equals(Sign.GREATER_OR_EQUAL)) {
-			try {
-				return target >= Double.parseDouble(qc.getValue());
-			} catch(Exception e) {
-				return false;
-			}
-		}
-		if(qc.getSign().equals(Sign.LESS_OR_EQUAL)) {
-			try {
-				return target <= Double.parseDouble(qc.getValue());
-			} catch(Exception e) {
-				return false;
-			}
-		}
-		return false;
-	}
-	public final static boolean satisfyString(String target, QueryCondition qc) {
-		String v = qc.getValue();
-		if(v != null && v.length() > 0 && v.charAt(0) == '\'' && v.charAt(v.length()-1) == '\'') {
-			v = v.substring(0, v.length()-1);
-			v = v.substring(1);
-		}
-		
-		if(qc.getSign().equals(Sign.EQUAL)) {
-			try {
-				return target.equals(v);
-			} catch(Exception e) {
-				return false;
-			}
-		}
-		if(qc.getSign().equals(Sign.NOT_EQUAL)) {
-			try {
-				return !target.equals(v);
-			} catch(Exception e) {
-				return false;
-			}
-		}
-		if(qc.getSign().equals(Sign.CONTAIN)) {
-			try {
-				return target.indexOf(v) >= 0;
-			} catch(Exception e) {
-				return false;
-			}
-		}
-		return false;
+	public synchronized boolean check() {
+		return true;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -10,9 +10,9 @@ public class ServerConnection extends com.FileManagerX.Processes.BasicProcess
 	implements com.FileManagerX.Interfaces.IServerConnection {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
+	public final static String ERROR_SOCKET_CLOSED = "Not Open Socket";
 
-	public final static String ERROR_SOCKET_BUILD_FAILED = "Socket is Error";
-	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	private com.FileManagerX.BasicModels.MachineInfo serverMachineInfo;
@@ -72,11 +72,14 @@ public class ServerConnection extends com.FileManagerX.Processes.BasicProcess
 		return true;
 	}
 	public boolean setIndex() {
-		this.index = ++com.FileManagerX.Globals.Configurations.Next_ConnectionIndex;
+		this.index = com.FileManagerX.Globals.Configurations.Next_ConnectionIndex();
 		return true;
 	}
 	public boolean setName() {
 		if(socket == null) {
+			return false;
+		}
+		if(socket.getServerMachineInfo() == null || socket.getClientMachineInfo() == null) {
 			return false;
 		}
 		
@@ -178,7 +181,6 @@ public class ServerConnection extends com.FileManagerX.Processes.BasicProcess
 		this.serverUser = null;
 		this.clientUser = null;
 		this.type = com.FileManagerX.BasicEnums.ConnectionType.TRANSPORT_COMMAND;
-		this.setIndex();
 		
 		this.socket = null;
 		this.setRunnable(new RunImpl());
@@ -195,16 +197,28 @@ public class ServerConnection extends com.FileManagerX.Processes.BasicProcess
 	private class RunImpl implements com.FileManagerX.Processes.BasicProcess.Runnable {
 		public String run() {
 			if(socket == null) {
-				return ERROR_SOCKET_BUILD_FAILED;
+				ServerConnection.this.setSocket(com.FileManagerX.BasicEnums.SocketType.IPV4_TCP);
+			}
+			
+			if(socket.isClosed()) {
+				setIsAbort(true);
+				if(brother != null) { brother.exitProcess(); }
+				return ERROR_SOCKET_CLOSED;
 			}
 			
 			java.util.LinkedList<Byte> buffer = new java.util.LinkedList<>();
-			byte[] recebytes = new byte[(int) com.FileManagerX.Globals.Configurations.MaxConnectionFlow];
+			byte[] recebytes = new byte[(int) com.FileManagerX.Globals.Configurations.LimitForConnectionBuffer];
 			
-			while(!isAbort() && !socket.isClosed()) {
+			while(!isAbort() && !isStop() && !socket.isClosed()) {
 				try {
-					
 					int length = socket.receive(recebytes);
+					if(length < 0) {
+						setIsAbort(true);
+						if(brother != null) { brother.exitProcess(); }
+						socket.close();
+						return ERROR_SOCKET_CLOSED;
+					}
+					
 					for(int i=0; i<length; i++) {
 						if(recebytes[i] == com.FileManagerX.BasicEnums.EOF.N.getSpecial()) {
 							byte[] temp = new byte[buffer.size()];
@@ -237,7 +251,9 @@ public class ServerConnection extends com.FileManagerX.Processes.BasicProcess
 								record();
 							}
 						}
-						buffer.add(recebytes[i]);
+						else {
+							buffer.add(recebytes[i]);
+						}
 					}
 					
 					// ÇåÀí»º´æ
@@ -261,12 +277,16 @@ public class ServerConnection extends com.FileManagerX.Processes.BasicProcess
 				} catch(Exception e) {
 					com.FileManagerX.BasicEnums.ErrorType.COMMUNICATOR_RUNNING_FAILED.register(
 							"[" + getName() + "] " + e.toString());
-					brother.exitProcess();
+					setIsAbort(true);
+					if(brother != null) { brother.exitProcess(); }
+					socket.close();
 					return e.toString();
 				}
 			}
 			
-			brother.exitProcess();
+			setIsAbort(true);
+			if(brother != null) { brother.exitProcess(); }
+			socket.close();
 			return null;
 		}
 	}
@@ -329,7 +349,7 @@ public class ServerConnection extends com.FileManagerX.Processes.BasicProcess
 	}
 	
 	private void execute(com.FileManagerX.Interfaces.ITransport receive) {
-		com.FileManagerX.Executor.Executor ex = com.FileManagerX.Globals.Datas.Executors.nextIdleExecutor();
+		com.FileManagerX.Executor.Executor ex = com.FileManagerX.Globals.Datas.Executors.nextIdleProcess();
 		ex.setReceive(receive);
 		ex.restartProcess();
 	}

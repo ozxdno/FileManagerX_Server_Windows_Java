@@ -1,6 +1,5 @@
 package com.FileManagerX.Replies;
 
-import com.FileManagerX.BasicModels.*;
 import com.FileManagerX.Globals.Configurations;
 import com.FileManagerX.BasicEnums.*;
 
@@ -188,10 +187,10 @@ public class QueryConfigurations extends BaseReply {
 	public String toString() {
 		return this.output();
 	}
-	public String output() {
-		Config c = new Config();
+	public com.FileManagerX.BasicModels.Config toConfig() {
+		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config();
 		c.setField(this.getClass().getSimpleName());
-		c.addToBottom(new Config(super.output()));
+		c.addToBottom(super.toConfig());
 		c.addToBottom(this.Next_FileIndex);
 		c.addToBottom(this.Next_MachineIndex);
 		c.addToBottom(this.Next_UserIndex);
@@ -202,37 +201,46 @@ public class QueryConfigurations extends BaseReply {
 		c.addToBottom(this.Server_MachineIndex);
 		c.addToBottom(this.Server_UserIndex);
 		c.addToBottom(this.netType.toString());
-		return c.output();
+		return c;
 	}
-	public String input(String in) {
-		in = super.input(in);
-		if(in == null) {
-			return null;
+	public String output() {
+		return this.toConfig().output();
+	}
+	public com.FileManagerX.BasicModels.Config input(String in) {
+		return this.input(new com.FileManagerX.BasicModels.Config(in));
+	}
+	public com.FileManagerX.BasicModels.Config input(com.FileManagerX.BasicModels.Config c) {
+		if(c == null) { return null; }
+		try {
+			if(!c.getIsOK()) { return c; }
+			c = super.input(c);
+			if(!c.getIsOK()) { return c; }
+			this.Next_FileIndex = c.fetchFirstLong();
+			if(!c.getIsOK()) { return c; }
+			this.Next_MachineIndex = c.fetchFirstLong();
+			if(!c.getIsOK()) { return c; }
+			this.Next_UserIndex = c.fetchFirstLong();
+			if(!c.getIsOK()) { return c; }
+			this.Next_DepotIndex = c.fetchFirstLong();
+			if(!c.getIsOK()) { return c; }
+			this.Next_DataBaseIndex = c.fetchFirstLong();
+			if(!c.getIsOK()) { return c; }
+			this.This_MachineIndex = c.fetchFirstLong();
+			if(!c.getIsOK()) { return c; }
+			this.This_UserIndex = c.fetchFirstLong();
+			if(!c.getIsOK()) { return c; }
+			this.Server_MachineIndex = c.fetchFirstLong();
+			if(!c.getIsOK()) { return c; }
+			this.Server_UserIndex = c.fetchFirstLong();
+			if(!c.getIsOK()) { return c; }
+			this.netType = NetType.valueOf(c.fetchFirstString());
+			if(!c.getIsOK()) { return c; }
+			return c;
+		} catch(Exception e) {
+			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
+			c.setIsOK(false);
+			return c;
 		}
-		
-		Config c = new Config(in);
-		this.Next_FileIndex = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		this.Next_MachineIndex = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		this.Next_UserIndex = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		this.Next_DepotIndex = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		this.Next_DataBaseIndex = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		this.This_MachineIndex = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		this.This_UserIndex = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		this.Server_MachineIndex = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		this.Server_UserIndex = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		this.netType = NetType.valueOf(c.fetchFirstString());
-		if(!c.getIsOK()) { return null; }
-		
-		return c.output();
 	}
 	public void copyReference(Object o) {
 		super.copyReference(o);

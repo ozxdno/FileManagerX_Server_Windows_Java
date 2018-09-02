@@ -1,7 +1,6 @@
 package com.FileManagerX.Commands;
 
 import com.FileManagerX.BasicEnums.*;
-import com.FileManagerX.BasicModels.Config;
 import com.FileManagerX.Globals.*;
 import com.FileManagerX.Interfaces.*;
 import com.FileManagerX.DataBase.*;
@@ -34,13 +33,9 @@ public class QueryUnits extends BaseCommand {
 	}
 	public boolean setQueryConditions(String conditions) {
 		QueryConditions qcs = new QueryConditions();
-		try {
-			qcs.stringToThis(conditions);
-			this.conditions = qcs;
-			return true;
-		} catch(Exception e) {
-			return false;
-		}
+		qcs.input(conditions);
+		this.conditions = qcs;
+		return true;
 	}
 	public boolean setQueryCondition(QueryCondition condition) {
 		QueryConditions qcs = new QueryConditions();
@@ -94,7 +89,7 @@ public class QueryUnits extends BaseCommand {
 		this.input(command);
 	}
 	private void initThis() {
-		this.unit = com.FileManagerX.DataBase.Unit.BaseFile;
+		this.unit = com.FileManagerX.DataBase.Unit.File;
 		this.conditions = new QueryConditions();
 	}
 	
@@ -107,32 +102,36 @@ public class QueryUnits extends BaseCommand {
 	public String toString() {
 		return this.output();
 	}
-	public String output() {
-		Config c = new Config();
+	public com.FileManagerX.BasicModels.Config toConfig() {
+		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config();
 		c.setField(this.getClass().getSimpleName());
-		c.addToBottom(new Config(super.output()));
+		c.addToBottom(super.toConfig());
 		c.addToBottom(this.unit.toString());
-		c.addToBottom(new Config(this.conditions.output()).getValue());
-		
-		return c.output();
+		c.addToBottom(this.conditions.toConfig());
+		return c;
 	}
-	public String input(String in) {
-		in = super.input(in);
-		if(in == null) {
-			return null;
-		}
-		
+	public String output() {
+		return this.toConfig().output();
+	}
+	public com.FileManagerX.BasicModels.Config input(String in) {
+		return this.input(new com.FileManagerX.BasicModels.Config(in));
+	}
+	public com.FileManagerX.BasicModels.Config input(com.FileManagerX.BasicModels.Config c) {
+		if(c == null) { return null; }
 		try {
-			Config c = new Config(in);
+			if(!c.getIsOK()) { return c; }
+			c = super.input(c);
+			if(!c.getIsOK()) { return c; }
 			this.unit = com.FileManagerX.DataBase.Unit.valueOf(c.fetchFirstString());
-			if(!c.getIsOK()) { return null; }
-			in = c.output();
+			if(!c.getIsOK()) { return c; }
+			c = this.conditions.input(c);
+			if(!c.getIsOK()) { return c; }
+			return c;
 		} catch(Exception e) {
 			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
-			return null;
+			c.setIsOK(false);
+			return c;
 		}
-		
-		return this.conditions.input(in);
 	}
 	public void copyReference(Object o) {
 		QueryUnits qf = (QueryUnits)o;
@@ -190,11 +189,11 @@ public class QueryUnits extends BaseCommand {
 
 	public boolean executeInLocal() {
 		
-		IDBManager dbm = Datas.DBManagers.searchDepotIndex(this.getBasicMessagePackage().getDestDepotIndex());
+		IDBManager dbm = Datas.DBManagers.searchByKey(this.getBasicMessagePackage().getDestDataBaseIndex());
 		if(dbm == null) { dbm = Datas.DBManager; }
 		dbm.setUnit(this.unit);
 		
-		com.FileManagerX.Interfaces.IPublic results = (IPublic)dbm.querys(conditions);
+		com.FileManagerX.Interfaces.IPublic results = (IPublic)dbm.querys2(conditions, unit);
 		if(results == null) {
 			this.getReply().setFailedReason(FAILED_OPERATE_DATABASE);
 			this.getReply().setOK(false);

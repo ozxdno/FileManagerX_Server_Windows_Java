@@ -1,6 +1,6 @@
 package com.FileManagerX.FileModels;
 
-public class Music extends com.FileManagerX.BasicModels.BaseFile {
+public class Music extends com.FileManagerX.BasicModels.File {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -60,15 +60,6 @@ public class Music extends com.FileManagerX.BasicModels.BaseFile {
 	public Music() {
 		initThis();
 	}
-	public Music(String url) {
-		super(url);
-		initThis();
-	}
-	public Music(java.io.File file) {
-		super(file);
-		initThis();
-	}
-	
 	private void initThis() {
 		this.author = "";
 		this.album = "";
@@ -84,49 +75,67 @@ public class Music extends com.FileManagerX.BasicModels.BaseFile {
 	public String toString() {
 		return "[" + this.getName() + "] " + com.FileManagerX.Tools.Time.ticks2String(lasting, "mm:ss");
 	}
-	public String output() {
+	public com.FileManagerX.BasicModels.Config toConfig() {
 		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config();
 		c.setField(this.getClass().getSimpleName());
-		//c.addToBottom(new com.FileManagerX.BasicModels.Config(super.output()));
 		c.addToBottom(this.author);
 		c.addToBottom(this.singer);
 		c.addToBottom(this.album);
 		c.addToBottom(this.lasting);
-		return c.output();
+		return c;
 	}
-	public String input(String in) {
-		//in = super.input(in);
-		if(in == null) {
-			return null;
-		}
+	public String output() {
+		return this.toConfig().output();
+	}
+	public com.FileManagerX.BasicModels.Config input(String in) {
+		return this.input(new com.FileManagerX.BasicModels.Config(in));
+	}
+	public com.FileManagerX.BasicModels.Config input(com.FileManagerX.BasicModels.Config c) {
+		if(c == null) { return null; }
 		
-		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config(in);
+		if(!c.getIsOK()) { return c; }
 		this.author = c.fetchFirstString();
-		if(!c.getIsOK()) { return null; }
+		if(!c.getIsOK()) { return c; }
 		this.singer = c.fetchFirstString();
-		if(!c.getIsOK()) { return null; }
+		if(!c.getIsOK()) { return c; }
 		this.album = c.fetchFirstString();
-		if(!c.getIsOK()) { return null; }
+		if(!c.getIsOK()) { return c; }
 		this.lasting = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
+		if(!c.getIsOK()) { return c; }
 		
-		return c.output();
+		return c;
 	}
 	public void copyReference(Object o) {
-		super.copyReference(o);
-		Music p = (Music)o;
-		this.author = p.author;
-		this.singer = p.singer;
-		this.album = p.album;
-		this.lasting = p.lasting;
+		if(o == null) { return; }
+		if(o instanceof Music) {
+			super.copyReference(o);
+			Music p = (Music)o;
+			this.author = p.author;
+			this.singer = p.singer;
+			this.album = p.album;
+			this.lasting = p.lasting;
+			return;
+		}
+		if(o instanceof com.FileManagerX.BasicModels.File) {
+			super.copyReference(o);
+			return;
+		}
 	}
 	public void copyValue(Object o) {
-		super.copyValue(o);
-		Music p = (Music)o;
-		this.author = new String(p.author);
-		this.singer = new String(p.singer);
-		this.album = new String(p.album);
-		this.lasting = p.lasting;
+		if(o == null) { return; }
+		if(o instanceof Music) {
+			super.copyValue(o);
+			Music p = (Music)o;
+			this.author = p.author;
+			this.singer = p.singer;
+			this.album = p.album;
+			this.lasting = p.lasting;
+			return;
+		}
+		if(o instanceof com.FileManagerX.BasicModels.File) {
+			super.copyValue(o);
+			return;
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

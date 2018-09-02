@@ -112,7 +112,7 @@ public class Error implements com.FileManagerX.Interfaces.IPublic {
 	public String toString() {
 		return "[" + this.getLongTime() + "] " + type.toString() + ": " + reason;
 	}
-	public String output() {
+	public Config toConfig() {
 		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config();
 		c.setField(this.getShortTime_Second());
 		c.addToBottom(type.toString());
@@ -121,56 +121,69 @@ public class Error implements com.FileManagerX.Interfaces.IPublic {
 		c.addToBottom(reason);
 		c.addToBottom(tip);
 		c.addToBottom(detail);
-		return c.output();
+		return c;
 	}
-	public String input(String in) {
+	public String output() {
+		return this.toConfig().output();
+	}
+	public Config input(String in) {
+		return this.input(new Config(in));
+	}
+	public Config input(Config c) {
+		if(c == null) { return null; }
+		
 		try {
-			com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config(in);
+			if(!c.getIsOK()) { return c; }
 			type = com.FileManagerX.BasicEnums.ErrorType.valueOf(c.fetchFirstString());
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			time = c.fetchFirstLong();
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			level = com.FileManagerX.BasicEnums.ErrorLevel.valueOf(c.fetchFirstString());
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			reason = c.fetchFirstString();
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			tip = c.fetchFirstString();
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			detail = c.fetchFirstString();
-			if(!c.getIsOK()) { return null; }
-			return c.output();
+			if(!c.getIsOK()) { return c; }
+			return c;
 		} catch(Exception e) {
 			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
-			return null;
+			c.setIsOK(false);
+			return c;
 		}
 	}
 	public void copyReference(Object o) {
-		Error e = (Error)o;
-		type = e.type;
-		time = e.time;
-		level = e.level;
-		reason = e.reason;
-		tip = e.tip;
-		detail = e.detail;
+		if(o == null) { return; }
+		
+		if(o instanceof Error) {
+			Error e = (Error)o;
+			type = e.type;
+			time = e.time;
+			level = e.level;
+			reason = e.reason;
+			tip = e.tip;
+			detail = e.detail;
+			return;
+		}
 	}
 	public void copyValue(Object o) {
-		Error e = (Error)o;
-		type = e.type;
-		time = e.time;
-		level = e.level;
-		reason = new String(e.reason);
-		tip = new String(e.tip);
-		detail = new String(e.detail);
+		if(o == null) { return; }
+		
+		if(o instanceof Error) {
+			Error e = (Error)o;
+			type = e.type;
+			time = e.time;
+			level = e.level;
+			reason = new String(e.reason);
+			tip = new String(e.tip);
+			detail = new String(e.detail);
+			return;
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public void print() {
-		String time = this.getLongTime();
-		String type = this.type.toString();
-		String level = this.level.toString();
-		System.out.println(time + "|" + type + "|" + level + "|" + tip + "|" + detail);
-	}
 	public void register() {
 		com.FileManagerX.Globals.Datas.Errors.add(this);
 	}

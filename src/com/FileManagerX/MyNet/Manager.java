@@ -25,28 +25,4 @@ public class Manager {
 		net = null;
 	}
 	
-	public void addToHide(User user,Machine machine) {
-		if(net == null) { return; }
-		
-		Group hide = com.FileManagerX.Factories.MyNetFactory.createHideGroup(net);
-		User u = hide.findUser(user.getName());
-		if(u == null) {
-			if(hide.getUsers().size() > hide.getLimit()) {
-				hide.getUsers().remove(0);
-			}
-			hide.addUser(user);
-		}
-		else {
-			hide.getUsers().remove(u);
-			hide.addUser(u);
-			user = u;
-		}
-		
-		Machine m = user.findMachine(machine.getName());
-		if(m == null) {
-			
-		}
-		
-	}
-	
 }

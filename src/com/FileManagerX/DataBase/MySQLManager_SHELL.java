@@ -162,20 +162,20 @@ public class MySQLManager_SHELL implements com.FileManagerX.Interfaces.IDBManage
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public Object querys(Object conditions) {
-		return null;
+	public boolean querys(Object conditions, Object result) {
+		return false;
 	}
-	public Object query(Object conditions) {
-		return null;
+	public boolean query(Object conditions, Object result) {
+		return false;
 	}
-	public Object updates(Object items) {
-		return null;
+	public boolean updates(Object items, Object errors) {
+		return false;
 	}
 	public boolean update(Object item) {
 		return false;
 	}
-	public Object removes(Object items) {
-		return null;
+	public boolean removes(Object items, Object errors) {
+		return false;
 	}
 	public boolean remove(Object item) {
 		return false;
@@ -183,31 +183,11 @@ public class MySQLManager_SHELL implements com.FileManagerX.Interfaces.IDBManage
 	public long size() {
 		return 1;
 	}
-	
+
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	public final static String queryConditionsToStatement(QueryConditions conditions) {
-		if(conditions == null || conditions.size() == 0) {
-			return "";
-		}
-		String con = "`" + conditions.getContent().get(0).getItemName() + "` " +
-				conditions.getContent().get(0).getSign().getSignString() + " " +
-				conditions.getContent().get(0).getValue();
-		
-		for(int i=1; i<conditions.size(); i++) {
-			QueryCondition qc = conditions.getContent().get(i);
-			con += " " + qc.getRelation().toString() + " " +
-				"`" + qc.getItemName() + "` " +
-				qc.getSign().getSignString() + " " +
-				qc.getValue();
-		}
-		return "WHERE " + con;
-	}
-	public final static String queryConditionToStatement(QueryCondition condition) {
-		String con = "WHERE `" + condition.getItemName() + "` " + 
-				condition.getSign().getSignString() + " " +
-				condition.getValue();
-		return con;
+
+	public boolean check() {
+		return this.exists();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

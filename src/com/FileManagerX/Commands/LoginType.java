@@ -62,27 +62,34 @@ public class LoginType extends BaseCommand {
 	public String toString() {
 		return this.output();
 	}
-	public String output() {
+	public com.FileManagerX.BasicModels.Config toConfig() {
 		Config c = new Config();
 		c.setField(this.getClass().getSimpleName());
-		c.addToBottom(new Config(super.output()));
+		c.addToBottom(super.toConfig());
 		c.addToBottom(this.type.toString());
-		return c.output();
+		return c;
 	}
-	public String input(String in) {
-		in = super.input(in);
-		if(in == null) {
-			return null;
-		}
-		Config c = new Config(in);
-		try {
-			this.type = ConnectionType.valueOf(c.fetchFirstString());
-			if(!c.getIsOK()) { return null; }
-		} catch(Exception e) {
-			return null;
-		}
+	public String output() {
+		return this.toConfig().output();
+	}
+	public com.FileManagerX.BasicModels.Config input(String in) {
+		return this.input(new com.FileManagerX.BasicModels.Config(in));
+	}
+	public com.FileManagerX.BasicModels.Config input(com.FileManagerX.BasicModels.Config c) {
+		if(c == null) { return null; }
 		
-		return c.output();
+		try {
+			if(!c.getIsOK()) { return c; }
+			c = super.input(c);
+			if(!c.getIsOK()) { return c; }
+			this.type = ConnectionType.valueOf(c.fetchFirstString());
+			if(!c.getIsOK()) { return c; }
+			return c;
+		} catch(Exception e) {
+			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
+			c.setIsOK(false);
+			return c;
+		}
 	}
 	public void copyReference(Object o) {
 		super.copyReference(o);

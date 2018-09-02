@@ -1,6 +1,5 @@
 package com.FileManagerX.Replies;
 
-import com.FileManagerX.BasicModels.Config;
 import com.FileManagerX.BasicEnums.*;
 
 public class LoginType extends BaseReply {
@@ -58,28 +57,32 @@ public class LoginType extends BaseReply {
 	public String toString() {
 		return this.output();
 	}
-	public String output() {
-		Config c = new Config();
+	public com.FileManagerX.BasicModels.Config toConfig() {
+		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config();
 		c.setField(this.getClass().getSimpleName());
-		c.addToBottom(new Config(super.output()));
+		c.addToBottom(super.toConfig());
 		c.addToBottom(this.type.toString());
-		return c.output();
+		return c;
 	}
-	public String input(String in) {
-		in = super.input(in);
-		if(in == null) {
-			return null;
-		}
-		
+	public String output() {
+		return this.toConfig().output();
+	}
+	public com.FileManagerX.BasicModels.Config input(String in) {
+		return this.input(new com.FileManagerX.BasicModels.Config(in));
+	}
+	public com.FileManagerX.BasicModels.Config input(com.FileManagerX.BasicModels.Config c) {
+		if(c == null) { return null; }
 		try {
-			Config c = new Config(in);
-			this.type = ConnectionType.valueOf(c.fetchFirstString());
-			if(!c.getIsOK()) { return null; }
-			
-			return c.output();
+			if(!c.getIsOK()) { return c; }
+			c = super.input(c);
+			if(!c.getIsOK()) { return c; }
+			this.type = com.FileManagerX.BasicEnums.ConnectionType.valueOf(c.fetchFirstString());
+			if(!c.getIsOK()) { return c; }
+			return c;
 		} catch(Exception e) {
-			ErrorType.OTHERS.register(e.toString());
-			return null;
+			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
+			c.setIsOK(false);
+			return c;
 		}
 	}
 	public void copyReference(Object o) {
@@ -98,7 +101,6 @@ public class LoginType extends BaseReply {
 	public boolean executeInLocal() {
 		
 		if(!this.isOK()) {
-			this.getConnection().exitProcess();
 			return false;
 		}
 		

@@ -72,24 +72,29 @@ public class LoginIndex extends BaseCommand {
 	public String toString() {
 		return this.output();
 	}
-	public String output() {
+	public com.FileManagerX.BasicModels.Config toConfig() {
 		Config c = new Config();
 		c.setField(this.getClass().getSimpleName());
-		c.addToBottom(new Config(super.output()));
+		c.addToBottom(super.toConfig());
 		c.addToBottom(this.index);
-		return c.output();
+		return c;
 	}
-	public String input(String in) {
-		in = super.input(in);
-		if(in == null) {
-			return null;
-		}
+	public String output() {
+		return this.toConfig().output();
+	}
+	public com.FileManagerX.BasicModels.Config input(String in) {
+		return this.input(new com.FileManagerX.BasicModels.Config(in));
+	}
+	public com.FileManagerX.BasicModels.Config input(com.FileManagerX.BasicModels.Config c) {
+		if(c == null) { return null; }
 		
-		Config c = new Config(in);
+		if(!c.getIsOK()) { return c; }
+		c = super.input(c);
+		if(!c.getIsOK()) { return c; }
 		this.index = c.fetchFirstInt();
-		if(!c.getIsOK()) { return null; }
+		if(!c.getIsOK()) { return c; }
 		
-		return c.output();
+		return c;
 	}
 	public void copyReference(Object o) {
 		super.copyReference(o);

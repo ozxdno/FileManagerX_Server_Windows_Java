@@ -2,6 +2,8 @@ package com.FileManagerX.Coder;
 
 public class Encode_Location implements IEncode {
 
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public byte[] encode(byte[] bytes, byte[] spc, byte[] rep) {
 		if(bytes == null) {
 			return null;
@@ -18,20 +20,13 @@ public class Encode_Location implements IEncode {
 		
 		java.util.List<Byte> extra = new java.util.LinkedList<>();
 		extra.add((byte)'$');
-		byte b = 0;
 		for(int i=0; i<bytes.length; i++) {
 			for(int j=0; j<spc.length; j++) {
 				if(bytes[i] == spc[j]) {
 					bytes[i] = rep[j];
-					extra.add((byte)'|');
-					b = (byte)(i & 0x000F);
-					extra.add(b);
-					b = (byte)(i & 0x00F0 >> 8);
-					if(b == 0) { continue; } else { extra.add(b); }
-					b = (byte)(i & 0x0F00 >> 16);
-					if(b == 0) { continue; } else { extra.add(b); }
-					b = (byte)(i & 0xF000 >> 24);
-					if(b == 0) { continue; } else { extra.add(b); }
+					extra.add((byte)' ');
+					extra.addAll(this.encodeLocation(i));
+					break;
 				}
 			}
 		}
@@ -42,4 +37,22 @@ public class Encode_Location implements IEncode {
 		for(byte item : extra) { newBytes[i] = item; i++; }
 		return newBytes;
 	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	private java.util.ArrayList<Byte> encodeLocation(int loc) {
+		java.util.ArrayList<Byte> res = new java.util.ArrayList<>();
+		if(loc == 0) {
+			res.add(ASCII.PERMIT_CODE_A[0]);
+			return res;
+		}
+		while(loc > 0) {
+			int b = loc % ASCII.PERMIT_CODE_A.length;
+			loc = loc / ASCII.PERMIT_CODE_A.length;
+			res.add(ASCII.PERMIT_CODE_A[b]);
+		}
+		return res;
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

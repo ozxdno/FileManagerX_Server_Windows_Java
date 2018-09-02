@@ -1,7 +1,6 @@
 package com.FileManagerX.Operator;
 
 import com.FileManagerX.BasicEnums.*;
-import com.FileManagerX.BasicModels.*;
 import com.FileManagerX.Interfaces.*;
 
 public class Operator extends com.FileManagerX.Processes.BasicProcess implements IPublic {
@@ -39,7 +38,7 @@ public class Operator extends com.FileManagerX.Processes.BasicProcess implements
 		return true;
 	}
 	public boolean setIndex() {
-		this.index = ++com.FileManagerX.Globals.Configurations.Next_OperatorIndex;
+		this.index = com.FileManagerX.Globals.Configurations.Next_OperatorIndex();
 		return true;
 	}
 	
@@ -261,8 +260,8 @@ public class Operator extends com.FileManagerX.Processes.BasicProcess implements
 	public String toString() {
 		return "Operator: " + this.type.toString();
 	}
-	public String output() {
-		Config c = new Config();
+	public com.FileManagerX.BasicModels.Config toConfig() {
+		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config();
 		c.setField(this.getClass().getSimpleName());
 		c.addToBottom(this.type.toString());
 		c.addToBottom(this.index);
@@ -277,76 +276,65 @@ public class Operator extends com.FileManagerX.Processes.BasicProcess implements
 		c.addToBottom(this.isAbort());
 		c.addToBottom(this.isStop());
 		c.addToBottom(this.reason);
+		c.addToBottom_Encode(this.args);
 		c.addToBottom(this.finishedAmount);
-		c.addToBottom(this.results.size() - this.finishedAmount);
-		c.addToBottom(com.FileManagerX.Coder.Encoder.Encode_String2String(this.args));
-		
-		java.util.List<String> temp = new java.util.ArrayList<>();
-		int nextFinishedAmount = this.results.size();
-		for(int i=this.finishedAmount; i<nextFinishedAmount; i++) {
-			temp.add(com.FileManagerX.Coder.Encoder.Encode_String2String(this.results.get(i)));
+		c.addToBottom(this.remainAmount = this.results.size() - this.finishedAmount);
+		for(int i=0; i<this.remainAmount; i++) {
+			c.addToBottom_Encode(this.results.get(this.finishedAmount+i));
 		}
-		
-		String results = com.FileManagerX.Tools.String.link
-				(com.FileManagerX.Tools.List2Array.toStringArray(temp), "|");
-		c.addToBottom(com.FileManagerX.Coder.Encoder.Encode_String2String(results));
-		
-		this.finishedAmount = nextFinishedAmount;
-		return c.output();
+		return c;
 	}
-	public String input(String in) {
+	public String output() {
+		return this.toConfig().output();
+	}
+	public com.FileManagerX.BasicModels.Config input(String in) {
+		return this.input(new com.FileManagerX.BasicModels.Config(in));
+	}
+	public com.FileManagerX.BasicModels.Config input(com.FileManagerX.BasicModels.Config c) {
+		if(c == null) { return null; }
 		try {
-			Config c = new Config(in);
-			
+			if(!c.getIsOK()) { return c; }
 			this.type = OperateType.valueOf(c.fetchFirstString());
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			this.index = c.fetchFirstLong();
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			this.exitConnectionAtOnce = c.fetchFirstBoolean();
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			this.exitOperatorAtOnce = c.fetchFirstBoolean();
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			this.setPermitIdle(c.fetchFirstLong());
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			this.setBegin(c.fetchFirstLong());
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			this.setEnd(c.fetchFirstLong());
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			c.fetchFirstBoolean(); // finished
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			c.fetchFirstBoolean(); // running;
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			this.setIsRestart(c.fetchFirstBoolean());
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			this.setIsAbort(c.fetchFirstBoolean());
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			this.setIsStop(c.fetchFirstBoolean());
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			this.reason = c.fetchFirstString();
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
+			this.args = c.fetchFirstString_Decode();
+			if(!c.getIsOK()) { return c; }
 			this.finishedAmount = c.fetchFirstInt();
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			this.remainAmount = c.fetchFirstInt();
-			if(!c.getIsOK()) { return null; }
-			this.args = com.FileManagerX.Coder.Decoder.Decode_String2String(c.fetchFirstString());
-			if(!c.getIsOK()) { return null; }
-			
-			String results = com.FileManagerX.Coder.Decoder.Decode_String2String(c.fetchFirstString());
-			if(!c.getIsOK()) { return null; }
-			
-			java.util.ArrayList<String> resList = com.FileManagerX.Tools.Array2List.toStringList(
-					com.FileManagerX.Tools.String.split(results, '|')
-				);
-			for(int i=0; i<resList.size(); i++) {
-				resList.set(i, com.FileManagerX.Coder.Decoder.Decode_String2String(resList.get(i)));
+			if(!c.getIsOK()) { return c; }
+			for(int i=0; i<this.remainAmount; i++) {
+				this.results.add(c.fetchFirstString_Decode());
+				if(!c.getIsOK()) { return c; }
 			}
-			this.results.addAll(resList);
-			
-			return c.output();
-			
+			return c;
 		} catch(Exception e) {
 			ErrorType.OTHERS.register(e.toString());
-			return null;
+			c.setIsOK(false);
+			return c;
 		}
 	}
 	public void copyReference(Object o) {

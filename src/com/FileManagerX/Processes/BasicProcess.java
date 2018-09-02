@@ -34,7 +34,7 @@ public class BasicProcess implements com.FileManagerX.Interfaces.IProcess {
 		return true;
 	}
 	public boolean setProcessIndex() {
-		this.processIndex = ++com.FileManagerX.Globals.Configurations.Next_ProcessIndex;
+		this.processIndex = com.FileManagerX.Globals.Configurations.Next_ProcessIndex();
 		return true;
 	}
 	public boolean setThread(MyThread thread) {
@@ -49,7 +49,7 @@ public class BasicProcess implements com.FileManagerX.Interfaces.IProcess {
 			return false;
 		}
 		this.name = name;
-		this.thread.setName(name);
+		if(this.thread != null) { this.thread.setName(name); }
 		return true;
 	}
 	public boolean setBegin(long begin) {
@@ -184,7 +184,7 @@ public class BasicProcess implements com.FileManagerX.Interfaces.IProcess {
 		this.abort = false;
 		this.stop = false;
 		
-		this.thread = new MyThread();
+		this.thread = null;
 		this.setProcessIndex();
 		
 		this.name = "No Name";
@@ -214,6 +214,7 @@ public class BasicProcess implements com.FileManagerX.Interfaces.IProcess {
 					com.FileManagerX.Tools.Time.sleepUntil(10);
 					continue;
 				}
+				
 				if(restart) {
 					finished = false;
 					restart = false;
@@ -240,29 +241,26 @@ public class BasicProcess implements com.FileManagerX.Interfaces.IProcess {
 			return true;
 		}
 		
-		if(thread == null) { 
-			this.error = ERROR_NULL_THREAD;
-			return false;
-		}
-		if(!(thread instanceof MyThread)) { 
-			this.error = ERROR_WRONG_THREAD_TYPE;
-			return false;
-		}
-		
 		com.FileManagerX.Globals.Datas.Processes.add(this);
 		
 		if(this instanceof com.FileManagerX.Executor.Executor) {
-			com.FileManagerX.Globals.Datas.Executors.add(this);
+			com.FileManagerX.Globals.Datas.Executors.add
+				((com.FileManagerX.Executor.Executor)this);
 		}
 		if(this instanceof com.FileManagerX.Operator.Operator) {
-			com.FileManagerX.Globals.Datas.Operators.add(this);
+			com.FileManagerX.Globals.Datas.Operators.add
+				((com.FileManagerX.Operator.Operator)this);
 		}
 		if(this instanceof com.FileManagerX.Communicator.Scanner) {
-			com.FileManagerX.Globals.Datas.Scanners.add(this);
+			com.FileManagerX.Globals.Datas.Scanners.add
+				((com.FileManagerX.Communicator.Scanner)this);
 		}
 		
+		this.thread = new MyThread();
 		this.thread.setName(name);
 		this.thread.start();
+		
+		com.FileManagerX.Tools.Time.sleepUntil(10);
 		return true;
 	}
 	public boolean stopProcess() {
@@ -284,6 +282,90 @@ public class BasicProcess implements com.FileManagerX.Interfaces.IProcess {
 	public boolean exitProcess() {
 		this.abort = true;
 		return true;
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public void clear() {
+		initThis();
+	}
+	public String toString() {
+		return this.name;
+	}
+	public com.FileManagerX.BasicModels.Config toConfig() {
+		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config();
+		c.setField(this.getClass().getSimpleName());
+		c.addToBottom(this.finished);
+		c.addToBottom(this.running);
+		c.addToBottom(this.restart);
+		c.addToBottom(this.abort);
+		c.addToBottom(this.stop);
+		c.addToBottom(this.processIndex);
+		c.addToBottom(this.name);
+		c.addToBottom(this.begin);
+		c.addToBottom(this.end);
+		c.addToBottom(this.permitIdle);
+		c.addToBottom(this.error);
+		return c;
+	}
+	public String output() {
+		return this.toConfig().output();
+	}
+	public com.FileManagerX.BasicModels.Config input(String in) {
+		return this.input(new com.FileManagerX.BasicModels.Config(in));
+	}
+	public com.FileManagerX.BasicModels.Config input(com.FileManagerX.BasicModels.Config c) {
+		if(c == null) { return null; }
+		
+		if(!c.getIsOK()) { return c; }
+		c.fetchFirstBoolean();
+		if(!c.getIsOK()) { return c; }
+		c.fetchFirstBoolean();
+		if(!c.getIsOK()) { return c; }
+		this.restart = c.fetchFirstBoolean();
+		if(!c.getIsOK()) { return c; }
+		this.abort = c.fetchFirstBoolean();
+		if(!c.getIsOK()) { return c; }
+		this.stop = c.fetchFirstBoolean();
+		if(!c.getIsOK()) { return c; }
+		c.fetchFirstLong();
+		if(!c.getIsOK()) { return c; }
+		this.name = c.fetchFirstString();
+		if(!c.getIsOK()) { return c; }
+		c.fetchFirstLong();
+		if(!c.getIsOK()) { return c; }
+		c.fetchFirstLong();
+		if(!c.getIsOK()) { return c; }
+		this.permitIdle = c.fetchFirstLong();
+		if(!c.getIsOK()) { return c; }
+		c.fetchFirstString();
+		if(!c.getIsOK()) { return c; }
+		
+		return c;
+	}
+	public void copyReference(Object o) {
+		if(o == null) { return; }
+		if(o instanceof BasicProcess) {
+			BasicProcess p = (BasicProcess)o;
+			this.restart = p.restart;
+			this.abort = p.abort;
+			this.stop = p.stop;
+			this.permitIdle = p.permitIdle;
+			this.name = p.name;
+			return;
+		}
+	}
+	public void copyValue(Object o) {
+		if(o == null) { return; }
+		if(o instanceof BasicProcess) {
+			BasicProcess p = (BasicProcess)o;
+			this.restart = p.restart;
+			this.abort = p.abort;
+			this.stop = p.stop;
+			this.permitIdle = p.permitIdle;
+			this.name = new String(p.name);
+			return;
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

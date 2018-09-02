@@ -94,49 +94,66 @@ public class Support implements com.FileManagerX.Interfaces.IPublic {
 	public String toString() {
 		return this.extension;
 	}
-	public String output() {
+	public Config toConfig() {
 		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config("Support = ");
 		c.addToBottom(extension);
 		c.addToBottom(type.toString());
 		c.addToBottom(show);
 		c.addToBottom(hide);
 		c.addToBottom(isSupport);
-		return c.output();
+		return c;
 	}
-	public String input(String in) {
+	public String output() {
+		return this.toConfig().output();
+	}
+	public Config input(String in) {
+		return this.input(new Config(in));
+	}
+	public Config input(Config c) {
+		if(c == null) { return null; }
+		
 		try {
-			com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config(in);
+			if(!c.getIsOK()) { return c; }
 			extension = c.fetchFirstString();
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			type = com.FileManagerX.BasicEnums.FileType.valueOf(c.fetchFirstString());
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			show = c.fetchFirstString();
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			hide = c.fetchFirstString();
-			if(!c.getIsOK()) { return null; }
+			if(!c.getIsOK()) { return c; }
 			isSupport = c.fetchFirstBoolean();
-			if(!c.getIsOK()) { return null; }
-			return c.output();
+			if(!c.getIsOK()) { return c; }
+			return c;
 		} catch(Exception e) {
 			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
+			c.setIsOK(false);
 			return null;
 		}
 	}
 	public void copyReference(Object o) {
-		Support s = (Support)o;
-		this.extension = s.extension;
-		this.type = s.type;
-		this.show = s.show;
-		this.hide = s.hide;
-		this.isSupport = s.isSupport;
+		if(o == null) { return; }
+		
+		if(o instanceof Support) {
+			Support s = (Support)o;
+			this.extension = s.extension;
+			this.type = s.type;
+			this.show = s.show;
+			this.hide = s.hide;
+			this.isSupport = s.isSupport;
+		}
 	}
 	public void copyValue(Object o) {
-		Support s = (Support)o;
-		this.extension = new String(s.extension);
-		this.type = s.type;
-		this.show = new String(s.show);
-		this.hide = new String(s.hide);
-		this.isSupport = s.isSupport;
+		if(o == null) { return; }
+		
+		if(o instanceof Support) {
+			Support s = (Support)o;
+			this.extension = new String(s.extension);
+			this.type = s.type;
+			this.show = new String(s.show);
+			this.hide = new String(s.hide);
+			this.isSupport = s.isSupport;
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

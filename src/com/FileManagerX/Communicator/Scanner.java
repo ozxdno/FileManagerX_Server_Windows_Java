@@ -10,8 +10,8 @@ public class Scanner extends com.FileManagerX.Processes.BasicProcess implements 
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public final static String ERROR_SOCKET_BUILD_FAILED = "Socket is Error";
-	
+	public final static String ERROR_SOCKET_CLOSED = "Not Open Socket";
+
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	private MachineInfo serverMachineInfo;
@@ -25,7 +25,7 @@ public class Scanner extends com.FileManagerX.Processes.BasicProcess implements 
 		return true;
 	}
 	public boolean setIndex() {
-		this.index = ++com.FileManagerX.Globals.Configurations.Next_ScannerIndex;
+		this.index = com.FileManagerX.Globals.Configurations.Next_ScannerIndex();
 		return true;
 	}
 	public boolean setServerMachineInfo(MachineInfo serverMachineInfo) {
@@ -90,10 +90,17 @@ public class Scanner extends com.FileManagerX.Processes.BasicProcess implements 
 	private class RunImpl implements com.FileManagerX.Processes.BasicProcess.Runnable {
 		public String run() {
 			if(Scanner.this.socket == null) {
-				return ERROR_SOCKET_BUILD_FAILED;
+				Scanner.this.setSocket(com.FileManagerX.BasicEnums.SocketType.IPV4_TCP);
 			}
 			
-			while(!isAbort() && !socket.isClosed() && !com.FileManagerX.Globals.Configurations.Close) {
+			if(socket.isClosed()) {
+				setIsAbort(true);
+				return ERROR_SOCKET_CLOSED;
+			}
+			
+			while(!isAbort() && !isStop() && !socket.isClosed() && 
+					!com.FileManagerX.Globals.Configurations.Close) {
+				
 				try {
 					com.FileManagerX.Interfaces.ISocketC clientSocket = socket.receive();
 					
@@ -112,13 +119,24 @@ public class Scanner extends com.FileManagerX.Processes.BasicProcess implements 
 					cc.setBrother(sc);
 					
 				}catch(Exception e) {
-					ErrorType.COMMUNICATOR_RUNNING_FAILED.register("Server Scanner Running Failed", e.toString());
+					ErrorType.COMMUNICATOR_RUNNING_FAILED.register("Server Scanner Running Failed",
+							e.toString());
+					socket.close();
 					return e.toString();
 				}
 			}
 			
+			socket.close();
 			return null;
 		}
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public boolean exitProcess() {
+		super.exitProcess();
+		this.socket.close();
+		return true;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

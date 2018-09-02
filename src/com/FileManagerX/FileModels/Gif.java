@@ -1,6 +1,6 @@
 package com.FileManagerX.FileModels;
 
-public class Gif extends com.FileManagerX.BasicModels.BaseFile {
+public class Gif extends com.FileManagerX.BasicModels.File {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -78,15 +78,6 @@ public class Gif extends com.FileManagerX.BasicModels.BaseFile {
 	public Gif() {
 		initThis();
 	}
-	public Gif(String url) {
-		super(url);
-		initThis();
-	}
-	public Gif(java.io.File file) {
-		super(file);
-		initThis();
-	}
-	
 	private void initThis() {
 		this.height = 0;
 		this.width = 0;
@@ -102,38 +93,44 @@ public class Gif extends com.FileManagerX.BasicModels.BaseFile {
 	public String toString() {
 		return "[" + this.getName() + "] " + width + "X" + height + " " + com.FileManagerX.Tools.Time.ticks2String(lasting, "mm:ss");
 	}
-	public String output() {
+	public com.FileManagerX.BasicModels.Config toConfig() {
 		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config();
 		c.setField(this.getClass().getSimpleName());
-		//c.addToBottom(new com.FileManagerX.BasicModels.Config(super.output()));
 		c.addToBottom(this.height);
 		c.addToBottom(this.width);
 		c.addToBottom(this.lasting);
-		c.addToBottom(com.FileManagerX.Tools.String.link(rowPixels, " "));
-		c.addToBottom(com.FileManagerX.Tools.String.link(colPixels, " "));
-		return c.output();
+		c.addToBottom(com.FileManagerX.Tools.StringUtil.link(rowPixels, " "));
+		c.addToBottom(com.FileManagerX.Tools.StringUtil.link(colPixels, " "));
+		return c;
 	}
-	public String input(String in) {
-		//in = super.input(in);
-		if(in == null) {
-			return null;
-		}
+	public String output() {
+		return this.toConfig().output();
+	}
+	public com.FileManagerX.BasicModels.Config input(String in) {
+		return this.input(new com.FileManagerX.BasicModels.Config(in));
+	}
+	public com.FileManagerX.BasicModels.Config input(com.FileManagerX.BasicModels.Config c) {
+		if(c == null) { return null; }
 		
-		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config(in);
+		if(!c.getIsOK()) { return c; }
 		this.height = c.fetchFirstInt();
-		if(!c.getIsOK()) { return null; }
+		if(!c.getIsOK()) { return c; }
 		this.width = c.fetchFirstInt();
-		if(!c.getIsOK()) { return null; }
+		if(!c.getIsOK()) { return c; }
 		this.lasting = c.fetchFirstLong();
-		if(!c.getIsOK()) { return null; }
-		this.rowPixels = com.FileManagerX.Tools.String.splitToIntArray(c.fetchFirstString(), ' ');
-		if(!c.getIsOK()) { return null; }
-		this.colPixels = com.FileManagerX.Tools.String.splitToIntArray(c.fetchFirstString(), ' ');
-		if(!c.getIsOK()) { return null; }
+		if(!c.getIsOK()) { return c; }
+		java.util.ArrayList<Integer> pixes = 
+				com.FileManagerX.Tools.StringUtil.split2int(c.fetchFirstString(), " ");
+		this.rowPixels = com.FileManagerX.Tools.List2Array.toIntArray(pixes);
+		if(!c.getIsOK()) { return c; }
+		pixes = com.FileManagerX.Tools.StringUtil.split2int(c.fetchFirstString(), " ");
+		this.colPixels = com.FileManagerX.Tools.List2Array.toIntArray(pixes);
+		if(!c.getIsOK()) { return c; }
 		
-		return c.output();
+		return c;
 	}
 	public void copyReference(Object o) {
+		if(o == null) { return; }
 		if(o instanceof Gif) {
 			super.copyReference(o);
 			Gif p = (Gif)o;
@@ -144,12 +141,13 @@ public class Gif extends com.FileManagerX.BasicModels.BaseFile {
 			this.colPixels = p.colPixels;
 			return;
 		}
-		if(o instanceof com.FileManagerX.BasicModels.BaseFile) {
+		if(o instanceof com.FileManagerX.BasicModels.File) {
 			super.copyReference(o);
 			return;
 		}
 	}
 	public void copyValue(Object o) {
+		if(o == null) { return; }
 		if(o instanceof Gif) {
 			super.copyValue(o);
 			Gif p = (Gif)o;
@@ -160,7 +158,7 @@ public class Gif extends com.FileManagerX.BasicModels.BaseFile {
 			this.colPixels = p.colPixels.clone();
 			return;
 		}
-		if(o instanceof com.FileManagerX.BasicModels.BaseFile) {
+		if(o instanceof com.FileManagerX.BasicModels.File) {
 			super.copyReference(o);
 			return;
 		}

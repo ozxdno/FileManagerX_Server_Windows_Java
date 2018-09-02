@@ -5,5 +5,6 @@ public enum MachineType {
 	SERVER,
 	DEPOT,
 	CLIENT,
+	TEMPORARY,
 	;
 }
