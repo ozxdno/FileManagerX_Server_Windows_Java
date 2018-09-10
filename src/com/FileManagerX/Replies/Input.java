@@ -50,13 +50,6 @@ public class Input extends BaseReply {
 		ok &= this.setIndex(index);
 		return ok;
 	}
-	public boolean setThis(IIOPackage iop, long index, com.FileManagerX.Interfaces.IConnection connection) {
-		boolean ok = true;
-		ok &= this.getBasicMessagePackage().setThis(connection.getClientConnection());
-		ok &= this.setConnection(connection);
-		ok &= this.setThis(iop, index);
-		return ok;
-	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

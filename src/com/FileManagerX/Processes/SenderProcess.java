@@ -14,6 +14,8 @@ public class SenderProcess extends BasicProcess {
 			return false;
 		}
 		this.connection = connection;
+		String name = "Sender: " + this.connection.getName();
+		this.setName(name);
 		return true;
 	}
 	
@@ -43,8 +45,10 @@ public class SenderProcess extends BasicProcess {
 			
 			if(connection != null && connection.isRunning()) {
 				com.FileManagerX.Commands.Test t = new com.FileManagerX.Commands.Test();
-				t.setThis(String.valueOf(com.FileManagerX.Tools.Time.getTicks()), connection);
+				t.setThis(String.valueOf(com.FileManagerX.Tools.Time.getTicks()));
+				t.setDestConnection(connection);
 				t.send();
+				SenderProcess.this.setIsRestart(true);
 			}
 			else {
 				exitProcess();

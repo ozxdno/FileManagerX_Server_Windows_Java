@@ -40,13 +40,6 @@ public class RegisterUser extends BaseReply {
 		ok &= this.setUser(user);
 		return ok;
 	}
-	public boolean setThis(User user, com.FileManagerX.Interfaces.IConnection connection) {
-		boolean ok = true;
-		ok &= this.getBasicMessagePackage().setThis(connection.getClientConnection());
-		ok &= this.setConnection(connection);
-		ok &= this.setThis(user);
-		return ok;
-	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

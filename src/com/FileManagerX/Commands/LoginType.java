@@ -18,6 +18,7 @@ public class LoginType extends BaseCommand {
 	public com.FileManagerX.Replies.LoginType getReply() {
 		if(super.getReply() == null) {
 			this.setReply(new com.FileManagerX.Replies.LoginType());
+			this.getReply().copyReversePath(this);
 		}
 		return (com.FileManagerX.Replies.LoginType)super.getReply();
 	}
@@ -35,12 +36,6 @@ public class LoginType extends BaseCommand {
 	public boolean setThis(ConnectionType type) {
 		boolean ok = true;
 		ok &= this.setType(type);
-		return ok;
-	}
-	public boolean setThis(ConnectionType type, com.FileManagerX.Interfaces.IConnection connection) {
-		boolean ok = true;
-		ok &= this.getBasicMessagePackage().setThis(connection.getClientConnection());
-		ok &= this.setThis(type);
 		return ok;
 	}
 	
@@ -142,8 +137,12 @@ public class LoginType extends BaseCommand {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean executeInLocal() {
-		this.getConnection().setType(this.type);
-		this.getConnection().getBrother().setType(type);
+		this.type = com.FileManagerX.Globals.Configurations.IsServer ?
+				this.type.and(this.type, com.FileManagerX.BasicEnums.ConnectionType.X2S) :
+				this.type.and(this.type, com.FileManagerX.BasicEnums.ConnectionType.X2C);
+		
+		this.getSourConnection().getServerConnection().setType(this.type);
+		this.getSourConnection().getClientConnection().setType(this.type.exchange());
 		this.getReply().setType(type);
 		return true;
 	}

@@ -40,13 +40,6 @@ public class LoginServer extends BaseReply {
 		ok &= this.setThis(machineInfo);
 		return ok;
 	}
-	public boolean setThis(MachineInfo machineInfo, com.FileManagerX.Interfaces.IConnection connection) {
-		boolean ok = true;
-		ok &= this.getBasicMessagePackage().setThis(connection.getClientConnection());
-		ok &= this.setConnection(connection);
-		ok &= this.setThis(machineInfo);
-		return ok;
-	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -101,25 +94,53 @@ public class LoginServer extends BaseReply {
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	public boolean execute() {
-		
-		boolean ok = this.executeInLocal();
-		this.store();
-		return ok;
-	}
+
 	public boolean executeInLocal() {
 		
-		if(!this.isOK()) {
+		// 没有给出替换建议
+		if(this.getFailedReason().equals(com.FileManagerX.Commands.LoginServer.FAILED_FIND_NEXT_SERVER)) {
+			this.setStore(false);
 			return false;
 		}
 		
-		if(!com.FileManagerX.Globals.Configurations.Connected) {
-			com.FileManagerX.Globals.Configurations.Server_MachineIndex = this.machineInfo.getIndex();
-			com.FileManagerX.Globals.Datas.ServerMachine.copyReference(this.machineInfo);
+		if(com.FileManagerX.Commands.LoginServer.FAILED_NO_AVAILABLE_SERVER.equals(this.getFailedReason())) {
+			this.setStore(true);
+			return false;
 		}
 		
-		return true;
+		// 已经存在替换建议
+		com.FileManagerX.Interfaces.IReply rep = com.FileManagerX.Globals.Datas.Receiver.searchByKey(
+				this.getBasicMessagePackage().getIndex()
+			);
+		if(rep != null) {
+			this.setStore(false);
+			return false;
+		}
+		
+		// 是否需要替换
+		long preServer = this.getSourConnection().getClientConnection().getServerMachineInfo().getIndex();
+		long disServer = this.machineInfo.getIndex();
+		this.setStore(true);
+		
+		// 更新信息
+		if(com.FileManagerX.Globals.Configurations.Refresh) {
+			com.FileManagerX.Globals.Datas.ServerMachine.copyReference(this.machineInfo);
+			com.FileManagerX.Globals.Configurations.Server_MachineIndex = this.machineInfo.getIndex();
+		}
+		
+		if(preServer == disServer) { // 保留
+			this.getSourConnection().getServerConnection().setClientMachineInfo(this.machineInfo);
+			this.getSourConnection().getClientConnection().setServerMachineInfo(this.machineInfo);
+			return true;
+		}
+		else { // 替换
+			this.getSourConnection().getServerConnection().setClientMachineInfo(this.machineInfo);
+			this.getSourConnection().getClientConnection().setServerMachineInfo(this.machineInfo);
+			this.getSourConnection().getServerConnection().stopProcess();
+			this.getSourConnection().getClientConnection().stopProcess();
+			this.setOK(false);
+			return false;
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

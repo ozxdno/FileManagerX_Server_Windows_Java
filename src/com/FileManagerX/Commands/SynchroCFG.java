@@ -59,15 +59,6 @@ public class SynchroCFG extends BaseCommand {
 		ok &= this.setMachineType(type);
 		return ok;
 	}
-	public boolean setThis(String loginName, String password, long machineIndex, 
-			com.FileManagerX.BasicEnums.MachineType type,
-			com.FileManagerX.Interfaces.IConnection connection) {
-		boolean ok = true;
-		ok &= this.getBasicMessagePackage().setThis(connection.getClientConnection());
-		ok &= this.setConnection(connection);
-		ok &= this.setThis(loginName, password, machineIndex, type);
-		return ok;
-	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

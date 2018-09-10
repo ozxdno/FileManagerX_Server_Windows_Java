@@ -13,6 +13,7 @@ public class Create {
 		boolean ok = true;
 		ok &= Head.saveNew(cfg);
 		ok &= StartInfo.saveNew(cfg);
+		ok &= Register.saveNew(cfg);
 		ok &= Index.saveNew(cfg);
 		ok &= DBManager.saveNew(cfg);
 		ok &= DBManagers.saveNew(cfg);

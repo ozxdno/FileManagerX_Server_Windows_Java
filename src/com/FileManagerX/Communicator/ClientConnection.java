@@ -190,7 +190,81 @@ public class ClientConnection extends com.FileManagerX.Processes.BasicProcess
 		this.receiveString = null;
 		this.sendString = null;
 		
-		this.sends = new java.util.PriorityQueue<>(getComparator());
+		this.sends = new java.util.PriorityQueue<>(com.FileManagerX.Tools.Comparator.Transport.priorityAsc());
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public boolean send(com.FileManagerX.Interfaces.ITransport t) {
+		if(!this.isRunning() || this.isFinished()) { return false; }
+		synchronized(sends) {
+			return sends.add(t);
+		}
+	}
+	private com.FileManagerX.Interfaces.ITransport poll() {
+		synchronized(sends) {
+			return sends.size() == 0 ? null : sends.poll();
+		}
+	}
+	
+	public String login() {
+		com.FileManagerX.Interfaces.IReply reply = null;
+		
+		com.FileManagerX.Commands.LoginServer ls = new com.FileManagerX.Commands.LoginServer();
+		ls.setDestConnection(this);
+		ls.setThis(this.getServerMachineInfo());
+		ls.send();
+		reply = ls.receive();
+		if(reply == null) { return "LoginServer Failed: reply NULL"; }
+		if(!reply.isOK() && com.FileManagerX.Commands.LoginServer.FAILED_NO_AVAILABLE_SERVER.
+				equals(reply.getFailedReason())) {
+			return reply.getFailedReason();
+		}
+		
+		if(!reply.isOK()) {
+			com.FileManagerX.Tools.Time.sleepUntil(10);
+			boolean ok = this.setSocket(this.getSocket().getType());
+			if(!ok || this.brother == null) { return "LoginServer Failed: No Server"; }
+			this.brother.setSocket(this.getSocket());
+			this.restartProcess();
+			this.brother.restartProcess();
+		}
+		
+		com.FileManagerX.Commands.LoginUser lu = new com.FileManagerX.Commands.LoginUser();
+		lu.setDestConnection(this);
+		lu.setThis(this.getServerUser(), this.getClientUser());
+		lu.send();
+		reply = lu.receive();
+		if(reply == null) { return "LoginUser Failed: reply NULL"; }
+		if(!reply.isOK()) { return reply.getFailedReason(); }
+		
+		com.FileManagerX.Commands.LoginMachine lm = new com.FileManagerX.Commands.LoginMachine();
+		lm.setDestConnection(this);
+		lm.setThis(com.FileManagerX.Globals.Datas.ThisMachine);
+		lm.send();
+		reply = lm.receive();
+		if(reply == null) { return "LoginMachine Failed: reply NULL"; }
+		if(!reply.isOK()) { return reply.getFailedReason(); }
+		
+		com.FileManagerX.Commands.LoginType lt = new com.FileManagerX.Commands.LoginType();
+		com.FileManagerX.BasicEnums.ConnectionType x = com.FileManagerX.BasicEnums.ConnectionType.ANY;
+		x = com.FileManagerX.Globals.Configurations.IsServer ?
+				x.and(x, com.FileManagerX.BasicEnums.ConnectionType.S2X) :
+				x.and(x, com.FileManagerX.BasicEnums.ConnectionType.C2X);
+		x = x.and(x, com.FileManagerX.BasicEnums.ConnectionType.TRANSPORT_COMMAND);
+		lt.setThis(x);
+		lt.send();
+		reply = lt.receive();
+		if(reply == null) { return "LoginType Failed: reply NULL"; }
+		if(!reply.isOK()) { return reply.getFailedReason(); }
+		
+		com.FileManagerX.Commands.LoginConnection lc = new com.FileManagerX.Commands.LoginConnection();
+		lc.send();
+		reply = lc.receive();
+		if(reply == null) { return "LoginConnection Failed: reply NULL"; }
+		if(!reply.isOK()) { return reply.getFailedReason(); }
+		
+		return null;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -202,144 +276,40 @@ public class ClientConnection extends com.FileManagerX.Processes.BasicProcess
 			}
 			
 			if(socket.isClosed()) {
-				setIsAbort(true);
-				if(brother != null) { brother.exitProcess(); }
+				ClientConnection.this.stopProcess();
+				if(brother != null) { brother.stopProcess(); }
 				return ERROR_SOCKET_CLOSED;
 			}
 			
 			while(!isAbort() && !isStop() && !socket.isClosed()) {
 				try {
-					if(sends.isEmpty()) {
+					// 取出优先级最高的命令
+					com.FileManagerX.Interfaces.ITransport send = ClientConnection.this.poll();
+					if(send == null) {
 						com.FileManagerX.Tools.Time.sleepUntil(10);
 						continue;
 					}
 					
-					// 取出优先级最高的命令
-					com.FileManagerX.Interfaces.ITransport send = sends.poll();
-					
 					// 发送命令
-					setBegin();
+					com.FileManagerX.Deliver.Deliver.completeTimeInSender(send);
 					socket.send(com.FileManagerX.Coder.Encoder.Encode_Transport2Byte(send));
-					setEnd();
 					
-					// 记录
-					if(com.FileManagerX.Globals.Configurations.Record || send.getBasicMessagePackage().isRecord()) {
-						record();
-					}
 					
 				} catch(Exception e) {
 					com.FileManagerX.BasicEnums.ErrorType.COMMUNICATOR_RUNNING_FAILED.register(
 							"[" + getName() + "] " + e.toString());
-					setIsAbort(true);
-					if(brother != null) { brother.exitProcess(); }
+					ClientConnection.this.stopProcess();
+					if(brother != null) { brother.stopProcess(); }
 					socket.close();
 					return e.toString();
 				}
 			}
 			
-			setIsAbort(true);
-			if(brother != null) { brother.exitProcess(); }
+			ClientConnection.this.stopProcess();
+			if(brother != null) { brother.startProcess(); }
 			socket.close();
 			return null;
 		}
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public String login() {
-		
-		com.FileManagerX.Interfaces.IReply reply = null;
-		
-		com.FileManagerX.Commands.LoginServer ls = new com.FileManagerX.Commands.LoginServer();
-		ls.setThis(com.FileManagerX.Globals.Datas.ThisMachine, this);
-		ls.send();
-		reply = ls.receive();
-		if(reply == null) { return "LoginServer Failed: reply NULL"; }
-		if(!reply.isOK()) { return reply.getFailedReason(); }
-		
-		com.FileManagerX.Commands.LoginUser lu = new com.FileManagerX.Commands.LoginUser();
-		lu.setThis(com.FileManagerX.Globals.Datas.ThisUser, com.FileManagerX.Globals.Datas.ThisUser, this);
-		lu.send();
-		reply = lu.receive();
-		if(reply == null) { return "LoginUser Failed: reply NULL"; }
-		if(!reply.isOK()) { return reply.getFailedReason(); }
-		
-		com.FileManagerX.Commands.LoginMachine lm = new com.FileManagerX.Commands.LoginMachine();
-		lm.setThis(com.FileManagerX.Globals.Datas.ThisMachine, this);
-		lm.send();
-		reply = lm.receive();
-		if(reply == null) { return "LoginMachine Failed: reply NULL"; }
-		if(!reply.isOK()) { return reply.getFailedReason(); }
-		
-		com.FileManagerX.Commands.LoginType lt = new com.FileManagerX.Commands.LoginType();
-		lt.setThis(this.getType(), this);
-		lt.send();
-		reply = lt.receive();
-		if(reply == null) { return "LoginType Failed: reply NULL"; }
-		if(!reply.isOK()) { return reply.getFailedReason(); }
-		
-		com.FileManagerX.Commands.LoginIndex li = new com.FileManagerX.Commands.LoginIndex();
-		li.setThis(this.getIndex(), 100, this);
-		li.send();
-		reply = li.receive();
-		if(reply == null) { return "LoginIndex Failed: reply NULL"; }
-		if(!reply.isOK()) { return reply.getFailedReason(); }
-		
-		com.FileManagerX.Commands.LoginConnection lc = new com.FileManagerX.Commands.LoginConnection();
-		lc.setThis(this);
-		lc.send();
-		reply = lc.receive();
-		if(reply == null) { return "LoginConnection Failed: reply NULL"; }
-		if(!reply.isOK()) { return reply.getFailedReason(); }
-		
-		return "";
-	}
-	
-	public boolean send(com.FileManagerX.Interfaces.ITransport send) {
-		if(!this.isRunning()) { return false; }
-		return this.sends.add(send);
-	}
-	public boolean store(com.FileManagerX.Interfaces.IReply reply) {
-		return this.brother == null ? false : this.brother.store(reply);
-	}
-	public com.FileManagerX.Interfaces.IReply receive(long index, long wait) {
-		return this.brother == null ? null : this.brother.receive(index, wait);
-	}
-	public com.FileManagerX.Interfaces.IReply search(long index) {
-		return this.brother == null ? null : this.brother.search(index);
-	}
-	public com.FileManagerX.Interfaces.IReply fetch(long index) {
-		return this.brother == null ? null : this.brother.fetch(index);
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	private static java.util.Comparator<com.FileManagerX.Interfaces.ITransport> getComparator() {
-		java.util.Comparator<com.FileManagerX.Interfaces.ITransport> c = new java.util.Comparator<com.FileManagerX.Interfaces.ITransport>() {
-			public int compare(com.FileManagerX.Interfaces.ITransport t1, com.FileManagerX.Interfaces.ITransport t2) {
-				if(t1 == null) {
-					return -1;
-				}
-				if(t2 == null) {
-					return 1;
-				}
-				if(t1.getBasicMessagePackage().getPriority() > t2.getBasicMessagePackage().getPriority()) {
-					return 1;
-				}
-				else {
-					return -1;
-				}
-			}
-		};
-		return c;
-	}
-	private void record() {
-		com.FileManagerX.BasicModels.Record r = new com.FileManagerX.BasicModels.Record();
-		r.setType(com.FileManagerX.BasicEnums.RecordType.CLIENT_REC);
-		r.setConnectionName(this.getName());
-		r.setThreadName(this.getName());
-		r.setContent(this.sendString);
-		com.FileManagerX.Globals.Datas.Records.add(r);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

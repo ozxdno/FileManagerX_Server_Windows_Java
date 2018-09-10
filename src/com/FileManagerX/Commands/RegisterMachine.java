@@ -21,13 +21,6 @@ public class RegisterMachine extends BaseCommand {
 	public boolean setThis(MachineInfo machineInfo) {
 		return this.setMachineInfo(machineInfo);
 	}
-	public boolean setThis(MachineInfo machineInfo, com.FileManagerX.Interfaces.IConnection connection) {
-		boolean ok = true;
-		ok &= this.getBasicMessagePackage().setThis(connection.getClientConnection());
-		ok &= this.setConnection(connection);
-		ok &= this.setThis(machineInfo);
-		return ok;
-	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -107,10 +100,6 @@ public class RegisterMachine extends BaseCommand {
 			this.getReply().send();
 			return false;
 		}
-		if(!this.isLoginUser()) {
-			this.getReply().send();
-			return false;
-		}
 		
 		boolean ok = this.executeInLocal();
 		this.getReply().send();
@@ -125,18 +114,21 @@ public class RegisterMachine extends BaseCommand {
 			return false;
 		}
 		
-		MachineInfo exm = (com.FileManagerX.BasicModels.MachineInfo)
-				com.FileManagerX.Globals.Datas.DBManager.query2(
-						"[&] Name = '" + this.machineInfo.getName() + "'",
-						com.FileManagerX.DataBase.Unit.Machine
-					);
-		if(exm != null) {
+		boolean ok = com.FileManagerX.Globals.Datas.DBManager.query(
+				"qcs = 2|[&] name = " + this.machineInfo.getName() + 
+					"|[&] userIndex = " + this.machineInfo.getUserIndex(),
+				null,
+				com.FileManagerX.DataBase.Unit.Machine
+			);
+		if(ok) {
 			this.getReply().setThis(false, "Machine Existed");
 			return false;
 		}
 		
-		com.FileManagerX.Globals.Datas.DBManager.setUnit(com.FileManagerX.DataBase.Unit.Machine);
-		boolean ok = com.FileManagerX.Globals.Datas.DBManager.update(machineInfo);
+		ok = com.FileManagerX.Globals.Datas.DBManager.update(
+				this.machineInfo,
+				com.FileManagerX.DataBase.Unit.Machine
+			);
 		if(!ok) {
 			this.getReply().setThis(false, "Update Machine  to DataBase Failed");
 			return false;

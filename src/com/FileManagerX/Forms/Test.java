@@ -10,6 +10,10 @@ public class Test extends JFrame {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	public java.util.ArrayList<CMDC> cmdcs = new java.util.ArrayList<>();
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public JTextField jInput = new JTextField();
 	public JTextField jResult = new JTextField();
 	public JButton jQuery = new JButton("query");
@@ -19,7 +23,7 @@ public class Test extends JFrame {
 	public java.util.ArrayList<String> List = new java.util.ArrayList<String>();
 	public String ListType = "";
 	public int ListIndex = 0;
-	 
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public Test() {
@@ -78,7 +82,7 @@ public class Test extends JFrame {
 			return;
 		}
 		
-		int wForm = Datas.Form_Test.getSize().width;
+		int wForm = Test.this.getSize().width;
 		//int hForm = Datas.Form_Test.getSize().height;
 		
 		int wInput = wForm - 40;
@@ -101,14 +105,14 @@ public class Test extends JFrame {
 		int xQuery = xExecute - 30 - wQuery;
 		int yQuery = yExecute;
 		
-		Datas.Form_Test.jInput.setLocation(xInput, yInput);
-		Datas.Form_Test.jInput.setSize(wInput, hInput);
-		Datas.Form_Test.jResult.setLocation(xResult, yResult);
-		Datas.Form_Test.jResult.setSize(wResult, hResult);
-		Datas.Form_Test.jExecute.setLocation(xExecute, yExecute);
-		Datas.Form_Test.jExecute.setSize(wExecute, hExecute);
-		Datas.Form_Test.jQuery.setLocation(xQuery, yQuery);
-		Datas.Form_Test.jQuery.setSize(wQuery, hQuery);
+		jInput.setLocation(xInput, yInput);
+		jInput.setSize(wInput, hInput);
+		jResult.setLocation(xResult, yResult);
+		jResult.setSize(wResult, hResult);
+		jExecute.setLocation(xExecute, yExecute);
+		jExecute.setSize(wExecute, hExecute);
+		jQuery.setLocation(xQuery, yQuery);
+		jQuery.setSize(wQuery, hQuery);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -131,7 +135,7 @@ public class Test extends JFrame {
 	
 	private ComponentAdapter listenFrameResize = new ComponentAdapter() {
 		public void componentResized(ComponentEvent e){
-			Datas.Form_Test.resizeForm();
+			Test.this.resizeForm();
 		}
 	};
 	

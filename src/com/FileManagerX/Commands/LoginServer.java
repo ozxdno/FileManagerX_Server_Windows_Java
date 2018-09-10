@@ -6,8 +6,12 @@ public class LoginServer extends BaseCommand {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	public final static String FAILED_NO_AVAILABLE_SERVER = "Not found available server";
+	public final static String FAILED_FIND_NEXT_SERVER = "Try to find another server";
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	private MachineInfo machineInfo;
-	private boolean sendReply;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -21,13 +25,6 @@ public class LoginServer extends BaseCommand {
 	
 	public boolean setThis(MachineInfo machineInfo) {
 		return this.setMachineInfo(machineInfo);
-	}
-	public boolean setThis(MachineInfo machineInfo, com.FileManagerX.Interfaces.IConnection connection) {
-		boolean ok = true;
-		ok &= this.getBasicMessagePackage().setThis(connection.getClientConnection());
-		ok &= this.setConnection(connection);
-		ok &= this.setThis(machineInfo);
-		return ok;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -50,7 +47,6 @@ public class LoginServer extends BaseCommand {
 		this.input(command);
 	}
 	private void initThis() {
-		this.getBasicMessagePackage().setPermitIdle(Long.MAX_VALUE);
 		this.machineInfo = new MachineInfo();
 	}
 	
@@ -71,11 +67,7 @@ public class LoginServer extends BaseCommand {
 		return c;
 	}
 	public String output() {
-		Config c = new Config();
-		c.setField(this.getClass().getSimpleName());
-		c.addToBottom(new Config(super.output()));
-		c.addToBottom(new Config(this.machineInfo.output()));
-		return c.output();
+		return this.toConfig().output();
 	}
 	public com.FileManagerX.BasicModels.Config input(String in) {
 		return this.input(new com.FileManagerX.BasicModels.Config(in));
@@ -115,25 +107,65 @@ public class LoginServer extends BaseCommand {
 		}
 		
 		boolean ok = this.executeInLocal();
-		if(this.sendReply) { this.getReply().send(); }
+		this.getReply().send();
 		return ok;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean executeInLocal() {
-		if(com.FileManagerX.Globals.Datas.Client.size() > 
-				com.FileManagerX.Globals.Configurations.LimitForConnection) {
+		if(this.getBasicMessagePackage().getProcess() <= 0) {
+			this.getBasicMessagePackage().setProcess(this.getSourConnection().getProcessIndex());
+		}
+		
+		int current = com.FileManagerX.Globals.Datas.Client.size();
+		int limit = com.FileManagerX.Globals.Configurations.LimitForConnection;
+		
+		if(current >= limit) {
+			if(this.getBasicMessagePackage().isDirect()) {
+				this.getReply().setFailedReason(FAILED_NO_AVAILABLE_SERVER);
+				this.getReply().setOK(false);
+				return false;
+			}
+			
+			com.FileManagerX.Interfaces.IRoutePathPackage rpp = this.getBasicMessagePackage().getRoutePathPackage();
+			com.FileManagerX.Interfaces.IClientConnection con = com.FileManagerX.Globals.Datas.ServerConnection;
+			long sm = con.getServerMachineInfo().getIndex();
+			boolean found = false;
+			
+			if(con.isRunning() && !rpp.visited(sm)) {
+				com.FileManagerX.Commands.LoginServer clone = new com.FileManagerX.Commands.LoginServer();
+				clone.copyValue(this);
+				clone.setSourConnection(this.getSourConnection());
+				clone.setDestConnection(con);
+				clone.getBasicMessagePackage().setDestMachineIndex(sm);
+				clone.send();
+				found = true;
+			}
+			
 			com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IClientConnection> it =
 					com.FileManagerX.Globals.Datas.OtherServers.getIterator();
 			while(it.hasNext()) {
-				it.getNext().send(this);
+				con = it.getNext();
+				sm = con.getServerMachineInfo().getIndex();
+				
+				if(con.isRunning() && !rpp.visited(sm)) {
+					com.FileManagerX.Commands.LoginServer clone = new com.FileManagerX.Commands.LoginServer();
+					clone.copyValue(this);
+					clone.setSourConnection(this.getSourConnection());
+					clone.setDestConnection(con);
+					clone.getBasicMessagePackage().setDestMachineIndex(sm);
+					clone.send();
+					found = true;
+				}
 			}
-			return this.sendReply = false;
+			this.getReply().setFailedReason(found ? FAILED_FIND_NEXT_SERVER : FAILED_NO_AVAILABLE_SERVER);
+			this.getReply().setOK(false);
+			return false;
 		}
 		else {
 			this.getReply().setMachineInfo(com.FileManagerX.Globals.Datas.ThisMachine);
-			return this.sendReply = true;
+			return true;
 		}
 	}
 	

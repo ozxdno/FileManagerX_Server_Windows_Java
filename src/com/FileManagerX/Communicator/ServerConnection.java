@@ -26,8 +26,6 @@ public class ServerConnection extends com.FileManagerX.Processes.BasicProcess
 	
 	private String receiveString;
 	private String sendString;
-	
-	private java.util.HashMap<Long, com.FileManagerX.Interfaces.IReply> reps;
 	private com.FileManagerX.Interfaces.IConnection brother;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -188,8 +186,15 @@ public class ServerConnection extends com.FileManagerX.Processes.BasicProcess
 		
 		this.receiveString = null;
 		this.sendString = null;
-		
-		this.reps = new java.util.HashMap<>();
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public boolean send(com.FileManagerX.Interfaces.ITransport t) {
+		return this.brother == null ? false : this.brother.send(t);
+	}
+	public String login() {
+		return this.brother == null ? "Brother is NULL" : brother.login();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -201,8 +206,8 @@ public class ServerConnection extends com.FileManagerX.Processes.BasicProcess
 			}
 			
 			if(socket.isClosed()) {
-				setIsAbort(true);
-				if(brother != null) { brother.exitProcess(); }
+				ServerConnection.this.stopProcess();
+				if(brother != null) { brother.stopProcess(); }
 				return ERROR_SOCKET_CLOSED;
 			}
 			
@@ -213,8 +218,8 @@ public class ServerConnection extends com.FileManagerX.Processes.BasicProcess
 				try {
 					int length = socket.receive(recebytes);
 					if(length < 0) {
-						setIsAbort(true);
-						if(brother != null) { brother.exitProcess(); }
+						ServerConnection.this.stopProcess();
+						if(brother != null) { brother.stopProcess(); }
 						socket.close();
 						return ERROR_SOCKET_CLOSED;
 					}
@@ -229,129 +234,35 @@ public class ServerConnection extends com.FileManagerX.Processes.BasicProcess
 							com.FileManagerX.Interfaces.ITransport t =
 									com.FileManagerX.Coder.Decoder.Decode_Byte2Transport(temp);
 							
-							// 记录
-							if(com.FileManagerX.Globals.Configurations.Record) { record(); }
-							
-							// 处理
-							if(t instanceof com.FileManagerX.Commands.Unsupport) {
-								;
-							}
-							else if(t instanceof com.FileManagerX.Replies.Unsupport) {
-								;
-							}
-							else {
-								t.setConnection(ServerConnection.this);
-								if(!t.isTimeOut() && t.isArriveTargetMachine()) { execute(t); }
-								if(!t.isTimeOut() && t.isDeliver()) { t.deliver(); }
+							if((t instanceof com.FileManagerX.Commands.Unsupport) ||
+									(t instanceof com.FileManagerX.Replies.Unsupport)) {
+								continue;
 							}
 							
-							// 特殊记录
-							if(!com.FileManagerX.Globals.Configurations.Record &&
-									(t == null || t.getBasicMessagePackage().isRecord())) {
-								record();
-							}
+							t.setSourConnection(ServerConnection.this);
+							com.FileManagerX.Deliver.Deliver.completeTimeInReceiver(t);
+							com.FileManagerX.Globals.Datas.Sender.add(t);
 						}
 						else {
 							buffer.add(recebytes[i]);
 						}
 					}
 					
-					// 清理缓存
-					try {
-						for(com.FileManagerX.Interfaces.IReply r : reps.values()) {
-							long permit = 2 * r.getBasicMessagePackage().getPermitIdle();
-							if(permit < 0) { permit = Long.MAX_VALUE; }
-							if(com.FileManagerX.Tools.Time.getTicks() - r.getBasicMessagePackage().getReceiveTime() > permit) {
-								if(!com.FileManagerX.Globals.Configurations.Record) {
-									r.setFailedReason("No Receiver to Accept");
-									r.setOK(false);
-									record(r);
-								}
-								reps.remove(r.getBasicMessagePackage().getIndex());
-							}
-						}
-					}catch(Exception e) {
-						;
-					}
-					
 				} catch(Exception e) {
 					com.FileManagerX.BasicEnums.ErrorType.COMMUNICATOR_RUNNING_FAILED.register(
 							"[" + getName() + "] " + e.toString());
-					setIsAbort(true);
-					if(brother != null) { brother.exitProcess(); }
+					ServerConnection.this.stopProcess();
+					if(brother != null) { brother.stopProcess(); }
 					socket.close();
 					return e.toString();
 				}
 			}
 			
-			setIsAbort(true);
-			if(brother != null) { brother.exitProcess(); }
+			ServerConnection.this.stopProcess();
+			if(brother != null) { brother.stopProcess(); }
 			socket.close();
 			return null;
 		}
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public String login() {
-		return this.brother == null ? "ServerConnection No Brother" : this.brother.login();
-	}
-
-	public boolean send(com.FileManagerX.Interfaces.ITransport send) {
-		return this.brother == null ? false : this.brother.send(send);
-	}
-	public boolean store(com.FileManagerX.Interfaces.IReply reply) {
-		if(this.isRunning() && this.reps.get(reply.getBasicMessagePackage().getIndex()) == null) {
-			reply.getBasicMessagePackage().setReceiveTime(com.FileManagerX.Tools.Time.getTicks());
-			this.reps.put(reply.getBasicMessagePackage().getIndex(), reply);
-		}
-		return true;
-	}
-	
-	public com.FileManagerX.Interfaces.IReply receive(long index, long wait) {
-		com.FileManagerX.Interfaces.IReply rep = null;
-		long start = com.FileManagerX.Tools.Time.getTicks();
-		
-		while(com.FileManagerX.Tools.Time.getTicks() - start < wait && this.isRunning()) {
-			com.FileManagerX.Tools.Time.sleepUntil(1);
-			rep = reps.remove(index);
-			if(rep != null) {
-				break;
-			}
-		}
-		
-		return rep;
-	}
-	public com.FileManagerX.Interfaces.IReply search(long index) {
-		return reps.get(index);
-	}
-	public com.FileManagerX.Interfaces.IReply fetch(long index) {
-		return reps.remove(index);
-	}
-
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	private void record() {
-		com.FileManagerX.BasicModels.Record r = new com.FileManagerX.BasicModels.Record();
-		r.setType(com.FileManagerX.BasicEnums.RecordType.SERVER_REC);
-		r.setConnectionName(this.getName());
-		r.setThreadName(this.getName());
-		r.setContent(this.receiveString);
-		com.FileManagerX.Globals.Datas.Records.add(r);
-	}
-	private void record(com.FileManagerX.Interfaces.IReply rep) {
-		com.FileManagerX.BasicModels.Record r = new com.FileManagerX.BasicModels.Record();
-		r.setType(com.FileManagerX.BasicEnums.RecordType.SERVER_REC);
-		r.setConnectionName(this.getName());
-		r.setThreadName(this.getName());
-		r.setContent('X' + rep.output());
-		com.FileManagerX.Globals.Datas.Records.add(r);
-	}
-	
-	private void execute(com.FileManagerX.Interfaces.ITransport receive) {
-		com.FileManagerX.Executor.Executor ex = com.FileManagerX.Globals.Datas.Executors.nextIdleProcess();
-		ex.setReceive(receive);
-		ex.restartProcess();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

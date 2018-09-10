@@ -6,38 +6,28 @@ public class RoutePath extends BaseCommand {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	private com.FileManagerX.Interfaces.IRoutePathPackage rrp;
+	private com.FileManagerX.Interfaces.IRoutePathPackage rpp;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public boolean setRoutePath(com.FileManagerX.Interfaces.IRoutePathPackage rrp) {
-		if(rrp == null) {
+	public boolean setRoutePath(com.FileManagerX.Interfaces.IRoutePathPackage rpp) {
+		if(rpp == null) {
 			return false;
 		}
-		this.rrp = rrp;
+		this.rpp = rpp;
 		return true;
 	}
 	
-	public boolean setThis(com.FileManagerX.Interfaces.IRoutePathPackage rrp) {
+	public boolean setThis(com.FileManagerX.Interfaces.IRoutePathPackage rpp) {
 		boolean ok = true;
-		ok &= this.setRoutePath(rrp);
-		return ok;
-	}
-	public boolean setThis(com.FileManagerX.Interfaces.IRoutePathPackage rrp,
-			com.FileManagerX.Interfaces.IConnection connection) {
-		boolean ok = true;
-		ok &= this.getBasicMessagePackage().setThis(connection.getClientConnection());
-		ok &= this.getBasicMessagePackage().getBroadcast().setType(
-				com.FileManagerX.BasicEnums.BroadcastType.TO_ALL);
-		ok &= this.setConnection(connection);
-		ok &= this.setThis(rrp);
+		ok &= this.setRoutePath(rpp);
 		return ok;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public com.FileManagerX.Interfaces.IRoutePathPackage getRoutePath() {
-		return this.rrp;
+		return this.rpp;
 	}
 	
 	public com.FileManagerX.Replies.RoutePath getReply() {
@@ -51,7 +41,7 @@ public class RoutePath extends BaseCommand {
 		initThis();
 	}
 	private void initThis() {
-		this.rrp = com.FileManagerX.Factories.CommunicatorFactory.createRRP();
+		this.rpp = com.FileManagerX.Factories.CommunicatorFactory.createRRP();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -67,7 +57,7 @@ public class RoutePath extends BaseCommand {
 		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config();
 		c.setField(this.getClass().getSimpleName());
 		c.addToBottom(super.toConfig());
-		c.addToBottom(this.rrp.toConfig());
+		c.addToBottom(this.rpp.toConfig());
 		return c;
 	}
 	public String output() {
@@ -82,7 +72,7 @@ public class RoutePath extends BaseCommand {
 			if(!c.getIsOK()) { return c; }
 			c = super.input(c);
 			if(!c.getIsOK()) { return c; }
-			c = this.rrp.input(c);
+			c = this.rpp.input(c);
 			if(!c.getIsOK()) { return c; }
 			return c;
 		} catch(Exception e) {
@@ -94,12 +84,12 @@ public class RoutePath extends BaseCommand {
 	public void copyReference(Object o) {
 		super.copyReference(o);
 		RoutePath t = (RoutePath)o;
-		this.rrp = t.rrp;
+		this.rpp = t.rpp;
 	}
 	public void copyValue(Object o) {
 		super.copyValue(o);
 		RoutePath t = (RoutePath)o;
-		this.rrp.copyValue(t.rrp);
+		this.rpp.copyValue(t.rpp);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -138,10 +128,8 @@ public class RoutePath extends BaseCommand {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean executeInLocal() {
-		com.FileManagerX.Interfaces.IRoutePathPackage rrp = this.getBasicMessagePackage().getRoutePathPackage();
-		rrp.setArriveTime();
-		
-		this.getReply().getRoutePath().copyValue(rrp);
+		com.FileManagerX.Interfaces.IRoutePathPackage rpp = this.getBasicMessagePackage().getRoutePathPackage();
+		this.getReply().getRoutePath().copyValue(rpp);
 		return true;
 	}
 	

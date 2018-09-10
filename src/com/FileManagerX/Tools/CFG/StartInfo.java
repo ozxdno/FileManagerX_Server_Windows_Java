@@ -37,6 +37,11 @@ public class StartInfo {
 		String loginName = c == null ? "" : c.getValue();
 		c = cfg.getConfigs().fetchByField("Password");
 		String password = c == null ? "" : c.getValue();
+		c = cfg.getConfigs().fetchByField("MachineName");
+		String machineName = c == null ? com.FileManagerX.Globals.Datas.ThisMachine.getName() : c.getValue();
+		
+		com.FileManagerX.Globals.Datas.ThisMachine.setName(machineName);
+		com.FileManagerX.Globals.Datas.ThisMachine.setType(type);
 		com.FileManagerX.Globals.Datas.ThisUser.setLoginName(loginName);
 		com.FileManagerX.Globals.Datas.ThisUser.setPassword(password);
 		return true;
@@ -56,6 +61,8 @@ public class StartInfo {
 		line = "LoginName = " + com.FileManagerX.Globals.Datas.ThisUser.getLoginName();
 		cfg.getContent().add(line);
 		line = "Password = " + com.FileManagerX.Globals.Datas.ThisUser.getPassword();
+		cfg.getContent().add(line);
+		line = "MachineName = " + com.FileManagerX.Globals.Datas.ThisMachine.getName();
 		cfg.getContent().add(line);
 		
 		return true;

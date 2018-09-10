@@ -1,8 +1,6 @@
 package com.FileManagerX.Replies;
 
 import com.FileManagerX.BasicModels.MachineInfo;
-import com.FileManagerX.Globals.Configurations;
-import com.FileManagerX.Globals.Datas;
 
 public class LoginMachine extends BaseReply {
 
@@ -39,13 +37,6 @@ public class LoginMachine extends BaseReply {
 
 	public boolean setThis(MachineInfo machineInfo) {
 		boolean ok = true;
-		ok &= this.setThis(machineInfo);
-		return ok;
-	}
-	public boolean setThis(MachineInfo machineInfo, com.FileManagerX.Interfaces.IConnection connection) {
-		boolean ok = true;
-		ok &= this.getBasicMessagePackage().setThis(connection.getClientConnection());
-		ok &= this.setConnection(connection);
 		ok &= this.setThis(machineInfo);
 		return ok;
 	}
@@ -100,23 +91,20 @@ public class LoginMachine extends BaseReply {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public boolean execute() {
-		
-		boolean ok = this.executeInLocal();
-		this.store();
-		return ok;
-	}
 	public boolean executeInLocal() {
 		
 		if(!this.isOK()) {
 			return false;
 		}
 		
-		this.getConnection().getServerConnection().setServerMachineInfo(this.machineInfo);
-		this.getConnection().getClientConnection().setClientMachineInfo(this.machineInfo);
+		this.getSourConnection().getServerConnection().setServerMachineInfo(this.machineInfo);
+		this.getSourConnection().getClientConnection().setClientMachineInfo(this.machineInfo);
 		
-		Configurations.This_MachineIndex = this.machineInfo.getIndex();
-		Datas.ThisMachine.copyValue(this.machineInfo);
+		if(com.FileManagerX.Globals.Configurations.Refresh) {
+			com.FileManagerX.Globals.Configurations.This_MachineIndex = this.machineInfo.getIndex();
+			com.FileManagerX.Globals.Datas.ThisMachine.copyReference(this.machineInfo);
+		}
+		
 		return true;
 	}
 	

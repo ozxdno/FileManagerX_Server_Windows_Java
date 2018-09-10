@@ -16,31 +16,6 @@ public class Files extends BasicHashMap<com.FileManagerX.BasicModels.File, Long>
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public java.util.Comparator<com.FileManagerX.BasicModels.File> getACmpByIndex() {
-		return new java.util.Comparator<com.FileManagerX.BasicModels.File>() {
-			public int compare(com.FileManagerX.BasicModels.File e1, com.FileManagerX.BasicModels.File e2) {
-				if(e1.getIndex() > e2.getIndex()) {
-					return 1;
-				} else {
-					return -1;
-				}
-			}
-		};
-	}
-	public java.util.Comparator<com.FileManagerX.BasicModels.File> getDCmpByIndex() {
-		return new java.util.Comparator<com.FileManagerX.BasicModels.File>() {
-			public int compare(com.FileManagerX.BasicModels.File e1, com.FileManagerX.BasicModels.File e2) {
-				if(e1.getIndex() > e2.getIndex()) {
-					return -1;
-				} else {
-					return 1;
-				}
-			}
-		};
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 	public com.FileManagerX.BasicModels.File searchByIndex(long index) {
 		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.BasicModels.File> it =
 				this.getIterator();

@@ -49,13 +49,6 @@ public class Test extends BaseCommand {
 		ok &= this.setTestString(test);
 		return ok;
 	}
-	public boolean setThis(String test, com.FileManagerX.Interfaces.IConnection connection) {
-		boolean ok = true;
-		ok &= this.getBasicMessagePackage().setThis(connection.getClientConnection());
-		ok &= this.setConnection(connection);
-		ok &= this.setThis(test);
-		return ok;
-	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	

@@ -105,21 +105,6 @@ public class BasicHashMap <T extends com.FileManagerX.Interfaces.IPublic, K>
 		com.FileManagerX.Tools.CopyCollections.copyReference(o, this);
 	}
 	public void copyValue(Object o) {
-		if(o == null) { return; }
-		int size = 0;
-		if(o instanceof com.FileManagerX.Interfaces.ICollection<?, ?>) {
-			size = ((com.FileManagerX.Interfaces.ICollection<?, ?>)o).size();
-		}
-		if(o instanceof java.util.Collection<?>) {
-			size = ((java.util.Collection<?>)o).size();
-		}
-		if(o instanceof java.util.Map<?, ?>) {
-			size = ((java.util.Map<?, ?>)o).size();
-		}
-		this.content.clear();
-		for(int i=0; i<size; i++) {
-			this.add(this.createT());
-		}
 		com.FileManagerX.Tools.CopyCollections.copyValue(o, this);
 	}
 	

@@ -13,16 +13,12 @@ public class BasicMessagePackage implements com.FileManagerX.Interfaces.IBasicMe
 	private long sourUserIndex;
 	private long destUserIndex;
 	
-	private String ip1;
-	private String ip2;
-	private int port1;
-	private int port2;
-	
 	private String password;
 	
 	private long index;
 	private long id;
 	private int priority;
+	private long process;
 	
 	private boolean isRecord;
 	private boolean isDircet;
@@ -30,8 +26,6 @@ public class BasicMessagePackage implements com.FileManagerX.Interfaces.IBasicMe
 	private com.FileManagerX.Deliver.Broadcast broadcast;
 	
 	private long permitIdle;
-	private long sendTime;
-	private long receiveTime;
 	private com.FileManagerX.Interfaces.IRoutePathPackage rpp;
 	
 	private static long nextIndex = 0;
@@ -39,13 +33,10 @@ public class BasicMessagePackage implements com.FileManagerX.Interfaces.IBasicMe
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean setSourMachineIndex(long index) {
-		this.rpp.setSourMachine(index);
 		this.sourMachineIndex = index;
 		return true;
 	}
 	public boolean setDestMachineIndex(long index) {
-		this.rpp.setDestMachine(index);
-		this.broadcast.setDestMachine(index);
 		this.destMachineIndex = index;
 		return true;
 	}
@@ -74,29 +65,6 @@ public class BasicMessagePackage implements com.FileManagerX.Interfaces.IBasicMe
 		return true;
 	}
 	
-	public boolean setIp1(String ip) {
-		if(com.FileManagerX.Tools.Url.isIp(ip)) {
-			this.ip1 = ip;
-			return true;
-		}
-		return false;
-	}
-	public boolean setIp2(String ip) {
-		if(com.FileManagerX.Tools.Url.isIp(ip)) {
-			this.ip2 = ip;
-			return true;
-		}
-		return false;
-	}
-	public boolean setPort1(int port) {
-		this.port1 = port;
-		return true;
-	}
-	public boolean setPort2(int port) {
-		this.port2 = port;
-		return true;
-	}
-	
 	public boolean setPassword(String password) {
 		if(password == null) {
 			com.FileManagerX.BasicEnums.ErrorType.COMMON_NULL.register();
@@ -110,8 +78,12 @@ public class BasicMessagePackage implements com.FileManagerX.Interfaces.IBasicMe
 		return true;
 	}
 	
-	public boolean setIndex(long index) {
+	public synchronized boolean setIndex(long index) {
 		this.index = index;
+		return true;
+	}
+	public synchronized boolean setIndex() {
+		this.index = ++nextIndex;
 		return true;
 	}
 	public boolean setId(long id) {
@@ -130,6 +102,10 @@ public class BasicMessagePackage implements com.FileManagerX.Interfaces.IBasicMe
 			return false;
 		}
 		this.priority = priority.ordinal();
+		return true;
+	}
+	public boolean setProcess(long index) {
+		this.process = index;
 		return true;
 	}
 	
@@ -156,37 +132,12 @@ public class BasicMessagePackage implements com.FileManagerX.Interfaces.IBasicMe
 		this.permitIdle = idle;
 		return true;
 	}
-	public boolean setSendTime(long sendTime) {
-		if(sendTime < 0) {
-			sendTime = 0;
-		}
-		this.sendTime = sendTime;
-		return true;
-	}
-	public boolean setSendTime() {
-		this.sendTime = com.FileManagerX.Tools.Time.getTicks();
-		return true;
-	}
-	public boolean setReceiveTime(long receiveTime) {
-		if(receiveTime < 0) {
-			receiveTime = 0;
-		}
-		this.receiveTime = receiveTime;
-		return true;
-	}
-	public boolean setReceiveTime() {
-		this.receiveTime = com.FileManagerX.Tools.Time.getTicks();
-		return true;
-	}
 	public boolean setRoutPathPackage(com.FileManagerX.Interfaces.IRoutePathPackage rpp) {
 		if(rpp == null) {
 			return false;
 		}
 		this.rpp = rpp;
 		return true;
-	}
-	public boolean setRoutePathPackage() {
-		return this.rpp.setThis(this.sourMachineIndex, this.destMachineIndex);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -216,19 +167,6 @@ public class BasicMessagePackage implements com.FileManagerX.Interfaces.IBasicMe
 		return this.destUserIndex;
 	}
 	
-	public String getIp1() {
-		return this.ip1;
-	}
-	public String getIp2() {
-		return this.ip2;
-	}
-	public int getPort1() {
-		return this.port1;
-	}
-	public int getPort2() {
-		return this.port2;
-	}
-	
 	public String getPassword() {
 		return this.password;
 	}
@@ -245,6 +183,9 @@ public class BasicMessagePackage implements com.FileManagerX.Interfaces.IBasicMe
 	public com.FileManagerX.BasicEnums.CMDPriority getPriorityEnum() {
 		return com.FileManagerX.BasicEnums.CMDPriority.values()[this.priority];
 	}
+	public long getProcess() {
+		return this.process;
+	}
 	
 	public boolean isRecord() {
 		return this.isRecord;
@@ -258,12 +199,6 @@ public class BasicMessagePackage implements com.FileManagerX.Interfaces.IBasicMe
 	
 	public long getPermitIdle() {
 		return this.permitIdle;
-	}
-	public long getSendTime() {
-		return this.sendTime;
-	}
-	public long getReceiveTime() {
-		return this.receiveTime;
 	}
 	public com.FileManagerX.Interfaces.IRoutePathPackage getRoutePathPackage() {
 		return this.rpp;
@@ -284,17 +219,12 @@ public class BasicMessagePackage implements com.FileManagerX.Interfaces.IBasicMe
 		this.sourUserIndex = 0;
 		this.destUserIndex = 0;
 		
-		this.ip1 = "";
-		this.ip2 = "";
-		this.port1 = 0;
-		this.port2 = 0;
+		this.password = com.FileManagerX.Globals.Datas.ThisUser.getPassword();
 		
-		this.password = "";
-		
-		BasicMessagePackage.nextIndex++;
-		this.index = BasicMessagePackage.nextIndex;
+		this.setIndex();
 		this.id = -1;
 		this.priority = 10;
+		this.process = -1;
 		
 		this.isRecord = false;
 		this.isDircet = false;
@@ -302,41 +232,42 @@ public class BasicMessagePackage implements com.FileManagerX.Interfaces.IBasicMe
 		
 		this.permitIdle = com.FileManagerX.Globals.Configurations.TimeForPermitIdle_Transport;
 		this.rpp = com.FileManagerX.Factories.CommunicatorFactory.createRRP();
-		this.sendTime = com.FileManagerX.Tools.Time.getTicks();
-		this.receiveTime = com.FileManagerX.Tools.Time.getTicks();
 	}
-	
+
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public boolean setThis(com.FileManagerX.Interfaces.IClientConnection connection) {
-		
-		try {
-			boolean ok = true;
-			ok &= this.setSourMachineIndex(connection.getClientMachineInfo().getIndex());
-			ok &= this.setDestMachineIndex(connection.getServerMachineInfo().getIndex());
-			ok &= this.setSourUserIndex(connection.getClientUser().getIndex());
-			ok &= this.setDestUserIndex(connection.getServerUser().getIndex());
-			ok &= this.setIp1(connection.getClientMachineInfo().getIp());
-			ok &= this.setIp2(connection.getServerMachineInfo().getIp());
-			ok &= this.setPort1(connection.getClientMachineInfo().getPort());
-			ok &= this.setPort2(connection.getServerMachineInfo().getPort());
-			ok &= this.setPassword(connection.getClientUser().getPassword());
-			return ok;
-			
-		} catch(Exception e) {
-			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
-			return false;
-		}
+	public boolean setThis_LocalAsSour() {
+		this.sourMachineIndex = com.FileManagerX.Globals.Configurations.This_MachineIndex;
+		this.sourUserIndex = com.FileManagerX.Globals.Configurations.This_UserIndex;
+		this.password = com.FileManagerX.Globals.Datas.ThisUser.getPassword();
+		return true;
 	}
-
+	public boolean setThis_LocalAsDest() {
+		this.destMachineIndex = com.FileManagerX.Globals.Configurations.This_MachineIndex;
+		this.destUserIndex = com.FileManagerX.Globals.Configurations.This_UserIndex;
+		this.password = com.FileManagerX.Globals.Datas.ThisUser.getPassword();
+		return true;
+	}
+	public boolean setThis_ServerAsSour() {
+		this.sourMachineIndex = com.FileManagerX.Globals.Configurations.Server_MachineIndex;
+		this.sourUserIndex = com.FileManagerX.Globals.Configurations.Server_UserIndex;
+		this.password = com.FileManagerX.Globals.Datas.ThisUser.getPassword();
+		return true;
+	}
+	public boolean setThis_ServerAsDest() {
+		this.destMachineIndex = com.FileManagerX.Globals.Configurations.Server_MachineIndex;
+		this.destUserIndex = com.FileManagerX.Globals.Configurations.Server_UserIndex;
+		this.password = com.FileManagerX.Globals.Datas.ThisUser.getPassword();
+		return true;
+	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public void clear() {
 		initThis();
 	}
 	public String toString() {
-		return "[Machine]: " + this.sourMachineIndex + "->" + this.destMachineIndex + 
-			  ", [Address]: " + this.ip1 + ":" + this.port1 + "->" + this.ip2 + ":" + this.port2;
+		return "[Machine]: " + this.sourMachineIndex + "->" + this.destMachineIndex;
 	}
 	public com.FileManagerX.BasicModels.Config toConfig() {
 		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config();
@@ -344,6 +275,7 @@ public class BasicMessagePackage implements com.FileManagerX.Interfaces.IBasicMe
 		c.addToBottom(this.index);
 		c.addToBottom(this.id);
 		c.addToBottom(this.priority);
+		c.addToBottom(this.process);
 		c.addToBottom(this.isRecord);
 		c.addToBottom(this.isDircet);
 		c.addToBottom(this.broadcast.toConfig());
@@ -355,14 +287,8 @@ public class BasicMessagePackage implements com.FileManagerX.Interfaces.IBasicMe
 		c.addToBottom(this.destDataBaseIndex);
 		c.addToBottom(this.sourUserIndex);
 		c.addToBottom(this.destUserIndex);
-		c.addToBottom(this.ip1);
-		c.addToBottom(this.ip2);
-		c.addToBottom(this.port1);
-		c.addToBottom(this.port2);
 		c.addToBottom(this.password);
 		c.addToBottom(this.permitIdle);
-		c.addToBottom(this.sendTime);
-		c.addToBottom(this.receiveTime);
 		c.addToBottom(this.rpp.toConfig());
 		return c;
 	}
@@ -381,6 +307,8 @@ public class BasicMessagePackage implements com.FileManagerX.Interfaces.IBasicMe
 		this.id = c.fetchFirstLong();
 		if(!c.getIsOK()) { return c; }
 		this.priority = c.fetchFirstInt();
+		if(!c.getIsOK()) { return c; }
+		this.process = c.fetchFirstLong();
 		if(!c.getIsOK()) { return c; }
 		this.isRecord = c.fetchFirstBoolean();
 		if(!c.getIsOK()) { return c; }
@@ -404,21 +332,11 @@ public class BasicMessagePackage implements com.FileManagerX.Interfaces.IBasicMe
 		if(!c.getIsOK()) { return c; }
 		this.destUserIndex = c.fetchFirstLong();
 		if(!c.getIsOK()) { return c; }
-		this.ip1 = c.fetchFirstString();
-		if(!c.getIsOK()) { return c; }
-		this.ip2 = c.fetchFirstString();
-		if(!c.getIsOK()) { return c; }
-		this.port1 = c.fetchFirstInt();
-		if(!c.getIsOK()) { return c; }
-		this.port2 = c.fetchFirstInt();
 		if(!c.getIsOK()) { return c; }
 		this.password = c.fetchFirstString();
 		if(!c.getIsOK()) { return c; }
 		this.permitIdle = c.fetchFirstLong();
 		if(!c.getIsOK()) { return c; }
-		this.sendTime = c.fetchFirstLong();
-		if(!c.getIsOK()) { return c; }
-		this.receiveTime = c.fetchFirstLong();
 		if(!c.getIsOK()) { return c; }
 		c = this.rpp.input(c);
 		if(!c.getIsOK()) { return c; }
@@ -437,23 +355,18 @@ public class BasicMessagePackage implements com.FileManagerX.Interfaces.IBasicMe
 			this.sourUserIndex = bmp.sourUserIndex;
 			this.destUserIndex = bmp.destUserIndex;
 			
-			this.ip1 = bmp.ip1;
-			this.ip2 = bmp.ip2;
-			this.port1 = bmp.port1;
-			this.port2 = bmp.port2;
 			this.password = bmp.password;
 			
 			this.index = bmp.index;
 			this.id = bmp.id;
 			this.priority = bmp.priority;
+			this.process = bmp.process;
 			
 			this.isRecord = bmp.isRecord;
 			this.isDircet = bmp.isDircet;
 			this.broadcast.copyReference(bmp.broadcast);
 			
 			this.permitIdle = bmp.permitIdle;
-			this.sendTime = bmp.sendTime;
-			this.receiveTime = bmp.receiveTime;
 			this.rpp = bmp.rpp;
 			return;
 		}
@@ -471,25 +384,44 @@ public class BasicMessagePackage implements com.FileManagerX.Interfaces.IBasicMe
 			this.sourUserIndex = bmp.sourUserIndex;
 			this.destUserIndex = bmp.destUserIndex;
 			
-			this.ip1 = new String(bmp.ip1);
-			this.ip2 = new String(bmp.ip2);
-			this.port1 = bmp.port1;
-			this.port2 = bmp.port2;
 			this.password = new String(bmp.password);
 			
 			this.index = bmp.index;
 			this.id = bmp.id;
 			this.priority = bmp.priority;
+			this.process = bmp.process;
 			
 			this.isRecord = bmp.isRecord;
 			this.isDircet = bmp.isDircet;
 			this.broadcast.copyValue(bmp.broadcast);
 			
 			this.permitIdle = bmp.permitIdle;
-			this.sendTime = bmp.sendTime;
-			this.receiveTime = bmp.receiveTime;
 			this.rpp.copyValue(bmp.rpp);
 		}
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public void swapSourAndDest() {
+		long tempLong = 0;
+		
+		tempLong = this.sourMachineIndex;
+		this.sourMachineIndex = this.destMachineIndex;
+		this.destMachineIndex = tempLong;
+		
+		tempLong = this.sourDataBaseIndex;
+		this.sourDataBaseIndex = this.destDataBaseIndex;
+		this.destDataBaseIndex = tempLong;
+		
+		tempLong = this.sourDepotIndex;
+		this.sourDepotIndex = this.destDepotIndex;
+		this.destDepotIndex = tempLong;
+		
+		tempLong = this.sourUserIndex;
+		this.sourUserIndex = this.destUserIndex;
+		this.destUserIndex = tempLong;
+		
+		this.password = com.FileManagerX.Globals.Datas.ThisUser.getPassword();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

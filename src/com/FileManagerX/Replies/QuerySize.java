@@ -38,13 +38,6 @@ public class QuerySize extends BaseReply {
 		ok &= this.setSize(size);
 		return ok;
 	}
-	public boolean setThis(int size, com.FileManagerX.Interfaces.IConnection connection) {
-		boolean ok = true;
-		ok &= this.getBasicMessagePackage().setThis(connection.getClientConnection());
-		ok &= this.setConnection(connection);
-		ok &= this.setThis(size);
-		return ok;
-	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

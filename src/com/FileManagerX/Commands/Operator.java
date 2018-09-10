@@ -25,9 +25,7 @@ public class Operator extends BaseCommand {
 		return this.operator;
 	}
 	public com.FileManagerX.Replies.Operator getReply() {
-		if(super.getReply() == null) {
-			this.setReply(new com.FileManagerX.Replies.Operator());
-		}
+		if(super.getReply() == null) { this.setReply(new com.FileManagerX.Replies.Operator()); }
 		return (com.FileManagerX.Replies.Operator)super.getReply();
 	}
 	
@@ -45,14 +43,6 @@ public class Operator extends BaseCommand {
 	public boolean setThis(com.FileManagerX.Operator.Operator operator) {
 		boolean ok = true;
 		ok &= this.setOperator(operator);
-		return ok;
-	}
-	public boolean setThis(com.FileManagerX.Operator.Operator operator,
-			com.FileManagerX.Interfaces.IConnection connection) {
-		boolean ok = true;
-		ok &= this.getBasicMessagePackage().setThis(connection.getClientConnection());
-		ok &= this.setConnection(connection);
-		ok &= this.setThis(operator);
 		return ok;
 	}
 	

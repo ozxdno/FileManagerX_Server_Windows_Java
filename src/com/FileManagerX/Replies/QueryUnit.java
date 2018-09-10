@@ -38,13 +38,6 @@ public class QueryUnit extends BaseReply {
 		ok &= this.setResult(result);
 		return ok;
 	}
-	public boolean setQueryFolder(com.FileManagerX.Interfaces.IPublic result, com.FileManagerX.Interfaces.IConnection connection) {
-		boolean ok = true;
-		ok &= this.getBasicMessagePackage().setThis(connection.getClientConnection());
-		ok &= this.setConnection(connection);
-		ok &= this.setThis(result);
-		return ok;
-	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -2,7 +2,12 @@ package com.FileManagerX.Tools;
 
 public class Pathes {
 	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	private static java.lang.String exePath = "";
+	private static String cfg = "";
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public final static boolean setExePath(java.lang.String exePath) {
 		if(exePath == null || exePath.length() == 0) {
@@ -23,7 +28,14 @@ public class Pathes {
 		Pathes.exePath = exePath;
 		return true;
 	}
+	public final static boolean setCFGName(String name) {
+		if(name == null) { return false; }
+		cfg = name;
+		return true;
+	}
 	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public final static java.lang.String getExePath() {
 		if(exePath == null || exePath.length() == 0) {
 			java.util.Properties properties = System.getProperties();
@@ -38,6 +50,8 @@ public class Pathes {
 		return f.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
 	}
 	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public final static java.lang.String getFolder_CFG() {
 		return getExePath() + "\\cfg";
 	}
@@ -67,11 +81,8 @@ public class Pathes {
 	}
 	
 	public final static java.lang.String getFile_CFG() {
-		//return getFolder_CFG() + "\\FileManagerX_Server_TXT.cfg";
-		//return getFolder_CFG() + "\\FileManagerX_Server_SQL.cfg";
-		//return getFolder_CFG() + "\\FileManagerX_Depot.cfg";
-		//return getFolder_CFG() + "\\FileManagerX_Client.cfg";
-		return getFolder_CFG() + "\\FileManagerX.cfg";
+		boolean set = cfg != null && cfg.length() > 0;
+		return getFolder_CFG() + "\\" + (set ? cfg : "FileManagerX.cfg");
 	}
 	
 	public final static boolean createFolder_CFG() {

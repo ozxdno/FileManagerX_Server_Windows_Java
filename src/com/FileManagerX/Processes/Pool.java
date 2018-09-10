@@ -75,12 +75,13 @@ public class Pool <T extends com.FileManagerX.Interfaces.IProcess>
 		com.FileManagerX.Interfaces.IIterator<T> it = this.getIterator();
 		while(it.hasNext()) {
 			T p = it.getNext();
-			if(p.isRunning() && p.isIdle()) {
+			if(p.isRunning() && p.isFinished()) {
+				p.setIsFinished(false);
 				return p;
 			}
 		}
 		
-		if(size == 0 || this.size() < this.getPoolSize()) {
+		if(size <= 0 || this.size() < this.getPoolSize()) {
 			T p = this.createT();
 			p.startProcess();
 			return p;

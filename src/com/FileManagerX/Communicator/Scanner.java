@@ -117,6 +117,8 @@ public class Scanner extends com.FileManagerX.Processes.BasicProcess implements 
 					
 					sc.setBrother(cc);
 					cc.setBrother(sc);
+					sc.setIndex();
+					cc.setIndex(sc.getIndex());
 					
 				}catch(Exception e) {
 					ErrorType.COMMUNICATOR_RUNNING_FAILED.register("Server Scanner Running Failed",

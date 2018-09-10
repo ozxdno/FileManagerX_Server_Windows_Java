@@ -1,13 +1,12 @@
 package com.FileManagerX.MyNet;
 
-public class User extends com.FileManagerX.BasicCollections.BasicHashMap<Machine, String> {
+public class User extends com.FileManagerX.Safe.BasicCollections.BasicLRUMap<Machine, String> {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	private com.FileManagerX.BasicModels.User user;
 	private String name;
 	private Net permit;
-	private int limit;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -35,13 +34,6 @@ public class User extends com.FileManagerX.BasicCollections.BasicHashMap<Machine
 		this.permit = permit;
 		return true;
 	}
-	public boolean setLimit(int limit) {
-		if(limit < 0) {
-			return false;
-		}
-		this.limit = limit;
-		return true;
-	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -54,10 +46,7 @@ public class User extends com.FileManagerX.BasicCollections.BasicHashMap<Machine
 	public Net getPermit() {
 		return this.permit;
 	}
-	public int getLimit() {
-		return this.limit;
-	}
-
+	
 	public String getKey(Machine item) {
 		return item == null ? null : item.getName();
 	}
@@ -72,7 +61,7 @@ public class User extends com.FileManagerX.BasicCollections.BasicHashMap<Machine
 		this.name = "Default User";
 		this.permit = new Net();
 		this.permit.setName("Permit Groups");
-		this.limit = 100;
+		super.setLimit(100);
 	}
 	public Machine createT() {
 		return new Machine();
@@ -97,7 +86,7 @@ public class User extends com.FileManagerX.BasicCollections.BasicHashMap<Machine
 		while(it.hasNext()) {
 			c.addToBottom_Encode(it.getNext().getName());
 		}
-		c.addToBottom(this.limit);
+		c.addToBottom(this.getLimit());
 		return c;
 	}
 	public String output() {
@@ -122,7 +111,7 @@ public class User extends com.FileManagerX.BasicCollections.BasicHashMap<Machine
 			if(!c.getIsOK()) { return c; }
 			this.permit.add(g);
 		}
-		this.limit = c.fetchFirstInt();
+		this.setLimit(c.fetchFirstInt());
 		if(!c.getIsOK()) { return c; }
 		
 		return c;
@@ -135,7 +124,7 @@ public class User extends com.FileManagerX.BasicCollections.BasicHashMap<Machine
 			this.user = u.user;
 			this.name = u.name;
 			this.permit = u.permit;
-			this.limit = u.limit;
+			this.setLimit(u.getLimit());
 			return;
 		}
 	}
@@ -147,7 +136,7 @@ public class User extends com.FileManagerX.BasicCollections.BasicHashMap<Machine
 			this.user = u.user;
 			this.name = u.name;
 			this.permit = u.permit;
-			this.limit = u.limit;
+			this.setLimit(u.getLimit());
 			return;
 		}
 	}
@@ -165,9 +154,8 @@ public class User extends com.FileManagerX.BasicCollections.BasicHashMap<Machine
 			com.FileManagerX.Commands.QueryUnit qu = new com.FileManagerX.Commands.QueryUnit();
 			qu.setThis(
 					com.FileManagerX.DataBase.Unit.User,
-					"[&] Index = " + this.user.getIndex(), 
-					com.FileManagerX.Globals.Datas.ServerConnection
-					);
+					"[&] Index = " + this.user.getIndex()
+				);
 			qu.send();
 			com.FileManagerX.Replies.QueryUnit rep = (com.FileManagerX.Replies.QueryUnit)qu.receive();
 			if(rep == null || !rep.isOK()) { return false; }

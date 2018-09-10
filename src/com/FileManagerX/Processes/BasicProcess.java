@@ -159,9 +159,9 @@ public class BasicProcess implements com.FileManagerX.Interfaces.IProcess {
 		return permitIdle;
 	}
 	public long getIdleTime() {
-		if(this.end <= this.begin) {
-			return 0;
-		}
+		if(this.end < this.begin) { return 0; }
+		if(!this.finished) { return 0; }
+		
 		return com.FileManagerX.Tools.Time.getTicks() - this.end;
 	}
 	
@@ -260,7 +260,7 @@ public class BasicProcess implements com.FileManagerX.Interfaces.IProcess {
 		this.thread.setName(name);
 		this.thread.start();
 		
-		com.FileManagerX.Tools.Time.sleepUntil(10);
+		com.FileManagerX.Tools.Time.sleepUntil(100);
 		return true;
 	}
 	public boolean stopProcess() {
@@ -272,11 +272,9 @@ public class BasicProcess implements com.FileManagerX.Interfaces.IProcess {
 		return true;
 	}
 	public boolean restartProcess() {
-		if(!this.startProcess()) {
-			this.error = ERROR_START_FAILED;
-			return false;
-		}
+		this.finished = false;
 		this.restart = true;
+		this.stop = false;
 		return true;
 	}
 	public boolean exitProcess() {

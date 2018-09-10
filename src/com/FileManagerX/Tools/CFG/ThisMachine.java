@@ -21,23 +21,14 @@ public class ThisMachine {
 	}
 	
 	public final static boolean ServerTM() {
-		com.FileManagerX.Globals.Datas.ThisMachine.copyReference(
-				com.FileManagerX.Factories.ServerFactory.createServerMachine()
-			);
 		return true;
 	}
 	
 	public final static boolean DefaultTM() {
-		com.FileManagerX.Globals.Datas.ThisMachine.copyReference(
-				com.FileManagerX.Factories.DefaultFactory.createDefaultMachineInfo()
-			);
 		return true;
 	}
 	
 	public final static boolean TemporaryTM() {
-		com.FileManagerX.Globals.Datas.ThisMachine.copyReference(
-				com.FileManagerX.Factories.DefaultFactory.createDefaultMachineInfo()
-			);
 		return true;
 	}
 	

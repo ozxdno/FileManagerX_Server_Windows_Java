@@ -21,14 +21,6 @@ public class RoutePath extends BaseReply {
 		ok &= this.setRoutePath(rrp);
 		return ok;
 	}
-	public boolean setThis(com.FileManagerX.Interfaces.IRoutePathPackage rrp,
-			com.FileManagerX.Interfaces.IConnection connection) {
-		boolean ok = true;
-		ok &= this.getBasicMessagePackage().setThis(connection.getClientConnection());
-		ok &= this.setConnection(connection);
-		ok &= this.setThis(rrp);
-		return ok;
-	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

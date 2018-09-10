@@ -1,7 +1,6 @@
 package com.FileManagerX.Replies;
 
 import com.FileManagerX.BasicModels.User;
-import com.FileManagerX.Globals.*;
 
 public class LoginUser extends BaseReply {
 
@@ -52,13 +51,6 @@ public class LoginUser extends BaseReply {
 		boolean ok = true;
 		ok &= this.setServerUser(serverUser);
 		ok &= this.setClientUser(clientUser);
-		return ok;
-	}
-	public boolean setThis(User serverUser, User clientUser, com.FileManagerX.Interfaces.IConnection connection) {
-		boolean ok = true;
-		ok &= this.getBasicMessagePackage().setThis(connection.getClientConnection());
-		ok &= this.setConnection(connection);
-		ok &= this.setThis(serverUser, clientUser);
 		return ok;
 	}
 	
@@ -114,6 +106,11 @@ public class LoginUser extends BaseReply {
 		this.suser.copyValue(qf.suser);
 		this.cuser.copyValue(qf.cuser);
 	}
+	public LoginUser clone() {
+		LoginUser c = new LoginUser();
+		c.copyValue(this);
+		return c;
+	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -123,14 +120,18 @@ public class LoginUser extends BaseReply {
 			return false;
 		}
 		
-		this.getConnection().getServerConnection().setServerUser(cuser);
-		this.getConnection().getServerConnection().setClientUser(suser);
+		this.getSourConnection().getServerConnection().setServerUser(cuser);
+		this.getSourConnection().getServerConnection().setClientUser(suser);
+		this.getSourConnection().getClientConnection().setServerUser(suser);
+		this.getSourConnection().getClientConnection().setClientUser(cuser);
 		
-		this.getConnection().getClientConnection().setServerUser(suser);
-		this.getConnection().getClientConnection().setClientUser(cuser);
+		if(com.FileManagerX.Globals.Configurations.Refresh) {
+			com.FileManagerX.Globals.Configurations.Server_UserIndex = this.suser.getIndex();
+			com.FileManagerX.Globals.Configurations.This_UserIndex = this.cuser.getIndex();
+			com.FileManagerX.Globals.Datas.ServerUser.copyReference(this.suser);
+			com.FileManagerX.Globals.Datas.ThisUser.copyReference(this.cuser);
+		}
 		
-		Configurations.This_UserIndex = cuser.getIndex();
-		Datas.ThisUser.copyReference(cuser);
 		return true;
 	}
 	

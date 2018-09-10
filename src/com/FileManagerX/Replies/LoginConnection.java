@@ -1,7 +1,5 @@
 package com.FileManagerX.Replies;
 
-import com.FileManagerX.Globals.*;
-
 public class LoginConnection extends BaseReply {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -9,24 +7,25 @@ public class LoginConnection extends BaseReply {
 	public boolean setThis() {
 		return true;
 	}
-	public boolean setThis(com.FileManagerX.Interfaces.IConnection connection) {
-		boolean ok = true;
-		ok &= this.getBasicMessagePackage().setThis(connection.getClientConnection());
-		ok &= this.setConnection(connection);
-		ok &= this.setThis();
-		return ok;
-	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public boolean executeInLocal() {
-		
 		if(!this.isOK()) {
 			return false;
 		}
 		
-		Datas.Server.add(this.getConnection().getServerConnection());
-		Datas.Client.add(this.getConnection().getClientConnection());
+		com.FileManagerX.Globals.Datas.Server.add(this.getSourConnection().getServerConnection());
+		com.FileManagerX.Globals.Datas.Client.add(this.getSourConnection().getClientConnection());
+		com.FileManagerX.Interfaces.IClientConnection con =
+				this.getSourConnection().getClientConnection();
+		
+		if(com.FileManagerX.BasicEnums.MachineType.SERVER.equals(con.getServerMachineInfo().getType())) {
+			if(con != com.FileManagerX.Globals.Datas.ServerConnection) {
+				com.FileManagerX.Globals.Datas.OtherServers.add(con);
+			}
+		}
+		
 		return true;
 	}
 	

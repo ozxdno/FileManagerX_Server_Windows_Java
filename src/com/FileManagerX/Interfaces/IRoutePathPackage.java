@@ -4,46 +4,63 @@ public interface IRoutePathPackage extends IPublic {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public boolean setStartTime(long startTime);
-	public boolean setStartTime();
-	public boolean setArriveTime(long arriveTime);
-	public boolean setArriveTime();
-	public boolean setBackTime(long backTime);
-	public boolean setBackTime();
+	public boolean setStartTime1(long startTime);
+	public boolean setStartTime1();
+	public boolean setEndTime1(long backTime);
+	public boolean setEndTime1();
+	public boolean setStartTime2(long startTime);
+	public boolean setStartTime2();
+	public boolean setEndTime2(long backTime);
+	public boolean setEndTime2();
 	
-	public boolean setDepth(long depth);
-	public boolean setMoreDepth();
-	public boolean setLessDepth();
+	public boolean setSourMountServer(long server);
+	public boolean setDestMountServer(long server);
 	
-	public boolean setSourMachine(long sour);
-	public boolean setDestMachine(long dest);
-	public boolean setDeliverMachines(java.util.List<Long> machines);
-	public boolean setDeliverMachine(long deliver);
-	public boolean setDeliverMachine(long depth, long deliver);
+	public boolean setSourMountPath(java.util.List<Long> path);
+	public boolean setDestMountPath(java.util.List<Long> path);
+	public boolean setRecommendPath(java.util.List<Long> path);
+	public boolean setActualPath(java.util.List<Long> path);
+	public boolean setVisitedPath(java.util.List<Long> path);
+	public boolean setLocalMountPath(java.util.List<Long> path);
 	
-	public boolean setThis(long sourMachine, long destMachine);
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public long getStartTime();
-	public long getArriveTime();
-	public long getBackTime();
-	
-	public long getDepth();
-	
-	public long getSourMachine();
-	public long getDestMachine();
-	public java.util.List<Long> getDeliverMachines();
-	public long getDeliverMachine();
-	public long getDeliverMachine(long depth);
+	public boolean setRecommendDepth(int depth);
+	public boolean setActualDepth(int depth);
+	public boolean setExecutePart(com.FileManagerX.BasicEnums.RppExecutePart execute);
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public void reverse();
-	public void addDeliverMachine(long machine);
-	public void backToMachine(long machine);
-	public void backToMachine();
-	public boolean passed(long machine);
+	public long getStartTime1();
+	public long getEndTime1();
+	public long getStartTime2();
+	public long getEndTime2();
+	
+	public long getSourMountServer();
+	public long getDestMountServer();
+	
+	public java.util.List<Long> getSourMountPath();
+	public java.util.List<Long> getDestMountPath();
+	public java.util.List<Long> getRecommendPath();
+	public java.util.List<Long> getActualPath();
+	public java.util.List<Long> getVisitedPath();
+	public java.util.List<Long> getLocalMountPath();
+	
+	public int getRecommendDepth();
+	public int getActualDepth();
+	public com.FileManagerX.BasicEnums.RppExecutePart getExecutePart();
+	
+	public long getRecommendMachineByDepth();
+	public long getActualMachineByDepth();
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public <T> void reverse(java.util.List<T> path);
+	public boolean visited(long machine);
+	
+	public boolean addAsNext();
+	public boolean delToBack();
+	
+	public void updateExecutePart(long dest);
+	public void refreshRecommendPath(IRoutePathPackage rpp);
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

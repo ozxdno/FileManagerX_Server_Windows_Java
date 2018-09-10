@@ -40,14 +40,6 @@ public class Operator extends BaseReply {
 		ok &= this.setOperator(operator);
 		return ok;
 	}
-	public boolean setThis(com.FileManagerX.Operator.Operator operator,
-			com.FileManagerX.Interfaces.IConnection connection) {
-		boolean ok = true;
-		ok &= this.getBasicMessagePackage().setThis(connection.getClientConnection());
-		ok &= this.setConnection(connection);
-		ok &= this.setThis(operator);
-		return ok;
-	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

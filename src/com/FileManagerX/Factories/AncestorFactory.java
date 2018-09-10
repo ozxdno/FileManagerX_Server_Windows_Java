@@ -8,8 +8,9 @@ public class AncestorFactory {
 		def.setUserIndex(1);
 		def.setMac();
 		def.setIp();
-		def.setName();
+		def.setName("FileManagerX-Ancestor");
 		def.setPort(40000);
+		def.setPath("1");
 		
 		def.setType(com.FileManagerX.Globals.Configurations.MachineType);
 		def.setState(com.FileManagerX.BasicEnums.MachineState.RUNNING);

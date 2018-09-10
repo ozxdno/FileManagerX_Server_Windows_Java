@@ -46,8 +46,8 @@ public class CommunicatorFactory {
 		
 		com.FileManagerX.Globals.Datas.ServerConnection.setSocket(com.FileManagerX.BasicEnums.SocketType.IPV4_TCP);
 		com.FileManagerX.Globals.Datas.ServerConnection.startProcess();
-		ok = com.FileManagerX.Globals.Datas.ServerConnection.isRunning();
-		if(!ok) { return false; }
+		ok = !com.FileManagerX.Globals.Datas.ServerConnection.isFinished();
+		if(!ok) { com.FileManagerX.Globals.Datas.ServerConnection.exitProcess(); return false; }
 		
 		com.FileManagerX.Interfaces.IServerConnection scon = createServerConnection();
 		scon.setServerMachineInfo(com.FileManagerX.Globals.Datas.ThisMachine);
@@ -58,12 +58,14 @@ public class CommunicatorFactory {
 		
 		scon.setSocket(com.FileManagerX.Globals.Datas.ServerConnection.getSocket());
 		scon.startProcess();
-		ok = scon.isRunning();
+		ok = !scon.isFinished();
 		if(!ok) { com.FileManagerX.Globals.Datas.ServerConnection.exitProcess(); return false; }
 		
 		com.FileManagerX.Globals.Datas.ServerConnection.setBrother(scon);
 		scon.setBrother(com.FileManagerX.Globals.Datas.ServerConnection);
 		
+		com.FileManagerX.Globals.Datas.ServerConnection.setIndex();
+		scon.setIndex(com.FileManagerX.Globals.Datas.ServerConnection.getIndex());
 		return ok;
 	}
 	public final static com.FileManagerX.Interfaces.IClientConnection createRunningClientConnection(
@@ -76,21 +78,20 @@ public class CommunicatorFactory {
 		ccon.setClientMachineInfo(client);
 		ccon.setSocket(type);
 		ccon.startProcess();
-		boolean ok = ccon.isRunning();
+		if(ccon.isFinished()) { ccon.exitProcess(); return null; }
 		
-		if(ok) {
-			com.FileManagerX.Interfaces.IServerConnection scon = createServerConnection();
-			scon.setServerMachineInfo(client);
-			scon.setClientMachineInfo(server);
-			scon.setSocket(ccon.getSocket());
-			scon.startProcess();
-			ok = scon.isRunning();
-			if(!ok) { ccon.exitProcess(); return null; }
-			
-			ccon.setBrother(scon);
-			scon.setBrother(ccon);
-		}
-		return ok ? ccon : null;
+		com.FileManagerX.Interfaces.IServerConnection scon = createServerConnection();
+		scon.setServerMachineInfo(client);
+		scon.setClientMachineInfo(server);
+		scon.setSocket(ccon.getSocket());
+		scon.startProcess();
+		if(scon.isFinished()) { scon.exitProcess(); return null; }
+		
+		ccon.setBrother(scon);
+		scon.setBrother(ccon);
+		ccon.setIndex();
+		scon.setIndex(ccon.getIndex());
+		return ccon;
 	}
 	
 }

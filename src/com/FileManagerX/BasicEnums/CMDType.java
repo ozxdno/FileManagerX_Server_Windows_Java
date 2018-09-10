@@ -19,11 +19,14 @@ public enum CMDType {
 	Thumbnail,
 	PrintScreen,
 	
+	RegisterMachine,
+	RegisterUser,
+	
 	LoginConnection,
+	LoginServer,
 	LoginUser,
 	LoginMachine,
 	LoginType,
-	LoginIndex,
 	
 	QueryConfigurations,
 	QueryUnit,
@@ -65,17 +68,24 @@ public enum CMDType {
 			return new com.FileManagerX.Commands.Output();
 		}
 		
+		if(this.equals(CMDType.RegisterMachine)) {
+			return new com.FileManagerX.Commands.RegisterMachine();
+		}
+		if(this.equals(CMDType.RegisterUser)) {
+			return new com.FileManagerX.Commands.RegisterUser();
+		}
+		
 		if(this.equals(CMDType.LoginConnection)) {
 			return new com.FileManagerX.Commands.LoginConnection();
+		}
+		if(this.equals(CMDType.LoginServer)) {
+			return new com.FileManagerX.Commands.LoginServer();
 		}
 		if(this.equals(CMDType.LoginUser)) {
 			return new com.FileManagerX.Commands.LoginUser();
 		}
 		if(this.equals(CMDType.LoginMachine)) {
 			return new com.FileManagerX.Commands.LoginMachine();
-		}
-		if(this.equals(CMDType.LoginIndex)) {
-			return new com.FileManagerX.Commands.LoginIndex();
 		}
 		if(this.equals(CMDType.LoginType)) {
 			return new com.FileManagerX.Commands.LoginType();
@@ -138,17 +148,24 @@ public enum CMDType {
 			return new com.FileManagerX.Replies.Output();
 		}
 		
+		if(this.equals(CMDType.RegisterMachine)) {
+			return new com.FileManagerX.Replies.RegisterMachine();
+		}
+		if(this.equals(CMDType.RegisterUser)) {
+			return new com.FileManagerX.Replies.RegisterUser();
+		}
+		
 		if(this.equals(CMDType.LoginConnection)) {
 			return new com.FileManagerX.Replies.LoginConnection();
+		}
+		if(this.equals(CMDType.LoginServer)) {
+			return new com.FileManagerX.Replies.LoginServer();
 		}
 		if(this.equals(CMDType.LoginUser)) {
 			return new com.FileManagerX.Replies.LoginUser();
 		}
 		if(this.equals(CMDType.LoginMachine)) {
 			return new com.FileManagerX.Replies.LoginMachine();
-		}
-		if(this.equals(CMDType.LoginIndex)) {
-			return new com.FileManagerX.Replies.LoginIndex();
 		}
 		if(this.equals(CMDType.LoginType)) {
 			return new com.FileManagerX.Replies.LoginType();

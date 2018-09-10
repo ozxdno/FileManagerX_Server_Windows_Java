@@ -151,6 +151,69 @@ public class Reflect {
 			return null;
 		}
 	}
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public final static Object clone(Object target) {
+		if(target == null) { return null; }
+		
+		try {
+			java.util.List<Object> sours = new java.util.ArrayList<>();
+			java.util.List<Object> dests = new java.util.ArrayList<>();
+			java.util.List<Class<?>> clazz = new java.util.ArrayList<>();
+			
+			Object create = target.getClass().newInstance();
+			
+			sours.add(target);
+			dests.add(create);
+			clazz.add(target.getClass());
+			
+			while(sours.size() > 0) {
+				Class<?> c = clazz.remove(0);
+				Object s = sours.remove(0);
+				Object d = dests.remove(0);
+				if(!c.getName().contains("com.FileManagerX")) { continue; }
+				
+				java.lang.reflect.Field[] fs = c.getDeclaredFields();
+				for(int i=0; i<fs.length; i++) {
+					com.FileManagerX.BasicEnums.DataType t = getFieldValueType(fs[i], s);
+					if(com.FileManagerX.BasicEnums.DataType.STATIC.equals(t)) {
+						continue;
+					}
+					if(!com.FileManagerX.BasicEnums.DataType.OTHERS.equals(t)) {
+						fs[i].set(d, fs[i].get(s));
+						continue;
+					}
+					Object nexts = fs[i].get(s);
+					if(nexts == null) {
+						fs[i].set(d, nexts);
+						continue;
+					}
+					
+					Class<?> nextc = nexts.getClass();
+					if(!nextc.getName().contains("com.FileManagerX")) {
+						fs[i].set(d, nexts);
+						continue;
+					}
+					
+					Object nextd = nexts.getClass().newInstance();
+					fs[i].set(d, nextd);
+					
+					sours.add(nexts);
+					dests.add(nextd);
+					clazz.add(nextc);
+				}
+				
+				c = c.getSuperclass();
+				if(c != null) { sours.add(s); dests.add(d); clazz.add(c); }
+			}
+			
+			return create;
+		} catch(Exception e) {
+			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
+			return null;
+		}
+	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

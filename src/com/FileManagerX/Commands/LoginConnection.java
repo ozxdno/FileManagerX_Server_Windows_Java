@@ -72,8 +72,17 @@ public class LoginConnection extends BaseCommand {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean executeInLocal() {
-		Datas.Server.add(this.getConnection().getServerConnection());
-		Datas.Client.add(this.getConnection().getClientConnection());
+		Datas.Server.add(this.getSourConnection().getServerConnection());
+		Datas.Client.add(this.getSourConnection().getClientConnection());
+		com.FileManagerX.Interfaces.IClientConnection con =
+				this.getSourConnection().getClientConnection();
+		
+		if(com.FileManagerX.BasicEnums.MachineType.SERVER.equals(con.getServerMachineInfo().getType())) {
+			if(con != com.FileManagerX.Globals.Datas.ServerConnection) {
+				com.FileManagerX.Globals.Datas.OtherServers.add(con);
+			}
+		}
+		
 		return true;
 	}
 	

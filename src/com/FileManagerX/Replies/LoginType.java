@@ -40,13 +40,6 @@ public class LoginType extends BaseReply {
 		ok &= this.setType(type);
 		return ok;
 	}
-	public boolean setThis(ConnectionType type, com.FileManagerX.Interfaces.IConnection connection) {
-		boolean ok = true;
-		ok &= this.getBasicMessagePackage().setThis(connection.getClientConnection());
-		ok &= this.setConnection(connection);
-		ok &= this.setThis(type);
-		return ok;
-	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -99,13 +92,10 @@ public class LoginType extends BaseReply {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public boolean executeInLocal() {
+		if(!this.isOK()) { return false; }
 		
-		if(!this.isOK()) {
-			return false;
-		}
-		
-		this.getConnection().setType(type);
-		this.getConnection().getBrother().setType(type);
+		this.getSourConnection().getServerConnection().setType(type.exchange());
+		this.getSourConnection().getClientConnection().setType(type);
 		return true;
 	}
 	

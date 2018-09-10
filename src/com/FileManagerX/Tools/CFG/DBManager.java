@@ -48,23 +48,48 @@ public class DBManager {
 			return false;
 		}
 		
-		com.FileManagerX.Globals.Datas.DBManager.update(
-				com.FileManagerX.Globals.Datas.ThisMachine,
-				com.FileManagerX.DataBase.Unit.Machine
-			);
-		com.FileManagerX.Globals.Datas.DBManager.update(
-				depot,
-				com.FileManagerX.DataBase.Unit.Depot
-			);
-		com.FileManagerX.Globals.Datas.DBManager.update(
-				database,
-				com.FileManagerX.DataBase.Unit.DataBase
-			);
+		
+		
+		if(com.FileManagerX.Globals.Configurations.IsServer) { updateInServer(depot, database); }
+		else { updateInOthers(depot, database); }
 		
 		database.setDepotInfo(depot);
 		depot.setDBInfo(database);
 		database.setDepotIndex();
 		depot.setDBIndex();
+		return true;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	private final static boolean updateInServer(com.FileManagerX.BasicModels.DepotInfo depot,
+			com.FileManagerX.BasicModels.DataBaseInfo database) {
+		boolean ok = true;
+		if(com.FileManagerX.Globals.Configurations.IsAncestor) {
+			ok &= com.FileManagerX.Globals.Datas.DBManager.update(
+					com.FileManagerX.Globals.Datas.ThisUser,
+					com.FileManagerX.DataBase.Unit.User
+				);
+			ok &= com.FileManagerX.Globals.Datas.DBManager.update(
+					com.FileManagerX.Globals.Datas.ThisMachine,
+					com.FileManagerX.DataBase.Unit.Machine
+				);
+			com.FileManagerX.Globals.Datas.DBManager.update(
+					depot,
+					com.FileManagerX.DataBase.Unit.Depot
+				);
+			com.FileManagerX.Globals.Datas.DBManager.update(
+					database,
+					com.FileManagerX.DataBase.Unit.DataBase
+				);
+		}
+		
+		return ok;
+	}
+	private final static boolean updateInOthers(com.FileManagerX.BasicModels.DepotInfo depot,
+			com.FileManagerX.BasicModels.DataBaseInfo database) {
+		
+		
 		return true;
 	}
 	
@@ -85,6 +110,8 @@ public class DBManager {
 		cfg.getContent().add(line);
 		line = "";
 		cfg.getContent().add(line);
+		
+		if(com.FileManagerX.Globals.Datas.DBManager.getDBInfo() == null) { return true; }
 		
 		line = "LocalDataBaseInfos = " + com.FileManagerX.Globals.Datas.DBManager.getDBInfo().getType().toString() +
 				"|" +

@@ -16,31 +16,6 @@ public class Folders extends BasicHashMap<com.FileManagerX.BasicModels.Folder, L
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public java.util.Comparator<com.FileManagerX.BasicModels.Folder> getACmpByIndex() {
-		return new java.util.Comparator<com.FileManagerX.BasicModels.Folder>() {
-			public int compare(com.FileManagerX.BasicModels.Folder e1, com.FileManagerX.BasicModels.Folder e2) {
-				if(e1.getIndex() > e2.getIndex()) {
-					return 1;
-				} else {
-					return -1;
-				}
-			}
-		};
-	}
-	public java.util.Comparator<com.FileManagerX.BasicModels.Folder> getDCmpByIndex() {
-		return new java.util.Comparator<com.FileManagerX.BasicModels.Folder>() {
-			public int compare(com.FileManagerX.BasicModels.Folder e1, com.FileManagerX.BasicModels.Folder e2) {
-				if(e1.getIndex() > e2.getIndex()) {
-					return -1;
-				} else {
-					return 1;
-				}
-			}
-		};
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 	public com.FileManagerX.BasicModels.Folder searchByIndex(long index) {
 		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.BasicModels.Folder> it =
 				this.getIterator();

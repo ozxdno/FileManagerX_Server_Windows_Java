@@ -52,14 +52,14 @@ public final class Datas {
 	 * 
 	 */
 	public final static com.FileManagerX.BasicModels.MachineInfo ServerMachine = 
-			com.FileManagerX.Factories.ServerFactory.createServerMachine();
+			com.FileManagerX.Factories.AncestorFactory.createAncestorMachine();
 	
 	/**
 	 * 服务器的用户信息
 	 * 
 	 */
 	public final static com.FileManagerX.BasicModels.User ServerUser = 
-			com.FileManagerX.Factories.ServerFactory.createServerUser();
+			com.FileManagerX.Factories.AncestorFactory.createAncestorUser();
 	
 	/**
 	 * 我的设备
@@ -154,6 +154,19 @@ public final class Datas {
 	 */
 	public final static com.FileManagerX.Communicator.ClientConnections Client = 
 			new com.FileManagerX.Communicator.ClientConnections();
+	
+	/**
+	 * 消息发送缓存器
+	 * 
+	 */
+	public final static com.FileManagerX.Communicator.Sender Sender = 
+			new com.FileManagerX.Communicator.Sender();
+	/**
+	 * 消息接收缓存器
+	 * 
+	 */
+	public final static com.FileManagerX.Communicator.Receiver Receiver =
+			new com.FileManagerX.Communicator.Receiver();
 	
 	/**
 	 * 所有操作的列表

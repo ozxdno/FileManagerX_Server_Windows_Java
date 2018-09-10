@@ -6,4 +6,8 @@ public class FormFactory {
 		return new com.FileManagerX.Forms.Test();
 	}
 	
+	public final static com.FileManagerX.Forms.CMDC createCMDC() {
+		return new com.FileManagerX.Forms.CMDC();
+	}
+	
 }

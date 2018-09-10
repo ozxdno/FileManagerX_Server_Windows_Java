@@ -126,14 +126,9 @@ public class Output extends BaseCommand {
 			return false;
 		}
 		
-		if(this.isArriveTargetMachine()) {
-			boolean ok = this.executeInLocal();
-			this.getReply().send();
-			return ok;
-		}
-		else {
-			return this.deliver();
-		}
+		boolean ok = this.executeInLocal();
+		this.getReply().send();
+		return ok;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

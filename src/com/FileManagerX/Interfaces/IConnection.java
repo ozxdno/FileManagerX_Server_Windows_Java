@@ -38,16 +38,12 @@ public interface IConnection extends IProcess {
 	public com.FileManagerX.Interfaces.IConnection getBrother();
 	public com.FileManagerX.Interfaces.IServerConnection getServerConnection();
 	public com.FileManagerX.Interfaces.IClientConnection getClientConnection();
-	
+
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	public boolean send(com.FileManagerX.Interfaces.ITransport t);
 	public String login();
 	
-	public boolean send(com.FileManagerX.Interfaces.ITransport send);
-	public boolean store(com.FileManagerX.Interfaces.IReply reply);
-	public com.FileManagerX.Interfaces.IReply receive(long index, long wait);
-	public com.FileManagerX.Interfaces.IReply search(long index);
-	public com.FileManagerX.Interfaces.IReply fetch(long index);
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

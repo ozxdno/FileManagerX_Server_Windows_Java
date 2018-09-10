@@ -21,23 +21,14 @@ public class ThisUser {
 	}
 	
 	public final static boolean ServerTU() {
-		com.FileManagerX.Globals.Datas.ThisUser.copyReference(
-				com.FileManagerX.Factories.ServerFactory.createServerUser()
-			);
 		return true;
 	}
 	
 	public final static boolean DefaultTU() {
-		com.FileManagerX.Globals.Datas.ThisUser.copyReference(
-				com.FileManagerX.Factories.DefaultFactory.createDefaultUser()
-			);
 		return true;
 	}
 	
 	public final static boolean TemporaryTU() {
-		com.FileManagerX.Globals.Datas.ThisUser.copyReference(
-				com.FileManagerX.Factories.DefaultFactory.createDefaultUser()
-			);
 		return true;
 	}
 	

@@ -170,13 +170,6 @@ public class QueryConfigurations extends BaseReply {
 		ok &= this.setNetType(Configurations.NetType);
 		return ok;
 	}
-	public boolean setThis(com.FileManagerX.Interfaces.IConnection connection) {
-		boolean ok = true;
-		ok &= this.getBasicMessagePackage().setThis(connection.getClientConnection());
-		ok &= this.setConnection(connection);
-		ok &= this.setThis();
-		return ok;
-	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -1,11 +1,10 @@
 package com.FileManagerX.MyNet;
 
-public class Net extends com.FileManagerX.BasicCollections.BasicHashMap<Group, String> {
+public class Net extends com.FileManagerX.Safe.BasicCollections.BasicLRUMap<Group, String> {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	private String name;
-	private int limit;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -19,21 +18,11 @@ public class Net extends com.FileManagerX.BasicCollections.BasicHashMap<Group, S
 		this.name = name;
 		return true;
 	}
-	public boolean setLimit(int limit) {
-		if(limit < 0) {
-			return false;
-		}
-		this.limit = limit;
-		return true;
-	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public String getName() {
 		return this.name;
-	}
-	public int getLimit() {
-		return this.limit;
 	}
 
 	public String getKey(Group item) {
@@ -53,6 +42,7 @@ public class Net extends com.FileManagerX.BasicCollections.BasicHashMap<Group, S
 	}
 	private void initThis() {
 		this.name = "Default Net";
+		this.setLimit(100);
 		
 		com.FileManagerX.Factories.MyNetFactory.createServerGroup(this);
 		com.FileManagerX.Factories.MyNetFactory.createMyGroup(this);
@@ -76,7 +66,7 @@ public class Net extends com.FileManagerX.BasicCollections.BasicHashMap<Group, S
 		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config();
 		c.setField("Net-" + this.getClass().getSimpleName());
 		c.addToBottom(this.name);
-		c.addToBottom(this.limit);
+		c.addToBottom(this.getLimit());
 		return c;
 	}
 	public String output() {
@@ -91,7 +81,7 @@ public class Net extends com.FileManagerX.BasicCollections.BasicHashMap<Group, S
 		if(!c.getIsOK()) { return c; }
 		this.name = c.fetchFirstString();
 		if(!c.getIsOK()) { return c; }
-		this.limit = c.fetchFirstInt();
+		this.setLimit(c.fetchFirstInt());
 		if(!c.getIsOK()) { return c; }
 		
 		return c;
@@ -102,7 +92,7 @@ public class Net extends com.FileManagerX.BasicCollections.BasicHashMap<Group, S
 			super.copyReference(o);
 			Net n = (Net)o;
 			this.name = n.name;
-			this.limit = n.limit;
+			this.setLimit(n.getLimit());
 			return;
 		}
 	}
@@ -112,7 +102,7 @@ public class Net extends com.FileManagerX.BasicCollections.BasicHashMap<Group, S
 			super.copyValue(o);
 			Net n = (Net)o;
 			this.name = new String(n.name);
-			this.limit = n.limit;
+			this.setLimit(n.getLimit());
 			return;
 		}
 	}

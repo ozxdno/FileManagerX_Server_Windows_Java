@@ -21,13 +21,6 @@ public class SynchroCFG extends BaseReply {
 		ok &= this.setContent(content);
 		return ok;
 	}
-	public boolean setThis(String content, com.FileManagerX.Interfaces.IConnection connection) {
-		boolean ok = true;
-		ok &= this.getBasicMessagePackage().setThis(connection.getClientConnection());
-		ok &= this.setConnection(connection);
-		ok &= this.setThis(content);
-		return ok;
-	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	

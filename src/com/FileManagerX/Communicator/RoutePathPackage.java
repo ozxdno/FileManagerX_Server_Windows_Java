@@ -4,200 +4,199 @@ public class RoutePathPackage implements com.FileManagerX.Interfaces.IRoutePathP
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	private long startTime;
-	private long arriveTime;
-	private long backTime;
-	
-	private long sourMachine;
-	private long destMachine;
-	
-	private long depth;
-	private java.util.List<Long> deliverMachines;
-	private java.util.ArrayList<Long> checkedMachines;
-	
+	private static java.util.List<Long> LocalMountPath = new java.util.ArrayList<>();
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public boolean setStartTime(long startTime) {
+	private long startTime1;
+	private long endTime1;
+	private long startTime2;
+	private long endTime2;
+	
+	private long sourMountServer;
+	private long destMountServer;
+	
+	private java.util.List<Long> sourMountPath;
+	private java.util.List<Long> destMountPath;
+	private java.util.List<Long> recommendPath;
+	private java.util.List<Long> actualPath;
+	private java.util.List<Long> visitedPath;
+	
+	private int recommendDepth;
+	private int actualDepth;
+	
+	private com.FileManagerX.BasicEnums.RppExecutePart execute;
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public boolean setStartTime1(long startTime) {
 		if(startTime < 0) {
 			startTime = 0;
 		}
-		this.startTime = startTime;
+		this.startTime1 = startTime;
 		return true;
 	}
-	public boolean setStartTime() {
-		this.startTime = com.FileManagerX.Tools.Time.getTicks();
+	public boolean setStartTime1() {
+		this.startTime1 = com.FileManagerX.Tools.Time.getTicks();
 		return true;
 	}
-	public boolean setArriveTime(long arriveTime) {
-		if(arriveTime < 0) {
-			arriveTime = 0;
+	public boolean setEndTime1(long endTime) {
+		if(endTime < 0) {
+			endTime = 0;
 		}
-		this.arriveTime = arriveTime;
+		this.endTime1 = endTime;
 		return true;
 	}
-	public boolean setArriveTime() {
-		this.arriveTime = com.FileManagerX.Tools.Time.getTicks();
+	public boolean setEndTime1() {
+		this.endTime1 = com.FileManagerX.Tools.Time.getTicks();
 		return true;
 	}
-	public boolean setBackTime(long backTime) {
-		if(backTime < 0) {
-			backTime = 0;
+	public boolean setStartTime2(long startTime) {
+		if(startTime < 0) {
+			startTime = 0;
 		}
-		this.backTime = backTime;
+		this.startTime2 = startTime;
 		return true;
 	}
-	public boolean setBackTime() {
-		this.backTime = com.FileManagerX.Tools.Time.getTicks();
+	public boolean setStartTime2() {
+		this.startTime2 = com.FileManagerX.Tools.Time.getTicks();
+		return true;
+	}
+	public boolean setEndTime2(long endTime) {
+		if(endTime < 0) {
+			endTime = 0;
+		}
+		this.endTime2 = endTime;
+		return true;
+	}
+	public boolean setEndTime2() {
+		this.endTime2 = com.FileManagerX.Tools.Time.getTicks();
 		return true;
 	}
 	
-	public boolean setDepth(long depth) {
-		if(depth < 0) {
-			depth = 0;
-		}
-		this.depth = depth;
+	public boolean setSourMountServer(long server) {
+		this.sourMountServer = server;
 		return true;
 	}
-	public boolean setMoreDepth() {
-		this.depth++;
-		return true;
-	}
-	public boolean setLessDepth() {
-		this.depth--;
+	public boolean setDestMountServer(long server) {
+		this.destMountServer = server;
 		return true;
 	}
 	
-	public boolean setSourMachine(long sour) {
-		this.sourMachine = sour;
+	public boolean setSourMountPath(java.util.List<Long> path) {
+		if(path == null) { return false; }
+		this.sourMountPath = path;
 		return true;
 	}
-	public boolean setDestMachine(long dest) {
-		this.sourMachine = dest;
+	public boolean setDestMountPath(java.util.List<Long> path) {
+		if(path == null) { return false; }
+		this.destMountPath = path;
 		return true;
 	}
-	public boolean setDeliverMachines(java.util.List<Long> machines) {
-		if(machines == null) {
-			return false;
-		}
-		this.deliverMachines = machines;
+	public boolean setRecommendPath(java.util.List<Long> path) {
+		if(path == null) { return false; }
+		this.recommendPath = path;
 		return true;
 	}
-	public boolean setDeliverMachine(long deliver) {
-		if(depth < 0) {
-			return false;
-		}
-		if(depth > this.deliverMachines.size() + 1) {
-			return false;
-		}
-		
-		if(depth == 0) {
-			this.sourMachine = deliver;
-		}
-		if(depth == this.deliverMachines.size() + 1) {
-			this.destMachine = deliver;
-		}
-		
-		this.deliverMachines.set((int)depth-1, deliver);
+	public boolean setActualPath(java.util.List<Long> path) {
+		if(path == null) { return false; }
+		this.actualPath = path;
 		return true;
 	}
-	public boolean setDeliverMachine(long depth, long deliver) {
-		if(depth < 0) {
-			return false;
-		}
-		if(depth > this.deliverMachines.size() + 1) {
-			return false;
-		}
-		
-		if(depth == 0) {
-			this.sourMachine = deliver;
-		}
-		if(depth == this.deliverMachines.size() + 1) {
-			this.destMachine = deliver;
-		}
-		
-		this.deliverMachines.set((int)depth-1, deliver);
+	public boolean setVisitedPath(java.util.List<Long> path) {
+		if(path == null) { return false; }
+		this.visitedPath = path;
 		return true;
 	}
-	public boolean setCheckedMachines(java.util.ArrayList<Long> checkedMachines) {
-		if(checkedMachines == null) {
-			return false;
-		}
-		this.checkedMachines = checkedMachines;
+	public boolean setLocalMountPath(java.util.List<Long> path) {
+		if(path == null) { return false; }
+		RoutePathPackage.LocalMountPath = path;
 		return true;
 	}
 	
-	public boolean setThis(long sourMachine, long destMachine) {
-		boolean ok = true;
-		ok &= this.setSourMachine(sourMachine);
-		ok &= this.setDestMachine(destMachine);
-		this.deliverMachines.clear();
-		if(this.destMachine != com.FileManagerX.Globals.Configurations.Server_MachineIndex) {
-			this.addDeliverMachine(com.FileManagerX.Globals.Configurations.Server_MachineIndex);
-		}
-		return ok;
+	public boolean setRecommendDepth(int depth) {
+		this.recommendDepth = depth;
+		return true;
+	}
+	public boolean setActualDepth(int depth) {
+		this.actualDepth = depth;
+		return true;
+	}
+	public boolean setExecutePart(com.FileManagerX.BasicEnums.RppExecutePart execute) {
+		this.execute = execute;
+		return true;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public long getStartTime() {
-		return this.startTime;
+	public long getStartTime1() {
+		return this.startTime1;
 	}
-	public long getArriveTime() {
-		return this.arriveTime;
+	public long getEndTime1() {
+		return this.endTime1;
 	}
-	public long getBackTime() {
-		return this.backTime;
+	public long getStartTime2() {
+		return this.startTime2;
+	}
+	public long getEndTime2() {
+		return this.endTime2;
 	}
 	
-	public long getDepth() {
-		return this.depth;
+	public long getSourMountServer() {
+		return this.sourMountServer;
+	}
+	public long getDestMountServer() {
+		return this.destMountServer;
 	}
 	
-	public long getSourMachine() {
-		return this.sourMachine;
+	public java.util.List<Long> getSourMountPath() {
+		return this.sourMountPath;
 	}
-	public long getDestMachine() {
-		return this.destMachine;
+	public java.util.List<Long> getDestMountPath() {
+		return this.destMountPath;
 	}
-	public java.util.List<Long> getDeliverMachines() {
-		return this.deliverMachines;
+	public java.util.List<Long> getRecommendPath() {
+		return this.recommendPath;
 	}
-	public long getDeliverMachine() {
-		if(this.deliverMachines.size() == 0) {
-			return 0;
-		}
-		if(this.depth < 0) {
-			return 0;
-		}
-		if(this.depth > this.deliverMachines.size() + 1) {
-			return 0;
-		}
-		if(this.depth == 0) {
-			return this.sourMachine;
-		}
-		if(this.depth == this.deliverMachines.size() + 1) {
-			return this.destMachine;
-		}
-		return this.deliverMachines.get((int) (this.depth-1));
+	public java.util.List<Long> getActualPath() {
+		return this.actualPath;
 	}
-	public long getDeliverMachine(long depth) {
-		if(this.deliverMachines.size() == 0) {
-			return 0;
+	public java.util.List<Long> getVisitedPath() {
+		return this.visitedPath;
+	}
+	public java.util.List<Long> getLocalMountPath() {
+		return RoutePathPackage.LocalMountPath;
+	}
+	
+	public int getRecommendDepth() {
+		return this.recommendDepth;
+	}
+	public int getActualDepth() {
+		return this.actualDepth;
+	}
+	public com.FileManagerX.BasicEnums.RppExecutePart getExecutePart() {
+		return this.execute;
+	}
+	
+	public long getRecommendMachineByDepth() {
+		if(com.FileManagerX.BasicEnums.RppExecutePart.S.equals(this.execute)) {
+			boolean inS = 0 <= this.recommendDepth && this.recommendDepth < this.sourMountPath.size();
+			if(inS) { return this.sourMountPath.get(this.recommendDepth); }
 		}
-		if(depth < 0) {
-			return 0;
+		if(com.FileManagerX.BasicEnums.RppExecutePart.R.equals(this.execute)) {
+			boolean inR = 0 <= this.recommendDepth && this.recommendDepth < this.recommendPath.size();
+			if(inR) { return this.recommendPath.get(this.recommendDepth); }
 		}
-		if(depth > this.deliverMachines.size() + 1) {
-			return 0;
+		if(com.FileManagerX.BasicEnums.RppExecutePart.D.equals(this.execute)) {
+			boolean inD = 0 <= this.recommendDepth && this.recommendDepth < this.destMountPath.size();
+			if(inD) { return this.destMountPath.get(this.recommendDepth); }
 		}
-		if(depth == 0) {
-			return this.sourMachine;
-		}
-		if(depth == this.deliverMachines.size() + 1) {
-			return this.destMachine;
-		}
-		return this.deliverMachines.get((int) (depth-1));
+		
+		return -1;
+	}
+	public long getActualMachineByDepth() {
+		boolean inA = 0 <= this.actualDepth && this.actualDepth < this.actualPath.size();
+		return inA ? this.actualPath.get(this.actualDepth) : -1;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -206,15 +205,23 @@ public class RoutePathPackage implements com.FileManagerX.Interfaces.IRoutePathP
 		initThis();
 	}
 	private void initThis() {
-		this.startTime = com.FileManagerX.Tools.Time.getTicks();
-		this.arriveTime = 0;
-		this.backTime = 0;
+		this.startTime1 = 0;
+		this.endTime1 = 0;
+		this.startTime2 = 0;
+		this.endTime2 = 0;
 		
-		this.depth = 1;
+		this.sourMountServer = -1;
+		this.destMountServer = -1;
 		
-		this.sourMachine = com.FileManagerX.Globals.Configurations.This_MachineIndex;
-		this.destMachine = com.FileManagerX.Globals.Configurations.Server_MachineIndex;
-		this.deliverMachines = new java.util.ArrayList<>();
+		this.sourMountPath = new java.util.ArrayList<>();
+		this.destMountPath = new java.util.ArrayList<>();
+		this.recommendPath = new java.util.ArrayList<>();
+		this.actualPath = new java.util.ArrayList<>();
+		this.visitedPath = new java.util.ArrayList<>();
+		
+		this.recommendDepth = -1;
+		this.actualDepth = -1;
+		this.execute = com.FileManagerX.BasicEnums.RppExecutePart.B;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -223,28 +230,57 @@ public class RoutePathPackage implements com.FileManagerX.Interfaces.IRoutePathP
 		initThis();
 	}
 	public String toString() {
-		long route1 = this.arriveTime - this.startTime;
-		long route2 = this.backTime - this.startTime;
+		long go = this.endTime1 - this.startTime1;
+		long back = this.endTime2 - this.startTime2;
+		long execute = this.startTime2 - this.endTime1;
+		if(go < 0) { go = 0; }
+		if(back < 0) { back = 0; }
+		if(execute < 0) { execute = 0; }
 		
-		String s = "[TimeSpan: " + route1 + "/" + route2 + "] " + this.sourMachine + "->";
-		for(int i=0; i<this.deliverMachines.size(); i++) {
-			s += this.deliverMachines.get(i) + "->";
-		}
-		s += this.destMachine;
+		String s = "[go]: " + go + " [back]: " + back + " [execute]: " + execute;
 		return s;
 	}
 	public com.FileManagerX.BasicModels.Config toConfig() {
 		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config();
 		c.setField(this.getClass().getSimpleName());
-		c.addToBottom(this.startTime);
-		c.addToBottom(this.arriveTime);
-		c.addToBottom(this.backTime);
-		c.addToBottom(this.depth);
-		c.addToBottom(this.sourMachine);
-		c.addToBottom(this.destMachine);
-		c.addToBottom(com.FileManagerX.Tools.StringUtil.link(
-				com.FileManagerX.Tools.List2Array.toLongArray(deliverMachines), " ")
+		c.addToBottom(this.startTime1);
+		c.addToBottom(this.endTime1);
+		c.addToBottom(this.startTime2);
+		c.addToBottom(this.endTime2);
+		
+		c.addToBottom(this.sourMountServer);
+		c.addToBottom(this.destMountServer);
+		
+		c.addToBottom(this.recommendDepth);
+		c.addToBottom(this.actualDepth);
+		c.addToBottom(this.execute.toString());
+		
+		String sp = com.FileManagerX.Tools.StringUtil.link(
+				com.FileManagerX.Tools.List2Array.toLongArray(this.sourMountPath),
+				" "
 			);
+		String dp = com.FileManagerX.Tools.StringUtil.link(
+				com.FileManagerX.Tools.List2Array.toLongArray(this.destMountPath),
+				" "
+			);
+		String rp = com.FileManagerX.Tools.StringUtil.link(
+				com.FileManagerX.Tools.List2Array.toLongArray(this.recommendPath),
+				" "
+			);
+		String ap = com.FileManagerX.Tools.StringUtil.link(
+				com.FileManagerX.Tools.List2Array.toLongArray(this.actualPath),
+				" "
+			);
+		String vp = com.FileManagerX.Tools.StringUtil.link(
+				com.FileManagerX.Tools.List2Array.toLongArray(this.visitedPath),
+				" "
+			);
+		
+		c.addToBottom(sp);
+		c.addToBottom(dp);
+		c.addToBottom(rp);
+		c.addToBottom(ap);
+		c.addToBottom(vp);
 		return c;
 	}
 	public String output() {
@@ -256,36 +292,64 @@ public class RoutePathPackage implements com.FileManagerX.Interfaces.IRoutePathP
 	public com.FileManagerX.BasicModels.Config input(com.FileManagerX.BasicModels.Config c) {
 		if(c == null) { return null; }
 		
-		if(!c.getIsOK()) { return c; }
-		this.startTime = c.fetchFirstLong();
-		if(!c.getIsOK()) { return c; }
-		this.arriveTime = c.fetchFirstLong();
-		if(!c.getIsOK()) { return c; }
-		this.backTime = c.fetchFirstLong();
-		if(!c.getIsOK()) { return c; }
-		this.depth = c.fetchFirstLong();
-		if(!c.getIsOK()) { return c; }
-		this.sourMachine = c.fetchFirstLong();
-		if(!c.getIsOK()) { return c; }
-		this.destMachine = c.fetchFirstLong();
-		if(!c.getIsOK()) { return c; }
-		this.deliverMachines = com.FileManagerX.Tools.StringUtil.split2long(c.fetchFirstString(), " ");
-		if(!c.getIsOK()) { return c; }
-		
-		return c;
+		try {
+			if(!c.getIsOK()) { return c; }
+			this.startTime1 = c.fetchFirstLong();
+			if(!c.getIsOK()) { return c; }
+			this.endTime1 = c.fetchFirstLong();
+			if(!c.getIsOK()) { return c; }
+			this.startTime2 = c.fetchFirstLong();
+			if(!c.getIsOK()) { return c; }
+			this.endTime2 = c.fetchFirstLong();
+			if(!c.getIsOK()) { return c; }
+			this.sourMountServer = c.fetchFirstLong();
+			if(!c.getIsOK()) { return c; }
+			this.destMountServer = c.fetchFirstLong();
+			if(!c.getIsOK()) { return c; }
+			this.recommendDepth = c.fetchFirstInt();
+			if(!c.getIsOK()) { return c; }
+			this.actualDepth = c.fetchFirstInt();
+			if(!c.getIsOK()) { return c; }
+			this.execute = com.FileManagerX.BasicEnums.RppExecutePart.valueOf(c.fetchFirstString());
+			if(!c.getIsOK()) { return c; }
+			
+			this.sourMountPath = com.FileManagerX.Tools.StringUtil.split2long(c.fetchFirstString(), " ");
+			if(!c.getIsOK()) { return c; }
+			this.destMountPath = com.FileManagerX.Tools.StringUtil.split2long(c.fetchFirstString(), " ");
+			if(!c.getIsOK()) { return c; }
+			this.recommendPath = com.FileManagerX.Tools.StringUtil.split2long(c.fetchFirstString(), " ");
+			if(!c.getIsOK()) { return c; }
+			this.actualPath = com.FileManagerX.Tools.StringUtil.split2long(c.fetchFirstString(), " ");
+			if(!c.getIsOK()) { return c; }
+			this.visitedPath = com.FileManagerX.Tools.StringUtil.split2long(c.fetchFirstString(), " ");
+			if(!c.getIsOK()) { return c; }
+			
+			return c;
+		} catch(Exception e) {
+			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
+			c.setIsOK(false);
+			return c;
+		}
 	}
 	public void copyReference(Object o) {
 		if(o == null) { return; }
 		
 		if(o instanceof RoutePathPackage) {
 			RoutePathPackage rpp = (RoutePathPackage)o;
-			this.startTime = rpp.startTime;
-			this.arriveTime = rpp.arriveTime;
-			this.backTime = rpp.backTime;
-			this.depth = rpp.depth;
-			this.sourMachine = rpp.sourMachine;
-			this.destMachine = rpp.destMachine;
-			this.deliverMachines = rpp.deliverMachines;
+			this.startTime1 = rpp.startTime1;
+			this.endTime1 = rpp.endTime1;
+			this.startTime2 = rpp.startTime2;
+			this.endTime2 = rpp.endTime2;
+			this.sourMountServer = rpp.sourMountServer;
+			this.destMountServer = rpp.destMountServer;
+			this.recommendDepth = rpp.recommendDepth;
+			this.actualDepth = rpp.actualDepth;
+			this.sourMountPath = rpp.sourMountPath;
+			this.destMountPath = rpp.destMountPath;
+			this.recommendPath = rpp.recommendPath;
+			this.actualPath = rpp.actualPath;
+			this.visitedPath = rpp.visitedPath;
+			this.execute = rpp.execute;
 			return;
 		}
 	}
@@ -294,80 +358,141 @@ public class RoutePathPackage implements com.FileManagerX.Interfaces.IRoutePathP
 		
 		if(o instanceof RoutePathPackage) {
 			RoutePathPackage rpp = (RoutePathPackage)o;
-			this.startTime = rpp.startTime;
-			this.arriveTime = rpp.arriveTime;
-			this.backTime = rpp.backTime;
-			this.depth = rpp.depth;
-			this.sourMachine = rpp.sourMachine;
-			this.destMachine = rpp.destMachine;
-			this.deliverMachines.clear();
-			this.deliverMachines.addAll(rpp.deliverMachines);
+			this.startTime1 = rpp.startTime1;
+			this.endTime1 = rpp.endTime1;
+			this.startTime2 = rpp.startTime2;
+			this.endTime2 = rpp.endTime2;
+			this.sourMountServer = rpp.sourMountServer;
+			this.destMountServer = rpp.destMountServer;
+			this.recommendDepth = rpp.recommendDepth;
+			this.actualDepth = rpp.actualDepth;
+			this.sourMountPath.clear();
+			this.destMountPath.clear();
+			this.recommendPath.clear();
+			this.actualPath.clear();
+			this.visitedPath.clear();
+			this.sourMountPath.addAll(rpp.sourMountPath);
+			this.destMountPath.addAll(rpp.destMountPath);
+			this.recommendPath.addAll(rpp.recommendPath);
+			this.actualPath.addAll(rpp.actualPath);
+			this.visitedPath.addAll(rpp.visitedPath);
+			this.execute = rpp.execute;
 			return;
 		}
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public void reverse() {
-		this.startTime = com.FileManagerX.Tools.Time.getTicks();
-		this.arriveTime = 0;
-		this.backTime = 0;
-		this.depth = 1;
-		long temp = this.sourMachine;
-		this.sourMachine = this.destMachine;
-		this.destMachine = temp;
-		int size = this.deliverMachines.size();
-		for(int i=0; i<(size>>1); i++) {
-			temp = this.deliverMachines.get(i);
-			this.deliverMachines.set(i, this.deliverMachines.get(size-1-i));
-			this.deliverMachines.set(size-1-i, temp);
+	public <T> void reverse(java.util.List<T> path) {
+		if(path == null || path.size() < 2) { return; }
+		int size = path.size();
+		int half = path.size() >> 1;
+		for(int i=0; i<half; i++) {
+			T temp = path.get(i);
+			path.set(i, path.get(size-1-i));
+			path.set(size-1-i, temp);
 		}
 	}
-	public void addDeliverMachine(long machine) {
-		this.deliverMachines.add(machine);
-	}
-	public void backToMachine(long machine) {
-		int index = -1;
-		for(int i=0; i<this.deliverMachines.size(); i++) {
-			if(this.deliverMachines.get(i) == machine) {
-				index = i;
-				break;
-			}
-		}
-		if(index == -1) {
-			return;
-		}
-		for(int i=index+1; i<this.deliverMachines.size(); i++) {
-			this.deliverMachines.remove(index+1);
-		}
-		this.depth = this.deliverMachines.size();
-	}
-	public void backToMachine() {
-		long machine = com.FileManagerX.Globals.Configurations.This_MachineIndex;
-		
-		int index = -1;
-		for(int i=0; i<this.deliverMachines.size(); i++) {
-			if(this.deliverMachines.get(i) == machine) {
-				index = i;
-				break;
-			}
-		}
-		if(index == -1) {
-			return;
-		}
-		for(int i=index+1; i<this.deliverMachines.size(); i++) {
-			this.deliverMachines.remove(index+1);
-		}
-		this.depth = this.deliverMachines.size();
-	}
-	public boolean passed(long machine) {
-		if(machine == this.sourMachine) {
-			return true;
-		}
-		for(long m : this.deliverMachines) {
+	public boolean visited(long machine) {
+		if(this.visitedPath == null) { return false; }
+		for(Long m : this.visitedPath) {
 			if(m == machine) { return true; }
 		}
 		return false;
+	}
+	
+	public boolean addAsNext() {
+		if(com.FileManagerX.BasicEnums.RppExecutePart.S.equals(this.execute) && 
+				com.FileManagerX.Globals.Configurations.IsServer) {
+			this.sourMountServer = com.FileManagerX.Globals.Configurations.This_MachineIndex;
+			this.execute = com.FileManagerX.BasicEnums.RppExecutePart.R;
+			this.recommendDepth = -1;
+		}
+		if(com.FileManagerX.BasicEnums.RppExecutePart.R.equals(this.execute) && 
+				!com.FileManagerX.Globals.Configurations.IsServer) {
+			this.destMountServer = this.getActualMachineByDepth();
+			this.execute = com.FileManagerX.BasicEnums.RppExecutePart.D;
+			this.recommendDepth = -1;
+		}
+		if(com.FileManagerX.BasicEnums.RppExecutePart.E.equals(this.execute)) {
+			if(this.sourMountServer <= 0) {
+				this.sourMountServer = this.actualPath.size() == 0 ?
+						com.FileManagerX.Globals.Configurations.This_MachineIndex :
+						this.actualPath.get(0);
+			}
+			if(this.destMountServer <= 0) {
+				this.destMountServer = com.FileManagerX.Globals.Configurations.This_MachineIndex;
+			}
+		}
+		
+		long machine = com.FileManagerX.Globals.Configurations.This_MachineIndex;
+		long prev = this.getActualMachineByDepth();
+		if(this.actualDepth >=0 && prev == machine) { return true; }
+		
+		this.actualPath.add(machine);
+		this.actualDepth++;
+		this.visitedPath.add(machine);
+		return true;
+	}
+	public boolean delToBack() {
+		if(this.actualDepth < 0 || this.actualDepth >= this.actualPath.size()) { return false; }
+		this.actualPath.remove(this.actualDepth);
+		this.actualDepth--;
+		return true;
+	}
+	public void updateExecutePart(long dest) {
+		if(com.FileManagerX.BasicEnums.RppExecutePart.B.equals(this.execute)) {
+			this.execute = com.FileManagerX.BasicEnums.RppExecutePart.S;
+			this.recommendDepth = -1;
+		}
+		if(com.FileManagerX.BasicEnums.RppExecutePart.S.equals(this.execute)) {
+			if(com.FileManagerX.Globals.Configurations.This_MachineIndex == this.sourMountServer) {
+				this.execute = com.FileManagerX.BasicEnums.RppExecutePart.R;
+				this.recommendDepth = -1;
+			}
+		}
+		if(com.FileManagerX.BasicEnums.RppExecutePart.R.equals(this.execute)) {
+			if(!com.FileManagerX.Globals.Configurations.IsServer) {
+				this.execute = com.FileManagerX.BasicEnums.RppExecutePart.D;
+				this.recommendDepth = -1;
+			}
+		}
+		if(com.FileManagerX.Globals.Configurations.This_MachineIndex == dest) {
+			this.execute = com.FileManagerX.BasicEnums.RppExecutePart.E;
+		}
+	}
+	public void refreshRecommendPath(com.FileManagerX.Interfaces.IRoutePathPackage rpp) {
+		this.sourMountServer = rpp.getDestMountServer();
+		this.destMountServer = rpp.getSourMountServer();
+		this.sourMountPath.clear();
+		this.recommendPath.clear();
+		this.destMountPath.clear();
+		
+		int idx1 = 0, idx2 = 0;
+		for(int i=0; i<rpp.getActualPath().size(); i++) {
+			if(rpp.getActualPath().get(i) == rpp.getSourMountServer()) {
+				idx1 = i;
+				continue;
+			}
+			if(rpp.getActualPath().get(i) == rpp.getDestMountServer()) {
+				idx2 = i;
+				break;
+			}
+		}
+		
+		for(int i=0; i<=idx1; i++) {
+			this.destMountPath.add(rpp.getActualPath().get(i));
+		}
+		for(int i=idx1; i<=idx2; i++) {
+			this.recommendPath.add(rpp.getActualPath().get(i));
+		}
+		for(int i=idx2; i<rpp.getActualPath().size(); i++) {
+			this.sourMountPath.add(rpp.getActualPath().get(i));
+		}
+		
+		this.reverse(this.sourMountPath);
+		this.reverse(this.recommendPath);
+		this.reverse(this.destMountPath);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

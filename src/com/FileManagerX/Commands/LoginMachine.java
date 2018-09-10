@@ -1,6 +1,5 @@
 package com.FileManagerX.Commands;
 
-import com.FileManagerX.BasicEnums.*;
 import com.FileManagerX.BasicModels.*;
 
 public class LoginMachine extends BaseCommand {
@@ -27,13 +26,6 @@ public class LoginMachine extends BaseCommand {
 	public boolean setThis(MachineInfo machineInfo) {
 		return this.setMachineInfo(machineInfo);
 	}
-	public boolean setThis(MachineInfo machineInfo, com.FileManagerX.Interfaces.IConnection connection) {
-		boolean ok = true;
-		ok &= this.getBasicMessagePackage().setThis(connection.getClientConnection());
-		ok &= this.setConnection(connection);
-		ok &= this.setThis(machineInfo);
-		return ok;
-	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -41,7 +33,10 @@ public class LoginMachine extends BaseCommand {
 		return this.machineInfo;
 	}
 	public com.FileManagerX.Replies.LoginMachine getReply() {
-		if(super.getReply() == null) { this.setReply(new com.FileManagerX.Replies.LoginMachine()); }
+		if(super.getReply() == null) {
+			this.setReply(new com.FileManagerX.Replies.LoginMachine());
+			this.getReply().copyReversePath(this);
+		}
 		return (com.FileManagerX.Replies.LoginMachine)super.getReply();
 	}
 	
@@ -109,22 +104,6 @@ public class LoginMachine extends BaseCommand {
 			this.getReply().send();
 			return false;
 		}
-		if(!this.isLoginUser()) {
-			this.getReply().send();
-			return false;
-		}
-		if(!this.isUserIndexRight()) {
-			this.getReply().send();
-			return false;
-		}
-		if(!this.isPasswordRight()) {
-			this.getReply().send();
-			return false;
-		}
-		if(!this.isPriorityEnough(UserPriority.Member)) {
-			this.getReply().send();
-			return false;
-		}
 		
 		boolean ok = this.executeInLocal();
 		this.getReply().send();
@@ -134,26 +113,33 @@ public class LoginMachine extends BaseCommand {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean executeInLocal() {
-		if(!this.isArriveServer()) {
-			com.FileManagerX.Globals.Datas.DBManager.query(
-					"[&] name = '" + this.machineInfo.getName() + "'",
-					this.machineInfo,
-					com.FileManagerX.DataBase.Unit.Machine
-				);
+		if(this.getBasicMessagePackage().isDirect()) {
+			this.getSourConnection().getServerConnection().setClientMachineInfo(this.machineInfo);
+			this.getSourConnection().getClientConnection().setServerMachineInfo(this.machineInfo);
+			this.getReply().setMachineInfo(this.machineInfo);
+			return true;
 		}
-		if(this.machineInfo == null) {
+		
+		String path = com.FileManagerX.Tools.StringUtil.link(
+				com.FileManagerX.Tools.List2Array.toLongArray(
+						this.getBasicMessagePackage().getRoutePathPackage().getSourMountPath()),
+				" "
+			);
+		
+		this.machineInfo.setPath(path);
+		boolean ok = com.FileManagerX.Globals.Datas.DBManager.update(
+				this.machineInfo,
+				com.FileManagerX.DataBase.Unit.Machine
+			);
+		
+		if(!ok) {
 			this.getReply().setFailedReason(FAILED_OPERATE_DATABASE);
 			this.getReply().setOK(false);
 			return false;
 		}
-		if(this.machineInfo.getIndex() <= 0) {
-			this.getReply().setFailedReason(FAILED_NO_SUCH_MACHINE);
-			this.getReply().setOK(false);
-			return false;
-		}
 		
-		this.getConnection().getServerConnection().setClientMachineInfo(this.machineInfo);
-		this.getConnection().getClientConnection().setServerMachineInfo(this.machineInfo);
+		this.getSourConnection().getServerConnection().setClientMachineInfo(this.machineInfo);
+		this.getSourConnection().getClientConnection().setServerMachineInfo(this.machineInfo);
 		this.getReply().setMachineInfo(this.machineInfo);
 		return true;
 	}

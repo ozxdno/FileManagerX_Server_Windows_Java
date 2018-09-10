@@ -20,7 +20,7 @@ public final class Configurations {
 	public static boolean Close = false;
 	public static boolean ShowForm = false;
 	public static boolean Record = false;
-	public static boolean Connected = false;
+	public static boolean Refresh = false;
 	
 	public static long Next_FolderIndex = 0;
 	public static long Next_FileIndex = 0;
@@ -45,7 +45,7 @@ public final class Configurations {
 	
 	public static long NetDepth = 1;
 	
-	public static int LimitForConnection = 100;
+	public static int LimitForConnection = 2;
 	public static int LimitForClient = 1000;
 	public static int LimitForNetGroup = 100;
 	public static int LimitForGroupUser = 100;
@@ -57,11 +57,11 @@ public final class Configurations {
 	public static int LimitForQuerySize = 1000;
 	
 	public static long TimeForPermitIdle_Restart = 1*60*1000;
-	public static long TimeForPermitIdle_Transport = 5*1000;
+	public static long TimeForPermitIdle_Transport = 5*1000*3600;
 	public static long TimeForPermitIdle_Thread = 5*1000;
 	public static long TimeForPermitIdle_Scanner = Long.MAX_VALUE;
-	public static long TimeForPermitIdle_Server = Long.MAX_VALUE;
-	public static long TimeForPermitIdle_Client = Long.MAX_VALUE;
+	public static long TimeForPermitIdle_Server = 5*1000;
+	public static long TimeForPermitIdle_Client = 5*1000;
 	public static long TimeForPermitIdle_Executor = 5*1000;
 	public static long TimeForPermitIdle_Operator = 5*1000;
 		

@@ -32,13 +32,6 @@ public class LoginUser extends BaseCommand {
 		ok &= this.setClientUser(clientUser);
 		return ok;
 	}
-	public boolean setThis(User serverUser, User clientUser, com.FileManagerX.Interfaces.IConnection connection) {
-		boolean ok = true;
-		ok &= this.getBasicMessagePackage().setThis(connection.getClientConnection());
-		ok &= this.setConnection(connection);
-		ok &= this.setThis(serverUser, clientUser);
-		return ok;
-	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -50,9 +43,7 @@ public class LoginUser extends BaseCommand {
 	}
 	
 	public com.FileManagerX.Replies.LoginUser getReply() {
-		if(super.getReply() == null) {
-			this.setReply(new com.FileManagerX.Replies.LoginUser());
-		}
+		if(super.getReply() == null) { this.setReply(new com.FileManagerX.Replies.LoginUser()); }
 		return (com.FileManagerX.Replies.LoginUser)super.getReply();
 	}
 	
@@ -131,15 +122,24 @@ public class LoginUser extends BaseCommand {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean executeInLocal() {
-		if(this.isArriveServer()) {
-			com.FileManagerX.Globals.Datas.DBManager.query(
-					"[&] loginName = '" + this.cuser.getLoginName() + "'",
-					this.cuser,
-					com.FileManagerX.DataBase.Unit.User
-				);
+		
+		if(this.getBasicMessagePackage().isDirect()) {
+			this.suser = com.FileManagerX.Globals.Datas.ThisUser;
+			this.getSourConnection().getServerConnection().setServerUser(suser);
+			this.getSourConnection().getServerConnection().setClientUser(cuser);
+			this.getSourConnection().getClientConnection().setServerUser(cuser);
+			this.getSourConnection().getClientConnection().setClientUser(suser);
+			this.getReply().setThis(suser, cuser);
+			return true;
 		}
-		if(this.cuser == null) {
-			this.getReply().setFailedReason("User is NULL");
+		
+		boolean ok = com.FileManagerX.Globals.Datas.DBManager.query(
+				"qcs = 1|[&] loginName = " + this.cuser.getLoginName(),
+				this.cuser,
+				com.FileManagerX.DataBase.Unit.User
+			);
+		if(!ok) {
+			this.getReply().setFailedReason("No Found User");
 			this.getReply().setOK(false);
 			return false;
 		}
@@ -150,12 +150,10 @@ public class LoginUser extends BaseCommand {
 		}
 		
 		this.suser = com.FileManagerX.Globals.Datas.ThisUser;
-		
-		this.getConnection().getServerConnection().setServerUser(suser);
-		this.getConnection().getServerConnection().setClientUser(cuser);
-		this.getConnection().getClientConnection().setServerUser(cuser);
-		this.getConnection().getClientConnection().setClientUser(suser);
-		
+		this.getSourConnection().getServerConnection().setServerUser(suser);
+		this.getSourConnection().getServerConnection().setClientUser(cuser);
+		this.getSourConnection().getClientConnection().setServerUser(cuser);
+		this.getSourConnection().getClientConnection().setClientUser(suser);
 		this.getReply().setThis(suser, cuser);
 		return true;
 	}

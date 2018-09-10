@@ -51,13 +51,6 @@ public class QuerySize extends BaseCommand {
 		ok &= this.setUnit(unit);
 		return ok;
 	}
-	public boolean setThis(com.FileManagerX.DataBase.Unit unit, com.FileManagerX.Interfaces.IConnection connection) {
-		boolean ok = true;
-		ok &= this.getBasicMessagePackage().setThis(connection.getClientConnection());
-		ok &= this.setConnection(connection);
-		ok &= this.setThis(unit);
-		return ok;
-	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	

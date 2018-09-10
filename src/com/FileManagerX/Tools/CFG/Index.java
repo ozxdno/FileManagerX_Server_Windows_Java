@@ -7,24 +7,20 @@ public class Index {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public final static boolean load(com.FileManagerX.FileModels.CFG cfg) {
-		try {
-			Configurations.Server_MachineIndex = cfg.getConfigs().fetchByField("Server_MachineIndex").getLong();
-		}catch(Exception e) {
-			Configurations.Server_MachineIndex = 0;
-		}
-		try {
-			Configurations.Server_UserIndex = cfg.getConfigs().fetchByField("Server_UserIndex").getLong();
-		}catch(Exception e) {
-			Configurations.Server_UserIndex = 0;
-		}
+		Configurations.Server_MachineIndex = 1;
+		Configurations.Server_UserIndex = 1;
 		
 		try {
-			Configurations.This_MachineIndex = cfg.getConfigs().fetchByField("This_MachineIndex").getLong();
+			if(!Register.registerMachine) {
+				Configurations.This_MachineIndex = cfg.getConfigs().fetchByField("This_MachineIndex").getLong();
+			}
 		}catch(Exception e) {
 			Configurations.This_MachineIndex = 0;
 		}
 		try {
-			Configurations.This_UserIndex = cfg.getConfigs().fetchByField("This_UserIndex").getLong();
+			if(!Register.registerUser) {
+				Configurations.This_UserIndex = cfg.getConfigs().fetchByField("This_UserIndex").getLong();
+			}
 		}catch(Exception e) {
 			Configurations.This_UserIndex = 0;
 		}
@@ -38,6 +34,16 @@ public class Index {
 			Configurations.This_UserIndex = 1;
 		}
 		
+		com.FileManagerX.Globals.Datas.ServerMachine.setIndex(
+				com.FileManagerX.Globals.Configurations.Server_MachineIndex);
+		com.FileManagerX.Globals.Datas.ServerUser.setIndex(
+				com.FileManagerX.Globals.Configurations.Server_UserIndex);
+		com.FileManagerX.Globals.Datas.ThisMachine.setIndex(
+				com.FileManagerX.Globals.Configurations.This_MachineIndex);
+		com.FileManagerX.Globals.Datas.ThisUser.setIndex(
+				com.FileManagerX.Globals.Configurations.This_UserIndex);
+		com.FileManagerX.Globals.Datas.ThisMachine.setUserIndex(
+				com.FileManagerX.Globals.Configurations.This_UserIndex);
 		return true;
 	}
 	

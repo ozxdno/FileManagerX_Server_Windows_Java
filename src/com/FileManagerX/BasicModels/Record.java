@@ -6,8 +6,8 @@ public class Record implements com.FileManagerX.Interfaces.IPublic {
 
 	private long time;
 	private com.FileManagerX.BasicEnums.RecordType type;
-	private String connectionName;
-	private String threadName;
+	private String sour;
+	private String dest;
 	private String content;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -30,18 +30,18 @@ public class Record implements com.FileManagerX.Interfaces.IPublic {
 		this.type = type;
 		return true;
 	}
-	public boolean setConnectionName(String name) {
+	public boolean setSourConnectionName(String name) {
 		if(name == null) {
 			return false;
 		}
-		this.connectionName = name;
+		this.sour = name;
 		return true;
 	}
-	public boolean setThreadName(String name) {
+	public boolean setDestConnectionName(String name) {
 		if(name == null) {
 			return false;
 		}
-		this.threadName = name;
+		this.dest = name;
 		return true;
 	}
 	public boolean setContent(String content) {
@@ -60,11 +60,11 @@ public class Record implements com.FileManagerX.Interfaces.IPublic {
 	public com.FileManagerX.BasicEnums.RecordType getType() {
 		return this.type;
 	}
-	public String getConnectionName() {
-		return this.connectionName;
+	public String getSourConnectionName() {
+		return this.sour;
 	}
-	public String getThreadName() {
-		return this.threadName;
+	public String getDestConnectionName() {
+		return this.dest;
 	}
 	public String getContent() {
 		return this.content;
@@ -79,8 +79,8 @@ public class Record implements com.FileManagerX.Interfaces.IPublic {
 		
 		this.time = com.FileManagerX.Tools.Time.getTicks();
 		this.type = com.FileManagerX.BasicEnums.RecordType.UNDEFINE;
-		this.connectionName = "";
-		this.threadName = "";
+		this.sour = "";
+		this.dest = "";
 		this.content = "";
 	}
 	
@@ -90,7 +90,7 @@ public class Record implements com.FileManagerX.Interfaces.IPublic {
 		initThis();
 	}
 	public String toString() {
-		return "[" + this.threadName + " " + this.connectionName + "] " + 
+		return "[" + this.sour + " " + this.dest + "] " + 
 			    this.type.toString() + ": " +
 				com.FileManagerX.Tools.StringUtil.getField_FV(this.content);
 	}
@@ -99,8 +99,8 @@ public class Record implements com.FileManagerX.Interfaces.IPublic {
 		c.setField(com.FileManagerX.Tools.Time.ticks2ShortTime_Second(this.time));
 		c.addToBottom(this.time);
 		c.addToBottom(this.type.toString());
-		c.addToBottom(this.connectionName);
-		c.addToBottom(this.threadName);
+		c.addToBottom(this.sour);
+		c.addToBottom(this.dest);
 		c.addToBottom_Encode(this.content);
 		return c;
 	}
@@ -119,9 +119,9 @@ public class Record implements com.FileManagerX.Interfaces.IPublic {
 			if(!c.getIsOK()) { return c; }
 			this.type = com.FileManagerX.BasicEnums.RecordType.valueOf(c.fetchFirstString());
 			if(!c.getIsOK()) { return c; }
-			this.connectionName = c.fetchFirstString();
+			this.sour = c.fetchFirstString();
 			if(!c.getIsOK()) { return c; }
-			this.threadName = c.fetchFirstString();
+			this.dest = c.fetchFirstString();
 			if(!c.getIsOK()) { return c; }
 			this.content = c.fetchFirstString_Decode();
 			if(!c.getIsOK()) { return c; }
@@ -140,8 +140,8 @@ public class Record implements com.FileManagerX.Interfaces.IPublic {
 			Record r = (Record)o;
 			this.time = r.time;
 			this.type = r.type;
-			this.connectionName = r.connectionName;
-			this.threadName = r.threadName;
+			this.sour = r.sour;
+			this.dest = r.dest;
 			this.content = r.content;
 		}
 	}
@@ -152,8 +152,8 @@ public class Record implements com.FileManagerX.Interfaces.IPublic {
 			Record r = (Record)o;
 			this.time = r.time;
 			this.type = r.type;
-			this.connectionName = new String(r.connectionName);
-			this.threadName = new String(r.threadName);
+			this.sour = new String(r.sour);
+			this.dest = new String(r.dest);
 			this.content = new String(r.content);
 		}
 	}

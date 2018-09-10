@@ -11,6 +11,7 @@ public class Saver {
 		boolean ok = true;
 		ok &= Head.save(cfg);
 		ok &= StartInfo.save(cfg);
+		ok &= Register.save(cfg);
 		ok &= Index.save(cfg);
 		ok &= DBManager.save(cfg);
 		ok &= DBManagers.save(cfg);

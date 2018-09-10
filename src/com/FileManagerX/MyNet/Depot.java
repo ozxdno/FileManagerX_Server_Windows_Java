@@ -138,8 +138,7 @@ public class Depot implements com.FileManagerX.Interfaces.IPublic {
 			com.FileManagerX.Commands.QueryUnit qu = new com.FileManagerX.Commands.QueryUnit();
 			qu.setThis(
 					com.FileManagerX.DataBase.Unit.Depot,
-					"[&] Index = " + this.depot.getIndex(),
-					com.FileManagerX.Globals.Datas.ServerConnection
+					"[&] Index = " + this.depot.getIndex()
 					);
 			qu.send();
 			com.FileManagerX.Replies.QueryUnit rep = (com.FileManagerX.Replies.QueryUnit)qu.receive();

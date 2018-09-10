@@ -43,24 +43,18 @@ public class MySQLManager_User extends com.FileManagerX.DataBase.MySQLManager_AN
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public Object readUnsupportField(String field, String value, Object target) {
-		if(field.equals("content")) {
-			com.FileManagerX.FileModels.CFG cfg = new com.FileManagerX.FileModels.CFG();
-			cfg.input(value);
-			return cfg.getContent();
-		}
-		if(field.equals("type")) {
-			return com.FileManagerX.BasicEnums.FileType.valueOf(value);
-		}
 		if(field.equals("state")) {
-			return com.FileManagerX.BasicEnums.FileState.valueOf(value);
+			return com.FileManagerX.BasicEnums.UserState.valueOf(value);
+		}
+		if(field.equals("priority")) {
+			return com.FileManagerX.BasicEnums.UserPriority.valueOf(value);
+		}
+		if(field.equals("level")) {
+			return com.FileManagerX.BasicEnums.UserLevel.valueOf(value);
 		}
 		return null;
 	}
 	public String writeUnsupportField(String field, Object value, Object target) {
-		if(field.equals("content")) {
-			com.FileManagerX.FileModels.CFG cfg = (com.FileManagerX.FileModels.CFG)target;
-			return cfg.output();
-		}
 		return "";
 	}
 	

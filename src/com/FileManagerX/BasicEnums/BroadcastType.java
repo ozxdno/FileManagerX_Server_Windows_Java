@@ -14,6 +14,7 @@ public enum BroadcastType {
 	TO_ONE_SET_DEPTH,
 	TO_ONE_N_DEPTH,
 	TO_ONE_OVER_DEPTH,
+	
 	;
 	
 }

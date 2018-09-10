@@ -54,14 +54,6 @@ public class NewChannel extends BaseCommand {
 		ok &= this.setType(type);
 		return ok;
 	}
-	public boolean setThis(com.FileManagerX.BasicEnums.SocketType type,
-			com.FileManagerX.Interfaces.IConnection connection) {
-		boolean ok = true;
-		ok &= this.getBasicMessagePackage().setThis(connection.getClientConnection());
-		ok &= this.setConnection(connection);
-		ok &= this.setThis(type);
-		return ok;
-	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	

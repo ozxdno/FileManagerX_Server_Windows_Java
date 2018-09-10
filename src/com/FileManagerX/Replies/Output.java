@@ -97,12 +97,6 @@ public class Output extends Operator {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public boolean execute() {
-		
-		boolean ok = this.executeInLocal();
-		this.store();
-		return ok;
-	}
 	public boolean executeInLocal() {
 		
 		if(!this.isOK()) {

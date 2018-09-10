@@ -1,12 +1,11 @@
 package com.FileManagerX.MyNet;
 
-public class Group extends com.FileManagerX.BasicCollections.BasicHashMap<User, String> {
+public class Group extends com.FileManagerX.Safe.BasicCollections.BasicLRUMap<User, String> {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	private String name;
 	private long index;
-	private int limit;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -28,13 +27,6 @@ public class Group extends com.FileManagerX.BasicCollections.BasicHashMap<User, 
 		this.name = name;
 		return true;
 	}
-	public boolean setLimit(int limit) {
-		if(limit < 0) {
-			return false;
-		}
-		this.limit = limit;
-		return true;
-	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -43,9 +35,6 @@ public class Group extends com.FileManagerX.BasicCollections.BasicHashMap<User, 
 	}
 	public String getName() {
 		return this.name;
-	}
-	public int getLimit() {
-		return this.limit;
 	}
 	
 	public String getKey(User item) {
@@ -59,7 +48,7 @@ public class Group extends com.FileManagerX.BasicCollections.BasicHashMap<User, 
 	}
 	private void initThis() {
 		this.name = "Default Group";
-		this.limit = 100;
+		this.setLimit(100);
 	}
 	public User createT() {
 		return new User();
@@ -79,7 +68,7 @@ public class Group extends com.FileManagerX.BasicCollections.BasicHashMap<User, 
 		c.setField("Net-" + this.getClass().getSimpleName());
 		c.addToBottom(this.index);
 		c.addToBottom(this.name);
-		c.addToBottom(this.limit);
+		c.addToBottom(this.getLimit());
 		return c;
 	}
 	public String output() {
@@ -96,7 +85,7 @@ public class Group extends com.FileManagerX.BasicCollections.BasicHashMap<User, 
 		if(!c.getIsOK()) { return c; }
 		this.name = c.fetchFirstString();
 		if(!c.getIsOK()) { return c; }
-		this.limit = c.fetchFirstInt();
+		this.setLimit(c.fetchFirstInt());
 		if(!c.getIsOK()) { return c; }
 		
 		return c;

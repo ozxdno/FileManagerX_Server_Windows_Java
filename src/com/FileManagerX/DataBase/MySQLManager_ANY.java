@@ -18,7 +18,7 @@ public class MySQLManager_ANY <T extends com.FileManagerX.Interfaces.IPublic, K>
 	
 	private java.sql.Connection connection;
 	private java.sql.Statement statement;
-	
+
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean setDBInfo(com.FileManagerX.BasicModels.DataBaseInfo database) {
@@ -581,12 +581,25 @@ public class MySQLManager_ANY <T extends com.FileManagerX.Interfaces.IPublic, K>
 		}
 		
 		try {
-			statement.execute("SET SQL_SAFE_UPDATES = 0;");
-			int count = statement.executeUpdate(exp);
-			T next = this.queryByCount(count);
-			item.copyReference(next);
-			this.running = false;
-			return true;
+			if(!found && this.increase) {
+				statement.execute("SET SQL_SAFE_UPDATES = 0;");
+				statement.executeUpdate(exp);
+				
+				java.sql.ResultSet set = this.statement.getGeneratedKeys();
+				long index = 0;
+				if(set.next()) { index = set.getLong(1); }
+				String qcs = "qcs = 1|[&] " + this.fields[this.key] + " = " + index;
+				this.query(qcs, item);
+				this.running = false;
+				return true;
+			}
+			else {
+				statement.execute("SET SQL_SAFE_UPDATES = 0;");
+				statement.executeUpdate(exp);
+				this.query(this.qcsForKey(item), item);
+				this.running = false;
+				return true;
+			}
 		} catch(Exception e) {
 			com.FileManagerX.BasicEnums.ErrorType.DB_OPERATE_FAILED.register(e.toString(), "exp = " + exp);
 			this.running = false;

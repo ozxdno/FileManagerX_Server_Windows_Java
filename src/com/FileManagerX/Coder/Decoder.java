@@ -42,7 +42,8 @@ public class Decoder {
 					cmdType.getCommand() :
 					cmdType.getReply();
 			
-			if(t.input(s) == null) {
+			com.FileManagerX.BasicModels.Config c = t.input(s);
+			if(c == null || !c.getIsOK()) {
 				com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(
 						"Wrong Receive Content",
 						"Content: " + new String(bytes)

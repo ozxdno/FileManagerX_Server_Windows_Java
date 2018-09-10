@@ -49,14 +49,6 @@ public class RegisterUser extends BaseCommand {
 		ok &= this.setPassword(password);
 		return ok;
 	}
-	public boolean setThis(String invitationCode, String loginName, String password, 
-			com.FileManagerX.Interfaces.IConnection connection) {
-		boolean ok = true;
-		ok &= this.getBasicMessagePackage().setThis(connection.getClientConnection());
-		ok &= this.setConnection(connection);
-		ok &= this.setThis(invitationCode, loginName, password);
-		return ok;
-	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

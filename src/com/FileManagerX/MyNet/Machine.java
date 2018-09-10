@@ -1,6 +1,6 @@
 package com.FileManagerX.MyNet;
 
-public class Machine extends com.FileManagerX.BasicCollections.BasicHashMap<Depot, String> {
+public class Machine extends com.FileManagerX.Safe.BasicCollections.BasicLRUMap<Depot, String> {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -8,7 +8,6 @@ public class Machine extends com.FileManagerX.BasicCollections.BasicHashMap<Depo
 	private com.FileManagerX.BasicModels.MachineInfo machine;
 	private String name;
 	private Net permit;
-	private int limit;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -43,13 +42,6 @@ public class Machine extends com.FileManagerX.BasicCollections.BasicHashMap<Depo
 		this.permit = permit;
 		return true;
 	}
-	public boolean setLimit(int limit) {
-		if(limit < 0) {
-			return false;
-		}
-		this.limit = limit;
-		return true;
-	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -64,9 +56,6 @@ public class Machine extends com.FileManagerX.BasicCollections.BasicHashMap<Depo
 	}
 	public Net getPermit() {
 		return this.permit;
-	}
-	public int getLimit() {
-		return this.limit;
 	}
 	
 	public String getKey(Depot item) {
@@ -104,7 +93,7 @@ public class Machine extends com.FileManagerX.BasicCollections.BasicHashMap<Depo
 		c.addToBottom(this.name);
 		c.addToBottom(this.machine.getIndex());
 		c.addToBottom(this.rpp.toConfig());
-		c.addToBottom(this.limit);
+		c.addToBottom(this.getLimit());
 		c.addToBottom(this.permit.size());
 		com.FileManagerX.Interfaces.IIterator<Group> it = this.permit.getIterator();
 		while(it.hasNext()) {
@@ -128,7 +117,7 @@ public class Machine extends com.FileManagerX.BasicCollections.BasicHashMap<Depo
 		if(!c.getIsOK()) { return c; }
 		c = this.rpp.input(c);
 		if(!c.getIsOK()) { return c; }
-		this.limit = c.fetchFirstInt();
+		this.setLimit(c.fetchFirstInt());
 		if(!c.getIsOK()) { return c; }
 		int amount = c.fetchFirstInt();
 		if(!c.getIsOK()) { return c; }
@@ -160,8 +149,7 @@ public class Machine extends com.FileManagerX.BasicCollections.BasicHashMap<Depo
 			com.FileManagerX.Commands.QueryUnit qu = new com.FileManagerX.Commands.QueryUnit();
 			qu.setThis(
 					com.FileManagerX.DataBase.Unit.Machine,
-					"[&] Index = " + this.machine.getIndex(), 
-					com.FileManagerX.Globals.Datas.ServerConnection
+					"[&] Index = " + this.machine.getIndex()
 					);
 			qu.send();
 			com.FileManagerX.Replies.QueryUnit rep = (com.FileManagerX.Replies.QueryUnit)qu.receive();

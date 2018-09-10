@@ -222,12 +222,12 @@ public class Operator extends com.FileManagerX.Processes.BasicProcess implements
 						com.FileManagerX.Operator.Operator op = rep.getOperator();
 						op.copyReference(this);
 						op.args = iop.output();
-						rep.setThis(op, source.getConnection());
+						rep.setThis(op);
 						rep.send();
 					}
 					else {
 						com.FileManagerX.Replies.Input rep = new com.FileManagerX.Replies.Input();
-						rep.setThis(iop, index, source.getConnection());
+						rep.setThis(iop, index);
 						rep.send();
 					}
 				}
@@ -241,7 +241,7 @@ public class Operator extends com.FileManagerX.Processes.BasicProcess implements
 				Operator.this.exitProcess();
 			}
 			if(iop.isFinished() && Operator.this.exitConnectionAtOnce) { 
-				Operator.this.source.getConnection().exitProcess();
+				Operator.this.source.getSourConnection().exitProcess();
 			}
 			return null;
 		}

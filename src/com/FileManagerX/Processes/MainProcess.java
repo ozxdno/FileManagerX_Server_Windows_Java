@@ -31,6 +31,8 @@ public class MainProcess extends BasicProcess {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	private boolean parepare() {
+		// Start Sender
+		com.FileManagerX.Globals.Datas.Sender.startProcess();
 		
 		// create other folders and files
 		com.FileManagerX.Tools.Pathes.createAll();
@@ -79,6 +81,13 @@ public class MainProcess extends BasicProcess {
 			}
 		}
 		
+		// ²âÊÔÏß³Ì¿ªÆô
+		if(com.FileManagerX.Globals.Datas.ServerConnection.isRunning()) {
+			//SenderProcess sp = new SenderProcess();
+			//sp.setConnection(com.FileManagerX.Globals.Datas.ServerConnection);
+			//sp.startProcess();
+		}
+		
 		return true;
 	}
 	
@@ -89,6 +98,8 @@ public class MainProcess extends BasicProcess {
 			
 			Datas.Records.save(100);
 			Datas.Errors.save(100);
+			
+			Datas.Receiver.removeIdleReplies();
 			
 			Datas.Scanners.removeIdleProcesses();
 			Datas.Server.removeIdleProcesses();
