@@ -1,11 +1,15 @@
 package com.FileManagerX.BasicCollections;
 
-public class Configs extends BasicArrayList<com.FileManagerX.BasicModels.Config, String> {
+public class Configs extends BasicCollection<com.FileManagerX.BasicModels.Config> {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public String getKey(com.FileManagerX.BasicModels.Config item) {
-		return item == null ? null : item.getField();
+	public Configs() {
+		this.initThis();
+	}
+	private void initThis() {
+		this.setContent(new com.FileManagerX.BasicCollections.BasicLinkedList<>());
+		this.setKey(new KeyForField());
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -36,6 +40,18 @@ public class Configs extends BasicArrayList<com.FileManagerX.BasicModels.Config,
 			}
 		}
 		return null;
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public static class KeyForField implements com.FileManagerX.Interfaces.ICollection.IKey {
+		public Object getKey(Object item) {
+			if(item instanceof com.FileManagerX.BasicModels.Config) {
+				com.FileManagerX.BasicModels.Config i = (com.FileManagerX.BasicModels.Config)item;
+				return i.getField();
+			}
+			return null;
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

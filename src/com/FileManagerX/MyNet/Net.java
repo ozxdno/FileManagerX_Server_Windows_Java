@@ -1,6 +1,6 @@
 package com.FileManagerX.MyNet;
 
-public class Net extends com.FileManagerX.Safe.BasicCollections.BasicLRUMap<Group, String> {
+public class Net extends com.FileManagerX.BasicCollections.BasicCollection<Group> {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -18,15 +18,21 @@ public class Net extends com.FileManagerX.Safe.BasicCollections.BasicLRUMap<Grou
 		this.name = name;
 		return true;
 	}
+	public boolean setLimit(int limit) {
+		com.FileManagerX.Safe.BasicCollections.BasicLRUMap<Group> map = 
+				(com.FileManagerX.Safe.BasicCollections.BasicLRUMap<Group>)this.getContent();
+		return map.setLimit(limit);
+	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public String getName() {
 		return this.name;
 	}
-
-	public String getKey(Group item) {
-		return item == null ? null : item.getName();
+	public int getLimit() {
+		com.FileManagerX.Safe.BasicCollections.BasicLRUMap<Group> map = 
+				(com.FileManagerX.Safe.BasicCollections.BasicLRUMap<Group>)this.getContent();
+		return map.getLimit();
 	}
 	
 	public Manager getManager() {
@@ -42,7 +48,8 @@ public class Net extends com.FileManagerX.Safe.BasicCollections.BasicLRUMap<Grou
 	}
 	private void initThis() {
 		this.name = "Default Net";
-		this.setLimit(100);
+		this.setContent(new com.FileManagerX.Safe.BasicCollections.BasicLRUMap<>());
+		this.setKey(new KeyForName());
 		
 		com.FileManagerX.Factories.MyNetFactory.createServerGroup(this);
 		com.FileManagerX.Factories.MyNetFactory.createMyGroup(this);
@@ -151,6 +158,27 @@ public class Net extends com.FileManagerX.Safe.BasicCollections.BasicLRUMap<Grou
 		com.FileManagerX.Interfaces.IIterator<Group> it = this.getIterator();
 		while(it.hasNext()) {
 			it.getNext().refresh();
+		}
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public static class KeyForName implements com.FileManagerX.Interfaces.ICollection.IKey {
+		public Object getKey(Object item) {
+			if(item instanceof com.FileManagerX.MyNet.Group) {
+				com.FileManagerX.MyNet.Group i = (com.FileManagerX.MyNet.Group)item;
+				return i.getName();
+			}
+			return null;
+		}
+	}
+	public static class KeyForIndex implements com.FileManagerX.Interfaces.ICollection.IKey {
+		public Object getKey(Object item) {
+			if(item instanceof com.FileManagerX.MyNet.Group) {
+				com.FileManagerX.MyNet.Group i = (com.FileManagerX.MyNet.Group)item;
+				return i.getIndex();
+			}
+			return null;
 		}
 	}
 	

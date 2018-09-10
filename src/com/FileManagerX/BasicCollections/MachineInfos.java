@@ -1,11 +1,15 @@
 package com.FileManagerX.BasicCollections;
 
-public class MachineInfos extends BasicHashMap<com.FileManagerX.BasicModels.MachineInfo, Long> {
+public class MachineInfos extends BasicCollection<com.FileManagerX.BasicModels.MachineInfo> {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public Long getKey(com.FileManagerX.BasicModels.MachineInfo item) {
-		return item == null ? null : item.getIndex();
+	public MachineInfos() {
+		this.initThis();
+	}
+	private void initThis() {
+		this.setContent(new com.FileManagerX.BasicCollections.BasicHashMap<>());
+		this.setKey(new KeyForIndex());
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -132,6 +136,18 @@ public class MachineInfos extends BasicHashMap<com.FileManagerX.BasicModels.Mach
 			}
 		}
 		return null;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public static class KeyForIndex implements com.FileManagerX.Interfaces.ICollection.IKey {
+		public Object getKey(Object item) {
+			if(item instanceof com.FileManagerX.BasicModels.MachineInfo) {
+				com.FileManagerX.BasicModels.MachineInfo i = (com.FileManagerX.BasicModels.MachineInfo)item;
+				return i.getIndex();
+			}
+			return null;
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

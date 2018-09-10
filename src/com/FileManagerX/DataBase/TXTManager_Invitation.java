@@ -1,6 +1,6 @@
 package com.FileManagerX.DataBase;
 
-public class TXTManager_Invitation extends TXTManager_ANY<com.FileManagerX.BasicModels.Invitation, String> {
+public class TXTManager_Invitation extends TXTManager_ANY<com.FileManagerX.BasicModels.Invitation> {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

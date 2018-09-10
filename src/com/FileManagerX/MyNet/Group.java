@@ -1,6 +1,6 @@
 package com.FileManagerX.MyNet;
 
-public class Group extends com.FileManagerX.Safe.BasicCollections.BasicLRUMap<User, String> {
+public class Group extends com.FileManagerX.BasicCollections.BasicCollection<User> {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -27,6 +27,11 @@ public class Group extends com.FileManagerX.Safe.BasicCollections.BasicLRUMap<Us
 		this.name = name;
 		return true;
 	}
+	public boolean setLimit(int limit) {
+		com.FileManagerX.Safe.BasicCollections.BasicLRUMap<User> map = 
+				(com.FileManagerX.Safe.BasicCollections.BasicLRUMap<User>)this.getContent();
+		return map.setLimit(limit);
+	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -36,9 +41,10 @@ public class Group extends com.FileManagerX.Safe.BasicCollections.BasicLRUMap<Us
 	public String getName() {
 		return this.name;
 	}
-	
-	public String getKey(User item) {
-		return item == null ? null : item.getName();
+	public int getLimit() {
+		com.FileManagerX.Safe.BasicCollections.BasicLRUMap<User> map = 
+				(com.FileManagerX.Safe.BasicCollections.BasicLRUMap<User>)this.getContent();
+		return map.getLimit();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -47,8 +53,9 @@ public class Group extends com.FileManagerX.Safe.BasicCollections.BasicLRUMap<Us
 		initThis();
 	}
 	private void initThis() {
+		this.setContent(new com.FileManagerX.Safe.BasicCollections.BasicLRUMap<>());
+		this.setKey(new KeyForName());
 		this.name = "Default Group";
-		this.setLimit(100);
 	}
 	public User createT() {
 		return new User();
@@ -112,6 +119,27 @@ public class Group extends com.FileManagerX.Safe.BasicCollections.BasicLRUMap<Us
 		com.FileManagerX.Interfaces.IIterator<User> it = this.getIterator();
 		while(it.hasNext()) {
 			it.getNext().refresh();
+		}
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public static class KeyForName implements com.FileManagerX.Interfaces.ICollection.IKey {
+		public Object getKey(Object item) {
+			if(item instanceof com.FileManagerX.MyNet.User) {
+				com.FileManagerX.MyNet.User i = (com.FileManagerX.MyNet.User)item;
+				return i.getName();
+			}
+			return null;
+		}
+	}
+	public static class KeyForIndex implements com.FileManagerX.Interfaces.ICollection.IKey {
+		public Object getKey(Object item) {
+			if(item instanceof com.FileManagerX.MyNet.User) {
+				com.FileManagerX.MyNet.User i = (com.FileManagerX.MyNet.User)item;
+				return i.getUser().getIndex();
+			}
+			return null;
 		}
 	}
 	

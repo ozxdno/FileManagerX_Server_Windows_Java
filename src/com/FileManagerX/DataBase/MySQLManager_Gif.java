@@ -1,7 +1,7 @@
 package com.FileManagerX.DataBase;
 
 public class MySQLManager_Gif extends com.FileManagerX.DataBase.MySQLManager_ANY
-	<com.FileManagerX.BasicModels.File, Long> {
+	<com.FileManagerX.BasicModels.File> {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

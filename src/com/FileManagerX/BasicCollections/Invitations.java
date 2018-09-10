@@ -1,11 +1,15 @@
 package com.FileManagerX.BasicCollections;
 
-public class Invitations extends BasicHashMap<com.FileManagerX.BasicModels.Invitation, String> {
+public class Invitations extends BasicCollection<com.FileManagerX.BasicModels.Invitation> {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public String getKey(com.FileManagerX.BasicModels.Invitation item) {
-		return item == null ? null : item.getCode();
+	public Invitations() {
+		this.initThis();
+	}
+	private void initThis() {
+		this.setContent(new com.FileManagerX.BasicCollections.BasicHashMap<>());
+		this.setKey(new KeyForCode());
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -64,5 +68,17 @@ public class Invitations extends BasicHashMap<com.FileManagerX.BasicModels.Invit
 		return is;
 	}
 	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public static class KeyForCode implements com.FileManagerX.Interfaces.ICollection.IKey {
+		public Object getKey(Object item) {
+			if(item instanceof com.FileManagerX.BasicModels.Invitation) {
+				com.FileManagerX.BasicModels.Invitation i = (com.FileManagerX.BasicModels.Invitation)item;
+				return i.getCode();
+			}
+			return null;
+		}
+	}
+		
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

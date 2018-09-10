@@ -1,11 +1,15 @@
 package com.FileManagerX.DataBase;
 
-public class QueryConditions extends com.FileManagerX.BasicCollections.BasicArrayList<QueryCondition, String> {
+public class QueryConditions extends com.FileManagerX.BasicCollections.BasicCollection<QueryCondition> {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public String getKey(QueryCondition item) {
-		return item == null ? null : item.getItemName();
+	public QueryConditions() {
+		initThis();
+	}
+	private void initThis() {
+		this.setContent(new com.FileManagerX.BasicCollections.BasicLinkedList<>());
+		this.setKey(new KeyForItemName());
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -32,5 +36,17 @@ public class QueryConditions extends com.FileManagerX.BasicCollections.BasicArra
 		return null;
 	}
 	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public static class KeyForItemName implements com.FileManagerX.Interfaces.ICollection.IKey {
+		public Object getKey(Object item) {
+			if(item instanceof QueryCondition) {
+				QueryCondition i = (QueryCondition)item;
+				return i.getItemName();
+			}
+			return null;
+		}
+	}
+
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

@@ -1,49 +1,46 @@
-package com.FileManagerX.Safe.BasicCollections;
+package com.FileManagerX.BasicCollections;
 
-public class BasicArrayList <T extends com.FileManagerX.Interfaces.IPublic, K>
-	implements com.FileManagerX.Interfaces.ICollection<T, K>,
+public class BasicPriorityQueue <T extends com.FileManagerX.Interfaces.IPublic>
+	implements com.FileManagerX.Interfaces.ICollection<T>,
 			   com.FileManagerX.Interfaces.IPublic {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	private java.util.List<T> content;
-
+	private com.FileManagerX.Interfaces.ICollection.IKey key;
+	private java.util.PriorityQueue<T> content;
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+	
+	public boolean setContent(com.FileManagerX.Interfaces.ICollection<T> content) {
+		return false;
+	}
+	public boolean setKey(com.FileManagerX.Interfaces.ICollection.IKey key) {
+		if(key == null) { return false; }
+		this.key = key;
+		return true;
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	public com.FileManagerX.Interfaces.IIterator<T> getIterator() {
 		return new IteratorImpl();
 	}
-	public K getKey(T e) {
-		return null;
+	public Object getKey(T e) {
+		return key == null ? null : key.getKey(e);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public BasicArrayList() {
+	public BasicPriorityQueue() {
 		initThis();
 	}
 	private void initThis() {
-		this.content = java.util.Collections.synchronizedList(new java.util.ArrayList<>());
+		this.content = new java.util.PriorityQueue<>();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public T createT() {
-		try {
-			@SuppressWarnings("unchecked")
-			Class<T> entityClass = (Class<T>) 
-		        		((java.lang.reflect.ParameterizedType)
-		        				getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-		        return entityClass.newInstance();
-		} catch(Exception e) {
-			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
-			e.printStackTrace();
-			return null;
-		}
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+	public T createT() { return null; }
 	public int size() {
 		return this.content.size();
 	}
@@ -58,7 +55,8 @@ public class BasicArrayList <T extends com.FileManagerX.Interfaces.IPublic, K>
 		return true;
 	}
 	public boolean sort(java.util.Comparator<T> c) {
-		this.content.sort(c);
+		if(c == null) { return false; }
+		this.content = new java.util.PriorityQueue<>(c);
 		return true;
 	}
 	
@@ -94,9 +92,6 @@ public class BasicArrayList <T extends com.FileManagerX.Interfaces.IPublic, K>
 		return this.input(c);
 	}
 	public com.FileManagerX.BasicModels.Config input(com.FileManagerX.BasicModels.Config c) {
-		if(c == null) { return null; }
-		
-		if(!c.getIsOK()) { return c; }
 		int amount = c.fetchFirstInt();
 		if(!c.getIsOK()) { return c; }
 		for(int i=0; i<amount; i++) {
@@ -119,35 +114,57 @@ public class BasicArrayList <T extends com.FileManagerX.Interfaces.IPublic, K>
 
 	public T searchByCount(int count) {
 		if(count < 0 || count > this.content.size()) { return null; }
-		return this.content.get(count);
+		com.FileManagerX.Interfaces.IIterator<T> it = this.getIterator();
+		while(it.hasNext()) {
+			if(count-- == 0) {
+				return it.getNext();
+			}
+		}
+		return null;
 	}
 	public T fetchByCount(int count) {
 		if(count < 0 || count > this.content.size()) { return null; }
-		return this.content.remove(count);
+		com.FileManagerX.Interfaces.IIterator<T> it = this.getIterator();
+		while(it.hasNext()) {
+			if(count-- == 0) {
+				it.remove();
+				return it.getNext();
+			}
+		}
+		return null;
 	}
-	public BasicArrayList<T,K> searchesByCount(int bg, int ed) {
-		BasicArrayList<T,K> res = new BasicArrayList<T,K>();
+	public BasicLinkedList<T> searchesByCount(int bg, int ed) {
+		BasicLinkedList<T> res = new BasicLinkedList<T>();
 		if(bg < 0) { bg = 0; }
 		if(ed >= this.size()) { ed = this.size() - 1; }
-		for(int i=bg; i<=ed; i++) {
-			res.add(this.content.get(i));
+		
+		com.FileManagerX.Interfaces.IIterator<T> it = this.getIterator();
+		int cnt = 0;
+		while(it.hasNext()) {
+			if(cnt < bg) { cnt++; continue; }
+			if(cnt <= ed) { res.add(it.getNext()); cnt++; continue; }
+			if(cnt > ed) { break; }
 		}
 		return res;
 	}
-	public BasicArrayList<T,K> fetchesByCount(int bg, int ed) {
-		BasicArrayList<T,K> res = new BasicArrayList<T,K>();
+	public BasicLinkedList<T> fetchesByCount(int bg, int ed) {
+		BasicLinkedList<T> res = new BasicLinkedList<T>();
 		if(bg < 0) { bg = 0; }
 		if(ed >= this.size()) { ed = this.size() - 1; }
-		for(int i=ed; i>=bg; i--) {
-			res.add(this.content.get(i));
-			this.content.remove(i);
+		
+		com.FileManagerX.Interfaces.IIterator<T> it = this.getIterator();
+		int cnt = 0;
+		while(it.hasNext()) {
+			if(cnt < bg) { cnt++; continue; }
+			if(cnt <= ed) { res.add(it.getNext()); it.remove(); cnt++; continue; }
+			if(cnt > ed) { break; }
 		}
 		return res;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public T searchByKey(K key) {
+	
+	public T searchByKey(Object key) {
 		com.FileManagerX.Interfaces.IIterator<T> it = this.getIterator();
 		while(it.hasNext()) {
 			if(this.getKey(it.getNext()).equals(key)) {
@@ -156,7 +173,7 @@ public class BasicArrayList <T extends com.FileManagerX.Interfaces.IPublic, K>
 		}
 		return null;
 	}
-	public T fetchByKey(K key) {
+	public T fetchByKey(Object key) {
 		com.FileManagerX.Interfaces.IIterator<T> it = this.getIterator();
 		while(it.hasNext()) {
 			T t = it.getNext();
@@ -167,8 +184,8 @@ public class BasicArrayList <T extends com.FileManagerX.Interfaces.IPublic, K>
 		}
 		return null;
 	}
-	public BasicArrayList<T,K> searchesByKey(K key) {
-		BasicArrayList<T,K> res = new BasicArrayList<T,K>();
+	public BasicLinkedList<T> searchesByKey(Object key) {
+		BasicLinkedList<T> res = new BasicLinkedList<T>();
 		com.FileManagerX.Interfaces.IIterator<T> it = this.getIterator();
 		while(it.hasNext()) {
 			if(this.getKey(it.getNext()).equals(key)) {
@@ -177,8 +194,8 @@ public class BasicArrayList <T extends com.FileManagerX.Interfaces.IPublic, K>
 		}
 		return res;
 	}
-	public BasicArrayList<T,K> fetchesByKey(K key) {
-		BasicArrayList<T,K> res = new BasicArrayList<T,K>();
+	public BasicLinkedList<T> fetchesByKey(Object key) {
+		BasicLinkedList<T> res = new BasicLinkedList<T>();
 		com.FileManagerX.Interfaces.IIterator<T> it = this.getIterator();
 		while(it.hasNext()) {
 			if(this.getKey(it.getNext()).equals(key)) {

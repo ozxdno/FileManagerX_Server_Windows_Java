@@ -1,6 +1,6 @@
 package com.FileManagerX.DataBase;
 
-public class MySQLManager_ANY <T extends com.FileManagerX.Interfaces.IPublic, K>
+public class MySQLManager_ANY <T extends com.FileManagerX.Interfaces.IPublic>
 	implements com.FileManagerX.Interfaces.IDBManager {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -122,17 +122,7 @@ public class MySQLManager_ANY <T extends com.FileManagerX.Interfaces.IPublic, K>
 		this.increase = true;
 	}
 	public T createT() {
-		try {
-			@SuppressWarnings("unchecked")
-			Class<T> entityClass = (Class<T>) 
-		        		((java.lang.reflect.ParameterizedType)
-		        				getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-		        return entityClass.newInstance();
-		} catch(Exception e) {
-			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
-			e.printStackTrace();
-			return null;
-		}
+		return null;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -274,8 +264,32 @@ public class MySQLManager_ANY <T extends com.FileManagerX.Interfaces.IPublic, K>
 			return false;
 		}
 	}
-	public boolean clear() {
-		return this.delete();
+	public void clear() {
+		this.delete();
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public String toString() {
+		return this.name;
+	}
+	public com.FileManagerX.BasicModels.Config toConfig() {
+		return null;
+	}
+	public String output() {
+		return null;
+	}
+	public com.FileManagerX.BasicModels.Config input(String in) {
+		return null;
+	}
+	public com.FileManagerX.BasicModels.Config input(com.FileManagerX.BasicModels.Config c) {
+		return null;
+	}
+	public void copyReference(Object o) {
+		;
+	}
+	public void copyValue(Object o) {
+		;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -283,12 +297,11 @@ public class MySQLManager_ANY <T extends com.FileManagerX.Interfaces.IPublic, K>
 	@SuppressWarnings("unchecked")
 	public boolean querys(Object conditions, Object oResult) {
 		this.running = true;
-		if(oResult == null || !(oResult instanceof com.FileManagerX.Interfaces.ICollection<?, ?>)) {
+		if(oResult == null || !(oResult instanceof com.FileManagerX.Interfaces.ICollection<?>)) {
 			oResult = new com.FileManagerX.BasicCollections.BasicArrayList<>();
 		}
 		
-		com.FileManagerX.Interfaces.ICollection<T, K> result = 
-				(com.FileManagerX.Interfaces.ICollection<T, K>)oResult;
+		com.FileManagerX.Interfaces.ICollection<T> result = (com.FileManagerX.Interfaces.ICollection<T>)oResult;
 		result.clear();
 		
 		QueryConditions qcs = new QueryConditions();
@@ -462,11 +475,11 @@ public class MySQLManager_ANY <T extends com.FileManagerX.Interfaces.IPublic, K>
 	@SuppressWarnings({ "unused", "unchecked" })
 	public boolean updates(Object oItems, Object oErrors) {
 		this.running = true;
-		if(!(oItems instanceof com.FileManagerX.Interfaces.ICollection<?, ?>)) {
+		if(!(oItems instanceof com.FileManagerX.Interfaces.ICollection<?>)) {
 			this.running = false;
 			return false;
 		}
-		if(!(oErrors instanceof com.FileManagerX.Interfaces.ICollection<?, ?>)) {
+		if(!(oErrors instanceof com.FileManagerX.Interfaces.ICollection<?>)) {
 			this.running = false;
 			return false;
 		}
@@ -478,10 +491,10 @@ public class MySQLManager_ANY <T extends com.FileManagerX.Interfaces.IPublic, K>
 			oErrors = new com.FileManagerX.BasicCollections.BasicArrayList<>();
 		}
 		
-		com.FileManagerX.Interfaces.ICollection<T, K> items = 
-				(com.FileManagerX.Interfaces.ICollection<T, K>)oItems;
-		com.FileManagerX.Interfaces.ICollection<T, K> errors = 
-				(com.FileManagerX.Interfaces.ICollection<T, K>)oErrors;
+		com.FileManagerX.Interfaces.ICollection<T> items = 
+				(com.FileManagerX.Interfaces.ICollection<T>)oItems;
+		com.FileManagerX.Interfaces.ICollection<T> errors = 
+				(com.FileManagerX.Interfaces.ICollection<T>)oErrors;
 		errors.clear();
 		
 		com.FileManagerX.Interfaces.IIterator<T> it = items.getIterator();
@@ -609,11 +622,11 @@ public class MySQLManager_ANY <T extends com.FileManagerX.Interfaces.IPublic, K>
 	@SuppressWarnings({ "unchecked", "unused" })
 	public synchronized boolean removes(Object oItems, Object oErrors) {
 		this.running = true;
-		if(!(oItems instanceof com.FileManagerX.Interfaces.ICollection<?, ?>)) {
+		if(!(oItems instanceof com.FileManagerX.Interfaces.ICollection<?>)) {
 			this.running = false;
 			return false;
 		}
-		if(!(oErrors instanceof com.FileManagerX.Interfaces.ICollection<?, ?>)) {
+		if(!(oErrors instanceof com.FileManagerX.Interfaces.ICollection<?>)) {
 			this.running = false;
 			return false;
 		}
@@ -625,10 +638,10 @@ public class MySQLManager_ANY <T extends com.FileManagerX.Interfaces.IPublic, K>
 			oErrors = new com.FileManagerX.BasicCollections.BasicArrayList<>();
 		}
 		
-		com.FileManagerX.Interfaces.ICollection<T, K> items = 
-				(com.FileManagerX.Interfaces.ICollection<T, K>)oItems;
-		com.FileManagerX.Interfaces.ICollection<T, K> errors = 
-				(com.FileManagerX.Interfaces.ICollection<T, K>)oErrors;
+		com.FileManagerX.Interfaces.ICollection<T> items = 
+				(com.FileManagerX.Interfaces.ICollection<T>)oItems;
+		com.FileManagerX.Interfaces.ICollection<T> errors = 
+				(com.FileManagerX.Interfaces.ICollection<T>)oErrors;
 		errors.clear();
 		
 		com.FileManagerX.Interfaces.IIterator<T> it = items.getIterator();

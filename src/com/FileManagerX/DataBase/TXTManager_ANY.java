@@ -1,6 +1,6 @@
 package com.FileManagerX.DataBase;
 
-public class TXTManager_ANY<T extends com.FileManagerX.Interfaces.IPublic, K>
+public class TXTManager_ANY<T extends com.FileManagerX.Interfaces.IPublic>
 	implements com.FileManagerX.Interfaces.IDBManager {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -11,7 +11,7 @@ public class TXTManager_ANY<T extends com.FileManagerX.Interfaces.IPublic, K>
 	private boolean running;
 	private String name;
 	
-	private com.FileManagerX.Interfaces.ICollection<T, K> content;
+	private com.FileManagerX.Interfaces.ICollection<T> content;
 	private boolean saveImmediately = true;
 	
 	private String[] fields;
@@ -19,7 +19,7 @@ public class TXTManager_ANY<T extends com.FileManagerX.Interfaces.IPublic, K>
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public synchronized boolean setContent(com.FileManagerX.Interfaces.ICollection<T, K> content) {
+	public synchronized boolean setContent(com.FileManagerX.Interfaces.ICollection<T> content) {
 		if(content == null) {
 			return false;
 		}
@@ -228,9 +228,32 @@ public class TXTManager_ANY<T extends com.FileManagerX.Interfaces.IPublic, K>
 		java.io.File file = new java.io.File(url);
 		return file.exists() && file.isFile();
 	}
-	public synchronized boolean clear() {
+	public synchronized void clear() {
 		this.content.clear();
-		return true;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public String toString() {
+		return this.name;
+	}
+	public com.FileManagerX.BasicModels.Config toConfig() {
+		return null;
+	}
+	public String output() {
+		return null;
+	}
+	public com.FileManagerX.BasicModels.Config input(String in) {
+		return null;
+	}
+	public com.FileManagerX.BasicModels.Config input(com.FileManagerX.BasicModels.Config c) {
+		return null;
+	}
+	public void copyReference(Object o) {
+		;
+	}
+	public void copyValue(Object o) {
+		;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -238,12 +261,12 @@ public class TXTManager_ANY<T extends com.FileManagerX.Interfaces.IPublic, K>
 	@SuppressWarnings("unchecked")
 	public synchronized boolean querys(Object conditions, Object oResult) {
 		this.running = true;
-		if(oResult == null || !(oResult instanceof com.FileManagerX.Interfaces.ICollection<?, ?>)) {
+		if(oResult == null || !(oResult instanceof com.FileManagerX.Interfaces.ICollection<?>)) {
 			oResult = new com.FileManagerX.BasicCollections.BasicArrayList<>();
 		}
 		
-		com.FileManagerX.Interfaces.ICollection<T, K> result = 
-				(com.FileManagerX.Interfaces.ICollection<T, K>)oResult;
+		com.FileManagerX.Interfaces.ICollection<T> result = 
+				(com.FileManagerX.Interfaces.ICollection<T>)oResult;
 		result.clear();
 		
 		QueryConditions qcs = new QueryConditions();
@@ -423,11 +446,11 @@ public class TXTManager_ANY<T extends com.FileManagerX.Interfaces.IPublic, K>
 	@SuppressWarnings({ "unused", "unchecked" })
 	public synchronized boolean updates(Object oItems, Object oErrors) {
 		this.running = true;
-		if(!(oItems instanceof com.FileManagerX.Interfaces.ICollection<?, ?>)) {
+		if(!(oItems instanceof com.FileManagerX.Interfaces.ICollection<?>)) {
 			this.running = false;
 			return false;
 		}
-		if(!(oErrors instanceof com.FileManagerX.Interfaces.ICollection<?, ?>)) {
+		if(!(oErrors instanceof com.FileManagerX.Interfaces.ICollection<?>)) {
 			this.running = false;
 			return false;
 		}
@@ -439,10 +462,10 @@ public class TXTManager_ANY<T extends com.FileManagerX.Interfaces.IPublic, K>
 			oErrors = new com.FileManagerX.BasicCollections.BasicArrayList<>();
 		}
 		
-		com.FileManagerX.Interfaces.ICollection<T, K> items = 
-				(com.FileManagerX.Interfaces.ICollection<T, K>)oItems;
-		com.FileManagerX.Interfaces.ICollection<T, K> errors = 
-				(com.FileManagerX.Interfaces.ICollection<T, K>)oErrors;
+		com.FileManagerX.Interfaces.ICollection<T> items = 
+				(com.FileManagerX.Interfaces.ICollection<T>)oItems;
+		com.FileManagerX.Interfaces.ICollection<T> errors = 
+				(com.FileManagerX.Interfaces.ICollection<T>)oErrors;
 		errors.clear();
 		
 		com.FileManagerX.Interfaces.IIterator<T> it = items.getIterator();
@@ -487,11 +510,11 @@ public class TXTManager_ANY<T extends com.FileManagerX.Interfaces.IPublic, K>
 	@SuppressWarnings({ "unchecked", "unused" })
 	public synchronized boolean removes(Object oItems, Object oErrors) {
 		this.running = true;
-		if(!(oItems instanceof com.FileManagerX.Interfaces.ICollection<?, ?>)) {
+		if(!(oItems instanceof com.FileManagerX.Interfaces.ICollection<?>)) {
 			this.running = false;
 			return false;
 		}
-		if(!(oErrors instanceof com.FileManagerX.Interfaces.ICollection<?, ?>)) {
+		if(!(oErrors instanceof com.FileManagerX.Interfaces.ICollection<?>)) {
 			this.running = false;
 			return false;
 		}
@@ -503,10 +526,10 @@ public class TXTManager_ANY<T extends com.FileManagerX.Interfaces.IPublic, K>
 			oErrors = new com.FileManagerX.BasicCollections.BasicArrayList<>();
 		}
 		
-		com.FileManagerX.Interfaces.ICollection<T, K> items = 
-				(com.FileManagerX.Interfaces.ICollection<T, K>)oItems;
-		com.FileManagerX.Interfaces.ICollection<T, K> errors = 
-				(com.FileManagerX.Interfaces.ICollection<T, K>)oErrors;
+		com.FileManagerX.Interfaces.ICollection<T> items = 
+				(com.FileManagerX.Interfaces.ICollection<T>)oItems;
+		com.FileManagerX.Interfaces.ICollection<T> errors = 
+				(com.FileManagerX.Interfaces.ICollection<T>)oErrors;
 		errors.clear();
 		
 		com.FileManagerX.Interfaces.IIterator<T> it = items.getIterator();
@@ -524,7 +547,7 @@ public class TXTManager_ANY<T extends com.FileManagerX.Interfaces.IPublic, K>
 	@SuppressWarnings("unchecked")
 	public synchronized boolean remove(Object item) {
 		this.running = true;
-		K key = null;
+		Object key = null;
 		try {
 			key = this.content.getKey((T)item);
 		} catch(Exception e) {

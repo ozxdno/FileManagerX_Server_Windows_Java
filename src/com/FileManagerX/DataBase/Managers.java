@@ -1,31 +1,22 @@
 package com.FileManagerX.DataBase;
 
-public class Managers implements com.FileManagerX.Interfaces.ICollection
-	<com.FileManagerX.Interfaces.IDBManager, Long> {
+public class Managers extends com.FileManagerX.BasicCollections.BasicCollection
+	<com.FileManagerX.Interfaces.IDBManager> {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	private java.util.LinkedList<com.FileManagerX.Interfaces.IDBManager> content;
 	private com.FileManagerX.BasicModels.DataBaseInfo database;
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean setDBInfo(com.FileManagerX.BasicModels.DataBaseInfo database) {
-		if(database == null) {
-			return false;
-		}
+		if(database == null) { return false; }
 		this.database = database;
 		return true;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IDBManager> getIterator() {
-		return new IteratorImpl();
-	}
-	public Long getKey(com.FileManagerX.Interfaces.IDBManager item) {
-		return item == null ? null : item.getDBInfo().getIndex();
-	}
 	public com.FileManagerX.BasicModels.DataBaseInfo getDBInfo() {
 		return this.database;
 	}
@@ -36,141 +27,8 @@ public class Managers implements com.FileManagerX.Interfaces.ICollection
 		initThis();
 	}
 	private void initThis() {
-		this.content = new java.util.LinkedList<>();
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	public int size() {
-		return content.size();
-	}
-	public void clear() {
-		initThis();
-	}
-	public boolean add(com.FileManagerX.Interfaces.IDBManager item) {
-		this.content.add(item);
-		return true;
-	}
-	public boolean sort(java.util.Comparator<com.FileManagerX.Interfaces.IDBManager> c) {
-		return false;
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public String toString() {
-		return this.database.toString();
-	}
-	public com.FileManagerX.BasicModels.Config toConfig() {
-		return null;
-	}
-	public String output() {
-		return "";
-	}
-	public com.FileManagerX.BasicModels.Config input(String in) {
-		return null;
-	}
-	public com.FileManagerX.BasicModels.Config input(com.FileManagerX.BasicModels.Config c) {
-		return null;
-	}
-	public void copyReference(Object o) {
-		;
-	}
-	public void copyValue(Object o) {
-		;
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	public com.FileManagerX.Interfaces.IDBManager searchByKey(Long key) {
-		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IDBManager> it = this.getIterator();
-		while(it.hasNext()) {
-			if(key.equals(this.getKey(it.getNext()))) {
-				return it.getNext();
-			}
-		}
-		return null;
-	}
-	public com.FileManagerX.Interfaces.IDBManager fetchByKey(Long key) {
-		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IDBManager> it = this.getIterator();
-		while(it.hasNext()) {
-			com.FileManagerX.Interfaces.IDBManager dbm = it.getNext();
-			if(key.equals(this.getKey(dbm))) {
-				it.remove();
-				return dbm;
-			}
-		}
-		return null;
-	}
-	public Managers searchesByKey(Long key) {
-		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IDBManager> it = this.getIterator();
-		Managers res = new Managers();
-		while(it.hasNext()) {
-			if(key.equals(this.getKey(it.getNext()))) {
-				res.add(it.getNext());
-			}
-		}
-		return res;
-	}
-	public Managers fetchesByKey(Long key) {
-		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IDBManager> it = this.getIterator();
-		Managers res = new Managers();
-		while(it.hasNext()) {
-			if(key.equals(this.getKey(it.getNext()))) {
-				res.add(it.getNext());
-				it.remove();
-			}
-		}
-		return res;
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public com.FileManagerX.Interfaces.IDBManager searchByCount(int count) {
-		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IDBManager> it = this.getIterator();
-		while(it.hasNext()) {
-			com.FileManagerX.Interfaces.IDBManager dbm = it.getNext();
-			if(--count < 0) {
-				return dbm;
-			}
-		}
-		return null;
-	}
-	public com.FileManagerX.Interfaces.IDBManager fetchByCount(int count) {
-		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IDBManager> it = this.getIterator();
-		while(it.hasNext()) {
-			com.FileManagerX.Interfaces.IDBManager dbm = it.getNext();
-			if(--count < 0) {
-				it.remove();
-				return dbm;
-			}
-		}
-		return null;
-	}
-	public Managers searchesByCount(int bg, int ed) {
-		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IDBManager> it = this.getIterator();
-		Managers res = new Managers();
-		if(bg < 0) { bg = 0; }
-		if(ed >= this.size()) { ed = this.size()-1; }
-		int cnt = 0;
-		while(it.hasNext()) {
-			if(cnt < bg) { cnt++; continue; }
-			if(cnt <= ed) { res.add(it.getNext()); cnt++; continue; }
-			if(cnt > ed) { break; }
-		}
-		return res;
-	}
-	public Managers fetchesByCount(int bg, int ed) {
-		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IDBManager> it = this.getIterator();
-		Managers res = new Managers();
-		if(bg < 0) { bg = 0; }
-		if(ed >= this.size()) { ed = this.size()-1; }
-		int cnt = 0;
-		while(it.hasNext()) {
-			if(cnt < bg) { cnt++; continue; }
-			if(cnt <= ed) { res.add(it.getNext()); it.remove(); cnt++; continue; }
-			if(cnt > ed) { break; }
-		}
-		return res;
+		this.setContent(new com.FileManagerX.BasicCollections.BasicLinkedList<>());
+		this.setKey(new KeyForUnit());
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -319,16 +177,20 @@ public class Managers implements com.FileManagerX.Interfaces.ICollection
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public synchronized void removeIdleManagers() {
-		for(int i=this.content.size()-1; i>=0; i--) {
-			if(!this.content.get(i).isConnected()) {
-				this.content.remove(i);
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IDBManager> it = this.getIterator();
+		while(it.hasNext()) {
+			com.FileManagerX.Interfaces.IDBManager dbm = it.getNext();
+			if(!dbm.isConnected()) {
+				it.remove();
 			}
 		}
 	}
 	public synchronized void removeAllManagers() {
-		for(int i=this.content.size()-1; i>=0; i--) {
-			this.content.get(i).disconnect();
-			this.content.remove(i);
+		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IDBManager> it = this.getIterator();
+		while(it.hasNext()) {
+			com.FileManagerX.Interfaces.IDBManager dbm = it.getNext();
+			dbm.disconnect();
+			it.remove();
 		}
 	}
 	
@@ -409,21 +271,25 @@ public class Managers implements com.FileManagerX.Interfaces.ICollection
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	private class IteratorImpl implements com.FileManagerX.Interfaces.IIterator
-		<com.FileManagerX.Interfaces.IDBManager> {
-		private java.util.Iterator<com.FileManagerX.Interfaces.IDBManager> iterator = content.iterator();
-		
-		public boolean hasNext() {
-			return iterator.hasNext();
-		}
-		public com.FileManagerX.Interfaces.IDBManager getNext() {
-			return iterator.next();
-		}
-		public void remove() {
-			iterator.remove();
+	public static class KeyForUnit implements com.FileManagerX.Interfaces.ICollection.IKey {
+		public Object getKey(Object item) {
+			if(item instanceof com.FileManagerX.Interfaces.IDBManager) {
+				com.FileManagerX.Interfaces.IDBManager i = (com.FileManagerX.Interfaces.IDBManager)item;
+				return i.getUnit();
+			}
+			return null;
 		}
 	}
-	
+	public static class KeyForDataBaseIndex implements com.FileManagerX.Interfaces.ICollection.IKey {
+		public Object getKey(Object item) {
+			if(item instanceof com.FileManagerX.Interfaces.IDBManager) {
+				com.FileManagerX.Interfaces.IDBManager i = (com.FileManagerX.Interfaces.IDBManager)item;
+				return i.getDBInfo().getIndex();
+			}
+			return null;
+		}
+	}
+
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 

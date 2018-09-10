@@ -1,28 +1,16 @@
 package com.FileManagerX.Processes;
 
 public class Manager <T extends com.FileManagerX.Interfaces.IProcess>
-	extends com.FileManagerX.Safe.BasicCollections.BasicHashMap<T, Long> {
+	extends com.FileManagerX.BasicCollections.BasicCollection<T> {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public Long getKey(com.FileManagerX.Interfaces.IProcess item) {
-		return item == null ? null : item.getProcessIndex();
+	public Manager() {
+		this.initThis();
 	}
-
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public T createT() {
-		try {
-			@SuppressWarnings("unchecked")
-			Class<T> entityClass = (Class<T>) 
-		        		((java.lang.reflect.ParameterizedType)
-		        				getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-		        return entityClass.newInstance();
-		} catch(Exception e) {
-			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
-			e.printStackTrace();
-			return null;
-		}
+	private void initThis() {
+		this.setContent(new com.FileManagerX.Safe.BasicCollections.BasicHashMap<>());
+		this.setKey(new KeyForIndex());
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -67,6 +55,18 @@ public class Manager <T extends com.FileManagerX.Interfaces.IProcess>
 		return null;
 	}
 
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public static class KeyForIndex implements com.FileManagerX.Interfaces.ICollection.IKey {
+		public Object getKey(Object item) {
+			if(item instanceof com.FileManagerX.Interfaces.IProcess) {
+				com.FileManagerX.Interfaces.IProcess i = (com.FileManagerX.Interfaces.IProcess)item;
+				return i.getProcessIndex();
+			}
+			return null;
+		}
+	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 

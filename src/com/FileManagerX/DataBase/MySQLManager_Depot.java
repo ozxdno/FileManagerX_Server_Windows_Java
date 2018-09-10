@@ -1,7 +1,7 @@
 package com.FileManagerX.DataBase;
 
 public class MySQLManager_Depot extends com.FileManagerX.DataBase.MySQLManager_ANY
-	<com.FileManagerX.BasicModels.DepotInfo, Long> {
+	<com.FileManagerX.BasicModels.DepotInfo> {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

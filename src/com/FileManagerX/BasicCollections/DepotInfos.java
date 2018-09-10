@@ -1,11 +1,15 @@
 package com.FileManagerX.BasicCollections;
 
-public class DepotInfos extends BasicHashMap<com.FileManagerX.BasicModels.DepotInfo, Long> {
+public class DepotInfos extends BasicCollection<com.FileManagerX.BasicModels.DepotInfo> {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public Long getKey(com.FileManagerX.BasicModels.DepotInfo item) {
-		return item == null ? null : item.getIndex();
+	public DepotInfos() {
+		this.initThis();
+	}
+	private void initThis() {
+		this.setContent(new com.FileManagerX.BasicCollections.BasicHashMap<>());
+		this.setKey(new KeyForIndex());
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -108,6 +112,18 @@ public class DepotInfos extends BasicHashMap<com.FileManagerX.BasicModels.DepotI
 			}
 		}
 		return null;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public static class KeyForIndex implements com.FileManagerX.Interfaces.ICollection.IKey {
+		public Object getKey(Object item) {
+			if(item instanceof com.FileManagerX.BasicModels.DepotInfo) {
+				com.FileManagerX.BasicModels.DepotInfo i = (com.FileManagerX.BasicModels.DepotInfo)item;
+				return i.getIndex();
+			}
+			return null;
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

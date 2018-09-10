@@ -1,6 +1,6 @@
 package com.FileManagerX.DataBase;
 
-public class TXTManager_Depot extends TXTManager_ANY<com.FileManagerX.BasicModels.DepotInfo, Long> {
+public class TXTManager_Depot extends TXTManager_ANY<com.FileManagerX.BasicModels.DepotInfo> {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

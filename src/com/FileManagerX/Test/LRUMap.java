@@ -50,7 +50,7 @@ public class LRUMap {
 	}
 	
 	private static class TMap extends com.FileManagerX.Safe.BasicCollections.BasicLRUMap
-		<com.FileManagerX.BasicModels.User, Long> {
+		<com.FileManagerX.BasicModels.User> {
 		public Long getKey(com.FileManagerX.BasicModels.User item) {
 			return item == null ? -1 : item.getIndex();
 		}

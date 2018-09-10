@@ -1,7 +1,7 @@
 package com.FileManagerX.DataBase;
 
 public class MySQLManager_Folder extends com.FileManagerX.DataBase.MySQLManager_ANY
-	<com.FileManagerX.BasicModels.Folder, Long> {
+	<com.FileManagerX.BasicModels.Folder> {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

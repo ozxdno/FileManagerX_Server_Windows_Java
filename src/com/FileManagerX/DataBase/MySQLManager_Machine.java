@@ -1,7 +1,7 @@
 package com.FileManagerX.DataBase;
 
 public class MySQLManager_Machine extends com.FileManagerX.DataBase.MySQLManager_ANY
-	<com.FileManagerX.BasicModels.MachineInfo, Long> {
+	<com.FileManagerX.BasicModels.MachineInfo> {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

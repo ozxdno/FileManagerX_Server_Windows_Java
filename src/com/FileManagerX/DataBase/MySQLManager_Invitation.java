@@ -1,7 +1,7 @@
 package com.FileManagerX.DataBase;
 
 public class MySQLManager_Invitation extends com.FileManagerX.DataBase.MySQLManager_ANY
-	<com.FileManagerX.BasicModels.Invitation, String> {
+	<com.FileManagerX.BasicModels.Invitation> {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

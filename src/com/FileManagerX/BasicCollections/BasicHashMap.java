@@ -1,20 +1,32 @@
 package com.FileManagerX.BasicCollections;
 
-public class BasicHashMap <T extends com.FileManagerX.Interfaces.IPublic, K>
-	implements com.FileManagerX.Interfaces.ICollection<T, K>,
+public class BasicHashMap <T extends com.FileManagerX.Interfaces.IPublic>
+	implements com.FileManagerX.Interfaces.ICollection<T>,
 			   com.FileManagerX.Interfaces.IPublic {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	private java.util.HashMap<K, T> content;
+	private com.FileManagerX.Interfaces.ICollection.IKey key;
+	private java.util.HashMap<Object, T> content;
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public boolean setContent(com.FileManagerX.Interfaces.ICollection<T> content) {
+		return false;
+	}
+	public boolean setKey(com.FileManagerX.Interfaces.ICollection.IKey key) {
+		if(key == null) { return false; }
+		this.key = key;
+		return true;
+	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public com.FileManagerX.Interfaces.IIterator<T> getIterator() {
 		return new IteratorImpl();
 	}
-	public K getKey(T e) {
-		return null;
+	public Object getKey(T e) {
+		return key == null ? null : key.getKey(e);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -29,21 +41,8 @@ public class BasicHashMap <T extends com.FileManagerX.Interfaces.IPublic, K>
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public T createT() {
-		try {
-			@SuppressWarnings("unchecked")
-			Class<T> entityClass = (Class<T>) 
-		        		((java.lang.reflect.ParameterizedType)
-		        				getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-		        return entityClass.newInstance();
-		} catch(Exception e) {
-			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
-			e.printStackTrace();
-			return null;
-		}
+		return null;
 	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 	public int size() {
 		return this.content.size();
 	}
@@ -75,7 +74,7 @@ public class BasicHashMap <T extends com.FileManagerX.Interfaces.IPublic, K>
 		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config();
 		c.setField(this.getClass().getSimpleName());
 		c.addToBottom(this.content.size());
-		for(java.util.Map.Entry<K, T> item : this.content.entrySet()) {
+		for(java.util.Map.Entry<Object, T> item : this.content.entrySet()) {
 			c.addToBottom(item.getValue().toConfig());
 		}
 		return c;
@@ -131,8 +130,8 @@ public class BasicHashMap <T extends com.FileManagerX.Interfaces.IPublic, K>
 		}
 		return null;
 	}
-	public BasicHashMap<T,K> searchesByCount(int bg, int ed) {
-		BasicHashMap<T,K> res = new BasicHashMap<T,K>();
+	public BasicHashMap<T> searchesByCount(int bg, int ed) {
+		BasicHashMap<T> res = new BasicHashMap<T>();
 		if(bg < 0) { bg = 0; }
 		if(ed >= this.size()) { ed = this.size() - 1; }
 		
@@ -145,8 +144,8 @@ public class BasicHashMap <T extends com.FileManagerX.Interfaces.IPublic, K>
 		}
 		return res;
 	}
-	public BasicHashMap<T,K> fetchesByCount(int bg, int ed) {
-		BasicHashMap<T,K> res = new BasicHashMap<T,K>();
+	public BasicHashMap<T> fetchesByCount(int bg, int ed) {
+		BasicHashMap<T> res = new BasicHashMap<T>();
 		if(bg < 0) { bg = 0; }
 		if(ed >= this.size()) { ed = this.size() - 1; }
 		
@@ -168,8 +167,8 @@ public class BasicHashMap <T extends com.FileManagerX.Interfaces.IPublic, K>
 	public T fetchByKey(Object key) {
 		return this.content.remove(key);
 	}
-	public BasicHashMap<T,K> searchesByKey(K key) {
-		BasicHashMap<T,K> res = new BasicHashMap<T,K>();
+	public BasicHashMap<T> searchesByKey(Object key) {
+		BasicHashMap<T> res = new BasicHashMap<T>();
 		com.FileManagerX.Interfaces.IIterator<T> it = this.getIterator();
 		while(it.hasNext()) {
 			if(this.getKey(it.getNext()).equals(key)) {
@@ -178,8 +177,8 @@ public class BasicHashMap <T extends com.FileManagerX.Interfaces.IPublic, K>
 		}
 		return res;
 	}
-	public BasicHashMap<T,K> fetchesByKey(K key) {
-		BasicHashMap<T,K> res = new BasicHashMap<T,K>();
+	public BasicHashMap<T> fetchesByKey(Object key) {
+		BasicHashMap<T> res = new BasicHashMap<T>();
 		com.FileManagerX.Interfaces.IIterator<T> it = this.getIterator();
 		while(it.hasNext()) {
 			if(this.getKey(it.getNext()).equals(key)) {
@@ -193,7 +192,7 @@ public class BasicHashMap <T extends com.FileManagerX.Interfaces.IPublic, K>
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	private class IteratorImpl implements com.FileManagerX.Interfaces.IIterator<T> {
-		private java.util.Iterator<java.util.Map.Entry<K, T>> iterator = content.entrySet().iterator();
+		private java.util.Iterator<java.util.Map.Entry<Object, T>> iterator = content.entrySet().iterator();
 		
 		public boolean hasNext() {
 			return iterator.hasNext();

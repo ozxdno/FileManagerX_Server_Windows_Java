@@ -1,12 +1,15 @@
 package com.FileManagerX.BasicCollections;
 
-
-public class Errors extends BasicArrayList<com.FileManagerX.BasicModels.Error, String> {
+public class Errors extends BasicCollection<com.FileManagerX.BasicModels.Error> {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public String getKey(com.FileManagerX.BasicModels.Error item) {
-		return item == null ? null : item.getType().toString();
+	public Errors() {
+		this.initThis();
+	}
+	private void initThis() {
+		this.setContent(new com.FileManagerX.BasicCollections.BasicLinkedList<>());
+		this.setKey(new KeyForType());
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -148,6 +151,18 @@ public class Errors extends BasicArrayList<com.FileManagerX.BasicModels.Error, S
 			}
 		}
 		return ok;
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public static class KeyForType implements com.FileManagerX.Interfaces.ICollection.IKey {
+		public Object getKey(Object item) {
+			if(item instanceof com.FileManagerX.BasicModels.Error) {
+				com.FileManagerX.BasicModels.Error i = (com.FileManagerX.BasicModels.Error)item;
+				return i.getType();
+			}
+			return null;
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

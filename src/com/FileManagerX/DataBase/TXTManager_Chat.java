@@ -1,6 +1,6 @@
 package com.FileManagerX.DataBase;
 
-public class TXTManager_Chat extends TXTManager_ANY<com.FileManagerX.BasicModels.Chat, Long> {
+public class TXTManager_Chat extends TXTManager_ANY<com.FileManagerX.BasicModels.Chat> {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

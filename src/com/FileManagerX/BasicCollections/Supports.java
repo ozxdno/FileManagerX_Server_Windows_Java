@@ -1,11 +1,15 @@
 package com.FileManagerX.BasicCollections;
 
-public class Supports extends BasicHashMap<com.FileManagerX.BasicModels.Support, String> {
+public class Supports extends BasicHashMap<com.FileManagerX.BasicModels.Support> {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public String getKey(com.FileManagerX.BasicModels.Support item) {
-		return item == null ? null : item.getExtension();
+	public Supports() {
+		this.initThis();
+	}
+	private void initThis() {
+		this.setContent(new com.FileManagerX.BasicCollections.BasicHashMap<>());
+		this.setKey(new KeyForExtension());
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -38,6 +42,18 @@ public class Supports extends BasicHashMap<com.FileManagerX.BasicModels.Support,
 			}
 		}
 		return supports;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public static class KeyForExtension implements com.FileManagerX.Interfaces.ICollection.IKey {
+		public Object getKey(Object item) {
+			if(item instanceof com.FileManagerX.BasicModels.Support) {
+				com.FileManagerX.BasicModels.Support i = (com.FileManagerX.BasicModels.Support)item;
+				return i.getExtension();
+			}
+			return null;
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -167,18 +167,40 @@ public class Manager implements com.FileManagerX.Interfaces.IDBManager {
 		com.FileManagerX.Interfaces.IDBManager dbm = this.managers.searchByUnit(Unit.SHELL);
 		return dbm == null ? false : dbm.exists();
 	}
-	public boolean clear() {
-		boolean ok = false;
+	public void clear() {
 		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.Interfaces.IDBManager> it =
 				this.managers.getIterator();
 		while(it.hasNext()) {
 			com.FileManagerX.Interfaces.IDBManager dbm = it.getNext();
 			if(!dbm.isConnected()) {
 				dbm.setDBInfo(database);
-				ok &= dbm.clear();
+				dbm.clear();
 			}
 		}
-		return ok;
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public String toString() {
+		return this.getDBInfo() == null ? "NULL" : this.getDBInfo().toString();
+	}
+	public com.FileManagerX.BasicModels.Config toConfig() {
+		return null;
+	}
+	public String output() {
+		return null;
+	}
+	public com.FileManagerX.BasicModels.Config input(String in) {
+		return null;
+	}
+	public com.FileManagerX.BasicModels.Config input(com.FileManagerX.BasicModels.Config c) {
+		return null;
+	}
+	public void copyReference(Object o) {
+		;
+	}
+	public void copyValue(Object o) {
+		;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

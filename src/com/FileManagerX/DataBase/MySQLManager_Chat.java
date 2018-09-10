@@ -1,7 +1,7 @@
 package com.FileManagerX.DataBase;
 
 public class MySQLManager_Chat extends com.FileManagerX.DataBase.MySQLManager_ANY
-	<com.FileManagerX.BasicModels.Chat, Long> {
+	<com.FileManagerX.BasicModels.Chat> {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

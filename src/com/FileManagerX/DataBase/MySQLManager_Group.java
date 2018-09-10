@@ -1,7 +1,7 @@
 package com.FileManagerX.DataBase;
 
 public class MySQLManager_Group extends com.FileManagerX.DataBase.MySQLManager_ANY
-	<com.FileManagerX.BasicModels.Group, Long> {
+	<com.FileManagerX.BasicModels.Group> {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

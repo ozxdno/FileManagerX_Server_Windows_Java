@@ -1,7 +1,7 @@
 package com.FileManagerX.DataBase;
 
 public class MySQLManager_CFG extends com.FileManagerX.DataBase.MySQLManager_ANY
-	<com.FileManagerX.BasicModels.File, Long> {
+	<com.FileManagerX.BasicModels.File> {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

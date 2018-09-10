@@ -1,13 +1,17 @@
 package com.FileManagerX.BasicCollections;
 
-
-public class Records extends BasicLinkedList<com.FileManagerX.BasicModels.Record, String> {
+public class Records extends BasicCollection<com.FileManagerX.BasicModels.Record> {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public String getKey(com.FileManagerX.BasicModels.Record item) {
-		return item == null ? null : item.getType().toString();
+	public Records() {
+		this.initThis();
 	}
+	private void initThis() {
+		this.setContent(new com.FileManagerX.BasicCollections.BasicLinkedList<>());
+		this.setKey(new KeyForType());
+	}
+
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -154,6 +158,18 @@ public class Records extends BasicLinkedList<com.FileManagerX.BasicModels.Record
 			}
 		}
 		return ok;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public static class KeyForType implements com.FileManagerX.Interfaces.ICollection.IKey {
+		public Object getKey(Object item) {
+			if(item instanceof com.FileManagerX.BasicModels.Record) {
+				com.FileManagerX.BasicModels.Record i = (com.FileManagerX.BasicModels.Record)item;
+				return i.getType();
+			}
+			return null;
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

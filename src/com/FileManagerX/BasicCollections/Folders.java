@@ -1,11 +1,15 @@
 package com.FileManagerX.BasicCollections;
 
-public class Folders extends BasicHashMap<com.FileManagerX.BasicModels.Folder, Long> {
+public class Folders extends BasicCollection<com.FileManagerX.BasicModels.Folder> {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public Long getKey(com.FileManagerX.BasicModels.Folder item) {
-		return item == null ? null : item.getIndex();
+	public Folders() {
+		this.initThis();
+	}
+	private void initThis() {
+		this.setContent(new com.FileManagerX.BasicCollections.BasicHashMap<>());
+		this.setKey(new KeyForIndex());
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -64,6 +68,18 @@ public class Folders extends BasicHashMap<com.FileManagerX.BasicModels.Folder, L
 			}
 		}
 		return null;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public static class KeyForIndex implements com.FileManagerX.Interfaces.ICollection.IKey {
+		public Object getKey(Object item) {
+			if(item instanceof com.FileManagerX.BasicModels.Folder) {
+				com.FileManagerX.BasicModels.Folder i = (com.FileManagerX.BasicModels.Folder)item;
+				return i.getIndex();
+			}
+			return null;
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

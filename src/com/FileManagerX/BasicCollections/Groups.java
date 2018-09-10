@@ -1,11 +1,15 @@
 package com.FileManagerX.BasicCollections;
 
-public class Groups extends BasicHashMap<com.FileManagerX.BasicModels.Group, Long> {
+public class Groups extends BasicCollection<com.FileManagerX.BasicModels.Group> {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public Long getKey(com.FileManagerX.BasicModels.Group item) {
-		return item == null ? null : item.getIndex();
+	public Groups() {
+		this.initThis();
+	}
+	private void initThis() {
+		this.setContent(new com.FileManagerX.BasicCollections.BasicHashMap<>());
+		this.setKey(new KeyForIndex());
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -36,6 +40,18 @@ public class Groups extends BasicHashMap<com.FileManagerX.BasicModels.Group, Lon
 			}
 		}
 		return null;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public static class KeyForIndex implements com.FileManagerX.Interfaces.ICollection.IKey {
+		public Object getKey(Object item) {
+			if(item instanceof com.FileManagerX.BasicModels.Group) {
+				com.FileManagerX.BasicModels.Group i = (com.FileManagerX.BasicModels.Group)item;
+				return i.getIndex();
+			}
+			return null;
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

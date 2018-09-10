@@ -5,15 +5,15 @@ public class CopyCollections {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	@SuppressWarnings("unchecked")
-	public final static<T extends com.FileManagerX.Interfaces.IPublic, K> void copyReference(
+	public final static<T extends com.FileManagerX.Interfaces.IPublic> void copyReference(
 			Object sour,
-			com.FileManagerX.Interfaces.ICollection<T, K> dest) {
+			com.FileManagerX.Interfaces.ICollection<T> dest) {
 		dest.clear();
 		if(sour == null || dest == null) { return; }
-		if(sour instanceof com.FileManagerX.Interfaces.ICollection<?, ?>) {
+		if(sour instanceof com.FileManagerX.Interfaces.ICollection<?>) {
 			try {
-				com.FileManagerX.Interfaces.ICollection<T, K> s =
-						(com.FileManagerX.Interfaces.ICollection<T, K>)sour;
+				com.FileManagerX.Interfaces.ICollection<T> s =
+						(com.FileManagerX.Interfaces.ICollection<T>)sour;
 				com.FileManagerX.Interfaces.IIterator<T> its = s.getIterator();
 				while(its.hasNext()) {
 					dest.add(its.getNext());
@@ -38,8 +38,8 @@ public class CopyCollections {
 		}
 		if(sour instanceof java.util.Map<?, ?>) {
 			try {
-				java.util.Map<K, T> s = (java.util.Map<K, T>)sour;
-				for(java.util.Map.Entry<K, T> e : s.entrySet()) {
+				java.util.Map<?, T> s = (java.util.Map<?, T>)sour;
+				for(java.util.Map.Entry<?, T> e : s.entrySet()) {
 					dest.add(e.getValue());
 				}
 				return;
@@ -53,15 +53,15 @@ public class CopyCollections {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	@SuppressWarnings("unchecked")
-	public final static<T extends com.FileManagerX.Interfaces.IPublic, K> void copyValue(
+	public final static<T extends com.FileManagerX.Interfaces.IPublic> void copyValue(
 			Object sour,
-			com.FileManagerX.Interfaces.ICollection<T, K> dest) {
+			com.FileManagerX.Interfaces.ICollection<T> dest) {
 		dest.clear();
 		if(sour == null || dest == null) { return; }
-		if(sour instanceof com.FileManagerX.Interfaces.ICollection<?, ?>) {
+		if(sour instanceof com.FileManagerX.Interfaces.ICollection<?>) {
 			try {
-				com.FileManagerX.Interfaces.ICollection<T, K> s =
-						(com.FileManagerX.Interfaces.ICollection<T, K>)sour;
+				com.FileManagerX.Interfaces.ICollection<T> s =
+						(com.FileManagerX.Interfaces.ICollection<T>)sour;
 				com.FileManagerX.Interfaces.IIterator<T> its = s.getIterator();
 				while(its.hasNext()) {
 					T t = (T)com.FileManagerX.Tools.Reflect.executeMethod("createT", dest);
@@ -90,8 +90,8 @@ public class CopyCollections {
 		}
 		if(sour instanceof java.util.Map<?, ?>) {
 			try {
-				java.util.Map<K, T> s = (java.util.Map<K, T>)sour;
-				for(java.util.Map.Entry<K, T> e : s.entrySet()) {
+				java.util.Map<?, T> s = (java.util.Map<?, T>)sour;
+				for(java.util.Map.Entry<?, T> e : s.entrySet()) {
 					T t = (T)com.FileManagerX.Tools.Reflect.executeMethod("createT", dest);
 					t.copyValue(e.getValue());
 					dest.add(t);

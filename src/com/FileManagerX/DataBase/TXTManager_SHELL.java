@@ -111,8 +111,32 @@ public class TXTManager_SHELL implements com.FileManagerX.Interfaces.IDBManager 
 		java.io.File folder = new java.io.File(this.database.getUrl());
 		return folder.exists() && folder.isDirectory();
 	}
-	public synchronized boolean clear() {
-		return true;
+	public synchronized void clear() {
+		;
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public String toString() {
+		return this.name;
+	}
+	public com.FileManagerX.BasicModels.Config toConfig() {
+		return null;
+	}
+	public String output() {
+		return null;
+	}
+	public com.FileManagerX.BasicModels.Config input(String in) {
+		return null;
+	}
+	public com.FileManagerX.BasicModels.Config input(com.FileManagerX.BasicModels.Config c) {
+		return null;
+	}
+	public void copyReference(Object o) {
+		;
+	}
+	public void copyValue(Object o) {
+		;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

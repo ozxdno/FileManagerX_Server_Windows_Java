@@ -1,6 +1,6 @@
 package com.FileManagerX.MyNet;
 
-public class User extends com.FileManagerX.Safe.BasicCollections.BasicLRUMap<Machine, String> {
+public class User extends com.FileManagerX.BasicCollections.BasicCollection<Machine> {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -34,6 +34,11 @@ public class User extends com.FileManagerX.Safe.BasicCollections.BasicLRUMap<Mac
 		this.permit = permit;
 		return true;
 	}
+	public boolean setLimit(int limit) {
+		com.FileManagerX.Safe.BasicCollections.BasicLRUMap<Machine> map = 
+				(com.FileManagerX.Safe.BasicCollections.BasicLRUMap<Machine>)this.getContent();
+		return map.setLimit(limit);
+	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -46,9 +51,10 @@ public class User extends com.FileManagerX.Safe.BasicCollections.BasicLRUMap<Mac
 	public Net getPermit() {
 		return this.permit;
 	}
-	
-	public String getKey(Machine item) {
-		return item == null ? null : item.getName();
+	public int getLimit() {
+		com.FileManagerX.Safe.BasicCollections.BasicLRUMap<Machine> map = 
+				(com.FileManagerX.Safe.BasicCollections.BasicLRUMap<Machine>)this.getContent();
+		return map.getLimit();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -57,11 +63,12 @@ public class User extends com.FileManagerX.Safe.BasicCollections.BasicLRUMap<Mac
 		initThis();
 	}
 	private void initThis() {
+		this.setContent(new com.FileManagerX.Safe.BasicCollections.BasicLRUMap<>());
+		this.setKey(new KeyForName());
 		this.user = new com.FileManagerX.BasicModels.User();
 		this.name = "Default User";
 		this.permit = new Net();
 		this.permit.setName("Permit Groups");
-		super.setLimit(100);
 	}
 	public Machine createT() {
 		return new Machine();
@@ -81,6 +88,7 @@ public class User extends com.FileManagerX.Safe.BasicCollections.BasicLRUMap<Mac
 		c.setField("Net-" + this.getClass().getSimpleName());
 		c.addToBottom(this.user.getIndex());
 		c.addToBottom(this.name);
+		c.addToBottom(this.getLimit());
 		c.addToBottom(this.permit.size());
 		com.FileManagerX.Interfaces.IIterator<Group> it = this.permit.getIterator();
 		while(it.hasNext()) {
@@ -101,6 +109,8 @@ public class User extends com.FileManagerX.Safe.BasicCollections.BasicLRUMap<Mac
 		this.user.setIndex(c.fetchFirstLong());
 		if(!c.getIsOK()) { return c; }
 		this.name = c.fetchFirstString();
+		if(!c.getIsOK()) { return c; }
+		this.setLimit(c.fetchFirstInt());
 		if(!c.getIsOK()) { return c; }
 		this.permit.clear();
 		int amount = c.fetchFirstInt();
@@ -168,6 +178,27 @@ public class User extends com.FileManagerX.Safe.BasicCollections.BasicLRUMap<Mac
 		com.FileManagerX.Interfaces.IIterator<Machine> it = this.getIterator();
 		while(it.hasNext()) {
 			it.getNext().refresh();
+		}
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public static class KeyForName implements com.FileManagerX.Interfaces.ICollection.IKey {
+		public Object getKey(Object item) {
+			if(item instanceof com.FileManagerX.MyNet.Machine) {
+				com.FileManagerX.MyNet.Machine i = (com.FileManagerX.MyNet.Machine)item;
+				return i.getName();
+			}
+			return null;
+		}
+	}
+	public static class KeyForIndex implements com.FileManagerX.Interfaces.ICollection.IKey {
+		public Object getKey(Object item) {
+			if(item instanceof com.FileManagerX.MyNet.Machine) {
+				com.FileManagerX.MyNet.Machine i = (com.FileManagerX.MyNet.Machine)item;
+				return i.getMachine().getIndex();
+			}
+			return null;
 		}
 	}
 	

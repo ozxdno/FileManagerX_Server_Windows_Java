@@ -1,27 +1,37 @@
 package com.FileManagerX.Transport;
 
-/*
-public class Transports <K> implements com.FileManagerX.Interfaces.IPublic {
+
+public class Transports extends com.FileManagerX.BasicCollections.BasicCollection
+	<com.FileManagerX.Interfaces.ITransport> {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	private com.FileManagerX.Interfaces.ICollection<Transport, K> content;
-	private com.FileManagerX.Interfaces.IKey key;
+	public Transports() {
+		this.initThis();
+	}
+	private void initThis() {
+		this.setContent(new com.FileManagerX.BasicCollections.BasicArrayList<>());
+		this.setKey(new KeyForIndex());
+	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public boolean setContent(com.FileManagerX.Interfaces.ICollection<Transport, K> content) {
-		if(content == null) { return false; }
-		this.content = content;
-		return true;
+	public com.FileManagerX.Interfaces.ITransport createT() {
+		return new Transport();
 	}
-	public boolean setKey(com.FileManagerX.Interfaces.IKey key) {
-		if(key == null) { return false; }
-		this.key = key;
-		return true;
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public static class KeyForIndex implements com.FileManagerX.Interfaces.ICollection.IKey {
+		public Object getKey(Object item) {
+			if(item instanceof com.FileManagerX.Interfaces.ITransport) {
+				com.FileManagerX.Interfaces.ITransport t = (com.FileManagerX.Interfaces.ITransport)item;
+				return t.getBasicMessagePackage().getIndex();
+			}
+			return null;
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 }
-*/

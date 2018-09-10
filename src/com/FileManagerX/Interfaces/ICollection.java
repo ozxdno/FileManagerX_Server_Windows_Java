@@ -1,14 +1,20 @@
 package com.FileManagerX.Interfaces;
 
-public interface ICollection<T, K> extends IPublic {
+public interface ICollection<T> extends IPublic {
 
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public boolean setContent(ICollection<T> content);
+	public boolean setKey(IKey key);
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public IIterator<T> getIterator();
-	public K getKey(T e);
+	public Object getKey(T e);
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	public T createT();
 	public int size();
 	public void clear();
 	public boolean add(T item);
@@ -18,15 +24,31 @@ public interface ICollection<T, K> extends IPublic {
 
 	public T searchByCount(int count);
 	public T fetchByCount(int count);
-	public ICollection<T,K> searchesByCount(int bg, int ed);
-	public ICollection<T,K> fetchesByCount(int bg, int ed);
+	public ICollection<T> searchesByCount(int bg, int ed);
+	public ICollection<T> fetchesByCount(int bg, int ed);
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public T searchByKey(K key);
-	public T fetchByKey(K key);
-	public ICollection<T,K> searchesByKey(K key);
-	public ICollection<T,K> fetchesByKey(K key);
+	public T searchByKey(Object key);
+	public T fetchByKey(Object key);
+	public ICollection<T> searchesByKey(Object key);
+	public ICollection<T> fetchesByKey(Object key);
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public static interface IKey {
+		public Object getKey(Object item);
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public static IKey defaultKey() {
+		return new IKey() {
+			public Object getKey(Object item) {
+				return com.FileManagerX.Tools.Time.getTicks();
+			}
+		};
+	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

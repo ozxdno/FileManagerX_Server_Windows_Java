@@ -1,20 +1,32 @@
 package com.FileManagerX.BasicCollections;
 
-public class BasicLinkedList <T extends com.FileManagerX.Interfaces.IPublic, K>
-	implements com.FileManagerX.Interfaces.ICollection<T, K>,
+public class BasicLinkedList <T extends com.FileManagerX.Interfaces.IPublic>
+	implements com.FileManagerX.Interfaces.ICollection<T>,
 			   com.FileManagerX.Interfaces.IPublic {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
+	private com.FileManagerX.Interfaces.ICollection.IKey key;
 	private java.util.LinkedList<T> content;
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public boolean setContent(com.FileManagerX.Interfaces.ICollection<T> content) {
+		return false;
+	}
+	public boolean setKey(com.FileManagerX.Interfaces.ICollection.IKey key) {
+		if(key == null) { return false; }
+		this.key = key;
+		return true;
+	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public com.FileManagerX.Interfaces.IIterator<T> getIterator() {
 		return new IteratorImpl();
 	}
-	public K getKey(T e) {
-		return null;
+	public Object getKey(T e) {
+		return key == null ? null : key.getKey(e);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -28,22 +40,7 @@ public class BasicLinkedList <T extends com.FileManagerX.Interfaces.IPublic, K>
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public T createT() {
-		try {
-			@SuppressWarnings("unchecked")
-			Class<T> entityClass = (Class<T>) 
-		        		((java.lang.reflect.ParameterizedType)
-		        				getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-		        return entityClass.newInstance();
-		} catch(Exception e) {
-			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
-			e.printStackTrace();
-			return null;
-		}
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+	public T createT() { return null; }
 	public int size() {
 		return this.content.size();
 	}
@@ -122,8 +119,8 @@ public class BasicLinkedList <T extends com.FileManagerX.Interfaces.IPublic, K>
 		if(count < 0 || count > this.content.size()) { return null; }
 		return this.content.remove(count);
 	}
-	public BasicLinkedList<T,K> searchesByCount(int bg, int ed) {
-		BasicLinkedList<T,K> res = new BasicLinkedList<T,K>();
+	public BasicLinkedList<T> searchesByCount(int bg, int ed) {
+		BasicLinkedList<T> res = new BasicLinkedList<T>();
 		if(bg < 0) { bg = 0; }
 		if(ed >= this.size()) { ed = this.size() - 1; }
 		
@@ -136,8 +133,8 @@ public class BasicLinkedList <T extends com.FileManagerX.Interfaces.IPublic, K>
 		}
 		return res;
 	}
-	public BasicLinkedList<T,K> fetchesByCount(int bg, int ed) {
-		BasicLinkedList<T,K> res = new BasicLinkedList<T,K>();
+	public BasicLinkedList<T> fetchesByCount(int bg, int ed) {
+		BasicLinkedList<T> res = new BasicLinkedList<T>();
 		if(bg < 0) { bg = 0; }
 		if(ed >= this.size()) { ed = this.size() - 1; }
 		
@@ -153,7 +150,7 @@ public class BasicLinkedList <T extends com.FileManagerX.Interfaces.IPublic, K>
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public T searchByKey(K key) {
+	public T searchByKey(Object key) {
 		com.FileManagerX.Interfaces.IIterator<T> it = this.getIterator();
 		while(it.hasNext()) {
 			if(this.getKey(it.getNext()).equals(key)) {
@@ -162,7 +159,7 @@ public class BasicLinkedList <T extends com.FileManagerX.Interfaces.IPublic, K>
 		}
 		return null;
 	}
-	public T fetchByKey(K key) {
+	public T fetchByKey(Object key) {
 		com.FileManagerX.Interfaces.IIterator<T> it = this.getIterator();
 		while(it.hasNext()) {
 			T t = it.getNext();
@@ -173,8 +170,8 @@ public class BasicLinkedList <T extends com.FileManagerX.Interfaces.IPublic, K>
 		}
 		return null;
 	}
-	public BasicLinkedList<T,K> searchesByKey(K key) {
-		BasicLinkedList<T,K> res = new BasicLinkedList<T,K>();
+	public BasicLinkedList<T> searchesByKey(Object key) {
+		BasicLinkedList<T> res = new BasicLinkedList<T>();
 		com.FileManagerX.Interfaces.IIterator<T> it = this.getIterator();
 		while(it.hasNext()) {
 			if(this.getKey(it.getNext()).equals(key)) {
@@ -183,8 +180,8 @@ public class BasicLinkedList <T extends com.FileManagerX.Interfaces.IPublic, K>
 		}
 		return res;
 	}
-	public BasicLinkedList<T,K> fetchesByKey(K key) {
-		BasicLinkedList<T,K> res = new BasicLinkedList<T,K>();
+	public BasicLinkedList<T> fetchesByKey(Object key) {
+		BasicLinkedList<T> res = new BasicLinkedList<T>();
 		com.FileManagerX.Interfaces.IIterator<T> it = this.getIterator();
 		while(it.hasNext()) {
 			if(this.getKey(it.getNext()).equals(key)) {

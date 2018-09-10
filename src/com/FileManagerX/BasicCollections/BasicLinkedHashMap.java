@@ -1,20 +1,32 @@
 package com.FileManagerX.BasicCollections;
 
-public class BasicLinkedHashMap <T extends com.FileManagerX.Interfaces.IPublic, K>
-	implements com.FileManagerX.Interfaces.ICollection<T, K>,
+public class BasicLinkedHashMap <T extends com.FileManagerX.Interfaces.IPublic>
+	implements com.FileManagerX.Interfaces.ICollection<T>,
 			   com.FileManagerX.Interfaces.IPublic {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	private java.util.LinkedHashMap<K, T> content;
+	private com.FileManagerX.Interfaces.ICollection.IKey key;
+	private java.util.LinkedHashMap<Object, T> content;
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public boolean setContent(com.FileManagerX.Interfaces.ICollection<T> content) {
+		return false;
+	}
+	public boolean setKey(com.FileManagerX.Interfaces.ICollection.IKey key) {
+		if(key == null) { return false; }
+		this.key = key;
+		return true;
+	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public com.FileManagerX.Interfaces.IIterator<T> getIterator() {
 		return new IteratorImpl();
 	}
-	public K getKey(T e) {
-		return null;
+	public Object getKey(T e) {
+		return key == null ? null : key.getKey(e);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -23,27 +35,12 @@ public class BasicLinkedHashMap <T extends com.FileManagerX.Interfaces.IPublic, 
 		initThis();
 	}
 	private void initThis() {
-		this.content = new java.util.LinkedHashMap<>();
+		this.content = new java.util.LinkedHashMap<>(16, 0.75f, true);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public T createT() {
-		try {
-			@SuppressWarnings("unchecked")
-			Class<T> entityClass = (Class<T>) 
-		        		((java.lang.reflect.ParameterizedType)
-		        				getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-		        return entityClass.newInstance();
-		} catch(Exception e) {
-			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
-			e.printStackTrace();
-			return null;
-		}
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+	public T createT() { return null; }
 	public int size() {
 		return this.content.size();
 	}
@@ -75,7 +72,7 @@ public class BasicLinkedHashMap <T extends com.FileManagerX.Interfaces.IPublic, 
 		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config();
 		c.setField(this.getClass().getSimpleName());
 		c.addToBottom(this.content.size());
-		for(java.util.Map.Entry<K, T> item : this.content.entrySet()) {
+		for(java.util.Map.Entry<Object, T> item : this.content.entrySet()) {
 			c.addToBottom(item.getValue().toConfig());
 		}
 		return c;
@@ -131,8 +128,8 @@ public class BasicLinkedHashMap <T extends com.FileManagerX.Interfaces.IPublic, 
 		}
 		return null;
 	}
-	public BasicLinkedHashMap<T,K> searchesByCount(int bg, int ed) {
-		BasicLinkedHashMap<T,K> res = new BasicLinkedHashMap<T,K>();
+	public BasicLinkedHashMap<T> searchesByCount(int bg, int ed) {
+		BasicLinkedHashMap<T> res = new BasicLinkedHashMap<T>();
 		if(bg < 0) { bg = 0; }
 		if(ed >= this.size()) { ed = this.size() - 1; }
 		
@@ -145,8 +142,8 @@ public class BasicLinkedHashMap <T extends com.FileManagerX.Interfaces.IPublic, 
 		}
 		return res;
 	}
-	public BasicLinkedHashMap<T,K> fetchesByCount(int bg, int ed) {
-		BasicLinkedHashMap<T,K> res = new BasicLinkedHashMap<T,K>();
+	public BasicLinkedHashMap<T> fetchesByCount(int bg, int ed) {
+		BasicLinkedHashMap<T> res = new BasicLinkedHashMap<T>();
 		if(bg < 0) { bg = 0; }
 		if(ed >= this.size()) { ed = this.size() - 1; }
 		
@@ -168,8 +165,8 @@ public class BasicLinkedHashMap <T extends com.FileManagerX.Interfaces.IPublic, 
 	public T fetchByKey(Object key) {
 		return this.content.remove(key);
 	}
-	public BasicLinkedHashMap<T,K> searchesByKey(K key) {
-		BasicLinkedHashMap<T,K> res = new BasicLinkedHashMap<T,K>();
+	public BasicLinkedHashMap<T> searchesByKey(Object key) {
+		BasicLinkedHashMap<T> res = new BasicLinkedHashMap<T>();
 		com.FileManagerX.Interfaces.IIterator<T> it = this.getIterator();
 		while(it.hasNext()) {
 			if(this.getKey(it.getNext()).equals(key)) {
@@ -178,8 +175,8 @@ public class BasicLinkedHashMap <T extends com.FileManagerX.Interfaces.IPublic, 
 		}
 		return res;
 	}
-	public BasicLinkedHashMap<T,K> fetchesByKey(K key) {
-		BasicLinkedHashMap<T,K> res = new BasicLinkedHashMap<T,K>();
+	public BasicLinkedHashMap<T> fetchesByKey(Object key) {
+		BasicLinkedHashMap<T> res = new BasicLinkedHashMap<T>();
 		com.FileManagerX.Interfaces.IIterator<T> it = this.getIterator();
 		while(it.hasNext()) {
 			if(this.getKey(it.getNext()).equals(key)) {
@@ -193,7 +190,7 @@ public class BasicLinkedHashMap <T extends com.FileManagerX.Interfaces.IPublic, 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	private class IteratorImpl implements com.FileManagerX.Interfaces.IIterator<T> {
-		private java.util.Iterator<java.util.Map.Entry<K, T>> iterator = content.entrySet().iterator();
+		private java.util.Iterator<java.util.Map.Entry<Object, T>> iterator = content.entrySet().iterator();
 		
 		public boolean hasNext() {
 			return iterator.hasNext();
