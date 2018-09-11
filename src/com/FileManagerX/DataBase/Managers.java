@@ -4,6 +4,29 @@ public class Managers extends com.FileManagerX.BasicCollections.BasicCollection
 	<com.FileManagerX.Interfaces.IDBManager> {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public final static com.FileManagerX.Interfaces.ICollection.IKey KeyForUnit =
+		new com.FileManagerX.Interfaces.ICollection.IKey() {
+			public Object getKey(Object item) {
+				if(item instanceof com.FileManagerX.Interfaces.IDBManager) {
+					com.FileManagerX.Interfaces.IDBManager i = (com.FileManagerX.Interfaces.IDBManager)item;
+					return i.getUnit();
+				}
+				return null;
+			}
+		};
+	public final static com.FileManagerX.Interfaces.ICollection.IKey KeyForDataBaseIndex =
+		new com.FileManagerX.Interfaces.ICollection.IKey() {
+			public Object getKey(Object item) {
+				if(item instanceof com.FileManagerX.Interfaces.IDBManager) {
+					com.FileManagerX.Interfaces.IDBManager i = (com.FileManagerX.Interfaces.IDBManager)item;
+					return i.getDBInfo().getIndex();
+				}
+				return null;
+			}
+		};
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	private com.FileManagerX.BasicModels.DataBaseInfo database;
 
@@ -28,7 +51,7 @@ public class Managers extends com.FileManagerX.BasicCollections.BasicCollection
 	}
 	private void initThis() {
 		this.setContent(new com.FileManagerX.BasicCollections.BasicLinkedList<>());
-		this.setKey(new KeyForUnit());
+		this.setKey(KeyForUnit);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -269,27 +292,6 @@ public class Managers extends com.FileManagerX.BasicCollections.BasicCollection
 		return null;
 	}
 	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public static class KeyForUnit implements com.FileManagerX.Interfaces.ICollection.IKey {
-		public Object getKey(Object item) {
-			if(item instanceof com.FileManagerX.Interfaces.IDBManager) {
-				com.FileManagerX.Interfaces.IDBManager i = (com.FileManagerX.Interfaces.IDBManager)item;
-				return i.getUnit();
-			}
-			return null;
-		}
-	}
-	public static class KeyForDataBaseIndex implements com.FileManagerX.Interfaces.ICollection.IKey {
-		public Object getKey(Object item) {
-			if(item instanceof com.FileManagerX.Interfaces.IDBManager) {
-				com.FileManagerX.Interfaces.IDBManager i = (com.FileManagerX.Interfaces.IDBManager)item;
-				return i.getDBInfo().getIndex();
-			}
-			return null;
-		}
-	}
-
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 

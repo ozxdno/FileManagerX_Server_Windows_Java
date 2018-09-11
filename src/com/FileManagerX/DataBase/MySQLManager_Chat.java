@@ -14,9 +14,7 @@ public class MySQLManager_Chat extends com.FileManagerX.DataBase.MySQLManager_AN
 		this.reflect();
 		this.setKey("index");
 	}
-	public com.FileManagerX.BasicModels.Chat createT() {
-		return new com.FileManagerX.BasicModels.Chat();
-	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public Object querys2(Object conditions) {

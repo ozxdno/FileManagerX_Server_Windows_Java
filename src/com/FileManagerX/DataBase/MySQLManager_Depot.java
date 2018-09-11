@@ -14,9 +14,7 @@ public class MySQLManager_Depot extends com.FileManagerX.DataBase.MySQLManager_A
 		this.reflect();
 		this.setKey("index");
 	}
-	public com.FileManagerX.BasicModels.DepotInfo createT() {
-		return new com.FileManagerX.BasicModels.DepotInfo();
-	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public Object querys2(Object conditions) {

@@ -14,9 +14,6 @@ public class TXTManager_Video extends TXTManager_ANY<com.FileManagerX.BasicModel
 		this.setSaveImmediately(false);
 		this.reflect();
 	}
-	public com.FileManagerX.FileModels.Video createT() {
-		return new com.FileManagerX.FileModels.Video();
-	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

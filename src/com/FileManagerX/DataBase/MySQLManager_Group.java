@@ -14,9 +14,7 @@ public class MySQLManager_Group extends com.FileManagerX.DataBase.MySQLManager_A
 		this.reflect();
 		this.setKey("index");
 	}
-	public com.FileManagerX.BasicModels.Group createT() {
-		return new com.FileManagerX.BasicModels.Group();
-	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public Object querys2(Object conditions) {

@@ -3,13 +3,26 @@ package com.FileManagerX.DataBase;
 public class QueryConditions extends com.FileManagerX.BasicCollections.BasicCollection<QueryCondition> {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public final static com.FileManagerX.Interfaces.ICollection.IKey KeyForItemName =
+		new com.FileManagerX.Interfaces.ICollection.IKey() {
+			public Object getKey(Object item) {
+				if(item instanceof QueryCondition) {
+					QueryCondition i = (QueryCondition)item;
+					return i.getItemName();
+				}
+				return null;
+			}
+		};
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public QueryConditions() {
 		initThis();
 	}
 	private void initThis() {
 		this.setContent(new com.FileManagerX.BasicCollections.BasicLinkedList<>());
-		this.setKey(new KeyForItemName());
+		this.setKey(KeyForItemName);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -36,17 +49,5 @@ public class QueryConditions extends com.FileManagerX.BasicCollections.BasicColl
 		return null;
 	}
 	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public static class KeyForItemName implements com.FileManagerX.Interfaces.ICollection.IKey {
-		public Object getKey(Object item) {
-			if(item instanceof QueryCondition) {
-				QueryCondition i = (QueryCondition)item;
-				return i.getItemName();
-			}
-			return null;
-		}
-	}
-
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

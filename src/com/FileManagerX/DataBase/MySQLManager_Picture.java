@@ -15,9 +15,6 @@ public class MySQLManager_Picture extends com.FileManagerX.DataBase.MySQLManager
 		this.setKey("index");
 		this.setIsIncreaseKey(false);
 	}
-	public com.FileManagerX.FileModels.Picture createT() {
-		return new com.FileManagerX.FileModels.Picture();
-	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

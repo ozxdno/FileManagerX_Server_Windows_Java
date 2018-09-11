@@ -4,6 +4,29 @@ public class Machine extends com.FileManagerX.BasicCollections.BasicCollection<D
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	public final static com.FileManagerX.Interfaces.ICollection.IKey KeyForName =
+		new com.FileManagerX.Interfaces.ICollection.IKey() {
+			public Object getKey(Object item) {
+				if(item instanceof com.FileManagerX.MyNet.Depot) {
+					com.FileManagerX.MyNet.Depot i = (com.FileManagerX.MyNet.Depot)item;
+					return i.getName();
+				}
+				return null;
+			}
+		};
+	public final static com.FileManagerX.Interfaces.ICollection.IKey KeyForIndex =
+		new com.FileManagerX.Interfaces.ICollection.IKey() {
+			public Object getKey(Object item) {
+				if(item instanceof com.FileManagerX.MyNet.Depot) {
+					com.FileManagerX.MyNet.Depot i = (com.FileManagerX.MyNet.Depot)item;
+					return i.getDepot().getIndex();
+				}
+				return null;
+			}
+		};
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	private com.FileManagerX.Interfaces.IRoutePathPackage rpp;
 	private com.FileManagerX.BasicModels.MachineInfo machine;
 	private String name;
@@ -43,8 +66,8 @@ public class Machine extends com.FileManagerX.BasicCollections.BasicCollection<D
 		return true;
 	}
 	public boolean setLimit(int limit) {
-		com.FileManagerX.Safe.BasicCollections.BasicLRUMap<Depot> map = 
-				(com.FileManagerX.Safe.BasicCollections.BasicLRUMap<Depot>)this.getContent();
+		com.FileManagerX.BasicCollections.BasicLRUMap<Depot> map = 
+				(com.FileManagerX.BasicCollections.BasicLRUMap<Depot>)this.getContent();
 		return map.setLimit(limit);
 	}
 	
@@ -63,8 +86,8 @@ public class Machine extends com.FileManagerX.BasicCollections.BasicCollection<D
 		return this.permit;
 	}
 	public int getLimit() {
-		com.FileManagerX.Safe.BasicCollections.BasicLRUMap<Depot> map = 
-				(com.FileManagerX.Safe.BasicCollections.BasicLRUMap<Depot>)this.getContent();
+		com.FileManagerX.BasicCollections.BasicLRUMap<Depot> map = 
+				(com.FileManagerX.BasicCollections.BasicLRUMap<Depot>)this.getContent();
 		return map.getLimit();
 	}
 	
@@ -74,13 +97,15 @@ public class Machine extends com.FileManagerX.BasicCollections.BasicCollection<D
 		initThis();
 	}
 	private void initThis() {
-		this.setContent(new com.FileManagerX.Safe.BasicCollections.BasicLRUMap<>());
-		this.setKey(new KeyForName());
+		this.setContent(new com.FileManagerX.BasicCollections.BasicLRUMap<>());
+		this.setSafe(true);
+		this.setKey(KeyForName);
 		this.machine = new com.FileManagerX.BasicModels.MachineInfo();
 		this.rpp = com.FileManagerX.Factories.CommunicatorFactory.createRRP();
 		this.name = "Default Machine";
 		this.permit = new Net();
 		this.permit.setName("Permit Groups");
+		this.setLimit(com.FileManagerX.Globals.Configurations.LimitForMachineDepot);
 	}
 	public Depot createT() {
 		return new Depot();
@@ -174,26 +199,5 @@ public class Machine extends com.FileManagerX.BasicCollections.BasicCollection<D
 		}
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public static class KeyForName implements com.FileManagerX.Interfaces.ICollection.IKey {
-		public Object getKey(Object item) {
-			if(item instanceof com.FileManagerX.MyNet.Depot) {
-				com.FileManagerX.MyNet.Depot i = (com.FileManagerX.MyNet.Depot)item;
-				return i.getName();
-			}
-			return null;
-		}
-	}
-	public static class KeyForIndex implements com.FileManagerX.Interfaces.ICollection.IKey {
-		public Object getKey(Object item) {
-			if(item instanceof com.FileManagerX.MyNet.Depot) {
-				com.FileManagerX.MyNet.Depot i = (com.FileManagerX.MyNet.Depot)item;
-				return i.getDepot().getIndex();
-			}
-			return null;
-		}
-	}
-	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

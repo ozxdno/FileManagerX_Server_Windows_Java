@@ -4,18 +4,25 @@ public class Chats extends BasicCollection<com.FileManagerX.BasicModels.Chat> {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	public final static com.FileManagerX.Interfaces.ICollection.IKey KeyForIndex =
+			new com.FileManagerX.Interfaces.ICollection.IKey() {
+		public Object getKey(Object item) {
+			if(item instanceof com.FileManagerX.BasicModels.Chat) {
+				com.FileManagerX.BasicModels.Chat i = (com.FileManagerX.BasicModels.Chat)item;
+				return i.getIndex();
+			}
+			return null;
+		}
+	};
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public Chats() {
 		this.initThis();
 	}
 	private void initThis() {
 		this.setContent(new com.FileManagerX.BasicCollections.BasicArrayList<>());
-		this.setKey(new KeyForIndex());
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public com.FileManagerX.BasicModels.Chat createT() {
-		return new com.FileManagerX.BasicModels.Chat();
+		this.setKey(KeyForIndex);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -92,18 +99,6 @@ public class Chats extends BasicCollection<com.FileManagerX.BasicModels.Chat> {
 			}
 		}
 		return chats;
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public static class KeyForIndex implements com.FileManagerX.Interfaces.ICollection.IKey {
-		public Object getKey(Object item) {
-			if(item instanceof com.FileManagerX.BasicModels.Chat) {
-				com.FileManagerX.BasicModels.Chat i = (com.FileManagerX.BasicModels.Chat)item;
-				return i.getIndex();
-			}
-			return null;
-		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

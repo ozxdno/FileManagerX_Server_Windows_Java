@@ -14,10 +14,7 @@ public class TXTManager_Gif extends TXTManager_ANY<com.FileManagerX.BasicModels.
 		this.setSaveImmediately(false);
 		this.reflect();
 	}
-	public com.FileManagerX.FileModels.Gif createT() {
-		return new com.FileManagerX.FileModels.Gif();
-	}
-
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public Object querys2(Object conditions) {

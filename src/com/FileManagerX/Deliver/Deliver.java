@@ -5,6 +5,7 @@ public class Deliver {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public final static String FAILED_NO_RECEIVER = "No Receiver";
+	public final static String MYNET_RECOMMEND_PATHES = "Recommend Pathes";
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -37,7 +38,7 @@ public class Deliver {
 				com.FileManagerX.Globals.Configurations.This_MachineIndex) {
 			rpp.setExecutePart(com.FileManagerX.BasicEnums.RppExecutePart.R);
 			rpp.setActualDepth(rpp.getActualPath().size()-1);
-			rpp.setDestMountServer(0);
+			rpp.setDestMountServer(-1);
 		}
 		
 		// Finished RPP
@@ -49,40 +50,31 @@ public class Deliver {
 		long dest = t.getBasicMessagePackage().getDestMachineIndex();
 		
 		// Complete By Buffer
-		if(com.FileManagerX.Globals.Configurations.This_MachineIndex == 
+		if(com.FileManagerX.Globals.Configurations.This_MachineIndex ==
 				t.getBasicMessagePackage().getSourMachineIndex()) {
-			
-			com.FileManagerX.Interfaces.IIterator<com.FileManagerX.MyNet.User> it1 = null;
-			com.FileManagerX.Interfaces.IIterator<com.FileManagerX.MyNet.Machine> it2 = null;
-			com.FileManagerX.MyNet.Group tempGroup = 
-					com.FileManagerX.Factories.MyNetFactory.createTempGroup();
-			
-			it1 = tempGroup.getIterator();
-			while(it1.hasNext()) {
-				com.FileManagerX.MyNet.User u = it1.getNext();
-				it2 = u.getIterator();
-				while(it2.hasNext()) {
-					com.FileManagerX.MyNet.Machine m = it2.getNext();
-					if(m.getMachine().getIndex() == dest) {
-						rpp.setSourMountPath(m.getRoutePathPackage().getSourMountPath());
-						rpp.setRecommendPath(m.getRoutePathPackage().getRecommendPath());
-						rpp.setDestMountPath(m.getRoutePathPackage().getDestMountPath());
-						rpp.setSourMountServer(m.getRoutePathPackage().getSourMountServer());
-						rpp.setDestMountServer(m.getRoutePathPackage().getDestMountServer());
-						return true;
-					}
+			com.FileManagerX.MyNet.Group tempGroup = com.FileManagerX.Factories.MyNetFactory.createTempGroup();
+			com.FileManagerX.MyNet.User user = tempGroup.searchByKey(MYNET_RECOMMEND_PATHES);
+			if(user != null) {
+				com.FileManagerX.MyNet.Machine machine = user.fetchByKey(dest);
+				if(machine != null) {
+					rpp.setSourMountPath(machine.getRoutePathPackage().getSourMountPath());
+					rpp.setRecommendPath(machine.getRoutePathPackage().getRecommendPath());
+					rpp.setDestMountPath(machine.getRoutePathPackage().getDestMountPath());
+					rpp.setSourMountServer(machine.getRoutePathPackage().getSourMountServer());
+					rpp.setDestMountServer(machine.getRoutePathPackage().getDestMountServer());
+					return true;
 				}
 			}
 		}
+		
 		
 		// Complete By Server
 		if(!com.FileManagerX.Globals.Configurations.IsServer) {
 			return false;
 		}
 		
-		// Cannot complete by self
-		if(com.FileManagerX.Globals.Configurations.This_MachineIndex == 
-				t.getBasicMessagePackage().getSourMachineIndex()) {
+		// Initializing ...
+		if(com.FileManagerX.Globals.Datas.DBManager.getDBInfo() == null) {
 			return false;
 		}
 		
@@ -131,27 +123,30 @@ public class Deliver {
 		com.FileManagerX.MyNet.User user = null;
 		
 		com.FileManagerX.MyNet.Group tempGroup = com.FileManagerX.Factories.MyNetFactory.createTempGroup();
-		user = tempGroup.searchByKey("Recommend Path Buffer");
+		user = tempGroup.searchByKey(MYNET_RECOMMEND_PATHES);
 		existU = user != null;
 		if(!existU) {
 			user = new com.FileManagerX.MyNet.User();
-			user.setName("Recommend Path Buffer");
+			user.setName(MYNET_RECOMMEND_PATHES);
+			com.FileManagerX.BasicCollections.BasicLRUMap<com.FileManagerX.MyNet.Machine> content =
+					new com.FileManagerX.BasicCollections.BasicLRUMap<>();
+			content.setSafe(true);
+			content.setKey(com.FileManagerX.MyNet.User.KeyForIndex);
+			content.setLimit(com.FileManagerX.Globals.Configurations.LimitForUserMachine);
+			user.setContent(content);
 			tempGroup.add(user);
 		}
 		
-		machine = user.searchByKey(String.valueOf(t.getBasicMessagePackage().getSourMachineIndex()));
+		machine = user.searchByKey(t.getBasicMessagePackage().getSourMachineIndex());
 		existM = machine != null;
-		if(existM) {
-			machine.getRoutePathPackage().refreshRecommendPath(rpp);
-		}
-		else {
+		if(!existM) {
 			machine = new com.FileManagerX.MyNet.Machine();
 			machine.setName(String.valueOf(t.getBasicMessagePackage().getSourMachineIndex()));
 			machine.getMachine().setIndex(t.getBasicMessagePackage().getSourMachineIndex());
-			machine.getRoutePathPackage().refreshRecommendPath(rpp);
 			user.add(machine);
 		}
 		
+		machine.getRoutePathPackage().refreshRecommendPath(rpp);
 		return true;
 	}
 
@@ -394,6 +389,10 @@ public class Deliver {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public final static boolean record(com.FileManagerX.Interfaces.ITransport t) {
+		boolean record = com.FileManagerX.Globals.Configurations.Record ||
+				t.getBasicMessagePackage().isRecord();
+		if(!record) { return true; }
+		
 		com.FileManagerX.BasicEnums.RecordType type = com.FileManagerX.BasicEnums.RecordType.UNDEFINE;
 		if(t instanceof com.FileManagerX.Commands.BaseCommand) {
 			type = com.FileManagerX.BasicEnums.RecordType.CMD;
@@ -402,25 +401,14 @@ public class Deliver {
 			type = com.FileManagerX.BasicEnums.RecordType.REP;
 		}
 		
-		if(com.FileManagerX.Globals.Configurations.Record) {
-			com.FileManagerX.BasicModels.Record r = new com.FileManagerX.BasicModels.Record();
-			r.setType(type);
-			r.setSourConnectionName(t.getSourConnection() == null ? "NULL" : t.getSourConnection().getName());
-			r.setDestConnectionName(t.getDestConnection() == null ? "NULL" : t.getDestConnection().getName());
-			r.setContent(t.output());
-			com.FileManagerX.Globals.Datas.Records.add(r);
-			return true;
-		}
-		if(t.isArriveTargetMachine() && t.getBasicMessagePackage().isRecord()) {
-			com.FileManagerX.BasicModels.Record r = new com.FileManagerX.BasicModels.Record();
-			r.setType(type);
-			r.setSourConnectionName(t.getSourConnection() == null ? "NULL" : t.getSourConnection().getName());
-			r.setDestConnectionName(t.getDestConnection() == null ? "NULL" : t.getDestConnection().getName());
-			r.setContent(t.output());
-			com.FileManagerX.Globals.Datas.Records.add(r);
-			return true;
-		}
-		return false;
+		com.FileManagerX.BasicModels.Record r = new com.FileManagerX.BasicModels.Record();
+		r.setType(type);
+		r.setSour(String.valueOf(t.getBasicMessagePackage().getSourMachineIndex()));
+		r.setDest(String.valueOf(t.getBasicMessagePackage().getDestMachineIndex()));
+		r.setDeliver(String.valueOf(com.FileManagerX.Globals.Configurations.This_MachineIndex));
+		r.setContent(t.output());
+		com.FileManagerX.Globals.Datas.Records.add(r);
+		return true;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -10,7 +10,9 @@ public class Test extends JFrame {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public java.util.ArrayList<CMDC> cmdcs = new java.util.ArrayList<>();
+	public AError aError = null;
+	public ARecord aRecord = null;
+	public CMDC cmdc = null;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -19,21 +21,14 @@ public class Test extends JFrame {
 	public JButton jQuery = new JButton("query");
 	public JButton jExecute = new JButton("execute");
 	
-	public String CmdName = "";
-	public java.util.ArrayList<String> List = new java.util.ArrayList<String>();
-	public String ListType = "";
-	public int ListIndex = 0;
-	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public Test() {
-        
 		this.initThis();
         this.initInput();
         this.initResult();
         this.initQuery();
         this.initExecute();
-        
     }
 	private void initInput() {
 		
@@ -59,7 +54,6 @@ public class Test extends JFrame {
 		jExecute.setSize(100, 25);
 	}
 	private void initThis() {
-		
 		this.add(jInput);
 		this.add(jResult);
 		this.add(jQuery);
@@ -72,7 +66,6 @@ public class Test extends JFrame {
 		this.setDefaultCloseOperation(HIDE_ON_CLOSE);
 		this.setVisible(false);//´°¿Ú¿É¼û
 		this.addComponentListener(listenFrameResize);
-		
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

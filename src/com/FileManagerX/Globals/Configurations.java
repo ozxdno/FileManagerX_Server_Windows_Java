@@ -19,7 +19,7 @@ public final class Configurations {
 	public static boolean Restart = false;
 	public static boolean Close = false;
 	public static boolean ShowForm = false;
-	public static boolean Record = false;
+	public static boolean Record = true;
 	public static boolean Refresh = false;
 	
 	public static long Next_FolderIndex = 0;

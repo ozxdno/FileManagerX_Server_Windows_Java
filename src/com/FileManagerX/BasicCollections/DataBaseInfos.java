@@ -4,20 +4,27 @@ public class DataBaseInfos extends BasicCollection<com.FileManagerX.BasicModels.
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	public static com.FileManagerX.Interfaces.ICollection.IKey KeyForIndex =
+		new com.FileManagerX.Interfaces.ICollection.IKey() {
+			public Object getKey(Object item) {
+				if(item instanceof com.FileManagerX.BasicModels.DataBaseInfo) {
+					com.FileManagerX.BasicModels.DataBaseInfo i = (com.FileManagerX.BasicModels.DataBaseInfo)item;
+					return i.getIndex();
+				}
+				return null;
+			}
+		};
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public DataBaseInfos() {
 		this.initThis();
 	}
 	private void initThis() {
 		this.setContent(new com.FileManagerX.BasicCollections.BasicHashMap<>());
-		this.setKey(new KeyForIndex());
+		this.setKey(KeyForIndex);
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public com.FileManagerX.BasicModels.DataBaseInfo createT() {
-		return new com.FileManagerX.BasicModels.DataBaseInfo();
-	}
-	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public com.FileManagerX.BasicModels.DataBaseInfo searchByIndex(long index) {
@@ -112,18 +119,6 @@ public class DataBaseInfos extends BasicCollection<com.FileManagerX.BasicModels.
 			}
 		}
 		return null;
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public static class KeyForIndex implements com.FileManagerX.Interfaces.ICollection.IKey {
-		public Object getKey(Object item) {
-			if(item instanceof com.FileManagerX.BasicModels.DataBaseInfo) {
-				com.FileManagerX.BasicModels.DataBaseInfo i = (com.FileManagerX.BasicModels.DataBaseInfo)item;
-				return i.getIndex();
-			}
-			return null;
-		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

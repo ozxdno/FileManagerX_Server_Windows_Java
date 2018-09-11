@@ -4,7 +4,7 @@ public class Sender extends com.FileManagerX.Processes.BasicProcess {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	private java.util.PriorityQueue<com.FileManagerX.Interfaces.ITransport> content = null;
+	private java.util.PriorityQueue<com.FileManagerX.Interfaces.ITransport> content;
 	private long index;
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -30,7 +30,7 @@ public class Sender extends com.FileManagerX.Processes.BasicProcess {
 		initThis();
 	}
 	private void initThis() {
-		this.content = new java.util.PriorityQueue<>(com.FileManagerX.Tools.Comparator.Transport.priorityAsc());
+		this.content = new java.util.PriorityQueue<>(com.FileManagerX.Tools.Comparator.Transport.priorityAsc);
 		this.setRunnable(new RunImpl());
 		this.setPermitIdle(Long.MAX_VALUE);
 		this.setName("Sender");

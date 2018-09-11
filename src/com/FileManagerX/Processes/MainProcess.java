@@ -96,8 +96,8 @@ public class MainProcess extends BasicProcess {
 		while(!this.isAbort() && !com.FileManagerX.Globals.Configurations.Restart) {
 			com.FileManagerX.Tools.Time.sleepUntil(1*1000);
 			
-			Datas.Records.save(100);
-			Datas.Errors.save(100);
+			Datas.Records.save();
+			Datas.Errors.save();
 			
 			Datas.Receiver.removeIdleReplies();
 			

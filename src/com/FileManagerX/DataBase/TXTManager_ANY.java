@@ -14,6 +14,7 @@ public class TXTManager_ANY<T extends com.FileManagerX.Interfaces.IPublic>
 	private com.FileManagerX.Interfaces.ICollection<T> content;
 	private boolean saveImmediately = true;
 	
+	private Class<T> clazz;
 	private String[] fields;
 	private com.FileManagerX.BasicEnums.DataType[] types;
 	
@@ -91,6 +92,7 @@ public class TXTManager_ANY<T extends com.FileManagerX.Interfaces.IPublic>
 	public TXTManager_ANY() {
 		initThis();
 	}
+	@SuppressWarnings("unchecked")
 	private void initThis() {
 		this.database = null;
 		this.unit = Unit.ANY;
@@ -98,17 +100,20 @@ public class TXTManager_ANY<T extends com.FileManagerX.Interfaces.IPublic>
 		this.running = false;
 		this.name = "Any";
 		this.content = null;
+		
+		try {
+			java.lang.reflect.ParameterizedType type = (java.lang.reflect.ParameterizedType)
+					this.getClass().getGenericSuperclass();
+			this.clazz = (Class<T>)type.getActualTypeArguments()[0];
+		} catch(Exception e) {
+			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
+		}
 	}
 	public T createT() {
 		try {
-			@SuppressWarnings("unchecked")
-			Class<T> entityClass = (Class<T>) 
-		        		((java.lang.reflect.ParameterizedType)
-		        				getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-		        return entityClass.newInstance();
+			return this.clazz == null ? null : this.clazz.newInstance();
 		} catch(Exception e) {
 			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
-			e.printStackTrace();
 			return null;
 		}
 	}

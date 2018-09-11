@@ -7,7 +7,9 @@ public class BasicPriorityQueue <T extends com.FileManagerX.Interfaces.IPublic>
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	private com.FileManagerX.Interfaces.ICollection.IKey key;
-	private java.util.PriorityQueue<T> content;
+	private java.util.AbstractQueue<T> content;
+	private Class<T> clazz;
+	private boolean safe;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -19,6 +21,20 @@ public class BasicPriorityQueue <T extends com.FileManagerX.Interfaces.IPublic>
 		this.key = key;
 		return true;
 	}
+	public boolean setSafe(boolean safe) {
+		if(safe == this.safe) { return true; }
+		java.util.AbstractQueue<T> newcontent = safe ?
+				new java.util.concurrent.PriorityBlockingQueue<>() :
+				new java.util.PriorityQueue<>();
+		newcontent.addAll(this.content);
+		this.content = newcontent;
+		this.safe = safe;
+		return true;
+	}
+	public boolean setClass(Class<T> clazz) {
+		this.clazz = clazz;
+		return true;
+	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -28,6 +44,13 @@ public class BasicPriorityQueue <T extends com.FileManagerX.Interfaces.IPublic>
 	public Object getKey(T e) {
 		return key == null ? null : key.getKey(e);
 	}
+
+	public com.FileManagerX.Interfaces.ICollection.IKey getIKey() {
+		return this.key;
+	}
+	public Class<T> getTClass() {
+		return this.clazz;
+	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -36,11 +59,20 @@ public class BasicPriorityQueue <T extends com.FileManagerX.Interfaces.IPublic>
 	}
 	private void initThis() {
 		this.content = new java.util.PriorityQueue<>();
+		this.key = null;
+		this.safe = false;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public T createT() { return null; }
+	public T createT() { 
+		try {
+			return clazz == null ? null : clazz.newInstance();
+		} catch(Exception e) {
+			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
+			return null;
+		}
+	}
 	public int size() {
 		return this.content.size();
 	}
@@ -67,9 +99,9 @@ public class BasicPriorityQueue <T extends com.FileManagerX.Interfaces.IPublic>
 			return "Empty";
 		}
 		com.FileManagerX.Interfaces.IIterator<T> it = this.getIterator();
-		String res = it.getNext().toString();
+		String res = "";
 		while(it.hasNext()) {
-			res += ", " + it.getNext().toString();
+			res += "[" + it.getNext().toString() + "]->";
 		}
 		return res;
 	}
@@ -210,12 +242,15 @@ public class BasicPriorityQueue <T extends com.FileManagerX.Interfaces.IPublic>
 	
 	private class IteratorImpl implements com.FileManagerX.Interfaces.IIterator<T> {
 		private java.util.Iterator<T> iterator = content.iterator();
+		T item = null;
 		
 		public boolean hasNext() {
-			return iterator.hasNext();
+			boolean ok = iterator.hasNext();
+			item = ok ? iterator.next() : null;
+			return ok;
 		}
 		public T getNext() {
-			return iterator.next();
+			return item;
 		}
 		public void remove() {
 			iterator.remove();

@@ -13,10 +13,7 @@ public class TXTManager_DataBase extends TXTManager_ANY<com.FileManagerX.BasicMo
 		this.setUnit(Unit.DataBase);
 		this.reflect();
 	}
-	public com.FileManagerX.BasicModels.DataBaseInfo createT() {
-		return new com.FileManagerX.BasicModels.DataBaseInfo();
-	}
-
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public Object querys2(Object conditions) {

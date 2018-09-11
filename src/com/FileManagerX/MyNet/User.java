@@ -4,6 +4,29 @@ public class User extends com.FileManagerX.BasicCollections.BasicCollection<Mach
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	public final static com.FileManagerX.Interfaces.ICollection.IKey KeyForName =
+		new com.FileManagerX.Interfaces.ICollection.IKey() {
+			public Object getKey(Object item) {
+				if(item instanceof com.FileManagerX.MyNet.Machine) {
+					com.FileManagerX.MyNet.Machine i = (com.FileManagerX.MyNet.Machine)item;
+					return i.getName();
+				}
+				return null;
+			}
+		};
+	public final static com.FileManagerX.Interfaces.ICollection.IKey KeyForIndex =
+		new com.FileManagerX.Interfaces.ICollection.IKey() {
+			public Object getKey(Object item) {
+				if(item instanceof com.FileManagerX.MyNet.Machine) {
+					com.FileManagerX.MyNet.Machine i = (com.FileManagerX.MyNet.Machine)item;
+					return i.getMachine().getIndex();
+				}
+				return null;
+			}
+		};
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	private com.FileManagerX.BasicModels.User user;
 	private String name;
 	private Net permit;
@@ -35,8 +58,8 @@ public class User extends com.FileManagerX.BasicCollections.BasicCollection<Mach
 		return true;
 	}
 	public boolean setLimit(int limit) {
-		com.FileManagerX.Safe.BasicCollections.BasicLRUMap<Machine> map = 
-				(com.FileManagerX.Safe.BasicCollections.BasicLRUMap<Machine>)this.getContent();
+		com.FileManagerX.BasicCollections.BasicLRUMap<Machine> map = 
+				(com.FileManagerX.BasicCollections.BasicLRUMap<Machine>)this.getContent();
 		return map.setLimit(limit);
 	}
 	
@@ -52,8 +75,8 @@ public class User extends com.FileManagerX.BasicCollections.BasicCollection<Mach
 		return this.permit;
 	}
 	public int getLimit() {
-		com.FileManagerX.Safe.BasicCollections.BasicLRUMap<Machine> map = 
-				(com.FileManagerX.Safe.BasicCollections.BasicLRUMap<Machine>)this.getContent();
+		com.FileManagerX.BasicCollections.BasicLRUMap<Machine> map = 
+				(com.FileManagerX.BasicCollections.BasicLRUMap<Machine>)this.getContent();
 		return map.getLimit();
 	}
 	
@@ -63,12 +86,14 @@ public class User extends com.FileManagerX.BasicCollections.BasicCollection<Mach
 		initThis();
 	}
 	private void initThis() {
-		this.setContent(new com.FileManagerX.Safe.BasicCollections.BasicLRUMap<>());
-		this.setKey(new KeyForName());
+		this.setContent(new com.FileManagerX.BasicCollections.BasicLRUMap<>());
+		this.setKey(KeyForName);
+		this.setSafe(true);
 		this.user = new com.FileManagerX.BasicModels.User();
 		this.name = "Default User";
 		this.permit = new Net();
 		this.permit.setName("Permit Groups");
+		this.setLimit(com.FileManagerX.Globals.Configurations.LimitForUserMachine);
 	}
 	public Machine createT() {
 		return new Machine();
@@ -181,26 +206,5 @@ public class User extends com.FileManagerX.BasicCollections.BasicCollection<Mach
 		}
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public static class KeyForName implements com.FileManagerX.Interfaces.ICollection.IKey {
-		public Object getKey(Object item) {
-			if(item instanceof com.FileManagerX.MyNet.Machine) {
-				com.FileManagerX.MyNet.Machine i = (com.FileManagerX.MyNet.Machine)item;
-				return i.getName();
-			}
-			return null;
-		}
-	}
-	public static class KeyForIndex implements com.FileManagerX.Interfaces.ICollection.IKey {
-		public Object getKey(Object item) {
-			if(item instanceof com.FileManagerX.MyNet.Machine) {
-				com.FileManagerX.MyNet.Machine i = (com.FileManagerX.MyNet.Machine)item;
-				return i.getMachine().getIndex();
-			}
-			return null;
-		}
-	}
-	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

@@ -49,7 +49,7 @@ public class LRUMap {
 		map.add(u9); printMap(map);
 	}
 	
-	private static class TMap extends com.FileManagerX.Safe.BasicCollections.BasicLRUMap
+	private static class TMap extends com.FileManagerX.BasicCollections.BasicLRUMap
 		<com.FileManagerX.BasicModels.User> {
 		public Long getKey(com.FileManagerX.BasicModels.User item) {
 			return item == null ? -1 : item.getIndex();

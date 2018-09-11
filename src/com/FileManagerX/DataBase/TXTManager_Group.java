@@ -13,9 +13,6 @@ public class TXTManager_Group extends TXTManager_ANY<com.FileManagerX.BasicModel
 		this.setUnit(Unit.Group);
 		this.reflect();
 	}
-	public com.FileManagerX.BasicModels.Group createT() {
-		return new com.FileManagerX.BasicModels.Group();
-	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

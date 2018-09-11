@@ -7,7 +7,9 @@ public class BasicLRUMap <T extends com.FileManagerX.Interfaces.IPublic>
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	private com.FileManagerX.Interfaces.ICollection.IKey key;
-	private java.util.LinkedHashMap<Object, T> content;
+	private java.util.Map<Object, T> content;
+	private Class<T> clazz;
+	private boolean safe;
 	private int limit;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -24,6 +26,20 @@ public class BasicLRUMap <T extends com.FileManagerX.Interfaces.IPublic>
 		this.limit = limit;
 		return true;
 	}
+	public boolean setSafe(boolean safe) {
+		if(safe == this.safe) { return true; }
+		java.util.Map<Object, T> newcontent = safe ?
+				java.util.Collections.synchronizedMap(new java.util.LinkedHashMap<>(16, 0.75f, true)) :
+					new java.util.LinkedHashMap<>(16, 0.75f, true);
+		newcontent.putAll(this.content);
+		this.content = newcontent;
+		this.safe = safe;
+		return true;
+	}
+	public boolean setClass(Class<T> clazz) {
+		this.clazz = clazz;
+		return true;
+	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -36,6 +52,13 @@ public class BasicLRUMap <T extends com.FileManagerX.Interfaces.IPublic>
 	public int getLimit() {
 		return this.limit;
 	}
+
+	public com.FileManagerX.Interfaces.ICollection.IKey getIKey() {
+		return this.key;
+	}
+	public Class<T> getTClass() {
+		return this.clazz;
+	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -44,13 +67,20 @@ public class BasicLRUMap <T extends com.FileManagerX.Interfaces.IPublic>
 	}
 	private void initThis() {
 		this.content = new java.util.LinkedHashMap<>(16, 0.75f, true);
+		this.key = com.FileManagerX.Interfaces.ICollection.defaultKey();
 		this.limit = -1;
+		this.safe = false;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public T createT() {
-		return null;
+		try {
+			return clazz == null ? null : clazz.newInstance();
+		} catch(Exception e) {
+			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
+			return null;
+		}
 	}
 	public int size() {
 		return this.content.size();
@@ -74,9 +104,9 @@ public class BasicLRUMap <T extends com.FileManagerX.Interfaces.IPublic>
 			return "Empty";
 		}
 		com.FileManagerX.Interfaces.IIterator<T> it = this.getIterator();
-		String res = it.getNext().toString();
+		String res = "";
 		while(it.hasNext()) {
-			res += ", " + it.getNext().toString();
+			res += "[" + it.getNext().toString() + "]->";
 		}
 		return res;
 	}
@@ -203,12 +233,15 @@ public class BasicLRUMap <T extends com.FileManagerX.Interfaces.IPublic>
 	
 	private class IteratorImpl implements com.FileManagerX.Interfaces.IIterator<T> {
 		private java.util.Iterator<java.util.Map.Entry<Object, T>> iterator = content.entrySet().iterator();
+		private T item;
 		
 		public boolean hasNext() {
-			return iterator.hasNext();
+			boolean ok = iterator.hasNext();
+			item = ok ? iterator.next().getValue() : null;
+			return ok;
 		}
 		public T getNext() {
-			return iterator.next().getValue();
+			return item;
 		}
 		public void remove() {
 			iterator.remove();

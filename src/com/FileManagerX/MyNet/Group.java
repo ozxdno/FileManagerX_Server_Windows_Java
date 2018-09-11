@@ -4,6 +4,29 @@ public class Group extends com.FileManagerX.BasicCollections.BasicCollection<Use
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	public final static com.FileManagerX.Interfaces.ICollection.IKey KeyForName =
+		new com.FileManagerX.Interfaces.ICollection.IKey() {
+			public Object getKey(Object item) {
+				if(item instanceof com.FileManagerX.MyNet.User) {
+					com.FileManagerX.MyNet.User i = (com.FileManagerX.MyNet.User)item;
+					return i.getName();
+				}
+				return null;
+			}
+		};
+	public final static com.FileManagerX.Interfaces.ICollection.IKey KeyForIndex =
+		new com.FileManagerX.Interfaces.ICollection.IKey() {
+			public Object getKey(Object item) {
+				if(item instanceof com.FileManagerX.MyNet.User) {
+					com.FileManagerX.MyNet.User i = (com.FileManagerX.MyNet.User)item;
+					return i.getUser().getIndex();
+				}
+				return null;
+			}
+		};
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	private String name;
 	private long index;
 	
@@ -28,8 +51,8 @@ public class Group extends com.FileManagerX.BasicCollections.BasicCollection<Use
 		return true;
 	}
 	public boolean setLimit(int limit) {
-		com.FileManagerX.Safe.BasicCollections.BasicLRUMap<User> map = 
-				(com.FileManagerX.Safe.BasicCollections.BasicLRUMap<User>)this.getContent();
+		com.FileManagerX.BasicCollections.BasicLRUMap<User> map = 
+				(com.FileManagerX.BasicCollections.BasicLRUMap<User>)this.getContent();
 		return map.setLimit(limit);
 	}
 	
@@ -42,8 +65,8 @@ public class Group extends com.FileManagerX.BasicCollections.BasicCollection<Use
 		return this.name;
 	}
 	public int getLimit() {
-		com.FileManagerX.Safe.BasicCollections.BasicLRUMap<User> map = 
-				(com.FileManagerX.Safe.BasicCollections.BasicLRUMap<User>)this.getContent();
+		com.FileManagerX.BasicCollections.BasicLRUMap<User> map = 
+				(com.FileManagerX.BasicCollections.BasicLRUMap<User>)this.getContent();
 		return map.getLimit();
 	}
 	
@@ -53,9 +76,11 @@ public class Group extends com.FileManagerX.BasicCollections.BasicCollection<Use
 		initThis();
 	}
 	private void initThis() {
-		this.setContent(new com.FileManagerX.Safe.BasicCollections.BasicLRUMap<>());
-		this.setKey(new KeyForName());
+		this.setContent(new com.FileManagerX.BasicCollections.BasicLRUMap<>());
+		this.setSafe(true);
+		this.setKey(KeyForName);
 		this.name = "Default Group";
+		this.setLimit(com.FileManagerX.Globals.Configurations.LimitForGroupUser);
 	}
 	public User createT() {
 		return new User();
@@ -122,26 +147,5 @@ public class Group extends com.FileManagerX.BasicCollections.BasicCollection<Use
 		}
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public static class KeyForName implements com.FileManagerX.Interfaces.ICollection.IKey {
-		public Object getKey(Object item) {
-			if(item instanceof com.FileManagerX.MyNet.User) {
-				com.FileManagerX.MyNet.User i = (com.FileManagerX.MyNet.User)item;
-				return i.getName();
-			}
-			return null;
-		}
-	}
-	public static class KeyForIndex implements com.FileManagerX.Interfaces.ICollection.IKey {
-		public Object getKey(Object item) {
-			if(item instanceof com.FileManagerX.MyNet.User) {
-				com.FileManagerX.MyNet.User i = (com.FileManagerX.MyNet.User)item;
-				return i.getUser().getIndex();
-			}
-			return null;
-		}
-	}
-	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

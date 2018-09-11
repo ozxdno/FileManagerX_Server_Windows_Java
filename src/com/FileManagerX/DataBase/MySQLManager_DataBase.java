@@ -14,9 +14,7 @@ public class MySQLManager_DataBase extends com.FileManagerX.DataBase.MySQLManage
 		this.reflect();
 		this.setKey("index");
 	}
-	public com.FileManagerX.BasicModels.DataBaseInfo createT() {
-		return new com.FileManagerX.BasicModels.DataBaseInfo();
-	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public Object querys2(Object conditions) {

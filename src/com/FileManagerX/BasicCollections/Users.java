@@ -4,20 +4,27 @@ public class Users extends BasicCollection<com.FileManagerX.BasicModels.User> {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	public final static com.FileManagerX.Interfaces.ICollection.IKey KeyForIndex =
+		new com.FileManagerX.Interfaces.ICollection.IKey() {
+			public Object getKey(Object item) {
+				if(item instanceof com.FileManagerX.BasicModels.User) {
+					com.FileManagerX.BasicModels.User i = (com.FileManagerX.BasicModels.User)item;
+					return i.getIndex();
+				}
+				return null;
+			}
+		};
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public Users() {
 		this.initThis();
 	}
 	private void initThis() {
 		this.setContent(new com.FileManagerX.BasicCollections.BasicHashMap<>());
-		this.setKey(new KeyForIndex());
+		this.setKey(KeyForIndex);
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public com.FileManagerX.BasicModels.User createT() {
-		return new com.FileManagerX.BasicModels.User();
-	}
-	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public com.FileManagerX.BasicModels.User searchByIndex(long index) {
@@ -113,17 +120,5 @@ public class Users extends BasicCollection<com.FileManagerX.BasicModels.User> {
 		return users;
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public static class KeyForIndex implements com.FileManagerX.Interfaces.ICollection.IKey {
-		public Object getKey(Object item) {
-			if(item instanceof com.FileManagerX.BasicModels.User) {
-				com.FileManagerX.BasicModels.User i = (com.FileManagerX.BasicModels.User)item;
-				return i.getIndex();
-			}
-			return null;
-		}
-	}
-	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

@@ -14,9 +14,6 @@ public class MySQLManager_CFG extends com.FileManagerX.DataBase.MySQLManager_ANY
 		this.reflect();
 		this.setKey("index");
 	}
-	public com.FileManagerX.FileModels.CFG createT() {
-		return new com.FileManagerX.FileModels.CFG();
-	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

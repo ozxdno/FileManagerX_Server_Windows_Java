@@ -4,13 +4,27 @@ public class Manager <T extends com.FileManagerX.Interfaces.IProcess>
 	extends com.FileManagerX.BasicCollections.BasicCollection<T> {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public final static com.FileManagerX.Interfaces.ICollection.IKey KeyForIndex =
+		new com.FileManagerX.Interfaces.ICollection.IKey() {
+			public Object getKey(Object item) {
+				if(item instanceof com.FileManagerX.Interfaces.IProcess) {
+					com.FileManagerX.Interfaces.IProcess i = (com.FileManagerX.Interfaces.IProcess)item;
+					return i.getProcessIndex();
+				}
+				return null;
+			}
+		};
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public Manager() {
 		this.initThis();
 	}
 	private void initThis() {
-		this.setContent(new com.FileManagerX.Safe.BasicCollections.BasicHashMap<>());
-		this.setKey(new KeyForIndex());
+		this.setContent(new com.FileManagerX.BasicCollections.BasicHashMap<>());
+		this.setKey(KeyForIndex);
+		this.setSafe(true);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -55,18 +69,6 @@ public class Manager <T extends com.FileManagerX.Interfaces.IProcess>
 		return null;
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public static class KeyForIndex implements com.FileManagerX.Interfaces.ICollection.IKey {
-		public Object getKey(Object item) {
-			if(item instanceof com.FileManagerX.Interfaces.IProcess) {
-				com.FileManagerX.Interfaces.IProcess i = (com.FileManagerX.Interfaces.IProcess)item;
-				return i.getProcessIndex();
-			}
-			return null;
-		}
-	}
-	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
 

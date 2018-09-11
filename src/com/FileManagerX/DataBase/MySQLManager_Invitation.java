@@ -14,9 +14,7 @@ public class MySQLManager_Invitation extends com.FileManagerX.DataBase.MySQLMana
 		this.reflect();
 		this.setKey("code");
 	}
-	public com.FileManagerX.BasicModels.Invitation createT() {
-		return new com.FileManagerX.BasicModels.Invitation();
-	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public Object querys2(Object conditions) {

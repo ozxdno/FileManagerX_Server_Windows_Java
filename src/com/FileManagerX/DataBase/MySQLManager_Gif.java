@@ -15,9 +15,6 @@ public class MySQLManager_Gif extends com.FileManagerX.DataBase.MySQLManager_ANY
 		this.setKey("index");
 		this.setIsIncreaseKey(false);
 	}
-	public com.FileManagerX.FileModels.Gif createT() {
-		return new com.FileManagerX.FileModels.Gif();
-	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -13,10 +13,7 @@ public class TXTManager_Depot extends TXTManager_ANY<com.FileManagerX.BasicModel
 		this.setUnit(Unit.Depot);
 		this.reflect();
 	}
-	public com.FileManagerX.BasicModels.DepotInfo createT() {
-		return new com.FileManagerX.BasicModels.DepotInfo();
-	}
-
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public Object querys2(Object conditions) {

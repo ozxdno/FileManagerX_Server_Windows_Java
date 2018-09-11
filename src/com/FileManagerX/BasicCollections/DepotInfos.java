@@ -4,20 +4,27 @@ public class DepotInfos extends BasicCollection<com.FileManagerX.BasicModels.Dep
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	public final static com.FileManagerX.Interfaces.ICollection.IKey KeyForIndex =
+		new com.FileManagerX.Interfaces.ICollection.IKey() {
+			public Object getKey(Object item) {
+				if(item instanceof com.FileManagerX.BasicModels.DepotInfo) {
+					com.FileManagerX.BasicModels.DepotInfo i = (com.FileManagerX.BasicModels.DepotInfo)item;
+					return i.getIndex();
+				}
+				return null;
+			}
+		};
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public DepotInfos() {
 		this.initThis();
 	}
 	private void initThis() {
 		this.setContent(new com.FileManagerX.BasicCollections.BasicHashMap<>());
-		this.setKey(new KeyForIndex());
+		this.setKey(KeyForIndex);
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public com.FileManagerX.BasicModels.DepotInfo createT() {
-		return new com.FileManagerX.BasicModels.DepotInfo();
-	}
-	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public com.FileManagerX.BasicModels.DepotInfo searchByIndex(long index) {
@@ -114,17 +121,5 @@ public class DepotInfos extends BasicCollection<com.FileManagerX.BasicModels.Dep
 		return null;
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public static class KeyForIndex implements com.FileManagerX.Interfaces.ICollection.IKey {
-		public Object getKey(Object item) {
-			if(item instanceof com.FileManagerX.BasicModels.DepotInfo) {
-				com.FileManagerX.BasicModels.DepotInfo i = (com.FileManagerX.BasicModels.DepotInfo)item;
-				return i.getIndex();
-			}
-			return null;
-		}
-	}
-	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

@@ -13,10 +13,7 @@ public class TXTManager_User extends TXTManager_ANY<com.FileManagerX.BasicModels
 		this.setUnit(Unit.User);
 		this.reflect();
 	}
-	public com.FileManagerX.BasicModels.User createT() {
-		return new com.FileManagerX.BasicModels.User();
-	}
-
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public Object querys2(Object conditions) {

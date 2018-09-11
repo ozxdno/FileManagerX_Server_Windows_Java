@@ -14,9 +14,7 @@ public class MySQLManager_Machine extends com.FileManagerX.DataBase.MySQLManager
 		this.reflect();
 		this.setKey("index");
 	}
-	public com.FileManagerX.BasicModels.MachineInfo createT() {
-		return new com.FileManagerX.BasicModels.MachineInfo();
-	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public Object querys2(Object conditions) {

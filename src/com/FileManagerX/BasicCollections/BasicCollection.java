@@ -5,102 +5,142 @@ public class BasicCollection <T extends com.FileManagerX.Interfaces.IPublic>
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	private com.FileManagerX.Interfaces.ICollection<T> content;
+	private com.FileManagerX.Interfaces.ICollection<T> collection;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
+	@SuppressWarnings("unchecked")
 	public boolean setContent(com.FileManagerX.Interfaces.ICollection<T> content) {
 		if(content == null) { return false; }
-		this.content = content;
+		com.FileManagerX.Interfaces.ICollection.IKey key = 
+				this.collection == null ? null : this.collection.getIKey();
+		Class<T> clazz = this.collection == null ?
+				null : this.collection.getTClass();
+		if(content.getIKey() == null) { content.setKey(key); }
+		if(content.getTClass() == null) { content.setClass(clazz); }
+		this.collection = content;
+		if(this.collection.getTClass() == null) {
+			try {
+				java.lang.reflect.ParameterizedType type = (java.lang.reflect.ParameterizedType)
+						this.getClass().getGenericSuperclass();
+				clazz = (Class<T>)type.getActualTypeArguments()[0];
+				this.collection.setClass(clazz);
+			} catch(Exception e) {
+				com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
+			}
+		}
+		
 		return true;
 	}
 	public boolean setKey(IKey key) {
-		return this.content.setKey(key);
+		return this.collection.setKey(key);
+	}
+	public boolean setSafe(boolean safe) {
+		return this.collection.setSafe(safe);
+	}
+	public boolean setClass(Class<T> clazz) {
+		return this.collection.setClass(clazz);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public com.FileManagerX.Interfaces.IIterator<T> getIterator() {
-		return this.content.getIterator();
+		return this.collection.getIterator();
 	}
 	public Object getKey(T e) {
-		return this.content.getKey(e);
+		return this.collection.getKey(e);
 	}
 	
 	public com.FileManagerX.Interfaces.ICollection<T> getContent() {
-		return this.content;
+		return this.collection;
+	}
+	
+	public com.FileManagerX.Interfaces.ICollection.IKey getIKey() {
+		return this.collection.getIKey();
+	}
+	public Class<T> getTClass() {
+		return this.collection.getTClass();
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public BasicCollection() {
+		this.initThis();
+	}
+	private void initThis() {
+		;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public T createT() {
-		return null;
+		return this.collection.createT();
 	}
 	public int size() {
-		return this.content.size();
+		return this.collection.size();
 	}
 	public void clear() {
-		this.content.clear();
+		this.collection.clear();
 	}
 	public boolean add(T item) {
-		return this.content.add(item);
+		return this.collection.add(item);
 	}
 	public boolean sort(java.util.Comparator<T> c) {
-		return this.content.sort(c);
+		return this.collection.sort(c);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public String toString() {
-		return this.content.toString();
+		return this.collection.toString();
 	}
 	public com.FileManagerX.BasicModels.Config toConfig() {
-		return this.content.toConfig();
+		return this.collection.toConfig();
 	}
 	public String output() {
-		return this.content.output();
+		return this.collection.output();
 	}
 	public com.FileManagerX.BasicModels.Config input(String in) {
-		return this.content.input(in);
+		return this.collection.input(in);
 	}
 	public com.FileManagerX.BasicModels.Config input(com.FileManagerX.BasicModels.Config c) {
-		return this.content.input(c);
+		return this.collection.input(c);
 	}
 	public void copyReference(Object o) {
-		this.content.copyReference(o);
+		this.collection.copyReference(o);
 	}
 	public void copyValue(Object o) {
-		this.content.copyValue(o);
+		this.collection.copyValue(o);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public T searchByCount(int count) {
-		return this.content.searchByCount(count);
+		return this.collection.searchByCount(count);
 	}
 	public T fetchByCount(int count) {
-		return this.content.fetchByCount(count);
+		return this.collection.fetchByCount(count);
 	}
 	public com.FileManagerX.Interfaces.ICollection<T> searchesByCount(int bg, int ed) {
-		return this.content.searchesByCount(bg, ed);
+		return this.collection.searchesByCount(bg, ed);
 	}
 	public com.FileManagerX.Interfaces.ICollection<T> fetchesByCount(int bg, int ed) {
-		return this.content.searchesByCount(bg, ed);
+		return this.collection.searchesByCount(bg, ed);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public T searchByKey(Object key) {
-		return this.searchByKey(key);
+		return this.collection.searchByKey(key);
 	}
 	public T fetchByKey(Object key) {
-		return this.fetchByKey(key);
+		return this.collection.fetchByKey(key);
 	}
 	public com.FileManagerX.Interfaces.ICollection<T> searchesByKey(Object key) {
-		return this.searchesByKey(key);
+		return this.collection.searchesByKey(key);
 	}
 	public com.FileManagerX.Interfaces.ICollection<T> fetchesByKey(Object key) {
-		return this.fetchesByKey(key);
+		return this.collection.fetchesByKey(key);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

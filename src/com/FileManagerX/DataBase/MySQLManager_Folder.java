@@ -14,9 +14,7 @@ public class MySQLManager_Folder extends com.FileManagerX.DataBase.MySQLManager_
 		this.reflect();
 		this.setKey("index");
 	}
-	public com.FileManagerX.BasicModels.Folder createT() {
-		return new com.FileManagerX.BasicModels.Folder();
-	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public Object querys2(Object conditions) {

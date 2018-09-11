@@ -15,9 +15,6 @@ public class MySQLManager_Video extends com.FileManagerX.DataBase.MySQLManager_A
 		this.setKey("index");
 		this.setIsIncreaseKey(false);
 	}
-	public com.FileManagerX.FileModels.Video createT() {
-		return new com.FileManagerX.FileModels.Video();
-	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

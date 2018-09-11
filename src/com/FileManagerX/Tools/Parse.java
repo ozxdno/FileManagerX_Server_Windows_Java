@@ -72,8 +72,4 @@ public class Parse {
 		}
 	}
 	
-	public final static Object parseAny(String value, com.FileManagerX.BasicEnums.DataType type, Class<?> clazz) {
-		return null;
-	}
-	
 }

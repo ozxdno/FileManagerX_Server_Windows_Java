@@ -4,20 +4,27 @@ public class Groups extends BasicCollection<com.FileManagerX.BasicModels.Group> 
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	public final static com.FileManagerX.Interfaces.ICollection.IKey KeyForIndex = 
+		new com.FileManagerX.Interfaces.ICollection.IKey() {
+			public Object getKey(Object item) {
+				if(item instanceof com.FileManagerX.BasicModels.Group) {
+					com.FileManagerX.BasicModels.Group i = (com.FileManagerX.BasicModels.Group)item;
+					return i.getIndex();
+				}
+				return null;
+			}
+		};
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public Groups() {
 		this.initThis();
 	}
 	private void initThis() {
 		this.setContent(new com.FileManagerX.BasicCollections.BasicHashMap<>());
-		this.setKey(new KeyForIndex());
+		this.setKey(KeyForIndex);
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public com.FileManagerX.BasicModels.Group createT() {
-		return new com.FileManagerX.BasicModels.Group();
-	}
-	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public com.FileManagerX.BasicModels.Group searchByIndex(long index) {
@@ -42,17 +49,5 @@ public class Groups extends BasicCollection<com.FileManagerX.BasicModels.Group> 
 		return null;
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public static class KeyForIndex implements com.FileManagerX.Interfaces.ICollection.IKey {
-		public Object getKey(Object item) {
-			if(item instanceof com.FileManagerX.BasicModels.Group) {
-				com.FileManagerX.BasicModels.Group i = (com.FileManagerX.BasicModels.Group)item;
-				return i.getIndex();
-			}
-			return null;
-		}
-	}
-	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

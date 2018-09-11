@@ -6,6 +6,11 @@ public class RegisterMachine extends BaseCommand {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	public static final String FAILED_MACHINE_EXISTED = "Machine Existed";
+	public static final String FAILED_UPDATE_MACHINE = "Update Machine to DataBase Failed";
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	private MachineInfo machineInfo;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -121,7 +126,7 @@ public class RegisterMachine extends BaseCommand {
 				com.FileManagerX.DataBase.Unit.Machine
 			);
 		if(ok) {
-			this.getReply().setThis(false, "Machine Existed");
+			this.getReply().setThis(false, FAILED_MACHINE_EXISTED);
 			return false;
 		}
 		
@@ -130,7 +135,7 @@ public class RegisterMachine extends BaseCommand {
 				com.FileManagerX.DataBase.Unit.Machine
 			);
 		if(!ok) {
-			this.getReply().setThis(false, "Update Machine  to DataBase Failed");
+			this.getReply().setThis(false, FAILED_UPDATE_MACHINE);
 			return false;
 		}
 		

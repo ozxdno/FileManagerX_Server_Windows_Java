@@ -13,9 +13,6 @@ public class TXTManager_Invitation extends TXTManager_ANY<com.FileManagerX.Basic
 		this.setUnit(Unit.Invitation);
 		this.reflect();
 	}
-	public com.FileManagerX.BasicModels.Invitation createT() {
-		return new com.FileManagerX.BasicModels.Invitation();
-	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

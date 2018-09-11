@@ -8,6 +8,7 @@ public class Record implements com.FileManagerX.Interfaces.IPublic {
 	private com.FileManagerX.BasicEnums.RecordType type;
 	private String sour;
 	private String dest;
+	private String deliver;
 	private String content;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -30,18 +31,25 @@ public class Record implements com.FileManagerX.Interfaces.IPublic {
 		this.type = type;
 		return true;
 	}
-	public boolean setSourConnectionName(String name) {
-		if(name == null) {
+	public boolean setSour(String sour) {
+		if(sour == null) {
 			return false;
 		}
-		this.sour = name;
+		this.sour = sour;
 		return true;
 	}
-	public boolean setDestConnectionName(String name) {
-		if(name == null) {
+	public boolean setDest(String dest) {
+		if(dest == null) {
 			return false;
 		}
-		this.dest = name;
+		this.dest = dest;
+		return true;
+	}
+	public boolean setDeliver(String deliver) {
+		if(deliver == null) {
+			return false;
+		}
+		this.deliver = deliver;
 		return true;
 	}
 	public boolean setContent(String content) {
@@ -60,11 +68,14 @@ public class Record implements com.FileManagerX.Interfaces.IPublic {
 	public com.FileManagerX.BasicEnums.RecordType getType() {
 		return this.type;
 	}
-	public String getSourConnectionName() {
+	public String getSour() {
 		return this.sour;
 	}
-	public String getDestConnectionName() {
+	public String getDest() {
 		return this.dest;
+	}
+	public String getDeliver() {
+		return this.deliver;
 	}
 	public String getContent() {
 		return this.content;
@@ -81,6 +92,7 @@ public class Record implements com.FileManagerX.Interfaces.IPublic {
 		this.type = com.FileManagerX.BasicEnums.RecordType.UNDEFINE;
 		this.sour = "";
 		this.dest = "";
+		this.deliver = "";
 		this.content = "";
 	}
 	
@@ -90,8 +102,7 @@ public class Record implements com.FileManagerX.Interfaces.IPublic {
 		initThis();
 	}
 	public String toString() {
-		return "[" + this.sour + " " + this.dest + "] " + 
-			    this.type.toString() + ": " +
+		return this.type.toString() + ": " +
 				com.FileManagerX.Tools.StringUtil.getField_FV(this.content);
 	}
 	public Config toConfig() {
@@ -101,6 +112,7 @@ public class Record implements com.FileManagerX.Interfaces.IPublic {
 		c.addToBottom(this.type.toString());
 		c.addToBottom(this.sour);
 		c.addToBottom(this.dest);
+		c.addToBottom(this.deliver);
 		c.addToBottom_Encode(this.content);
 		return c;
 	}
@@ -122,6 +134,8 @@ public class Record implements com.FileManagerX.Interfaces.IPublic {
 			this.sour = c.fetchFirstString();
 			if(!c.getIsOK()) { return c; }
 			this.dest = c.fetchFirstString();
+			if(!c.getIsOK()) { return c; }
+			this.deliver = c.fetchFirstString();
 			if(!c.getIsOK()) { return c; }
 			this.content = c.fetchFirstString_Decode();
 			if(!c.getIsOK()) { return c; }

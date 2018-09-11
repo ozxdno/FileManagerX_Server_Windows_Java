@@ -14,9 +14,6 @@ public class TXTManager_Picture extends TXTManager_ANY<com.FileManagerX.BasicMod
 		this.setSaveImmediately(false);
 		this.reflect();
 	}
-	public com.FileManagerX.FileModels.Picture createT() {
-		return new com.FileManagerX.FileModels.Picture();
-	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

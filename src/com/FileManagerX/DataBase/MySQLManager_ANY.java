@@ -11,6 +11,7 @@ public class MySQLManager_ANY <T extends com.FileManagerX.Interfaces.IPublic>
 	private boolean running;
 	private String name;
 	
+	private Class<T> clazz;
 	private String[] fields;
 	private com.FileManagerX.BasicEnums.DataType[] types;
 	private int key;
@@ -113,6 +114,7 @@ public class MySQLManager_ANY <T extends com.FileManagerX.Interfaces.IPublic>
 	public MySQLManager_ANY() {
 		initThis();
 	}
+	@SuppressWarnings("unchecked")
 	private void initThis() {
 		this.database = null;
 		this.unit = Unit.ANY;
@@ -120,9 +122,22 @@ public class MySQLManager_ANY <T extends com.FileManagerX.Interfaces.IPublic>
 		this.running = false;
 		this.name = "Any";
 		this.increase = true;
+		
+		try {
+			java.lang.reflect.ParameterizedType type = (java.lang.reflect.ParameterizedType)
+					this.getClass().getGenericSuperclass();
+			this.clazz = (Class<T>)type.getActualTypeArguments()[0];
+		} catch(Exception e) {
+			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
+		}
 	}
 	public T createT() {
-		return null;
+		try {
+			return clazz == null ? null : clazz.newInstance();
+		} catch(Exception e) {
+			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
+			return null;
+		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -357,7 +372,9 @@ public class MySQLManager_ANY <T extends com.FileManagerX.Interfaces.IPublic>
 					}
 					if(com.FileManagerX.BasicEnums.DataType.ENUM.equals(t)) {
 						String s = com.FileManagerX.Coder.Decoder.Decode_DataBaseString2String(set.getString(i));
-						Object value = this.readUnsupportField(f, s, item);
+						if(item == null) { continue; }
+						Object sample = com.FileManagerX.Tools.Reflect.getField(f, item);
+						Object value = com.FileManagerX.Tools.Parse.parseEnum(s, sample.getClass());
 						com.FileManagerX.Tools.Reflect.setFeild(f, value, item);
 						continue;
 					}
@@ -447,7 +464,9 @@ public class MySQLManager_ANY <T extends com.FileManagerX.Interfaces.IPublic>
 					}
 					if(com.FileManagerX.BasicEnums.DataType.ENUM.equals(t)) {
 						String s = com.FileManagerX.Coder.Decoder.Decode_DataBaseString2String(set.getString(i));
-						Object value = this.readUnsupportField(f, s, item);
+						if(item == null) { continue; }
+						Object sample = com.FileManagerX.Tools.Reflect.getField(f, item);
+						Object value = com.FileManagerX.Tools.Parse.parseEnum(s, sample.getClass());
 						com.FileManagerX.Tools.Reflect.setFeild(f, value, item);
 						continue;
 					}

@@ -14,9 +14,7 @@ public class MySQLManager_User extends com.FileManagerX.DataBase.MySQLManager_AN
 		this.reflect();
 		this.setKey("index");
 	}
-	public com.FileManagerX.BasicModels.User createT() {
-		return new com.FileManagerX.BasicModels.User();
-	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public Object querys2(Object conditions) {

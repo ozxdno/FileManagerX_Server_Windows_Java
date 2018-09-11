@@ -4,20 +4,27 @@ public class Invitations extends BasicCollection<com.FileManagerX.BasicModels.In
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	public final static com.FileManagerX.Interfaces.ICollection.IKey KeyForCode =
+		new com.FileManagerX.Interfaces.ICollection.IKey() {
+			public Object getKey(Object item) {
+				if(item instanceof com.FileManagerX.BasicModels.Invitation) {
+					com.FileManagerX.BasicModels.Invitation i = (com.FileManagerX.BasicModels.Invitation)item;
+					return i.getCode();
+				}
+				return null;
+			}
+		};
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public Invitations() {
 		this.initThis();
 	}
 	private void initThis() {
 		this.setContent(new com.FileManagerX.BasicCollections.BasicHashMap<>());
-		this.setKey(new KeyForCode());
+		this.setKey(KeyForCode);
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public com.FileManagerX.BasicModels.Invitation createT() {
-		return new com.FileManagerX.BasicModels.Invitation();
-	}
-	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public com.FileManagerX.BasicModels.Invitation searchByEndTime(long endTime) {
@@ -68,17 +75,5 @@ public class Invitations extends BasicCollection<com.FileManagerX.BasicModels.In
 		return is;
 	}
 	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public static class KeyForCode implements com.FileManagerX.Interfaces.ICollection.IKey {
-		public Object getKey(Object item) {
-			if(item instanceof com.FileManagerX.BasicModels.Invitation) {
-				com.FileManagerX.BasicModels.Invitation i = (com.FileManagerX.BasicModels.Invitation)item;
-				return i.getCode();
-			}
-			return null;
-		}
-	}
-		
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

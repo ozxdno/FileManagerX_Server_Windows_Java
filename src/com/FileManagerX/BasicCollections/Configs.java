@@ -4,20 +4,27 @@ public class Configs extends BasicCollection<com.FileManagerX.BasicModels.Config
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	public final static com.FileManagerX.Interfaces.ICollection.IKey KeyForField =
+		new com.FileManagerX.Interfaces.ICollection.IKey() {
+			public Object getKey(Object item) {
+				if(item instanceof com.FileManagerX.BasicModels.Config) {
+					com.FileManagerX.BasicModels.Config i = (com.FileManagerX.BasicModels.Config)item;
+					return i.getField();
+				}
+				return null;
+			}
+		};
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public Configs() {
 		this.initThis();
 	}
 	private void initThis() {
 		this.setContent(new com.FileManagerX.BasicCollections.BasicLinkedList<>());
-		this.setKey(new KeyForField());
+		this.setKey(KeyForField);
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public com.FileManagerX.BasicModels.Config createT() {
-		return new com.FileManagerX.BasicModels.Config();
-	}
-	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public com.FileManagerX.BasicModels.Config searchByField(String field) {
@@ -40,18 +47,6 @@ public class Configs extends BasicCollection<com.FileManagerX.BasicModels.Config
 			}
 		}
 		return null;
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public static class KeyForField implements com.FileManagerX.Interfaces.ICollection.IKey {
-		public Object getKey(Object item) {
-			if(item instanceof com.FileManagerX.BasicModels.Config) {
-				com.FileManagerX.BasicModels.Config i = (com.FileManagerX.BasicModels.Config)item;
-				return i.getField();
-			}
-			return null;
-		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

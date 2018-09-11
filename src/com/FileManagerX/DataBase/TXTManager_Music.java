@@ -14,9 +14,6 @@ public class TXTManager_Music extends TXTManager_ANY<com.FileManagerX.BasicModel
 		this.setSaveImmediately(false);
 		this.reflect();
 	}
-	public com.FileManagerX.FileModels.Music createT() {
-		return new com.FileManagerX.FileModels.Music();
-	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

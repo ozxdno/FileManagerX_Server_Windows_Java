@@ -14,10 +14,7 @@ public class TXTManager_Chat extends TXTManager_ANY<com.FileManagerX.BasicModels
 		this.setSaveImmediately(false);
 		this.reflect();
 	}
-	public com.FileManagerX.BasicModels.Chat createT() {
-		return new com.FileManagerX.BasicModels.Chat();
-	}
-
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public Object querys2(Object conditions) {

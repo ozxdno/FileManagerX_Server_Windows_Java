@@ -13,9 +13,6 @@ public class TXTManager_Machine extends TXTManager_ANY<com.FileManagerX.BasicMod
 		this.setUnit(Unit.Machine);
 		this.reflect();
 	}
-	public com.FileManagerX.BasicModels.MachineInfo createT() {
-		return new com.FileManagerX.BasicModels.MachineInfo();
-	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

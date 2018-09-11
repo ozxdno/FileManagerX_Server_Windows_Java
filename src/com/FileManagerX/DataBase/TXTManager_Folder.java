@@ -14,10 +14,7 @@ public class TXTManager_Folder extends TXTManager_ANY<com.FileManagerX.BasicMode
 		this.setSaveImmediately(false);
 		this.reflect();
 	}
-	public com.FileManagerX.BasicModels.Folder createT() {
-		return new com.FileManagerX.BasicModels.Folder();
-	}
-
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public Object querys2(Object conditions) {

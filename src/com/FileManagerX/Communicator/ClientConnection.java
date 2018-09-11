@@ -190,7 +190,7 @@ public class ClientConnection extends com.FileManagerX.Processes.BasicProcess
 		this.receiveString = null;
 		this.sendString = null;
 		
-		this.sends = new java.util.PriorityQueue<>(com.FileManagerX.Tools.Comparator.Transport.priorityAsc());
+		this.sends = new java.util.PriorityQueue<>(com.FileManagerX.Tools.Comparator.Transport.priorityAsc);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -216,8 +216,8 @@ public class ClientConnection extends com.FileManagerX.Processes.BasicProcess
 		ls.send();
 		reply = ls.receive();
 		if(reply == null) { return "LoginServer Failed: reply NULL"; }
-		if(!reply.isOK() && com.FileManagerX.Commands.LoginServer.FAILED_NO_AVAILABLE_SERVER.
-				equals(reply.getFailedReason())) {
+		if(!reply.isOK() && !com.FileManagerX.Replies.LoginServer.FAILED_SERVER_CHANGED.
+				equals(reply.getFailedReason())) { 
 			return reply.getFailedReason();
 		}
 		
@@ -228,6 +228,10 @@ public class ClientConnection extends com.FileManagerX.Processes.BasicProcess
 			this.brother.setSocket(this.getSocket());
 			this.restartProcess();
 			this.brother.restartProcess();
+		}
+		
+		if(com.FileManagerX.Globals.Configurations.Refresh) {
+			com.FileManagerX.Tools.CFG.Register.load(com.FileManagerX.Globals.Datas.CFG);
 		}
 		
 		com.FileManagerX.Commands.LoginUser lu = new com.FileManagerX.Commands.LoginUser();

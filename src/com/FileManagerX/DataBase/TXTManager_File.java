@@ -28,9 +28,6 @@ public class TXTManager_File extends TXTManager_ANY<com.FileManagerX.BasicModels
 		this.setSaveImmediately(false);
 		this.reflect();
 	}
-	public com.FileManagerX.BasicModels.File createT() {
-		return new com.FileManagerX.BasicModels.File();
-	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

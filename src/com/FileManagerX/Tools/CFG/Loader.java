@@ -15,7 +15,6 @@ public class Loader {
 		ok = ok && Index.load(cfg);
 		ok = ok && BuildScanners.build();
 		ok = ok && BuildConnection.build();
-		ok = ok && Register.load(cfg);
 		ok = ok && Login.login();
 		ok = ok && ServerMachine.load(cfg);
 		ok = ok && ServerUser.load(cfg);

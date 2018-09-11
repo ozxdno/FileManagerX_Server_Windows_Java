@@ -4,20 +4,27 @@ public class MachineInfos extends BasicCollection<com.FileManagerX.BasicModels.M
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	public final static com.FileManagerX.Interfaces.ICollection.IKey KeyForIndex =
+		new com.FileManagerX.Interfaces.ICollection.IKey() {
+			public Object getKey(Object item) {
+				if(item instanceof com.FileManagerX.BasicModels.MachineInfo) {
+					com.FileManagerX.BasicModels.MachineInfo i = (com.FileManagerX.BasicModels.MachineInfo)item;
+					return i.getIndex();
+				}
+				return null;
+			}
+		};
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public MachineInfos() {
 		this.initThis();
 	}
 	private void initThis() {
 		this.setContent(new com.FileManagerX.BasicCollections.BasicHashMap<>());
-		this.setKey(new KeyForIndex());
+		this.setKey(KeyForIndex);
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public com.FileManagerX.BasicModels.MachineInfo createT() {
-		return new com.FileManagerX.BasicModels.MachineInfo();
-	}
-	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public com.FileManagerX.BasicModels.MachineInfo searchByIndex(long index) {
@@ -138,17 +145,5 @@ public class MachineInfos extends BasicCollection<com.FileManagerX.BasicModels.M
 		return null;
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public static class KeyForIndex implements com.FileManagerX.Interfaces.ICollection.IKey {
-		public Object getKey(Object item) {
-			if(item instanceof com.FileManagerX.BasicModels.MachineInfo) {
-				com.FileManagerX.BasicModels.MachineInfo i = (com.FileManagerX.BasicModels.MachineInfo)item;
-				return i.getIndex();
-			}
-			return null;
-		}
-	}
-	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

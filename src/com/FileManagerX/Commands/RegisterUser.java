@@ -5,6 +5,17 @@ public class RegisterUser extends BaseCommand {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
+	public final static String FAILED_EMPTY_LOGIN_NAME = "Login Name is Empty";
+	public final static String FAILED_EMPTY_PASSWORD = "Password is Empty";
+	public final static String FAILED_EMPTY_INVITATION_CODE = "Invitation Code is Empty";
+	public final static String FAILED_CODE_OVER_TIME = "Invitation Code is over time";
+	public final static String FAILED_CODE_NO_COUNT = "The remain count of this Invitation Code is 0";
+	public final static String FAILED_NOT_FOUND_INVITATION = "Wrong Invitation Code";
+	public final static String FAILED_USER_EXISTED = "Login Name existed";
+	public final static String FAILED_UPDATE_USER = "Update User to DataBase failed";
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	private String invitationCode;
 	private String loginName;
 	private String password;
@@ -28,7 +39,7 @@ public class RegisterUser extends BaseCommand {
 		if(name.length() == 0) {
 			return false;
 		}
-		this.invitationCode = name;
+		this.loginName = name;
 		return true;
 	}
 	public boolean setPassword(String password) {
@@ -38,7 +49,7 @@ public class RegisterUser extends BaseCommand {
 		if(password.length() == 0) {
 			return false;
 		}
-		this.invitationCode = password;
+		this.password = password;
 		return true;
 	}
 
@@ -162,38 +173,59 @@ public class RegisterUser extends BaseCommand {
 
 	public boolean executeInLocal() {
 		if(this.invitationCode.length() == 0) {
-			this.getReply().setThis(false, "Empty InvitationCode");
+			this.getReply().setThis(false, FAILED_EMPTY_INVITATION_CODE);
 			return false;
 		}
 		if(this.loginName.length() == 0) {
-			this.getReply().setThis(false, "Empty LoginName");
+			this.getReply().setThis(false, FAILED_EMPTY_LOGIN_NAME);
 			return false;
 		}
 		if(this.password.length() == 0) {
-			this.getReply().setThis(false, "Empty Password");
+			this.getReply().setThis(false, FAILED_EMPTY_PASSWORD);
 			return false;
 		}
 		
-		com.FileManagerX.BasicModels.Invitation i = (com.FileManagerX.BasicModels.Invitation)
-				com.FileManagerX.Globals.Datas.DBManager.query2(
-						"[&] InvitationCode = '" + this.invitationCode + "'",
-						com.FileManagerX.DataBase.Unit.Invitation
-					);
-		if(i == null) {
+		com.FileManagerX.BasicModels.Invitation i = new com.FileManagerX.BasicModels.Invitation();
+		boolean ok = com.FileManagerX.Globals.Datas.DBManager.query(
+				"qcs = 1|[&] code = " + this.invitationCode,
+				i,
+				com.FileManagerX.DataBase.Unit.Invitation
+			);
+		if(!ok) {
 			this.getReply().setOK(false);
-			this.getReply().setFailedReason(
-					"Not Found such Invitation Code in DataBase. Code: " + this.invitationCode);
+			this.getReply().setFailedReason(FAILED_NOT_FOUND_INVITATION);
 			return false;
 		}
 		
-		com.FileManagerX.BasicModels.User exu = (com.FileManagerX.BasicModels.User)
-				com.FileManagerX.Globals.Datas.DBManager.query2(
-						"[&] LoginName = '" + this.loginName + "'",
-						com.FileManagerX.DataBase.Unit.User
-					);
-		if(exu != null) {
+		i.setRemainAmount(i.getRemainAmount()-1);
+		if(i.getRemainAmount() <= 0) {
+			com.FileManagerX.Globals.Datas.DBManager.remove(i, com.FileManagerX.DataBase.Unit.Invitation);
+		}
+		else {
+			com.FileManagerX.Globals.Datas.DBManager.update(i, com.FileManagerX.DataBase.Unit.Invitation);
+		}
+		
+		if(i.getRemainAmount() < 0) {
 			this.getReply().setOK(false);
-			this.getReply().setFailedReason("User Login Name Existed");
+			this.getReply().setFailedReason(FAILED_CODE_NO_COUNT);
+			return false;
+		}
+		
+		if(com.FileManagerX.Tools.Time.getTicks() > i.getEndTime()) {
+			com.FileManagerX.Globals.Datas.DBManager.remove(i, com.FileManagerX.DataBase.Unit.Invitation);
+			this.getReply().setOK(false);
+			this.getReply().setFailedReason(FAILED_CODE_OVER_TIME);
+			return false;
+		}
+		
+		ok = com.FileManagerX.Globals.Datas.DBManager.query(
+				"qcs = 1|[&] loginName = " + this.loginName,
+				null,
+				com.FileManagerX.DataBase.Unit.User
+			);
+		if(ok) {
+			this.getReply().setOK(false);
+			this.getReply().setFailedReason(FAILED_USER_EXISTED);
 			return false;
 		}
 		
@@ -207,9 +239,9 @@ public class RegisterUser extends BaseCommand {
 		u.setCoins(i.getCoins());
 		u.setMoney(i.getMoney());
 		
-		boolean ok = com.FileManagerX.Globals.Datas.DBManager.update(u);
+		ok = com.FileManagerX.Globals.Datas.DBManager.update(u, com.FileManagerX.DataBase.Unit.User);
 		if(!ok) {
-			this.getReply().setThis(false, "Update User to DataBase Failed");
+			this.getReply().setThis(false, FAILED_UPDATE_USER);
 			return false;
 		}
 		

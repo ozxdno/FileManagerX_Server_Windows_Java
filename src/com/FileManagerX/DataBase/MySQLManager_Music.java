@@ -15,9 +15,6 @@ public class MySQLManager_Music extends com.FileManagerX.DataBase.MySQLManager_A
 		this.setKey("index");
 		this.setIsIncreaseKey(false);
 	}
-	public com.FileManagerX.FileModels.Music createT() {
-		return new com.FileManagerX.FileModels.Music();
-	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

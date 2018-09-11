@@ -6,6 +6,10 @@ public class LoginServer extends BaseReply {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	public final static String FAILED_SERVER_CHANGED = "Server Machine Changed";
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	private MachineInfo machineInfo;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -98,15 +102,7 @@ public class LoginServer extends BaseReply {
 	public boolean executeInLocal() {
 		
 		// 没有给出替换建议
-		if(this.getFailedReason().equals(com.FileManagerX.Commands.LoginServer.FAILED_FIND_NEXT_SERVER)) {
-			this.setStore(false);
-			return false;
-		}
-		
-		if(com.FileManagerX.Commands.LoginServer.FAILED_NO_AVAILABLE_SERVER.equals(this.getFailedReason())) {
-			this.setStore(true);
-			return false;
-		}
+		if(!this.isOK()) { this.setStore(false); return false; }
 		
 		// 已经存在替换建议
 		com.FileManagerX.Interfaces.IReply rep = com.FileManagerX.Globals.Datas.Receiver.searchByKey(
@@ -138,6 +134,7 @@ public class LoginServer extends BaseReply {
 			this.getSourConnection().getClientConnection().setServerMachineInfo(this.machineInfo);
 			this.getSourConnection().getServerConnection().stopProcess();
 			this.getSourConnection().getClientConnection().stopProcess();
+			this.setFailedReason(FAILED_SERVER_CHANGED);
 			this.setOK(false);
 			return false;
 		}

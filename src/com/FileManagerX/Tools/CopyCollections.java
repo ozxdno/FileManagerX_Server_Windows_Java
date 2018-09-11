@@ -27,9 +27,7 @@ public class CopyCollections {
 		if(sour instanceof java.util.Collection<?>) {
 			try {
 				java.util.Collection<T> s = (java.util.Collection<T>)sour;
-				for(T item : s) {
-					dest.add(item);
-				}
+				for(T item : s) { dest.add(item); }
 				return;
 			} catch(Exception e) {
 				com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
@@ -64,7 +62,7 @@ public class CopyCollections {
 						(com.FileManagerX.Interfaces.ICollection<T>)sour;
 				com.FileManagerX.Interfaces.IIterator<T> its = s.getIterator();
 				while(its.hasNext()) {
-					T t = (T)com.FileManagerX.Tools.Reflect.executeMethod("createT", dest);
+					T t = dest.createT();
 					t.copyValue(its.getNext());
 					dest.add(t);
 				}
@@ -78,7 +76,7 @@ public class CopyCollections {
 			try {
 				java.util.Collection<T> s = (java.util.Collection<T>)sour;
 				for(T item : s) {
-					T t = (T)com.FileManagerX.Tools.Reflect.executeMethod("createT", dest);
+					T t = dest.createT();
 					t.copyValue(item);
 					dest.add(t);
 				}
@@ -92,7 +90,7 @@ public class CopyCollections {
 			try {
 				java.util.Map<?, T> s = (java.util.Map<?, T>)sour;
 				for(java.util.Map.Entry<?, T> e : s.entrySet()) {
-					T t = (T)com.FileManagerX.Tools.Reflect.executeMethod("createT", dest);
+					T t = dest.createT();
 					t.copyValue(e.getValue());
 					dest.add(t);
 				}

@@ -25,6 +25,16 @@ public final class Datas {
 	 */
 	public final static com.FileManagerX.BasicCollections.Supports Supports = 
 			new com.FileManagerX.BasicCollections.Supports();
+	/**
+	 * 命令动态扩展
+	 */
+	public final static java.util.HashMap<String, Class<?>> Commands =
+			new java.util.HashMap<>();
+	/**
+	 * 响应动态扩展
+	 */
+	public final static java.util.HashMap<String, Class<?>> Replies = 
+			new java.util.HashMap<>();
 	
 	/**
 	 * CFG 文件

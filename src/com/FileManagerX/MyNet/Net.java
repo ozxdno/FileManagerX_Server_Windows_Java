@@ -4,6 +4,29 @@ public class Net extends com.FileManagerX.BasicCollections.BasicCollection<Group
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	public final static com.FileManagerX.Interfaces.ICollection.IKey KeyForName =
+		new com.FileManagerX.Interfaces.ICollection.IKey() {
+			public Object getKey(Object item) {
+				if(item instanceof com.FileManagerX.MyNet.Group) {
+					com.FileManagerX.MyNet.Group i = (com.FileManagerX.MyNet.Group)item;
+					return i.getName();
+				}
+				return null;
+			}
+		};
+	public final static com.FileManagerX.Interfaces.ICollection.IKey KeyForIndex =
+		new com.FileManagerX.Interfaces.ICollection.IKey() {
+			public Object getKey(Object item) {
+				if(item instanceof com.FileManagerX.MyNet.Group) {
+					com.FileManagerX.MyNet.Group i = (com.FileManagerX.MyNet.Group)item;
+					return i.getIndex();
+				}
+				return null;
+			}
+		};
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	private String name;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -19,8 +42,8 @@ public class Net extends com.FileManagerX.BasicCollections.BasicCollection<Group
 		return true;
 	}
 	public boolean setLimit(int limit) {
-		com.FileManagerX.Safe.BasicCollections.BasicLRUMap<Group> map = 
-				(com.FileManagerX.Safe.BasicCollections.BasicLRUMap<Group>)this.getContent();
+		com.FileManagerX.BasicCollections.BasicLRUMap<Group> map = 
+				(com.FileManagerX.BasicCollections.BasicLRUMap<Group>)this.getContent();
 		return map.setLimit(limit);
 	}
 	
@@ -30,8 +53,8 @@ public class Net extends com.FileManagerX.BasicCollections.BasicCollection<Group
 		return this.name;
 	}
 	public int getLimit() {
-		com.FileManagerX.Safe.BasicCollections.BasicLRUMap<Group> map = 
-				(com.FileManagerX.Safe.BasicCollections.BasicLRUMap<Group>)this.getContent();
+		com.FileManagerX.BasicCollections.BasicLRUMap<Group> map = 
+				(com.FileManagerX.BasicCollections.BasicLRUMap<Group>)this.getContent();
 		return map.getLimit();
 	}
 	
@@ -48,13 +71,10 @@ public class Net extends com.FileManagerX.BasicCollections.BasicCollection<Group
 	}
 	private void initThis() {
 		this.name = "Default Net";
-		this.setContent(new com.FileManagerX.Safe.BasicCollections.BasicLRUMap<>());
-		this.setKey(new KeyForName());
-		
-		com.FileManagerX.Factories.MyNetFactory.createServerGroup(this);
-		com.FileManagerX.Factories.MyNetFactory.createMyGroup(this);
-		com.FileManagerX.Factories.MyNetFactory.createTempGroup(this);
-		com.FileManagerX.Factories.MyNetFactory.createHideGroup(this);
+		this.setContent(new com.FileManagerX.BasicCollections.BasicLRUMap<>());
+		this.setKey(KeyForName);
+		this.setSafe(true);
+		this.setLimit(com.FileManagerX.Globals.Configurations.LimitForNetGroup);
 	}
 	public Group createT() {
 		return new Group();
@@ -158,27 +178,6 @@ public class Net extends com.FileManagerX.BasicCollections.BasicCollection<Group
 		com.FileManagerX.Interfaces.IIterator<Group> it = this.getIterator();
 		while(it.hasNext()) {
 			it.getNext().refresh();
-		}
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public static class KeyForName implements com.FileManagerX.Interfaces.ICollection.IKey {
-		public Object getKey(Object item) {
-			if(item instanceof com.FileManagerX.MyNet.Group) {
-				com.FileManagerX.MyNet.Group i = (com.FileManagerX.MyNet.Group)item;
-				return i.getName();
-			}
-			return null;
-		}
-	}
-	public static class KeyForIndex implements com.FileManagerX.Interfaces.ICollection.IKey {
-		public Object getKey(Object item) {
-			if(item instanceof com.FileManagerX.MyNet.Group) {
-				com.FileManagerX.MyNet.Group i = (com.FileManagerX.MyNet.Group)item;
-				return i.getIndex();
-			}
-			return null;
 		}
 	}
 	

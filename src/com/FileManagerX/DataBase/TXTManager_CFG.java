@@ -13,10 +13,7 @@ public class TXTManager_CFG extends TXTManager_ANY<com.FileManagerX.BasicModels.
 		this.setUnit(Unit.CFG);
 		this.reflect();
 	}
-	public com.FileManagerX.FileModels.CFG createT() {
-		return new com.FileManagerX.FileModels.CFG();
-	}
-
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public Object querys2(Object conditions) {

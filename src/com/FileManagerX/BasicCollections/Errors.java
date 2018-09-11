@@ -4,20 +4,27 @@ public class Errors extends BasicCollection<com.FileManagerX.BasicModels.Error> 
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	public final static com.FileManagerX.Interfaces.ICollection.IKey KeyForType =
+		new com.FileManagerX.Interfaces.ICollection.IKey() {
+			public Object getKey(Object item) {
+				if(item instanceof com.FileManagerX.BasicModels.Error) {
+					com.FileManagerX.BasicModels.Error i = (com.FileManagerX.BasicModels.Error)item;
+					return i.getType();
+				}
+				return null;
+			}
+		};
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	public Errors() {
 		this.initThis();
 	}
 	private void initThis() {
 		this.setContent(new com.FileManagerX.BasicCollections.BasicLinkedList<>());
-		this.setKey(new KeyForType());
+		this.setKey(KeyForType);
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public com.FileManagerX.BasicModels.Error createT() {
-		return new com.FileManagerX.BasicModels.Error();
-	}
-	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public Errors searchByTimeBefore(long time) {
@@ -73,10 +80,11 @@ public class Errors extends BasicCollection<com.FileManagerX.BasicModels.Error> 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean save() {
-		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.BasicModels.Error> it = this.getIterator();
+		int amount = this.size();
 		boolean ok = true;
-		while(it.hasNext()) {
-			com.FileManagerX.BasicModels.Error e = it.getNext();
+		
+		for(int i=0; i<amount; i++) {
+			com.FileManagerX.BasicModels.Error e = this.fetchByCount(0);
 			String url = com.FileManagerX.Tools.Pathes.getFolder_LOG() + "\\" + e.getShortTime_Date() + ".log";
 			java.io.File log = new java.io.File(url);
 			try {
@@ -94,30 +102,6 @@ public class Errors extends BasicCollection<com.FileManagerX.BasicModels.Error> 
 			}
 		}
 		
-		this.clear();
-		return ok;
-	}
-	public boolean save(int amount) {
-		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.BasicModels.Error> it = this.getIterator();
-		boolean ok = true;
-		while(this.size() > amount) {
-			com.FileManagerX.BasicModels.Error e = it.getNext();
-			it.remove();
-			String url = com.FileManagerX.Tools.Pathes.getFolder_LOG() + "\\" + e.getShortTime_Date() + ".log";
-			java.io.File log = new java.io.File(url);
-			try {
-				if(!log.exists()) { log.createNewFile(); }
-				java.io.BufferedWriter bw = new java.io.BufferedWriter(new java.io.FileWriter(log, true));
-				bw.write(e.output());
-				bw.newLine();
-				bw.flush();
-				bw.close();
-			} catch(Exception exception) {
-				exception.printStackTrace();
-				ok = false;
-				continue;
-			}
-		}
 		return ok;
 	}
 	public boolean deleteAgoLogs(int permitLogAmount) {
@@ -151,18 +135,6 @@ public class Errors extends BasicCollection<com.FileManagerX.BasicModels.Error> 
 			}
 		}
 		return ok;
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public static class KeyForType implements com.FileManagerX.Interfaces.ICollection.IKey {
-		public Object getKey(Object item) {
-			if(item instanceof com.FileManagerX.BasicModels.Error) {
-				com.FileManagerX.BasicModels.Error i = (com.FileManagerX.BasicModels.Error)item;
-				return i.getType();
-			}
-			return null;
-		}
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
