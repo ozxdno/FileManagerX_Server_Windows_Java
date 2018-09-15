@@ -32,72 +32,55 @@ public class Deliver {
 			return true;
 		}
 		
-		// Invalid Destination
-		/*
-		if(com.FileManagerX.BasicEnums.RppExecutePart.E.equals(rpp.getExecutePart()) &&
-				t.getBasicMessagePackage().getDestMachineIndex() != 
-				com.FileManagerX.Globals.Configurations.This_MachineIndex) {
-			rpp.setExecutePart(com.FileManagerX.BasicEnums.RppExecutePart.R);
-			rpp.setActualDepth(rpp.getActualPath().size()-1);
-			rpp.setDestMountServer(-1);
-		}
-		*/
-		
-		// Finished RPP
-		if(rpp.getDestMountServer() >= 0) {
-			return true;
+		// SMP
+		if(rpp.getSourMountServer() < 0) {
+			;
 		}
 		
-		// Destination
-		long dest = t.getBasicMessagePackage().getDestMachineIndex();
-		
-		// Complete By Buffer
-		if(com.FileManagerX.Globals.Configurations.This_MachineIndex ==
-				t.getBasicMessagePackage().getSourMachineIndex()) {
-			com.FileManagerX.MyNet.Group tempGroup = com.FileManagerX.Factories.MyNetFactory.createTempGroup();
-			com.FileManagerX.MyNet.User user = tempGroup.searchByKey(MYNET_RECOMMEND_PATHES);
-			if(user != null) {
-				com.FileManagerX.MyNet.Machine machine = user.fetchByKey(dest);
-				if(machine != null) {
-					//rpp.setSourMountPath(machine.getRoutePathPackage().getSourMountPath());
-					rpp.setRecommendPath(machine.getRoutePathPackage().getRecommendPath());
-					rpp.setDestMountPath(machine.getRoutePathPackage().getDestMountPath());
-					//rpp.setSourMountServer(machine.getRoutePathPackage().getSourMountServer());
-					rpp.setDestMountServer(machine.getRoutePathPackage().getDestMountServer());
+		// DMP
+		if(rpp.getDestMountServer() < 0) {
+			
+			long sour = t.getBasicMessagePackage().getDestMachineIndex();
+			long dest = t.getBasicMessagePackage().getDestMachineIndex();
+			boolean found = false;
+			
+			// Buffered
+			if(com.FileManagerX.Globals.Configurations.This_MachineIndex == sour) {
+				com.FileManagerX.MyNet.Group tempGroup = com.FileManagerX.Factories.MyNetFactory.createTempGroup();
+				com.FileManagerX.MyNet.User user = tempGroup.searchByKey(MYNET_RECOMMEND_PATHES);
+				if(user != null) {
+					com.FileManagerX.MyNet.Machine machine = user.fetchByKey(dest);
+					if(machine != null) {
+						rpp.setRecommendPath(machine.getRoutePathPackage().getRecommendPath());
+						rpp.setDestMountPath(machine.getRoutePathPackage().getDestMountPath());
+						rpp.setDestMountServer(machine.getRoutePathPackage().getDestMountServer());
+						found = true;
+					}
+				}
+			}
+			
+			// DataBase
+			if(!found && com.FileManagerX.Globals.Configurations.IsServer) {
+				if(com.FileManagerX.Globals.Datas.DBManager.getDBInfo() != null) {
+					com.FileManagerX.BasicModels.MachineInfo m = (com.FileManagerX.BasicModels.MachineInfo)
+							com.FileManagerX.Globals.Datas.DBManager.query2(
+									"qcs = 1|[&] index = " + dest,
+									com.FileManagerX.DataBase.Unit.Machine
+								);
+					String dp = m == null ? "" : m.getPath();
+					
+					java.util.ArrayList<Long> path = com.FileManagerX.Tools.StringUtil.split2long(dp, " ");
+					long dserver = path.size() > 0 ? path.get(path.size()-1) : -1;
+					
+					rpp.reverse(path);
+					rpp.setDestMountPath(path);
+					rpp.setDestMountServer(dserver);
 					return true;
 				}
 			}
 		}
 		
-		
-		// Complete By Server
-		if(!com.FileManagerX.Globals.Configurations.IsServer) {
-			return false;
-		}
-		
-		// Initializing ...
-		if(com.FileManagerX.Globals.Datas.DBManager.getDBInfo() == null) {
-			return false;
-		}
-		
-		// Complete destination
-		if(rpp.getDestMountServer() <= 0) {
-			com.FileManagerX.BasicModels.MachineInfo m = (com.FileManagerX.BasicModels.MachineInfo)
-					com.FileManagerX.Globals.Datas.DBManager.query2(
-							"qcs = 1|[&] index = " + dest,
-							com.FileManagerX.DataBase.Unit.Machine
-						);
-			String dp = m == null ? "" : m.getPath();
-			
-			java.util.ArrayList<Long> path = com.FileManagerX.Tools.StringUtil.split2long(dp, " ");
-			long dserver = path.size() > 0 ? path.get(path.size()-1) : -1;
-			
-			rpp.reverse(path);
-			rpp.setDestMountPath(path);
-			rpp.setDestMountServer(dserver);
-			return true;
-		}
-		
+		// Not found
 		return false;
 	}
 	
@@ -257,7 +240,6 @@ public class Deliver {
 		
 		// RPP
 		com.FileManagerX.Interfaces.IRoutePathPackage rpp = t.getBasicMessagePackage().getRoutePathPackage();
-		rpp.addAsNext();
 		
 		// Arrive Destination
 		if(com.FileManagerX.Globals.Configurations.This_MachineIndex == 

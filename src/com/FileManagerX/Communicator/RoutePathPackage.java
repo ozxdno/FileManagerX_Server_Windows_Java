@@ -432,6 +432,11 @@ public class RoutePathPackage implements com.FileManagerX.Interfaces.IRoutePathP
 		return true;
 	}
 	public void updateExecutePart(long dest) {
+		// D -> E
+		if(com.FileManagerX.Globals.Configurations.This_MachineIndex == dest) {
+			this.execute = com.FileManagerX.BasicEnums.RppExecutePart.E;
+		}
+		
 		// 自动重载进行转发
 		if(com.FileManagerX.BasicEnums.RppExecutePart.E.equals(this.execute)) {
 			if(dest != com.FileManagerX.Globals.Configurations.This_MachineIndex) {
@@ -439,6 +444,24 @@ public class RoutePathPackage implements com.FileManagerX.Interfaces.IRoutePathP
 				this.actualDepth =this.actualPath.size()-1;
 				this.destMountPath.clear();
 				this.destMountServer = -1;
+			}
+		}
+		
+		// 填充源挂载路径
+		if(com.FileManagerX.BasicEnums.RppExecutePart.E.equals(this.execute)) {
+			if(com.FileManagerX.Globals.Configurations.IsServer) {
+				if(this.sourMountServer < 0) {
+					this.sourMountServer = com.FileManagerX.Globals.Configurations.This_MachineIndex;
+				}
+			}
+		}
+		
+		// 填充目标挂载路径
+		if(com.FileManagerX.BasicEnums.RppExecutePart.E.equals(this.execute)) {
+			if(com.FileManagerX.Globals.Configurations.IsServer) {
+				if(this.destMountServer < 0) {
+					this.destMountServer = com.FileManagerX.Globals.Configurations.This_MachineIndex;
+				}
 			}
 		}
 		
@@ -488,11 +511,6 @@ public class RoutePathPackage implements com.FileManagerX.Interfaces.IRoutePathP
 					this.recommendDepth = -1;
 				}
 			}
-		}
-		
-		// D -> E
-		if(com.FileManagerX.Globals.Configurations.This_MachineIndex == dest) {
-			this.execute = com.FileManagerX.BasicEnums.RppExecutePart.E;
 		}
 	}
 	public void refreshRecommendPath(com.FileManagerX.Interfaces.IRoutePathPackage rpp) {

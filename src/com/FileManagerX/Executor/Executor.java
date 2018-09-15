@@ -52,14 +52,13 @@ public class Executor extends com.FileManagerX.Processes.BasicProcess {
 	private class RunImpl implements com.FileManagerX.Processes.BasicProcess.Runnable {
 		public String run() {
 			if(receive != null) {
+				// REP
 				if(receive instanceof com.FileManagerX.Interfaces.IReply) {
 					com.FileManagerX.Interfaces.IReply rep = (com.FileManagerX.Interfaces.IReply)receive;
-					if(rep.isOK()) { com.FileManagerX.Deliver.Deliver.refreshRPP(rep); }
-					
 					rep.execute();
 					if(rep.isStore()) { com.FileManagerX.Globals.Datas.Receiver.add(rep); }
 				}
-				
+				// CMD
 				if(receive instanceof com.FileManagerX.Commands.BaseCommand) {
 					com.FileManagerX.Commands.BaseCommand cmd = (com.FileManagerX.Commands.BaseCommand)receive;
 					cmd.execute();

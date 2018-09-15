@@ -48,10 +48,7 @@ public class Decoder {
 						"Wrong Receive Content",
 						"Content: " + new String(bytes)
 					);
-				com.FileManagerX.Replies.Unsupport u = new com.FileManagerX.Replies.Unsupport();
-				u.setContent(new String(bytes));
-				u.getBasicMessagePackage().setIsRecord(true);
-				return u;
+				return null;
 			}
 			
 			return t;
@@ -61,10 +58,7 @@ public class Decoder {
 					"Wrong Receive Content",
 					"Content: " + new String(bytes)
 				);
-			com.FileManagerX.Replies.Unsupport u = new com.FileManagerX.Replies.Unsupport();
-			u.setContent(new String(bytes));
-			u.getBasicMessagePackage().setIsRecord(true);
-			return u;
+			return null;
 		}
 	}
 	
