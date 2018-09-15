@@ -29,7 +29,10 @@ public class Managers extends com.FileManagerX.BasicCollections.BasicCollection
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	private com.FileManagerX.BasicModels.DataBaseInfo database;
-
+	private long permitIdle = 5 * 60 * 60;
+	private long tryat = 0;
+	private boolean ok = true;
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean setDBInfo(com.FileManagerX.BasicModels.DataBaseInfo database) {
@@ -231,6 +234,10 @@ public class Managers extends com.FileManagerX.BasicCollections.BasicCollection
 			}
 		}
 		
+		if(!this.ok && com.FileManagerX.Tools.Time.getTicks() - this.tryat < this.permitIdle) {
+			return null;
+		}
+		
 		if(database.getType().equals(com.FileManagerX.BasicEnums.DataBaseType.TXT)) {
 			if(managers.size() > 0) {
 				return managers.fetchByCount(com.FileManagerX.Tools.Random.SimpleRandomNumber(0, managers.size()-1));
@@ -241,23 +248,28 @@ public class Managers extends com.FileManagerX.BasicCollections.BasicCollection
 					com.FileManagerX.Interfaces.IDBManager dbmf = this.searchByUnit(Unit.Folder);
 					if(dbmf == null) {
 						dbmf = new TXTManager_Folder();
-						this.add(dbmf);
 						dbmf.setDBInfo(database);
 						dbmf.connect();
+						if(dbmf.isConnected()) { this.add(dbmf); }
 					}
+					
 					dbm.setFoldersManager(dbmf);
-					this.add(dbm);
 					dbm.setDBInfo(database);
 					dbm.connect();
-					return (dbm.isConnected() && !dbm.isRunning()) ? dbm : null;
+					this.tryat = com.FileManagerX.Tools.Time.getTicks();
+					this.ok = dbm.isConnected();
+					if(dbm.isConnected()) { this.add(dbm); return dbm; }
+					return null;
 				}
 				
 				com.FileManagerX.Interfaces.IDBManager dbm = unit.getManager
 						(com.FileManagerX.BasicEnums.DataBaseType.TXT);
-				this.add(dbm);
 				dbm.setDBInfo(database);
 				dbm.connect();
-				return (dbm.isConnected() && !dbm.isRunning()) ? dbm : null;
+				this.tryat = com.FileManagerX.Tools.Time.getTicks();
+				this.ok = dbm.isConnected();
+				if(dbm.isConnected()) { this.add(dbm); return dbm; }
+				return null;
 			}
 		}
 		
@@ -268,21 +280,31 @@ public class Managers extends com.FileManagerX.BasicCollections.BasicCollection
 					com.FileManagerX.Interfaces.IDBManager dbmf = this.searchByUnit(Unit.Folder);
 					if(dbmf == null) {
 						dbmf = new MySQLManager_Folder();
-						this.add(dbmf);
 						dbmf.setDBInfo(database);
 						dbmf.connect();
+						if(dbmf.isConnected()) { this.add(dbmf); }
 					}
 					dbm.setFoldersManager(dbmf);
-					this.add(dbm);
 					dbm.setDBInfo(database);
 					dbm.connect();
-					return (dbm.isConnected() && !dbm.isRunning()) ? dbm : null;
+					
+					this.tryat = com.FileManagerX.Tools.Time.getTicks();
+					this.ok = dbm.isConnected();
+					
+					if(dbm.isConnected()) { this.add(dbm); return dbm; }
+					dbm.disconnect();
+					return null;
 				}
 				com.FileManagerX.Interfaces.IDBManager dbm = unit.getManager(this.database.getType());
-				this.add(dbm);
 				dbm.setDBInfo(database);
 				dbm.connect();
-				return (dbm.isConnected() && !dbm.isRunning()) ? dbm : null;
+				
+				this.tryat = com.FileManagerX.Tools.Time.getTicks();
+				this.ok = dbm.isConnected();
+				
+				if(dbm.isConnected()) { this.add(dbm); return dbm; }
+				dbm.disconnect();
+				return null;
 			}
 			else {
 				return managers.fetchByCount(com.FileManagerX.Tools.Random.SimpleRandomNumber(0, managers.size()-1));

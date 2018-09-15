@@ -20,6 +20,7 @@ public class DBManagers {
 			
 		}
 		
+		if(dbs == null) { dbs = new com.FileManagerX.BasicCollections.DataBaseInfos(); }
 		com.FileManagerX.Interfaces.IIterator<com.FileManagerX.BasicModels.DataBaseInfo> it = dbs.getIterator();
 		while(it.hasNext()) {
 			com.FileManagerX.BasicModels.DataBaseInfo db = it.getNext();
@@ -53,6 +54,7 @@ public class DBManagers {
 				com.FileManagerX.Globals.Datas.DBManagers.getIterator();
 		while(it.hasNext()) {
 			com.FileManagerX.Interfaces.IDBManager dbm = it.getNext();
+			if(dbm.getDBInfo() == null) { continue; }
 			line = "Depot = " + dbm.getDBInfo().getDepotInfo().getName() + "|" + dbm.getDBInfo().getDepotInfo().getUrl();
 			cfg.getContent().add(line);
 			line = "DataBase = " + dbm.getDBInfo().getName() + "|" + dbm.getDBInfo().getType().toString() + "|" + dbm.getDBInfo().getUrl();

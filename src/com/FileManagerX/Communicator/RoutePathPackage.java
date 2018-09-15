@@ -402,18 +402,7 @@ public class RoutePathPackage implements com.FileManagerX.Interfaces.IRoutePathP
 	}
 	
 	public boolean addAsNext() {
-		if(com.FileManagerX.BasicEnums.RppExecutePart.S.equals(this.execute) && 
-				com.FileManagerX.Globals.Configurations.IsServer) {
-			this.sourMountServer = com.FileManagerX.Globals.Configurations.This_MachineIndex;
-			this.execute = com.FileManagerX.BasicEnums.RppExecutePart.R;
-			this.recommendDepth = -1;
-		}
-		if(com.FileManagerX.BasicEnums.RppExecutePart.R.equals(this.execute) && 
-				!com.FileManagerX.Globals.Configurations.IsServer) {
-			this.destMountServer = this.getActualMachineByDepth();
-			this.execute = com.FileManagerX.BasicEnums.RppExecutePart.D;
-			this.recommendDepth = -1;
-		}
+		/*
 		if(com.FileManagerX.BasicEnums.RppExecutePart.E.equals(this.execute)) {
 			if(this.sourMountServer <= 0) {
 				this.sourMountServer = this.actualPath.size() == 0 ?
@@ -424,6 +413,8 @@ public class RoutePathPackage implements com.FileManagerX.Interfaces.IRoutePathP
 				this.destMountServer = com.FileManagerX.Globals.Configurations.This_MachineIndex;
 			}
 		}
+		*/
+		
 		
 		long machine = com.FileManagerX.Globals.Configurations.This_MachineIndex;
 		long prev = this.getActualMachineByDepth();
@@ -441,22 +432,65 @@ public class RoutePathPackage implements com.FileManagerX.Interfaces.IRoutePathP
 		return true;
 	}
 	public void updateExecutePart(long dest) {
+		// 自动重载进行转发
+		if(com.FileManagerX.BasicEnums.RppExecutePart.E.equals(this.execute)) {
+			if(dest != com.FileManagerX.Globals.Configurations.This_MachineIndex) {
+				this.execute = com.FileManagerX.BasicEnums.RppExecutePart.R;
+				this.actualDepth =this.actualPath.size()-1;
+				this.destMountPath.clear();
+				this.destMountServer = -1;
+			}
+		}
+		
+		// 自动填充源挂载服务器
+		if(com.FileManagerX.BasicEnums.RppExecutePart.S.equals(this.execute)) {
+			if(this.sourMountServer < 0) {
+				if(com.FileManagerX.Globals.Configurations.IsServer) {
+					this.sourMountServer = com.FileManagerX.Globals.Configurations.This_MachineIndex;
+					this.execute = com.FileManagerX.BasicEnums.RppExecutePart.R;
+					this.recommendDepth = -1;
+				}
+			}
+		}
+		
+		// 自动填充目标挂载服务器
+		if(com.FileManagerX.BasicEnums.RppExecutePart.R.equals(this.execute)) {
+			if(!com.FileManagerX.Globals.Configurations.IsServer) {
+				if(this.actualPath.size() != 0) {
+					this.destMountServer = this.getActualMachineByDepth();
+					this.execute = com.FileManagerX.BasicEnums.RppExecutePart.D;
+					this.recommendDepth = -1;
+				}
+			}
+		}
+		
+		// B -> S
 		if(com.FileManagerX.BasicEnums.RppExecutePart.B.equals(this.execute)) {
 			this.execute = com.FileManagerX.BasicEnums.RppExecutePart.S;
 			this.recommendDepth = -1;
 		}
+		
+		// S -> R
 		if(com.FileManagerX.BasicEnums.RppExecutePart.S.equals(this.execute)) {
-			if(com.FileManagerX.Globals.Configurations.This_MachineIndex == this.sourMountServer) {
-				this.execute = com.FileManagerX.BasicEnums.RppExecutePart.R;
-				this.recommendDepth = -1;
+			if(com.FileManagerX.Globals.Configurations.IsServer) {
+				if(this.sourMountServer < 0) {
+					this.execute = com.FileManagerX.BasicEnums.RppExecutePart.R;
+					this.recommendDepth = -1;
+				}
 			}
 		}
+		
+		// R -> D
 		if(com.FileManagerX.BasicEnums.RppExecutePart.R.equals(this.execute)) {
-			if(!com.FileManagerX.Globals.Configurations.IsServer) {
-				this.execute = com.FileManagerX.BasicEnums.RppExecutePart.D;
-				this.recommendDepth = -1;
+			if(com.FileManagerX.Globals.Configurations.This_MachineIndex == this.destMountServer) {
+				if(this.destMountServer > 0) {
+					this.execute = com.FileManagerX.BasicEnums.RppExecutePart.D;
+					this.recommendDepth = -1;
+				}
 			}
 		}
+		
+		// D -> E
 		if(com.FileManagerX.Globals.Configurations.This_MachineIndex == dest) {
 			this.execute = com.FileManagerX.BasicEnums.RppExecutePart.E;
 		}

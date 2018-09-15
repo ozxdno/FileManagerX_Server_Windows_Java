@@ -106,7 +106,7 @@ public class User extends com.FileManagerX.BasicCollections.BasicCollection<Mach
 		initThis();
 	}
 	public String toString() {
-		return this.user.getNickName();
+		return this.name;
 	}
 	public com.FileManagerX.BasicModels.Config toConfig() {
 		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config();

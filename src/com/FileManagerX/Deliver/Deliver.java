@@ -33,6 +33,7 @@ public class Deliver {
 		}
 		
 		// Invalid Destination
+		/*
 		if(com.FileManagerX.BasicEnums.RppExecutePart.E.equals(rpp.getExecutePart()) &&
 				t.getBasicMessagePackage().getDestMachineIndex() != 
 				com.FileManagerX.Globals.Configurations.This_MachineIndex) {
@@ -40,6 +41,7 @@ public class Deliver {
 			rpp.setActualDepth(rpp.getActualPath().size()-1);
 			rpp.setDestMountServer(-1);
 		}
+		*/
 		
 		// Finished RPP
 		if(rpp.getDestMountServer() >= 0) {
@@ -57,10 +59,10 @@ public class Deliver {
 			if(user != null) {
 				com.FileManagerX.MyNet.Machine machine = user.fetchByKey(dest);
 				if(machine != null) {
-					rpp.setSourMountPath(machine.getRoutePathPackage().getSourMountPath());
+					//rpp.setSourMountPath(machine.getRoutePathPackage().getSourMountPath());
 					rpp.setRecommendPath(machine.getRoutePathPackage().getRecommendPath());
 					rpp.setDestMountPath(machine.getRoutePathPackage().getDestMountPath());
-					rpp.setSourMountServer(machine.getRoutePathPackage().getSourMountServer());
+					//rpp.setSourMountServer(machine.getRoutePathPackage().getSourMountServer());
 					rpp.setDestMountServer(machine.getRoutePathPackage().getDestMountServer());
 					return true;
 				}
@@ -470,6 +472,16 @@ public class Deliver {
 		if(!(p instanceof com.FileManagerX.Interfaces.IConnection)) { return null; }
 		com.FileManagerX.Interfaces.IConnection con = (com.FileManagerX.Interfaces.IConnection)p;
 		return con.getClientConnection();
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public final static void printTransport(com.FileManagerX.Interfaces.ITransport t, String mark) {
+		String path = "Deliver: " + com.FileManagerX.Globals.Configurations.This_MachineIndex + ", " +
+				"Path: " + t.getBasicMessagePackage().getSourMachineIndex() + "->" +
+						   t.getBasicMessagePackage().getDestMachineIndex();
+		String name = t.getClass().toString();
+		System.out.println("[" + mark + "]: " + path + ", " + name);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

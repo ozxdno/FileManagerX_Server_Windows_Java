@@ -191,8 +191,8 @@ public class BaseCommand extends com.FileManagerX.Transport.Transport
 	
 	public boolean isConnected() {
 		if(this.getSourConnection() == null || !this.getSourConnection().isRunning()) {
-			reply.setOK(false);
-			reply.setFailedReason(FAILED_NOT_CONNECT);
+			this.getReply().setOK(false);
+			this.getReply().setFailedReason(FAILED_NOT_CONNECT);
 			return false;
 		}
 		return true;

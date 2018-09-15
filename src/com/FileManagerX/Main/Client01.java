@@ -5,7 +5,7 @@ public class Client01 {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public static void main(String[] args) {
-		com.FileManagerX.Tools.Pathes.setCFGName("FileManagerX - Client01.cfg");
+		com.FileManagerX.Tools.Pathes.CFG.setName("cfg\\FileManagerX - Client01.cfg");
 		com.FileManagerX.Globals.Datas.pMain.startProcess();
 	}
 	

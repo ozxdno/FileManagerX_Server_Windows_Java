@@ -85,7 +85,7 @@ public class Errors extends BasicCollection<com.FileManagerX.BasicModels.Error> 
 		
 		for(int i=0; i<amount; i++) {
 			com.FileManagerX.BasicModels.Error e = this.fetchByCount(0);
-			String url = com.FileManagerX.Tools.Pathes.getFolder_LOG() + "\\" + e.getShortTime_Date() + ".log";
+			String url = com.FileManagerX.Tools.Pathes.LOG.getAbsolute() + "\\" + e.getShortTime_Date() + ".log";
 			java.io.File log = new java.io.File(url);
 			try {
 				if(!log.exists()) { log.createNewFile(); }
@@ -107,7 +107,7 @@ public class Errors extends BasicCollection<com.FileManagerX.BasicModels.Error> 
 	public boolean deleteAgoLogs(int permitLogAmount) {
 		boolean ok = true;
 		
-		java.io.File logFolder = new java.io.File(com.FileManagerX.Tools.Pathes.getFolder_LOG());
+		java.io.File logFolder = new java.io.File(com.FileManagerX.Tools.Pathes.LOG.getAbsolute());
 		java.io.File[] files = logFolder.listFiles();
 		java.util.List<Long> time = new java.util.ArrayList<Long>();
 		for(java.io.File f : files) {
@@ -122,7 +122,7 @@ public class Errors extends BasicCollection<com.FileManagerX.BasicModels.Error> 
 		if(time.size() > permitLogAmount) {
 			java.util.Collections.sort(time);
 			for(int i=permitLogAmount; i<time.size(); i++) {
-				String url = com.FileManagerX.Tools.Pathes.getFolder_LOG() + "\\" +
+				String url = com.FileManagerX.Tools.Pathes.LOG.getAbsolute() + "\\" +
 						com.FileManagerX.Tools.Time.ticks2ShortTime_Date(time.get(i)) + ".log";
 				java.io.File f = new java.io.File(url);
 				try {

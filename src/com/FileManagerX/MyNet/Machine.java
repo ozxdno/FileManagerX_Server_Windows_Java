@@ -118,7 +118,7 @@ public class Machine extends com.FileManagerX.BasicCollections.BasicCollection<D
 		initThis();
 	}
 	public String toString() {
-		return this.machine.getName();
+		return this.name;
 	}
 	public com.FileManagerX.BasicModels.Config toConfig() {
 		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config();

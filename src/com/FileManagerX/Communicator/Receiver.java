@@ -41,12 +41,12 @@ public class Receiver {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public com.FileManagerX.Interfaces.IReply get(long key, long waitTicks) {
+	public com.FileManagerX.Interfaces.IReply get(long key, long waitTicks, boolean fetch) {
 		long start = com.FileManagerX.Tools.Time.getTicks();
 		com.FileManagerX.Interfaces.IReply rep = null;
 		
 		while(com.FileManagerX.Tools.Time.getTicks() - start < waitTicks) {
-			rep = this.fetchByKey(key);
+			rep = fetch ? this.fetchByKey(key) : this.searchByKey(key);
 			if(rep != null) {
 				return rep;
 			}

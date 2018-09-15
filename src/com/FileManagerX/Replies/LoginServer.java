@@ -91,7 +91,7 @@ public class LoginServer extends BaseReply {
 	}
 	public void copyValue(Object o) {
 		if(o instanceof LoginServer) {
-			super.copyReference(o);
+			super.copyValue(o);
 			LoginServer qf = (LoginServer)o;
 			this.machineInfo.copyValue(qf.machineInfo);
 		}

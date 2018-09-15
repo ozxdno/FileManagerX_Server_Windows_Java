@@ -5,7 +5,7 @@ public class Server01 {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public static void main(String[] args) {
-		com.FileManagerX.Tools.Pathes.setCFGName("FileManagerX - Server01.cfg");
+		com.FileManagerX.Tools.Pathes.CFG.setName("cfg\\FileManagerX - Server01.cfg");
 		com.FileManagerX.Globals.Datas.pMain.startProcess();
 	}
 	

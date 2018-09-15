@@ -76,7 +76,7 @@ public class Depot implements com.FileManagerX.Interfaces.IPublic {
 		initThis();
 	}
 	public String toString() {
-		return this.depot.getName();
+		return this.name;
 	}
 	public com.FileManagerX.BasicModels.Config toConfig() {
 		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config();

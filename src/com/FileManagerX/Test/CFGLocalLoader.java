@@ -6,7 +6,7 @@ public class CFGLocalLoader {
 		Object res = "";
 		
 		com.FileManagerX.FileModels.CFG cfg = new com.FileManagerX.FileModels.CFG();
-		cfg.setUrl(com.FileManagerX.Tools.Pathes.getFile_CFG());
+		cfg.setUrl(com.FileManagerX.Tools.Pathes.CFG.getAbsolute());
 		cfg.loadBasicInfo();
 		cfg.loadFromLocal();
 		cfg.saveToLocal();

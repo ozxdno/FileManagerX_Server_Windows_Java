@@ -38,7 +38,7 @@ public class MainProcess extends BasicProcess {
 		com.FileManagerX.Tools.Pathes.createAll();
 		
 		// load CFG file
-		com.FileManagerX.Globals.Datas.CFG.setUrl(com.FileManagerX.Tools.Pathes.getFile_CFG());
+		com.FileManagerX.Globals.Datas.CFG.setUrl(com.FileManagerX.Tools.Pathes.CFG.getAbsolute());
 		com.FileManagerX.Globals.Datas.CFG.loadBasicInfo();
 		com.FileManagerX.Globals.Datas.CFG.loadFromLocal();
 		
@@ -76,6 +76,7 @@ public class MainProcess extends BasicProcess {
 				com.FileManagerX.Globals.Datas.DBManagers.getIterator();
 		while(it.hasNext()) {
 			com.FileManagerX.Interfaces.IDBManager dbm = it.getNext();
+			if(dbm.getDBInfo() == null) { continue; }
 			if(dbm.getDBInfo().getType().equals(com.FileManagerX.BasicEnums.DataBaseType.TXT)) {
 				dbm.save();
 			}

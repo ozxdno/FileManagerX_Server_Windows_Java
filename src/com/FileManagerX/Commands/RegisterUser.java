@@ -198,12 +198,6 @@ public class RegisterUser extends BaseCommand {
 		}
 		
 		i.setRemainAmount(i.getRemainAmount()-1);
-		if(i.getRemainAmount() <= 0) {
-			com.FileManagerX.Globals.Datas.DBManager.remove(i, com.FileManagerX.DataBase.Unit.Invitation);
-		}
-		else {
-			com.FileManagerX.Globals.Datas.DBManager.update(i, com.FileManagerX.DataBase.Unit.Invitation);
-		}
 		
 		if(i.getRemainAmount() < 0) {
 			this.getReply().setOK(false);
@@ -244,6 +238,10 @@ public class RegisterUser extends BaseCommand {
 			this.getReply().setThis(false, FAILED_UPDATE_USER);
 			return false;
 		}
+		
+		ok = i.getRemainAmount() <= 0 ?
+				com.FileManagerX.Globals.Datas.DBManager.remove(i, com.FileManagerX.DataBase.Unit.Invitation) :
+				com.FileManagerX.Globals.Datas.DBManager.update(i, com.FileManagerX.DataBase.Unit.Invitation);
 		
 		this.getReply().setThis(u);
 		return true;

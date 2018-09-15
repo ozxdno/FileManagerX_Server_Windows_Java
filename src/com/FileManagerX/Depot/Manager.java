@@ -66,7 +66,7 @@ public class Manager implements com.FileManagerX.Interfaces.IDepotManager{
 			java.awt.Robot robot = new java.awt.Robot();
 			java.awt.image.BufferedImage image = robot.createScreenCapture(cutRect);
 			
-			String savePath = com.FileManagerX.Tools.Pathes.getFolder_TMP_0_Screen() + "\\" + com.FileManagerX.Globals.Configurations.This_MachineIndex + ".png";
+			String savePath = com.FileManagerX.Tools.Pathes.TMP_0_SCREEN.getAbsolute() + "\\" + com.FileManagerX.Globals.Configurations.This_MachineIndex + ".png";
 			javax.imageio.ImageIO.write(image, "png", new java.io.File(savePath));
 			return true;
 		} catch(Exception e) {

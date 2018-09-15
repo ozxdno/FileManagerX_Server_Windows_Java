@@ -145,10 +145,11 @@ public class Transport implements com.FileManagerX.Interfaces.ITransport {
 	public boolean send() {
 		return com.FileManagerX.Globals.Datas.Sender.add(this);
 	}
-	public com.FileManagerX.Interfaces.IReply receive() {
+	public com.FileManagerX.Interfaces.IReply receive(boolean fetch) {
 		return com.FileManagerX.Globals.Datas.Receiver.get(
 				this.getBasicMessagePackage().getIndex(),
-				this.getBasicMessagePackage().getPermitIdle()
+				this.getBasicMessagePackage().getPermitIdle(),
+				fetch
 			);
 	}
 	

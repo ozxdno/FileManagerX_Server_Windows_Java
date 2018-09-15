@@ -6,7 +6,7 @@ public class TMP {
 		com.FileManagerX.Interfaces.IDepotManager dm = com.FileManagerX.Factories.DepotFactory.createManager();
 		dm.setUncheck(true);
 		
-		return dm.deleteContent(com.FileManagerX.Tools.Pathes.getFolder_TMP());
+		return dm.deleteContent(com.FileManagerX.Tools.Pathes.TMP.getAbsolute());
 	}
 	
 	

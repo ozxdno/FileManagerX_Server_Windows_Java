@@ -14,7 +14,10 @@ public interface ITransport extends IPublic {
 	public boolean executeInLocal();
 	
 	public boolean send();
-	public com.FileManagerX.Interfaces.IReply receive();
+	public com.FileManagerX.Interfaces.IReply receive(boolean fetch);
+	public default com.FileManagerX.Interfaces.IReply receive() {
+		return receive(true);
+	}
 	
 	public boolean isArriveTargetMachine();
 	public boolean isArriveServer();

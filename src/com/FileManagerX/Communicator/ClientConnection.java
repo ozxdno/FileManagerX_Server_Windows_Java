@@ -27,7 +27,7 @@ public class ClientConnection extends com.FileManagerX.Processes.BasicProcess
 	private String receiveString;
 	private String sendString;
 	
-	private java.util.PriorityQueue<com.FileManagerX.Interfaces.ITransport> sends;
+	private java.util.LinkedList<com.FileManagerX.Interfaces.ITransport> sends;
 	private com.FileManagerX.Interfaces.IConnection brother;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -190,21 +190,17 @@ public class ClientConnection extends com.FileManagerX.Processes.BasicProcess
 		this.receiveString = null;
 		this.sendString = null;
 		
-		this.sends = new java.util.PriorityQueue<>(com.FileManagerX.Tools.Comparator.Transport.priorityAsc);
+		this.sends = new java.util.LinkedList<>();
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean send(com.FileManagerX.Interfaces.ITransport t) {
 		if(!this.isRunning() || this.isFinished()) { return false; }
-		synchronized(sends) {
-			return sends.add(t);
-		}
+		return sends.add(t);
 	}
 	private com.FileManagerX.Interfaces.ITransport poll() {
-		synchronized(sends) {
-			return sends.size() == 0 ? null : sends.poll();
-		}
+		return sends.size() == 0 ? null : sends.removeFirst();
 	}
 	
 	public String login() {
@@ -214,7 +210,7 @@ public class ClientConnection extends com.FileManagerX.Processes.BasicProcess
 		ls.setDestConnection(this);
 		ls.setThis(this.getServerMachineInfo());
 		ls.send();
-		reply = ls.receive();
+		reply = ls.receive(false);
 		if(reply == null) { return "LoginServer Failed: reply NULL"; }
 		if(!reply.isOK() && !com.FileManagerX.Replies.LoginServer.FAILED_SERVER_CHANGED.
 				equals(reply.getFailedReason())) { 
@@ -228,6 +224,7 @@ public class ClientConnection extends com.FileManagerX.Processes.BasicProcess
 			this.brother.setSocket(this.getSocket());
 			this.restartProcess();
 			this.brother.restartProcess();
+			com.FileManagerX.Tools.Time.sleepUntil(1000);
 		}
 		
 		if(com.FileManagerX.Globals.Configurations.Refresh) {
@@ -292,6 +289,11 @@ public class ClientConnection extends com.FileManagerX.Processes.BasicProcess
 					if(send == null) {
 						com.FileManagerX.Tools.Time.sleepUntil(10);
 						continue;
+					}
+					
+					// ¥Ú”°√¸¡Ó
+					if(com.FileManagerX.Globals.Configurations.Record) {
+						com.FileManagerX.Deliver.Deliver.printTransport(send, "Send");
 					}
 					
 					// ∑¢ÀÕ√¸¡Ó

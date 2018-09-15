@@ -61,9 +61,9 @@ public class Index {
 		cfg.getContent().add(line);
 		line = "This_UserIndex = " + java.lang.String.valueOf(Configurations.This_UserIndex);
 		cfg.getContent().add(line);
-		line = "Server_MachineIndex = " + java.lang.String.valueOf(Configurations.Server_MachineIndex);
+		line = "Server_MachineIndex = 1";
 		cfg.getContent().add(line);
-		line = "Server_UserIndex = " + java.lang.String.valueOf(Configurations.Server_UserIndex);
+		line = "Server_UserIndex = 1";
 		cfg.getContent().add(line);
 		
 		return true;
@@ -80,9 +80,9 @@ public class Index {
 		cfg.getContent().add(line);
 		line = "This_UserIndex = 0";
 		cfg.getContent().add(line);
-		line = "Server_MachineIndex = 0";
+		line = "Server_MachineIndex = 1";
 		cfg.getContent().add(line);
-		line = "Server_UserIndex = 0";
+		line = "Server_UserIndex = 1";
 		cfg.getContent().add(line);
 		
 		return true;

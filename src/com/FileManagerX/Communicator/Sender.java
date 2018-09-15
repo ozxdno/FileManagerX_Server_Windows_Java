@@ -39,7 +39,11 @@ public class Sender extends com.FileManagerX.Processes.BasicProcess {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public synchronized boolean add(com.FileManagerX.Interfaces.ITransport t) {
-		return this.content.add(t);
+		boolean ok = this.content.add(t);
+		if(t instanceof com.FileManagerX.Replies.RegisterUser) {
+			t.getBasicMessagePackage();
+		}
+		return ok;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -56,13 +60,12 @@ public class Sender extends com.FileManagerX.Processes.BasicProcess {
 			while(true) {
 				if(!Sender.this.content.isEmpty()) {
 					com.FileManagerX.Interfaces.ITransport t = Sender.this.get();
-					
+
+					long dest = t.getBasicMessagePackage().getDestMachineIndex();
+					t.getBasicMessagePackage().getRoutePathPackage().updateExecutePart(dest);
 					com.FileManagerX.Deliver.Deliver.completeRPP(t);
 					com.FileManagerX.Deliver.Deliver.completeBroadcast(t);
 					t.getBasicMessagePackage().getBroadcast().broadcast();
-					t.getBasicMessagePackage().getRoutePathPackage().updateExecutePart(
-							t.getBasicMessagePackage().getDestMachineIndex()
-						);
 					
 					com.FileManagerX.Deliver.Deliver.record(t);
 					com.FileManagerX.Deliver.Deliver.deliver(t);

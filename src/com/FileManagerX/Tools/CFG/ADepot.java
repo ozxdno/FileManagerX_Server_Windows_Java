@@ -107,17 +107,17 @@ public class ADepot {
 		
 		if(dbInfo.getType().equals(com.FileManagerX.BasicEnums.DataBaseType.TXT) &&
 				dbInfo.getUrl().length() == 0) {
-			java.lang.String url = com.FileManagerX.Tools.Pathes.getFolder_DBS(dbInfo.getIndex());
-			boolean ok = com.FileManagerX.Tools.Pathes.createFolder_DBS(dbInfo.getIndex());
+			com.FileManagerX.Tools.Pathes.URL dbs = com.FileManagerX.Tools.Pathes.getTMP_I(dbInfo.getIndex());
+			boolean ok = dbs.createAsFolder();
 			if(!ok) {
 				com.FileManagerX.BasicEnums.ErrorType.COMMON_FILE_OPERATE_FAILED.register
 					("Create DataBaseFolder Failed");
 				return false;
 			}
-			dbInfo.setUrl(url);
+			dbInfo.setUrl(dbs.getAbsolute());
 			if(!com.FileManagerX.Globals.Datas.DBManager.update(dbInfo, com.FileManagerX.DataBase.Unit.DataBase)) {
 				com.FileManagerX.BasicEnums.ErrorType.COMMANDS_EXECUTE_FAILED.register
-					("Update DataBase Url Failed", "Url = " + url);
+					("Update DataBase Url Failed", "Url = " + dbs.getAbsolute());
 				return false;
 			}
 		}

@@ -85,7 +85,7 @@ public class Records extends BasicCollection<com.FileManagerX.BasicModels.Record
 		
 		for(int i=0; i<amount; i++) {
 			com.FileManagerX.BasicModels.Record r = this.fetchByCount(0);
-			String url = com.FileManagerX.Tools.Pathes.getFolder_REC() + "\\" +
+			String url = com.FileManagerX.Tools.Pathes.REC.getAbsolute() + "\\" +
 					com.FileManagerX.Tools.Time.ticks2ShortTime_Date(r.getTime()) + ".rec";
 			java.io.File rec = new java.io.File(url);
 			try {
@@ -107,7 +107,7 @@ public class Records extends BasicCollection<com.FileManagerX.BasicModels.Record
 	}
 	public boolean deleteAgoRecords(int permitAmount) {
 		boolean ok = true;
-		java.io.File logFolder = new java.io.File(com.FileManagerX.Tools.Pathes.getFolder_REC());
+		java.io.File logFolder = new java.io.File(com.FileManagerX.Tools.Pathes.REC.getAbsolute());
 		java.io.File[] files = logFolder.listFiles();
 		java.util.List<Long> time = new java.util.ArrayList<Long>();
 		for(java.io.File f : files) {
@@ -123,7 +123,7 @@ public class Records extends BasicCollection<com.FileManagerX.BasicModels.Record
 		if(time.size() > permitAmount) {
 			java.util.Collections.sort(time);
 			for(int i=permitAmount; i<time.size(); i++) {
-				String url = com.FileManagerX.Tools.Pathes.getFolder_REC() + 
+				String url = com.FileManagerX.Tools.Pathes.REC.getAbsolute() + 
 						"\\" + 
 						com.FileManagerX.Tools.Time.ticks2ShortTime_Date(time.get(i)) +
 						".rec";

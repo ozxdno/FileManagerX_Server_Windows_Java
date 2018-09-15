@@ -4,147 +4,88 @@ public class Pathes {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	private static java.lang.String exePath = "";
-	private static String cfg = "";
-
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public final static boolean setExePath(java.lang.String exePath) {
-		if(exePath == null || exePath.length() == 0) {
-			com.FileManagerX.BasicEnums.ErrorType.COMMON_SET_WRONG_VALUE.register("exePath = " + (exePath == null ? "NULL" : ""));
-			return false;
-		}
-		
-		java.io.File f = new java.io.File(exePath);
-		if(!f.exists()) {
-			com.FileManagerX.BasicEnums.ErrorType.COMMON_SET_WRONG_VALUE.register("exePath Existed", "exePath = " + exePath);
-			return false;
-		}
-		if(!f.isDirectory()) {
-			com.FileManagerX.BasicEnums.ErrorType.COMMON_SET_WRONG_VALUE.register("exePath is NOT a Folder", "exePath = " + exePath);
-			return false;
-		}
-		
-		Pathes.exePath = exePath;
-		return true;
-	}
-	public final static boolean setCFGName(String name) {
-		if(name == null) { return false; }
-		cfg = name;
-		return true;
-	}
+	public final static URL EXE = new URL(true);
+	public final static URL CFG = new URL("", "cfg\\FileManagerX.cfg");
+	public final static URL LOG = new URL("", "log");
+	public final static URL DBS = new URL("", "dbs");
+	public final static URL TMP = new URL("", "tmp");
+	public final static URL REC = new URL("", "rec");
+	
+	public final static URL TMP_0 = new URL("", "tmp\\0");
+	public final static URL TMP_0_SCREEN = new URL("", "tmp\\0\\Screen");
+	public final static URL TMP_0_PHOTO = new URL("", "tmp\\0\\Photo");
+	
+	public final static java.util.LinkedHashMap<Long, URL> TMP_I = new java.util.LinkedHashMap<>(16, 0.75f, true);
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public final static java.lang.String getExePath() {
-		if(exePath == null || exePath.length() == 0) {
-			java.util.Properties properties = System.getProperties();
-			return properties.getProperty("user.dir");
-		}
-		else {
-			return exePath;
-		}
-	}
-	public final static java.lang.String getJarPath() {
-		com.FileManagerX.BasicModels.File f = new com.FileManagerX.BasicModels.File();
-		return f.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
-	}
-	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	public final static java.lang.String getFolder_CFG() {
-		return getExePath() + "\\cfg";
-	}
-	public final static java.lang.String getFolder_LOG() {
-		return getExePath() + "\\log";
-	}
-	public final static java.lang.String getFolder_DBS() {
-		return getExePath() + "\\dbs";
-	}
-	public final static java.lang.String getFolder_DBS(long depotIndex) {
-		return getFolder_DBS() + "\\" + depotIndex;
-	}
-	public final static java.lang.String getFolder_TMP() {
-		return getExePath() + "\\tmp";
-	}
-	public final static java.lang.String getFolder_TMP_0() {
-		return getFolder_TMP() + "\\0";
-	}
-	public final static java.lang.String getFolder_TMP_0_Screen() {
-		return getFolder_TMP_0() + "\\Screen";
-	}
-	public final static java.lang.String getFolder_TMP_0_Match() {
-		return getFolder_TMP_0() + "\\Match";
-	}
-	public final static java.lang.String getFolder_REC() {
-		return getExePath() + "\\rec";
-	}
-	
-	public final static java.lang.String getFile_CFG() {
-		boolean set = cfg != null && cfg.length() > 0;
-		return getFolder_CFG() + "\\" + (set ? cfg : "FileManagerX.cfg");
-	}
-	
-	public final static boolean createFolder_CFG() {
-		com.FileManagerX.Interfaces.IDepotManager dm = com.FileManagerX.Factories.DepotFactory.createManager();
-		dm.setUncheck(true);
-		return dm.createFolder(getFolder_CFG());
-	}
-	public final static boolean createFolder_LOG() {
-		com.FileManagerX.Interfaces.IDepotManager dm = com.FileManagerX.Factories.DepotFactory.createManager();
-		dm.setUncheck(true);
-		return dm.createFolder(getFolder_LOG());
-	}
-	public final static boolean createFolder_DBS() {
-		com.FileManagerX.Interfaces.IDepotManager dm = com.FileManagerX.Factories.DepotFactory.createManager();
-		dm.setUncheck(true);
-		return dm.createFolder(getFolder_DBS());
-	}
-	public final static boolean createFolder_DBS(long depotIndex) {
-		com.FileManagerX.Interfaces.IDepotManager dm = com.FileManagerX.Factories.DepotFactory.createManager();
-		dm.setUncheck(true);
-		return dm.createFolder(getFolder_DBS(depotIndex));
-	}
-	public final static boolean createFolder_TMP() {
-		com.FileManagerX.Interfaces.IDepotManager dm = com.FileManagerX.Factories.DepotFactory.createManager();
-		dm.setUncheck(true);
-		return dm.createFolder(getFolder_TMP());
-	}
-	public final static boolean createFolder_TMP_0() {
-		com.FileManagerX.Interfaces.IDepotManager dm = com.FileManagerX.Factories.DepotFactory.createManager();
-		dm.setUncheck(true);
-		return dm.createFolder(getFolder_TMP_0());
-	}
-	public final static boolean createFolder_TMP_0_Screen() {
-		com.FileManagerX.Interfaces.IDepotManager dm = com.FileManagerX.Factories.DepotFactory.createManager();
-		dm.setUncheck(true);
-		return dm.createFolder(getFolder_TMP_0_Screen());
-	}
-	public final static boolean createFolder_TMP_0_Match() {
-		com.FileManagerX.Interfaces.IDepotManager dm = com.FileManagerX.Factories.DepotFactory.createManager();
-		dm.setUncheck(true);
-		return dm.createFolder(getFolder_TMP_0_Match());
-	}
-	public final static boolean createFolder_REC() {
-		com.FileManagerX.Interfaces.IDepotManager dm = com.FileManagerX.Factories.DepotFactory.createManager();
-		dm.setUncheck(true);
-		return dm.createFolder(getFolder_REC());
-	}
-	
 	public final static boolean createAll() {
 		boolean ok = true;
 		
-		ok &= createFolder_CFG();
-		ok &= createFolder_LOG();
-		ok &= createFolder_DBS();
-		ok &= createFolder_TMP();
-		ok &= createFolder_REC();
+		ok &= LOG.createAsFolder();
+		ok &= DBS.createAsFolder();
+		ok &= TMP.createAsFolder();
+		ok &= REC.createAsFolder();
 		
-		ok &= createFolder_TMP_0();
-		ok &= createFolder_TMP_0_Screen();
-		ok &= createFolder_TMP_0_Match();
-		
+		ok &= TMP_0.createAsFolder();
+		ok &= TMP_0_SCREEN.createAsFolder();
+		ok &= TMP_0_PHOTO.createAsFolder();
 		return ok;
 	}
+	public final static URL getTMP_I(long i) {
+		URL tmp = TMP_I.get(i);
+		if(tmp != null) { return tmp; }
+		tmp = new URL(TMP.directory, TMP.name);
+		TMP_I.put(i, tmp);
+		if(TMP_I.size() > 100) { 
+			java.util.Iterator<java.util.Map.Entry<Long, URL>> it = TMP_I.entrySet().iterator();
+			if(it.hasNext()) { it.next(); it.remove(); }
+		}
+		return tmp;
+	}
 	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public static class URL {
+		private String directory = null;
+		private String name = null;
+		
+		public URL() {}
+		public URL(String dir, String name) { this.directory = dir; this.name = name; }
+		public URL(boolean root) { if(root) { this.directory = System.getProperties().getProperty("user.dir"); } }
+		
+		public boolean setDirectory(String dir) {
+			this.directory = dir;
+			return true;
+		}
+		public boolean setName(String name) {
+			this.name = name;
+			return true;
+		}
+		
+		public String getDirectory() {
+			boolean empty = this.directory == null || this.directory.length() == 0;
+			return empty ? EXE.directory : this.directory;
+		}
+		public String getName() {
+			return this.name == null ? "" : this.name;
+		}
+		public String getAbsolute() {
+			boolean ok = this.name != null && this.name.length() != 0;
+			return ok ? this.getDirectory() + "\\" + this.getName() : this.getDirectory();
+		}
+		
+		public boolean createAsFolder() {
+			com.FileManagerX.Interfaces.IDepotManager dm = com.FileManagerX.Factories.DepotFactory.createManager();
+			dm.setUncheck(true);
+			return dm.createFolder(this.getAbsolute());
+		}
+		public boolean createAsFile() {
+			com.FileManagerX.Interfaces.IDepotManager dm = com.FileManagerX.Factories.DepotFactory.createManager();
+			dm.setUncheck(true);
+			return dm.createFile(this.getAbsolute());
+		}
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

@@ -30,14 +30,14 @@ public class DBManager {
 		if(database.getType().equals(com.FileManagerX.BasicEnums.DataBaseType.TXT)) {
 			java.io.File dbFolder = new java.io.File(database.getUrl());
 			if(!dbFolder.exists() || !dbFolder.isDirectory()) {
-				java.lang.String url = com.FileManagerX.Tools.Pathes.getFolder_DBS(0);
-				boolean ok = com.FileManagerX.Tools.Pathes.createFolder_DBS(0);
+				com.FileManagerX.Tools.Pathes.URL dbs = com.FileManagerX.Tools.Pathes.getTMP_I(0);
+				boolean ok = dbs.createAsFolder();
 				if(!ok) {
 					com.FileManagerX.BasicEnums.ErrorType.COMMON_FILE_OPERATE_FAILED.register(
 							"Create Folder_DBS:0 Failed");
 					return false;
 				}
-				database.setUrl(url);
+				database.setUrl(dbs.getAbsolute());
 			}
 		}
 		

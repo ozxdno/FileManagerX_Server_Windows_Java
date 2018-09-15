@@ -1,0 +1,551 @@
+12:47:50 = OTHERS|1536900470774|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+12:47:52 = DB_CONNECT_FAILED|1536900472674|Warning|Connect to DataBase Failed|connect[MySQLManager_ANY.java:184]<-nextIdleManager[Managers.java:283]<-getUnitMananger[Manager.java:43]<-update[Manager.java:273]<-updateInServer[DBManager.java:69]<-load[DBManager.java:53]<-local[Loader.java:23]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|com.mysql.jdbc.CommunicationsException: Communications link failure due to underlying exception: 
+
+** BEGIN NESTED EXCEPTION ** 
+
+java.net.SocketException
+MESSAGE: java.net.ConnectException: Connection refused: connect
+
+STACKTRACE:
+
+java.net.SocketException: java.net.ConnectException: Connection refused: connect
+	at com.mysql.jdbc.StandardSocketFactory.connect(StandardSocketFactory.java:156)
+	at com.mysql.jdbc.MysqlIO.<init>(MysqlIO.java:276)
+	at com.mysql.jdbc.Connection.createNewIO(Connection.java:2641)
+	at com.mysql.jdbc.Connection.<init>(Connection.java:1531)
+	at com.mysql.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:266)
+	at java.sql.DriverManager.getConnection(Unknown Source)
+	at java.sql.DriverManager.getConnection(Unknown Source)
+	at com.FileManagerX.DataBase.MySQLManager_ANY.connect(MySQLManager_ANY.java:182)
+	at com.FileManagerX.DataBase.Managers.nextIdleManager(Managers.java:283)
+	at com.FileManagerX.DataBase.Manager.getUnitMananger(Manager.java:43)
+	at com.FileManagerX.DataBase.Manager.update(Manager.java:273)
+	at com.FileManagerX.Tools.CFG.DBManager.updateInServer(DBManager.java:69)
+	at com.FileManagerX.Tools.CFG.DBManager.load(DBManager.java:53)
+	at com.FileManagerX.Tools.CFG.Loader.local(Loader.java:23)
+	at com.FileManagerX.FileModels.CFG.loadFromLocal(CFG.java:144)
+	at com.FileManagerX.Processes.MainProcess.parepare(MainProcess.java:43)
+	at com.FileManagerX.Processes.MainProcess.access$0(MainProcess.java:33)
+	at com.FileManagerX.Processes.MainProcess$RunImpl.run(MainProcess.java:23)
+	at com.FileManagerX.Processes.BasicProcess$MyThread.run(BasicProcess.java:222)
+
+
+** END NESTED EXCEPTION **
+
+
+
+Last packet sent to the server was 9 ms ago.
+12:47:53 = DB_CONNECT_FAILED|1536900473678|Warning|Connect to DataBase Failed|connect[MySQLManager_ANY.java:184]<-nextIdleManager[Managers.java:283]<-getUnitMananger[Manager.java:43]<-update[Manager.java:273]<-updateInServer[DBManager.java:73]<-load[DBManager.java:53]<-local[Loader.java:23]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|com.mysql.jdbc.CommunicationsException: Communications link failure due to underlying exception: 
+
+** BEGIN NESTED EXCEPTION ** 
+
+java.net.SocketException
+MESSAGE: java.net.ConnectException: Connection refused: connect
+
+STACKTRACE:
+
+java.net.SocketException: java.net.ConnectException: Connection refused: connect
+	at com.mysql.jdbc.StandardSocketFactory.connect(StandardSocketFactory.java:156)
+	at com.mysql.jdbc.MysqlIO.<init>(MysqlIO.java:276)
+	at com.mysql.jdbc.Connection.createNewIO(Connection.java:2641)
+	at com.mysql.jdbc.Connection.<init>(Connection.java:1531)
+	at com.mysql.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:266)
+	at java.sql.DriverManager.getConnection(Unknown Source)
+	at java.sql.DriverManager.getConnection(Unknown Source)
+	at com.FileManagerX.DataBase.MySQLManager_ANY.connect(MySQLManager_ANY.java:182)
+	at com.FileManagerX.DataBase.Managers.nextIdleManager(Managers.java:283)
+	at com.FileManagerX.DataBase.Manager.getUnitMananger(Manager.java:43)
+	at com.FileManagerX.DataBase.Manager.update(Manager.java:273)
+	at com.FileManagerX.Tools.CFG.DBManager.updateInServer(DBManager.java:73)
+	at com.FileManagerX.Tools.CFG.DBManager.load(DBManager.java:53)
+	at com.FileManagerX.Tools.CFG.Loader.local(Loader.java:23)
+	at com.FileManagerX.FileModels.CFG.loadFromLocal(CFG.java:144)
+	at com.FileManagerX.Processes.MainProcess.parepare(MainProcess.java:43)
+	at com.FileManagerX.Processes.MainProcess.access$0(MainProcess.java:33)
+	at com.FileManagerX.Processes.MainProcess$RunImpl.run(MainProcess.java:23)
+	at com.FileManagerX.Processes.BasicProcess$MyThread.run(BasicProcess.java:222)
+
+
+** END NESTED EXCEPTION **
+
+
+
+Last packet sent to the server was 0 ms ago.
+12:47:54 = DB_CONNECT_FAILED|1536900474684|Warning|Connect to DataBase Failed|connect[MySQLManager_ANY.java:184]<-nextIdleManager[Managers.java:283]<-getUnitMananger[Manager.java:43]<-update[Manager.java:273]<-updateInServer[DBManager.java:77]<-load[DBManager.java:53]<-local[Loader.java:23]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|com.mysql.jdbc.CommunicationsException: Communications link failure due to underlying exception: 
+
+** BEGIN NESTED EXCEPTION ** 
+
+java.net.SocketException
+MESSAGE: java.net.ConnectException: Connection refused: connect
+
+STACKTRACE:
+
+java.net.SocketException: java.net.ConnectException: Connection refused: connect
+	at com.mysql.jdbc.StandardSocketFactory.connect(StandardSocketFactory.java:156)
+	at com.mysql.jdbc.MysqlIO.<init>(MysqlIO.java:276)
+	at com.mysql.jdbc.Connection.createNewIO(Connection.java:2641)
+	at com.mysql.jdbc.Connection.<init>(Connection.java:1531)
+	at com.mysql.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:266)
+	at java.sql.DriverManager.getConnection(Unknown Source)
+	at java.sql.DriverManager.getConnection(Unknown Source)
+	at com.FileManagerX.DataBase.MySQLManager_ANY.connect(MySQLManager_ANY.java:182)
+	at com.FileManagerX.DataBase.Managers.nextIdleManager(Managers.java:283)
+	at com.FileManagerX.DataBase.Manager.getUnitMananger(Manager.java:43)
+	at com.FileManagerX.DataBase.Manager.update(Manager.java:273)
+	at com.FileManagerX.Tools.CFG.DBManager.updateInServer(DBManager.java:77)
+	at com.FileManagerX.Tools.CFG.DBManager.load(DBManager.java:53)
+	at com.FileManagerX.Tools.CFG.Loader.local(Loader.java:23)
+	at com.FileManagerX.FileModels.CFG.loadFromLocal(CFG.java:144)
+	at com.FileManagerX.Processes.MainProcess.parepare(MainProcess.java:43)
+	at com.FileManagerX.Processes.MainProcess.access$0(MainProcess.java:33)
+	at com.FileManagerX.Processes.MainProcess$RunImpl.run(MainProcess.java:23)
+	at com.FileManagerX.Processes.BasicProcess$MyThread.run(BasicProcess.java:222)
+
+
+** END NESTED EXCEPTION **
+
+
+
+Last packet sent to the server was 0 ms ago.
+12:47:55 = DB_CONNECT_FAILED|1536900475691|Warning|Connect to DataBase Failed|connect[MySQLManager_ANY.java:184]<-nextIdleManager[Managers.java:283]<-getUnitMananger[Manager.java:43]<-update[Manager.java:273]<-updateInServer[DBManager.java:81]<-load[DBManager.java:53]<-local[Loader.java:23]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|com.mysql.jdbc.CommunicationsException: Communications link failure due to underlying exception: 
+
+** BEGIN NESTED EXCEPTION ** 
+
+java.net.SocketException
+MESSAGE: java.net.ConnectException: Connection refused: connect
+
+STACKTRACE:
+
+java.net.SocketException: java.net.ConnectException: Connection refused: connect
+	at com.mysql.jdbc.StandardSocketFactory.connect(StandardSocketFactory.java:156)
+	at com.mysql.jdbc.MysqlIO.<init>(MysqlIO.java:276)
+	at com.mysql.jdbc.Connection.createNewIO(Connection.java:2641)
+	at com.mysql.jdbc.Connection.<init>(Connection.java:1531)
+	at com.mysql.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:266)
+	at java.sql.DriverManager.getConnection(Unknown Source)
+	at java.sql.DriverManager.getConnection(Unknown Source)
+	at com.FileManagerX.DataBase.MySQLManager_ANY.connect(MySQLManager_ANY.java:182)
+	at com.FileManagerX.DataBase.Managers.nextIdleManager(Managers.java:283)
+	at com.FileManagerX.DataBase.Manager.getUnitMananger(Manager.java:43)
+	at com.FileManagerX.DataBase.Manager.update(Manager.java:273)
+	at com.FileManagerX.Tools.CFG.DBManager.updateInServer(DBManager.java:81)
+	at com.FileManagerX.Tools.CFG.DBManager.load(DBManager.java:53)
+	at com.FileManagerX.Tools.CFG.Loader.local(Loader.java:23)
+	at com.FileManagerX.FileModels.CFG.loadFromLocal(CFG.java:144)
+	at com.FileManagerX.Processes.MainProcess.parepare(MainProcess.java:43)
+	at com.FileManagerX.Processes.MainProcess.access$0(MainProcess.java:33)
+	at com.FileManagerX.Processes.MainProcess$RunImpl.run(MainProcess.java:23)
+	at com.FileManagerX.Processes.BasicProcess$MyThread.run(BasicProcess.java:222)
+
+
+** END NESTED EXCEPTION **
+
+
+
+Last packet sent to the server was 1 ms ago.
+12:47:56 = DB_CONNECT_FAILED|1536900476698|Warning|Connect to DataBase Failed|connect[MySQLManager_ANY.java:184]<-nextIdleManager[Managers.java:283]<-getUnitMananger[Manager.java:43]<-querys2[Manager.java:310]<-load[DBManagers.java:12]<-local[Loader.java:24]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|com.mysql.jdbc.CommunicationsException: Communications link failure due to underlying exception: 
+
+** BEGIN NESTED EXCEPTION ** 
+
+java.net.SocketException
+MESSAGE: java.net.ConnectException: Connection refused: connect
+
+STACKTRACE:
+
+java.net.SocketException: java.net.ConnectException: Connection refused: connect
+	at com.mysql.jdbc.StandardSocketFactory.connect(StandardSocketFactory.java:156)
+	at com.mysql.jdbc.MysqlIO.<init>(MysqlIO.java:276)
+	at com.mysql.jdbc.Connection.createNewIO(Connection.java:2641)
+	at com.mysql.jdbc.Connection.<init>(Connection.java:1531)
+	at com.mysql.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:266)
+	at java.sql.DriverManager.getConnection(Unknown Source)
+	at java.sql.DriverManager.getConnection(Unknown Source)
+	at com.FileManagerX.DataBase.MySQLManager_ANY.connect(MySQLManager_ANY.java:182)
+	at com.FileManagerX.DataBase.Managers.nextIdleManager(Managers.java:283)
+	at com.FileManagerX.DataBase.Manager.getUnitMananger(Manager.java:43)
+	at com.FileManagerX.DataBase.Manager.querys2(Manager.java:310)
+	at com.FileManagerX.Tools.CFG.DBManagers.load(DBManagers.java:12)
+	at com.FileManagerX.Tools.CFG.Loader.local(Loader.java:24)
+	at com.FileManagerX.FileModels.CFG.loadFromLocal(CFG.java:144)
+	at com.FileManagerX.Processes.MainProcess.parepare(MainProcess.java:43)
+	at com.FileManagerX.Processes.MainProcess.access$0(MainProcess.java:33)
+	at com.FileManagerX.Processes.MainProcess$RunImpl.run(MainProcess.java:23)
+	at com.FileManagerX.Processes.BasicProcess$MyThread.run(BasicProcess.java:222)
+
+
+** END NESTED EXCEPTION **
+
+
+
+Last packet sent to the server was 0 ms ago.
+12:47:57 = DB_CONNECT_FAILED|1536900477701|Warning|Connect to DataBase Failed|connect[MySQLManager_ANY.java:184]<-nextIdleManager[Managers.java:283]<-getUnitMananger[Manager.java:43]<-querys2[Manager.java:310]<-load[DBManagers.java:16]<-local[Loader.java:24]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|com.mysql.jdbc.CommunicationsException: Communications link failure due to underlying exception: 
+
+** BEGIN NESTED EXCEPTION ** 
+
+java.net.SocketException
+MESSAGE: java.net.ConnectException: Connection refused: connect
+
+STACKTRACE:
+
+java.net.SocketException: java.net.ConnectException: Connection refused: connect
+	at com.mysql.jdbc.StandardSocketFactory.connect(StandardSocketFactory.java:156)
+	at com.mysql.jdbc.MysqlIO.<init>(MysqlIO.java:276)
+	at com.mysql.jdbc.Connection.createNewIO(Connection.java:2641)
+	at com.mysql.jdbc.Connection.<init>(Connection.java:1531)
+	at com.mysql.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:266)
+	at java.sql.DriverManager.getConnection(Unknown Source)
+	at java.sql.DriverManager.getConnection(Unknown Source)
+	at com.FileManagerX.DataBase.MySQLManager_ANY.connect(MySQLManager_ANY.java:182)
+	at com.FileManagerX.DataBase.Managers.nextIdleManager(Managers.java:283)
+	at com.FileManagerX.DataBase.Manager.getUnitMananger(Manager.java:43)
+	at com.FileManagerX.DataBase.Manager.querys2(Manager.java:310)
+	at com.FileManagerX.Tools.CFG.DBManagers.load(DBManagers.java:16)
+	at com.FileManagerX.Tools.CFG.Loader.local(Loader.java:24)
+	at com.FileManagerX.FileModels.CFG.loadFromLocal(CFG.java:144)
+	at com.FileManagerX.Processes.MainProcess.parepare(MainProcess.java:43)
+	at com.FileManagerX.Processes.MainProcess.access$0(MainProcess.java:33)
+	at com.FileManagerX.Processes.MainProcess$RunImpl.run(MainProcess.java:23)
+	at com.FileManagerX.Processes.BasicProcess$MyThread.run(BasicProcess.java:222)
+
+
+** END NESTED EXCEPTION **
+
+
+
+Last packet sent to the server was 0 ms ago.
+12:47:58 = DB_CONNECT_FAILED|1536900478752|Warning|Connect to DataBase Failed|connect[MySQLManager_ANY.java:184]<-nextIdleManager[Managers.java:283]<-getUnitMananger[Manager.java:43]<-querys[Manager.java:246]<-load[MyMachine.java:9]<-local[Loader.java:25]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|com.mysql.jdbc.CommunicationsException: Communications link failure due to underlying exception: 
+
+** BEGIN NESTED EXCEPTION ** 
+
+java.net.SocketException
+MESSAGE: java.net.ConnectException: Connection refused: connect
+
+STACKTRACE:
+
+java.net.SocketException: java.net.ConnectException: Connection refused: connect
+	at com.mysql.jdbc.StandardSocketFactory.connect(StandardSocketFactory.java:156)
+	at com.mysql.jdbc.MysqlIO.<init>(MysqlIO.java:276)
+	at com.mysql.jdbc.Connection.createNewIO(Connection.java:2641)
+	at com.mysql.jdbc.Connection.<init>(Connection.java:1531)
+	at com.mysql.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:266)
+	at java.sql.DriverManager.getConnection(Unknown Source)
+	at java.sql.DriverManager.getConnection(Unknown Source)
+	at com.FileManagerX.DataBase.MySQLManager_ANY.connect(MySQLManager_ANY.java:182)
+	at com.FileManagerX.DataBase.Managers.nextIdleManager(Managers.java:283)
+	at com.FileManagerX.DataBase.Manager.getUnitMananger(Manager.java:43)
+	at com.FileManagerX.DataBase.Manager.querys(Manager.java:246)
+	at com.FileManagerX.Tools.CFG.MyMachine.load(MyMachine.java:9)
+	at com.FileManagerX.Tools.CFG.Loader.local(Loader.java:25)
+	at com.FileManagerX.FileModels.CFG.loadFromLocal(CFG.java:144)
+	at com.FileManagerX.Processes.MainProcess.parepare(MainProcess.java:43)
+	at com.FileManagerX.Processes.MainProcess.access$0(MainProcess.java:33)
+	at com.FileManagerX.Processes.MainProcess$RunImpl.run(MainProcess.java:23)
+	at com.FileManagerX.Processes.BasicProcess$MyThread.run(BasicProcess.java:222)
+
+
+** END NESTED EXCEPTION **
+
+
+
+Last packet sent to the server was 0 ms ago.
+13:47:35 = OTHERS|1536904055841|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+13:47:37 = DB_CONNECT_FAILED|1536904057749|Warning|Connect to DataBase Failed|connect[MySQLManager_ANY.java:184]<-nextIdleManager[Managers.java:300]<-getUnitMananger[Manager.java:43]<-update[Manager.java:273]<-updateInServer[DBManager.java:69]<-load[DBManager.java:53]<-local[Loader.java:23]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|com.mysql.jdbc.CommunicationsException: Communications link failure due to underlying exception: 
+
+** BEGIN NESTED EXCEPTION ** 
+
+java.net.SocketException
+MESSAGE: java.net.ConnectException: Connection refused: connect
+
+STACKTRACE:
+
+java.net.SocketException: java.net.ConnectException: Connection refused: connect
+	at com.mysql.jdbc.StandardSocketFactory.connect(StandardSocketFactory.java:156)
+	at com.mysql.jdbc.MysqlIO.<init>(MysqlIO.java:276)
+	at com.mysql.jdbc.Connection.createNewIO(Connection.java:2641)
+	at com.mysql.jdbc.Connection.<init>(Connection.java:1531)
+	at com.mysql.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:266)
+	at java.sql.DriverManager.getConnection(Unknown Source)
+	at java.sql.DriverManager.getConnection(Unknown Source)
+	at com.FileManagerX.DataBase.MySQLManager_ANY.connect(MySQLManager_ANY.java:182)
+	at com.FileManagerX.DataBase.Managers.nextIdleManager(Managers.java:300)
+	at com.FileManagerX.DataBase.Manager.getUnitMananger(Manager.java:43)
+	at com.FileManagerX.DataBase.Manager.update(Manager.java:273)
+	at com.FileManagerX.Tools.CFG.DBManager.updateInServer(DBManager.java:69)
+	at com.FileManagerX.Tools.CFG.DBManager.load(DBManager.java:53)
+	at com.FileManagerX.Tools.CFG.Loader.local(Loader.java:23)
+	at com.FileManagerX.FileModels.CFG.loadFromLocal(CFG.java:144)
+	at com.FileManagerX.Processes.MainProcess.parepare(MainProcess.java:43)
+	at com.FileManagerX.Processes.MainProcess.access$0(MainProcess.java:33)
+	at com.FileManagerX.Processes.MainProcess$RunImpl.run(MainProcess.java:23)
+	at com.FileManagerX.Processes.BasicProcess$MyThread.run(BasicProcess.java:222)
+
+
+** END NESTED EXCEPTION **
+
+
+
+Last packet sent to the server was 22 ms ago.
+13:47:51 = OTHERS|1536904071323|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+13:48:08 = DB_CONNECT_FAILED|1536904088485|Warning|Connect to DataBase Failed|connect[MySQLManager_ANY.java:184]<-nextIdleManager[Managers.java:300]<-getUnitMananger[Manager.java:43]<-update[Manager.java:273]<-updateInServer[DBManager.java:69]<-load[DBManager.java:53]<-local[Loader.java:23]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|com.mysql.jdbc.CommunicationsException: Communications link failure due to underlying exception: 
+
+** BEGIN NESTED EXCEPTION ** 
+
+java.net.SocketException
+MESSAGE: java.net.ConnectException: Connection refused: connect
+
+STACKTRACE:
+
+java.net.SocketException: java.net.ConnectException: Connection refused: connect
+	at com.mysql.jdbc.StandardSocketFactory.connect(StandardSocketFactory.java:156)
+	at com.mysql.jdbc.MysqlIO.<init>(MysqlIO.java:276)
+	at com.mysql.jdbc.Connection.createNewIO(Connection.java:2641)
+	at com.mysql.jdbc.Connection.<init>(Connection.java:1531)
+	at com.mysql.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:266)
+	at java.sql.DriverManager.getConnection(Unknown Source)
+	at java.sql.DriverManager.getConnection(Unknown Source)
+	at com.FileManagerX.DataBase.MySQLManager_ANY.connect(MySQLManager_ANY.java:182)
+	at com.FileManagerX.DataBase.Managers.nextIdleManager(Managers.java:300)
+	at com.FileManagerX.DataBase.Manager.getUnitMananger(Manager.java:43)
+	at com.FileManagerX.DataBase.Manager.update(Manager.java:273)
+	at com.FileManagerX.Tools.CFG.DBManager.updateInServer(DBManager.java:69)
+	at com.FileManagerX.Tools.CFG.DBManager.load(DBManager.java:53)
+	at com.FileManagerX.Tools.CFG.Loader.local(Loader.java:23)
+	at com.FileManagerX.FileModels.CFG.loadFromLocal(CFG.java:144)
+	at com.FileManagerX.Processes.MainProcess.parepare(MainProcess.java:43)
+	at com.FileManagerX.Processes.MainProcess.access$0(MainProcess.java:33)
+	at com.FileManagerX.Processes.MainProcess$RunImpl.run(MainProcess.java:23)
+	at com.FileManagerX.Processes.BasicProcess$MyThread.run(BasicProcess.java:222)
+
+
+** END NESTED EXCEPTION **
+
+
+
+Last packet sent to the server was 26 ms ago.
+13:51:55 = OTHERS|1536904315401|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+13:52:19 = OTHERS|1536904339973|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server02.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+13:52:27 = OTHERS|1536904347517|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server03.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+13:52:27 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536904347924|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+13:57:25 = COMMUNICATOR_RUNNING_FAILED|1536904645453|Warning|Error Occurs in Running|run[ServerConnection.java:261]<-run[BasicProcess.java:222]|[<-127.0.0.1:2703] java.net.SocketException: Connection reset
+13:58:41 = COMMUNICATOR_RUNNING_FAILED|1536904721877|Warning|Error Occurs in Running|run[ServerConnection.java:261]<-run[BasicProcess.java:222]|[<-127.0.0.1:2710] java.net.SocketException: Connection reset
+13:58:58 = COMMUNICATOR_RUNNING_FAILED|1536904738350|Warning|Error Occurs in Running|run[ServerConnection.java:261]<-run[BasicProcess.java:222]|[<-127.0.0.1:2716] java.net.SocketException: Connection reset
+13:59:20 = COMMUNICATOR_RUNNING_FAILED|1536904760268|Warning|Error Occurs in Running|run[ServerConnection.java:261]<-run[BasicProcess.java:222]|[<-127.0.0.1:2721] java.net.SocketException: Connection reset
+13:59:57 = COMMUNICATOR_RUNNING_FAILED|1536904797285|Warning|Error Occurs in Running|run[ServerConnection.java:261]<-run[BasicProcess.java:222]|[<-127.0.0.1:40000] java.net.SocketException: Connection reset
+13:59:57 = COMMUNICATOR_RUNNING_FAILED|1536904797285|Warning|Error Occurs in Running|run[ServerConnection.java:261]<-run[BasicProcess.java:222]|[<-127.0.0.1:40000] java.net.SocketException: Connection reset
+14:00:22 = OTHERS|1536904822028|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Client01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+14:00:22 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536904822325|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+14:00:22 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536904822326|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+14:00:22 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536904822326|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+14:00:23 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536904823449|Warning|Build Socked Failed|setSocket[Client_IPV4_TCP.java:46]<-setSocket[ClientConnection.java:119]<-createRunningClientConnection[CommunicatorFactory.java:47]<-build[BuildConnection.java:14]<-local[Loader.java:17]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.ConnectException: Connection refused: connect
+14:00:40 = COMMUNICATOR_RUNNING_FAILED|1536904840629|Warning|Error Occurs in Running|run[ServerConnection.java:261]<-run[BasicProcess.java:222]|[<-127.0.0.1:2725] java.net.SocketException: Connection reset
+14:00:59 = OTHERS|1536904859045|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+14:01:00 = OTHERS|1536904860595|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server02.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+14:01:02 = OTHERS|1536904862428|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server03.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+14:01:02 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536904862836|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+14:01:58 = COMMUNICATOR_RUNNING_FAILED|1536904918237|Warning|Error Occurs in Running|run[ServerConnection.java:261]<-run[BasicProcess.java:222]|[<-127.0.0.1:2752] java.net.SocketException: Connection reset
+14:03:29 = COMMUNICATOR_RUNNING_FAILED|1536905009574|Warning|Error Occurs in Running|run[ServerConnection.java:261]<-run[BasicProcess.java:222]|[<-127.0.0.1:2757] java.net.SocketException: Connection reset
+14:04:18 = COMMUNICATOR_RUNNING_FAILED|1536905058263|Warning|Error Occurs in Running|run[ServerConnection.java:261]<-run[BasicProcess.java:222]|[<-127.0.0.1:2763] java.net.SocketException: Connection reset
+14:11:46 = OTHERS|1536905506404|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+14:11:49 = OTHERS|1536905509905|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server02.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+14:12:01 = OTHERS|1536905521139|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server03.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+14:12:01 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536905521537|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+14:14:17 = COMMUNICATOR_RUNNING_FAILED|1536905657416|Warning|Error Occurs in Running|run[ServerConnection.java:261]<-run[BasicProcess.java:222]|[<-127.0.0.1:2787] java.net.SocketException: Connection reset
+14:15:51 = OTHERS|1536905751811|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+14:15:53 = OTHERS|1536905753506|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server02.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+14:15:55 = OTHERS|1536905755226|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server03.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+14:15:55 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536905755640|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+14:18:21 = COMMUNICATOR_RUNNING_FAILED|1536905901072|Warning|Error Occurs in Running|run[ServerConnection.java:261]<-run[BasicProcess.java:222]|[<-127.0.0.1:2817] java.net.SocketException: Connection reset
+14:21:14 = OTHERS|1536906074001|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+14:21:16 = OTHERS|1536906076132|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server02.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+14:21:18 = OTHERS|1536906078100|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server03.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+14:21:18 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536906078488|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+14:24:11 = COMMUNICATOR_RUNNING_FAILED|1536906251317|Warning|Error Occurs in Running|run[ServerConnection.java:261]<-run[BasicProcess.java:222]|[<-127.0.0.1:2831] java.net.SocketException: Connection reset
+14:25:21 = OTHERS|1536906321142|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+14:25:23 = OTHERS|1536906323588|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server02.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+14:25:25 = OTHERS|1536906325478|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server03.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+14:25:25 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536906325865|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+14:28:39 = COMMUNICATOR_RUNNING_FAILED|1536906519211|Warning|Error Occurs in Running|run[ServerConnection.java:261]<-run[BasicProcess.java:222]|[<-127.0.0.1:2869] java.net.SocketException: Connection reset
+14:31:43 = COMMUNICATOR_RUNNING_FAILED|1536906703653|Warning|Error Occurs in Running|run[ServerConnection.java:261]<-run[BasicProcess.java:222]|[<-127.0.0.1:2876] java.net.SocketException: Connection reset
+14:36:26 = OTHERS|1536906986288|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+14:36:28 = OTHERS|1536906988575|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server02.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+14:36:43 = OTHERS|1536907003213|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Client01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+14:36:43 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536907003527|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+14:37:09 = COMMUNICATOR_RUNNING_FAILED|1536907029553|Warning|Error Occurs in Running|run[ServerConnection.java:261]<-run[BasicProcess.java:222]|[<-127.0.0.1:2898] java.net.SocketException: Connection reset
+14:40:52 = OTHERS|1536907252495|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Client01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+14:40:53 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536907253906|Warning|Build Socked Failed|setSocket[Client_IPV4_TCP.java:46]<-setSocket[ClientConnection.java:119]<-createRunningClientConnection[CommunicatorFactory.java:47]<-build[BuildConnection.java:14]<-local[Loader.java:17]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.ConnectException: Connection refused: connect
+14:40:58 = OTHERS|1536907258432|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+14:41:04 = OTHERS|1536907264280|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server02.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+14:41:07 = OTHERS|1536907267147|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server03.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+14:41:07 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536907267561|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+14:43:39 = COMMUNICATOR_RUNNING_FAILED|1536907419616|Warning|Error Occurs in Running|run[ServerConnection.java:261]<-run[BasicProcess.java:222]|[<-127.0.0.1:2927] java.net.SocketException: Connection reset
+14:44:13 = COMMUNICATOR_RUNNING_FAILED|1536907453955|Warning|Error Occurs in Running|run[ServerConnection.java:261]<-run[BasicProcess.java:222]|[<-127.0.0.1:2934] java.net.SocketException: Connection reset
+14:51:22 = COMMUNICATOR_RUNNING_FAILED|1536907882922|Warning|Error Occurs in Running|run[ServerConnection.java:261]<-run[BasicProcess.java:222]|[<-127.0.0.1:2938] java.net.SocketException: Connection reset
+14:57:50 = COMMUNICATOR_RUNNING_FAILED|1536908270810|Warning|Error Occurs in Running|run[ServerConnection.java:261]<-run[BasicProcess.java:222]|[<-127.0.0.1:2945] java.net.SocketException: Connection reset
+14:58:41 = COMMUNICATOR_RUNNING_FAILED|1536908321062|Warning|Error Occurs in Running|run[ServerConnection.java:261]<-run[BasicProcess.java:222]|[<-127.0.0.1:2953] java.net.SocketException: Connection reset
+15:00:25 = OTHERS|1536908425251|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+15:00:42 = OTHERS|1536908442313|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server02.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+15:00:47 = OTHERS|1536908447352|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server03.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+15:00:47 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536908447740|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+15:01:57 = COMMUNICATOR_RUNNING_FAILED|1536908517335|Warning|Error Occurs in Running|run[ServerConnection.java:261]<-run[BasicProcess.java:222]|[<-127.0.0.1:2978] java.net.SocketException: Connection reset
+15:03:33 = OTHERS|1536908613658|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+15:03:38 = OTHERS|1536908618623|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server02.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+15:03:42 = OTHERS|1536908622303|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server03.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+15:03:42 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536908622702|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+15:06:39 = COMMUNICATOR_RUNNING_FAILED|1536908799212|Warning|Error Occurs in Running|run[ServerConnection.java:261]<-run[BasicProcess.java:222]|[<-127.0.0.1:3004] java.net.SocketException: Connection reset
+15:07:40 = OTHERS|1536908860327|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Client01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+15:07:40 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536908860629|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+15:07:40 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536908860629|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+15:09:10 = COMMUNICATOR_RUNNING_FAILED|1536908950319|Warning|Error Occurs in Running|run[ServerConnection.java:261]<-run[BasicProcess.java:222]|[<-127.0.0.1:3012] java.net.SocketException: Connection reset
+15:11:35 = COMMUNICATOR_RUNNING_FAILED|1536909095867|Warning|Error Occurs in Running|run[ServerConnection.java:261]<-run[BasicProcess.java:222]|[<-127.0.0.1:3235] java.net.SocketException: Connection reset
+15:12:06 = COMMUNICATOR_RUNNING_FAILED|1536909126418|Warning|Error Occurs in Running|run[ServerConnection.java:261]<-run[BasicProcess.java:222]|[<-127.0.0.1:3273] java.net.SocketException: Connection reset
+15:12:25 = COMMUNICATOR_RUNNING_FAILED|1536909145315|Warning|Error Occurs in Running|run[ServerConnection.java:261]<-run[BasicProcess.java:222]|[<-127.0.0.1:3344] java.net.SocketException: Connection reset
+15:17:10 = COMMUNICATOR_RUNNING_FAILED|1536909430648|Warning|Error Occurs in Running|run[ServerConnection.java:261]<-run[BasicProcess.java:222]|[<-127.0.0.1:2991] java.net.SocketException: Connection reset
+15:18:35 = OTHERS|1536909515572|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+15:18:39 = OTHERS|1536909519673|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server02.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+15:18:45 = OTHERS|1536909525013|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server03.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+15:18:45 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536909525397|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+15:21:44 = OTHERS|1536909704220|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+15:21:45 = OTHERS|1536909705921|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server02.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+15:21:47 = OTHERS|1536909707776|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server03.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+15:21:48 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536909708183|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+15:27:49 = OTHERS|1536910069008|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+15:27:51 = OTHERS|1536910071151|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server02.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+15:27:53 = OTHERS|1536910073214|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server03.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+15:27:53 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536910073624|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+15:33:18 = OTHERS|1536910398857|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+15:33:22 = OTHERS|1536910402120|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server02.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+15:33:27 = OTHERS|1536910407733|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server03.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+15:33:28 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536910408128|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+15:34:02 = COMMUNICATOR_RUNNING_FAILED|1536910442591|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-172.22.48.229:4787] java.net.SocketException: Connection reset
+15:36:06 = OTHERS|1536910566588|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+15:36:22 = OTHERS|1536910582007|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+15:36:23 = OTHERS|1536910583978|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server02.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+15:36:26 = OTHERS|1536910586223|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server03.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+15:36:26 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536910586624|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+15:38:05 = COMMUNICATOR_RUNNING_FAILED|1536910685854|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-172.22.48.229:4896] java.net.SocketException: Connection reset
+15:39:11 = COMMUNICATOR_RUNNING_FAILED|1536910751570|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-172.22.48.229:40000] java.net.SocketException: Software caused connection abort: recv failed
+15:39:11 = COMMUNICATOR_RUNNING_FAILED|1536910751570|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-172.22.48.229:4931] java.net.SocketException: Software caused connection abort: recv failed
+15:39:11 = COMMUNICATOR_RUNNING_FAILED|1536910751570|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-172.22.48.229:40000] java.net.SocketException: Software caused connection abort: recv failed
+15:39:11 = COMMUNICATOR_RUNNING_FAILED|1536910751570|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-172.22.48.229:4884] java.net.SocketException: Software caused connection abort: recv failed
+15:46:21 = OTHERS|1536911181624|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+15:46:25 = OTHERS|1536911185182|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server02.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+15:46:30 = OTHERS|1536911190135|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server03.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+15:46:30 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536911190532|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+15:53:38 = OTHERS|1536911618721|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+15:53:41 = OTHERS|1536911621760|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server02.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+15:53:43 = OTHERS|1536911623769|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server03.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+15:53:44 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536911624158|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+15:59:50 = OTHERS|1536911990592|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+15:59:52 = OTHERS|1536911992153|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server02.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+15:59:54 = OTHERS|1536911994849|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server03.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+15:59:55 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536911995247|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+16:02:04 = COMMUNICATOR_RUNNING_FAILED|1536912124316|Warning|Error Occurs in Running|run[ServerConnection.java:259]<-run[BasicProcess.java:222]|[<-127.0.0.1:5047] java.net.SocketException: Connection reset
+16:03:48 = OTHERS|1536912228926|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+16:03:51 = OTHERS|1536912231219|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server02.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+16:03:53 = OTHERS|1536912233262|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server03.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+16:03:53 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536912233636|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+16:07:11 = COMMUNICATOR_RUNNING_FAILED|1536912431286|Warning|Error Occurs in Running|run[ServerConnection.java:257]<-run[BasicProcess.java:222]|[<-127.0.0.1:5086] java.net.SocketException: Connection reset
+16:07:15 = COMMUNICATOR_RUNNING_FAILED|1536912435038|Warning|Error Occurs in Running|run[ServerConnection.java:257]<-run[BasicProcess.java:222]|[<-127.0.0.1:5073] java.net.SocketException: Connection reset
+16:07:17 = COMMUNICATOR_RUNNING_FAILED|1536912437759|Warning|Error Occurs in Running|run[ServerConnection.java:257]<-run[BasicProcess.java:222]|[<-127.0.0.1:5079] java.net.SocketException: Connection reset
+16:11:42 = OTHERS|1536912702624|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+16:11:47 = OTHERS|1536912707343|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server02.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+16:11:51 = OTHERS|1536912711634|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server03.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+16:11:52 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536912712037|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+16:12:04 = OTHERS|1536912724880|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Client01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+16:12:05 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536912725181|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+16:12:05 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536912725181|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+16:12:06 = COMMUNICATOR_RUNNING_FAILED|1536912726127|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-127.0.0.1:40000] java.net.SocketException: Socket closed
+16:12:34 = COMMUNICATOR_RUNNING_FAILED|1536912754325|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-127.0.0.1:5110] java.net.SocketException: Connection reset
+16:18:33 = OTHERS|1536913113011|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+16:18:35 = OTHERS|1536913115250|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server02.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+16:18:37 = OTHERS|1536913117307|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server03.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+16:18:37 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536913117705|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+16:20:39 = COMMUNICATOR_RUNNING_FAILED|1536913239587|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-127.0.0.1:5134] java.net.SocketException: Connection reset
+16:28:09 = OTHERS|1536913689032|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+16:28:11 = OTHERS|1536913691435|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server02.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+16:28:13 = OTHERS|1536913693338|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server03.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+16:28:13 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536913693731|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+16:28:38 = COMMUNICATOR_RUNNING_FAILED|1536913718058|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-127.0.0.1:5164] java.net.SocketException: Connection reset
+16:30:38 = COMMUNICATOR_RUNNING_FAILED|1536913838488|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-127.0.0.1:5170] java.net.SocketException: Connection reset
+17:14:05 = COMMUNICATOR_RUNNING_FAILED|1536916445937|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-127.0.0.1:5174] java.net.SocketException: Connection reset
+17:14:48 = COMMUNICATOR_RUNNING_FAILED|1536916488698|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-127.0.0.1:5151] java.net.SocketException: Connection reset
+17:18:41 = OTHERS|1536916721166|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server03.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+17:18:42 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536916722663|Warning|Build Socked Failed|setSocket[Client_IPV4_TCP.java:46]<-setSocket[ClientConnection.java:119]<-createRunningClientConnection[CommunicatorFactory.java:47]<-build[BuildConnection.java:14]<-local[Loader.java:17]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.ConnectException: Connection refused: connect
+17:19:19 = OTHERS|1536916759925|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server03.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+17:19:21 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536916761406|Warning|Build Socked Failed|setSocket[Client_IPV4_TCP.java:46]<-setSocket[ClientConnection.java:119]<-createRunningClientConnection[CommunicatorFactory.java:47]<-build[BuildConnection.java:14]<-local[Loader.java:17]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.ConnectException: Connection refused: connect
+17:19:59 = OTHERS|1536916799052|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+17:20:14 = COMMUNICATOR_RUNNING_FAILED|1536916814657|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-127.0.0.1:5199] java.net.SocketException: Connection reset
+17:20:20 = OTHERS|1536916820560|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+17:20:27 = COMMUNICATOR_RUNNING_FAILED|1536916827208|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-127.0.0.1:5208] java.net.SocketException: Connection reset
+17:20:31 = OTHERS|1536916831060|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server02.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+17:20:37 = OTHERS|1536916837871|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server03.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+17:20:38 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536916838269|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+17:25:16 = COMMUNICATOR_RUNNING_FAILED|1536917116144|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-127.0.0.1:5223] java.net.SocketException: Connection reset
+17:28:11 = COMMUNICATOR_RUNNING_FAILED|1536917291872|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-127.0.0.1:5229] java.net.SocketException: Connection reset
+18:52:25 = OTHERS|1536922345017|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+18:55:31 = COMMUNICATOR_RUNNING_FAILED|1536922531023|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-127.0.0.1:5270] java.net.SocketException: Connection reset
+19:01:11 = COMMUNICATOR_RUNNING_FAILED|1536922871865|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-127.0.0.1:5273] java.net.SocketException: Connection reset
+19:13:02 = OTHERS|1536923582770|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+19:28:58 = OTHERS|1536924538625|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+20:40:00 = COMMUNICATOR_RUNNING_FAILED|1536928800915|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-127.0.0.1:5500] java.net.SocketException: Connection reset
+20:47:22 = OTHERS|1536929242810|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+20:47:30 = OTHERS|1536929250532|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server02.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+20:50:23 = OTHERS|1536929423046|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server03.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+20:50:23 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536929423463|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+20:51:01 = OTHERS|1536929461002|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Client01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+20:51:01 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536929461300|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+20:51:01 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536929461300|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+20:51:02 = COMMUNICATOR_RUNNING_FAILED|1536929462153|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-172.22.131.229:40000] java.net.SocketException: Socket closed
+20:52:30 = COMMUNICATOR_RUNNING_FAILED|1536929550368|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-172.22.131.229:7936] java.net.SocketException: Connection reset
+20:53:27 = OTHERS|1536929607728|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Client01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+20:53:28 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536929608026|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+20:53:28 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536929608026|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+20:53:28 = COMMUNICATOR_RUNNING_FAILED|1536929608884|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-172.22.131.229:40000] java.net.SocketException: Socket closed
+20:53:38 = COMMUNICATOR_RUNNING_FAILED|1536929618658|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-172.22.131.229:7962] java.net.SocketException: Connection reset
+20:55:05 = COMMUNICATOR_RUNNING_FAILED|1536929705800|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-172.22.131.229:7920] java.net.SocketException: Connection reset
+20:57:02 = COMMUNICATOR_RUNNING_FAILED|1536929822748|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-172.22.131.229:7984] java.net.SocketException: Connection reset
+20:57:10 = COMMUNICATOR_RUNNING_FAILED|1536929830239|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-172.22.131.229:7880] java.net.SocketException: Connection reset
+20:57:30 = OTHERS|1536929850032|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server02.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+20:59:09 = OTHERS|1536929949781|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server03.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+20:59:10 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536929950178|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+21:00:17 = OTHERS|1536930017313|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Client01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+21:00:17 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536930017617|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+21:00:17 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536930017617|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+21:00:18 = COMMUNICATOR_RUNNING_FAILED|1536930018477|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-172.22.131.229:40000] java.net.SocketException: Socket closed
+21:01:38 = COMMUNICATOR_RUNNING_FAILED|1536930098909|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-172.22.131.229:8165] java.net.SocketException: Connection reset
+21:03:28 = COMMUNICATOR_RUNNING_FAILED|1536930208023|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-172.22.131.229:40000] java.net.SocketException: Software caused connection abort: recv failed
+21:03:28 = COMMUNICATOR_RUNNING_FAILED|1536930208023|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-172.22.131.229:8113] java.net.SocketException: Software caused connection abort: recv failed
+21:03:28 = COMMUNICATOR_RUNNING_FAILED|1536930208023|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-172.22.131.229:8055] java.net.SocketException: Software caused connection abort: recv failed
+21:03:28 = COMMUNICATOR_RUNNING_FAILED|1536930208023|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-172.22.131.229:40000] java.net.SocketException: Software caused connection abort: recv failed
+21:03:50 = COMMUNICATOR_RUNNING_FAILED|1536930230002|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-172.22.134.185:8200] java.net.SocketException: Connection reset
+21:04:26 = OTHERS|1536930266925|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+21:04:28 = OTHERS|1536930268552|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server02.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+21:04:45 = OTHERS|1536930285879|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server03.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+21:04:46 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536930286251|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+21:05:55 = OTHERS|1536930355154|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+21:05:55 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536930355550|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-setSocket[Scanner.java:50]<-scanner_Ancestor_TCP_IPV4[BuildScanners.java:38]<-build[BuildScanners.java:18]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+21:06:40 = COMMUNICATOR_RUNNING_FAILED|1536930400294|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-127.0.0.1:8257] java.net.SocketException: Connection reset
+21:07:32 = OTHERS|1536930452936|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+21:07:36 = OTHERS|1536930456044|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server02.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+21:07:37 = OTHERS|1536930457994|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server03.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+21:07:38 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536930458373|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+21:12:26 = COMMUNICATOR_RUNNING_FAILED|1536930746321|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-127.0.0.1:8276] java.net.SocketException: Connection reset
+21:14:29 = COMMUNICATOR_RUNNING_FAILED|1536930869180|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-127.0.0.1:8280] java.net.SocketException: Connection reset
+21:18:25 = COMMUNICATOR_RUNNING_FAILED|1536931105229|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-127.0.0.1:8284] java.net.SocketException: Connection reset
+21:18:56 = COMMUNICATOR_RUNNING_FAILED|1536931136377|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-127.0.0.1:8288] java.net.SocketException: Connection reset
+21:20:46 = COMMUNICATOR_RUNNING_FAILED|1536931246003|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-127.0.0.1:8272] java.net.SocketException: Connection reset
+21:21:08 = OTHERS|1536931268967|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server03.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+21:21:09 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536931269360|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+21:22:25 = COMMUNICATOR_RUNNING_FAILED|1536931345727|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-127.0.0.1:8301] java.net.SocketException: Connection reset
+21:24:24 = COMMUNICATOR_RUNNING_FAILED|1536931464400|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-127.0.0.1:8297] java.net.SocketException: Connection reset
+21:25:14 = COMMUNICATOR_RUNNING_FAILED|1536931514436|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-127.0.0.1:8266] java.net.SocketException: Connection reset
+21:26:07 = OTHERS|1536931567849|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+21:26:12 = OTHERS|1536931572952|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server02.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+21:26:21 = OTHERS|1536931581081|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Server03.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+21:26:21 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536931581482|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+21:28:13 = OTHERS|1536931693031|Warning|Unknow Reason Type|setContent[BasicCollection.java:29]<-initThis[Manager.java:25]<-<init>[Manager.java:22]<-<clinit>[Datas.java:197]<-main[Client01.java:9]|java.lang.ClassCastException: sun.reflect.generics.reflectiveObjects.TypeVariableImpl cannot be cast to java.lang.Class
+21:28:13 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536931693323|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+21:28:13 = COMMUNICATOR_BUILD_SOCKED_FAILED|1536931693323|Warning|Build Socked Failed|setSocket[Server_IPV4_TCP.java:39]<-scanner_Others_TCP_IPV4[BuildScanners.java:52]<-build[BuildScanners.java:24]<-local[Loader.java:16]<-loadFromLocal[CFG.java:144]<-parepare[MainProcess.java:43]<-access$0[MainProcess.java:33]<-run[MainProcess.java:23]<-run[BasicProcess.java:222]|java.net.BindException: Address already in use: JVM_Bind
+21:28:14 = COMMUNICATOR_RUNNING_FAILED|1536931694169|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-127.0.0.1:40000] java.net.SocketException: Socket closed
+21:35:08 = COMMUNICATOR_RUNNING_FAILED|1536932108334|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-127.0.0.1:8327] java.net.SocketException: Connection reset
+21:52:55 = COMMUNICATOR_RUNNING_FAILED|1536933175973|Warning|Error Occurs in Running|run[ServerConnection.java:255]<-run[BasicProcess.java:222]|[<-127.0.0.1:8333] java.net.SocketException: Connection reset

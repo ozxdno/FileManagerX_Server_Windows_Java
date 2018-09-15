@@ -309,7 +309,7 @@ public class Manager implements com.FileManagerX.Interfaces.IDBManager {
 	public Object querys2(Object conditions, com.FileManagerX.DataBase.Unit unit) {
 		com.FileManagerX.Interfaces.IDBManager dbm = this.getUnitMananger(unit);
 		if(dbm == null) {
-			return false;
+			return null;
 		}
 		
 		Object res = dbm.querys2(conditions);
@@ -318,7 +318,7 @@ public class Manager implements com.FileManagerX.Interfaces.IDBManager {
 	public Object query2(Object conditions, com.FileManagerX.DataBase.Unit unit) {
 		com.FileManagerX.Interfaces.IDBManager dbm = this.getUnitMananger(unit);
 		if(dbm == null) {
-			return false;
+			return null;
 		}
 		
 		Object res = dbm.query2(conditions);
@@ -327,7 +327,7 @@ public class Manager implements com.FileManagerX.Interfaces.IDBManager {
 	public Object removes2(Object items, com.FileManagerX.DataBase.Unit unit) {
 		com.FileManagerX.Interfaces.IDBManager dbm = this.getUnitMananger(unit);
 		if(dbm == null) {
-			return false;
+			return null;
 		}
 		
 		Object res = dbm.removes2(items);
@@ -335,10 +335,7 @@ public class Manager implements com.FileManagerX.Interfaces.IDBManager {
 	}
 	public Object updates2(Object items, com.FileManagerX.DataBase.Unit unit) {
 		com.FileManagerX.Interfaces.IDBManager dbm = this.getUnitMananger(unit);
-		if(dbm == null) {
-			return false;
-		}
-		
+		if(dbm == null) { return null; }
 		Object res = dbm.updates2(items);
 		return res;
 	}

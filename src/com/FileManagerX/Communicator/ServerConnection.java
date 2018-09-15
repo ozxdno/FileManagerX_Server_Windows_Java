@@ -230,9 +230,12 @@ public class ServerConnection extends com.FileManagerX.Processes.BasicProcess
 							int cnt = 0;
 							for(Byte b : buffer) { temp[cnt++] = b; }
 							buffer.clear();
-							receiveString = new String(temp);
-							com.FileManagerX.Interfaces.ITransport t =
-									com.FileManagerX.Coder.Decoder.Decode_Byte2Transport(temp);
+							
+							com.FileManagerX.Interfaces.ITransport t = null;
+							t = com.FileManagerX.Coder.Decoder.Decode_Byte2Transport(temp);
+							if(com.FileManagerX.Globals.Configurations.Record) {
+								com.FileManagerX.Deliver.Deliver.printTransport(t, "Rece");
+							}
 							
 							if((t instanceof com.FileManagerX.Commands.Unsupport) ||
 									(t instanceof com.FileManagerX.Replies.Unsupport)) {
