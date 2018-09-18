@@ -16,6 +16,7 @@ public class Saver {
 		ok &= DBManager.save(cfg);
 		ok &= DBManagers.save(cfg);
 		ok &= MyNet.save(cfg);
+		ok &= Transports.save(cfg);
 		ok &= Supports.save(cfg);
 		ok &= ADepot.save(cfg);
 		ok &= DDepot.save(cfg);

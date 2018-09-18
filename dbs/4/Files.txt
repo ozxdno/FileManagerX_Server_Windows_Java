@@ -1,8 +1,0 @@
-BaseFile = 3|2|-1|-1|-1|D:\Space_For_Media\Pictures\FMX_Test_Depot_D\Konachan.com - 40519 sample.jpg|Unsupport|NotExistInRemote|1513230756554|980911|0|
-BaseFile = 4|2|-1|-1|-1|D:\Space_For_Media\Pictures\FMX_Test_Depot_D\Konachan.com - 42884 akane_iro_ni_somaru_saka clouds izumi_tsubasu nagase_minato ryohka seifuku sky wink.jpg|Unsupport|NotExistInRemote|1513230741768|1376217|0|
-BaseFile = 5|2|-1|-1|-1|D:\Space_For_Media\Pictures\FMX_Test_Depot_D\Konachan.com - 42951 akane_iro_ni_somaru_saka nagase_minato ryohka white.jpg|Unsupport|NotExistInRemote|1513230745599|210512|0|
-BaseFile = 6|2|-1|-1|-1|D:\Space_For_Media\Pictures\FMX_Test_Depot_D\Konachan.com - 42959 akane_iro_ni_somaru_saka christmas hat nagase_minato ryohka santa_costume santa_hat school_swimsuit swimsuit thighhighs.jpg|Unsupport|NotExistInRemote|1513230751609|1124035|0|
-BaseFile = 7|2|-1|-1|-1|D:\Space_For_Media\Pictures\FMX_Test_Depot_D\Konachan.com - 50234 sample.jpg|Unsupport|NotExistInRemote|1513230724366|2284384|0|
-BaseFile = 8|2|-1|-1|-1|D:\Space_For_Media\Pictures\FMX_Test_Depot_D\Konachan.com - 50896 akane_iro_ni_somaru_saka izumi_tsubasu katagiri_yuuhi nagase_minato ryohka.jpg|Unsupport|NotExistInRemote|1513230719304|1476836|0|
-BaseFile = 9|2|-1|-1|-1|D:\Space_For_Media\Pictures\FMX_Test_Depot_D\Konachan.com - 53000 akane_iro_ni_somaru_saka nagase_minato ryohka.jpg|Unsupport|NotExistInRemote|1513230729166|356539|0|
-BaseFile = 10|2|-1|-1|-1|D:\Space_For_Media\Pictures\FMX_Test_Depot_D\yande.re 7682 sample akane_iro_ni_somaru_saka feng nagase_minato ryohka seifuku thighhighs.jpg|Unsupport|NotExistInRemote|1513231144847|185344|0|

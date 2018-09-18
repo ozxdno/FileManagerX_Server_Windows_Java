@@ -401,21 +401,7 @@ public class RoutePathPackage implements com.FileManagerX.Interfaces.IRoutePathP
 		return false;
 	}
 	
-	public boolean addAsNext() {
-		/*
-		if(com.FileManagerX.BasicEnums.RppExecutePart.E.equals(this.execute)) {
-			if(this.sourMountServer <= 0) {
-				this.sourMountServer = this.actualPath.size() == 0 ?
-						com.FileManagerX.Globals.Configurations.This_MachineIndex :
-						this.actualPath.get(0);
-			}
-			if(this.destMountServer <= 0) {
-				this.destMountServer = com.FileManagerX.Globals.Configurations.This_MachineIndex;
-			}
-		}
-		*/
-		
-		
+	public boolean addAsNext(long sour) {
 		long machine = com.FileManagerX.Globals.Configurations.This_MachineIndex;
 		long prev = this.getActualMachineByDepth();
 		if(this.actualDepth >=0 && prev == machine) { return true; }
@@ -423,6 +409,7 @@ public class RoutePathPackage implements com.FileManagerX.Interfaces.IRoutePathP
 		this.actualPath.add(machine);
 		this.actualDepth++;
 		this.visitedPath.add(machine);
+		this.updatePath(sour);
 		return true;
 	}
 	public boolean delToBack() {
@@ -432,6 +419,12 @@ public class RoutePathPackage implements com.FileManagerX.Interfaces.IRoutePathP
 		return true;
 	}
 	public void updateExecutePart(long dest) {
+		// B -> S
+		if(com.FileManagerX.BasicEnums.RppExecutePart.B.equals(this.execute)) {
+			this.execute = com.FileManagerX.BasicEnums.RppExecutePart.S;
+			this.recommendDepth = -1;
+		}
+		
 		// D -> E
 		if(com.FileManagerX.Globals.Configurations.This_MachineIndex == dest) {
 			this.execute = com.FileManagerX.BasicEnums.RppExecutePart.E;
@@ -487,12 +480,6 @@ public class RoutePathPackage implements com.FileManagerX.Interfaces.IRoutePathP
 			}
 		}
 		
-		// B -> S
-		if(com.FileManagerX.BasicEnums.RppExecutePart.B.equals(this.execute)) {
-			this.execute = com.FileManagerX.BasicEnums.RppExecutePart.S;
-			this.recommendDepth = -1;
-		}
-		
 		// S -> R
 		if(com.FileManagerX.BasicEnums.RppExecutePart.S.equals(this.execute)) {
 			if(com.FileManagerX.Globals.Configurations.IsServer) {
@@ -545,6 +532,50 @@ public class RoutePathPackage implements com.FileManagerX.Interfaces.IRoutePathP
 		this.reverse(this.sourMountPath);
 		this.reverse(this.recommendPath);
 		this.reverse(this.destMountPath);
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	private boolean updatePath(long machine) {
+		if(!com.FileManagerX.Globals.Configurations.IsServer) { 
+			return false;
+		}
+		if(this.sourMountPath.size() != 0) {
+			if(this.sourMountServer == this.sourMountPath.get(this.sourMountPath.size()-1)) {
+				return false;
+			}
+		}
+		if(com.FileManagerX.Globals.Datas.DBManager.getDBInfo() == null) {
+			return false;
+		}
+		if(this.sourMountServer < 0) {
+			return false;
+		}
+		
+		this.sourMountPath.clear();
+		for(int i=0; i<this.actualPath.size(); i++) {
+			this.sourMountPath.add(this.actualPath.get(i));
+			if(this.actualPath.get(i) == this.sourMountServer) {
+				break;
+			}
+		}
+		
+		com.FileManagerX.BasicModels.MachineInfo m = new com.FileManagerX.BasicModels.MachineInfo();
+		boolean ok = com.FileManagerX.Globals.Datas.DBManager.query(
+				"qcs = 1|[&] index = " + machine,
+				m,
+				com.FileManagerX.DataBase.Unit.Machine
+			);
+		
+		if(!ok) { return false; }
+		long[] path = com.FileManagerX.Tools.List2Array.toLongArray(this.sourMountPath);
+		m.setPath(com.FileManagerX.Tools.StringUtil.link(path, " "));
+		ok = com.FileManagerX.Globals.Datas.DBManager.update(m, com.FileManagerX.DataBase.Unit.Machine);
+		if(!ok) { return false; }
+		
+		if(this.sourMountPath.size() == 0) { this.sourMountPath.add(1L); }
+		this.sourMountPath.set(this.sourMountPath.size()-1, this.sourMountServer);
+		return ok;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

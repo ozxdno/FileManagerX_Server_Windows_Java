@@ -1,1 +1,0 @@
-DataBaseInfo = 1|1|FileManagerX|TXT|2|1|DESKTOP-ASFUOAO|F4-8E-38-F6-A9-6E|172.24.137.27|40000||SERVER|RUNNING|D:\Space_For_Project\FileManagerX\Server\Windows_Java\dbs\0

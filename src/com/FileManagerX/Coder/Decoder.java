@@ -10,6 +10,7 @@ public class Decoder {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	public final static String FAILED_INPUT = "Receive Wrong Message";
 	public final static IDecode DECODE = new Decode_Location();
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -32,32 +33,26 @@ public class Decoder {
 	public final static com.FileManagerX.Interfaces.ITransport Decode_Byte2Transport(byte[] bytes) {
 		try {
 			String s = new String(bytes);
-			boolean isCMD = s.charAt(0) == 'C';
+			int type = s.charAt(0);
 			s = s.substring(1);
 			
-			com.FileManagerX.BasicEnums.CMDType cmdType = com.FileManagerX.BasicEnums.CMDType.valueOf(
-					com.FileManagerX.Tools.StringUtil.getField_FV(s)
-				);
-			com.FileManagerX.Interfaces.ITransport t = isCMD ?
-					cmdType.getCommand() :
-					cmdType.getReply();
+			String name = com.FileManagerX.Tools.StringUtil.getField_FV(s);
+			com.FileManagerX.Interfaces.ITransport t = null;
 			
-			com.FileManagerX.BasicModels.Config c = t.input(s);
-			if(c == null || !c.getIsOK()) {
-				com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(
-						"Wrong Receive Content",
-						"Content: " + new String(bytes)
-					);
-				return null;
+			if(type == 'C') { 
+				t = (com.FileManagerX.Interfaces.ITransport)
+					com.FileManagerX.Globals.Datas.Commands.get(name).newInstance(); 
+			}
+			if(type == 'R') { 
+				t = (com.FileManagerX.Interfaces.ITransport)
+					com.FileManagerX.Globals.Datas.Replies.get(name).newInstance(); 
 			}
 			
-			return t;
+			com.FileManagerX.BasicModels.Config c = t.input(s);
+			return c == null || !c.getIsOK() ? null : t;
 			
 		} catch(Exception e) {
-			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(
-					"Wrong Receive Content",
-					"Content: " + new String(bytes)
-				);
+			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(FAILED_INPUT, e.toString());
 			return null;
 		}
 	}

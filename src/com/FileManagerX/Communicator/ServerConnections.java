@@ -34,7 +34,7 @@ public class ServerConnections extends com.FileManagerX.Processes.Manager
 		this.initThis();
 	}
 	private void initThis() {
-		this.setKey(KeyForIndex);
+		this.setKey(KeyForMachine);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

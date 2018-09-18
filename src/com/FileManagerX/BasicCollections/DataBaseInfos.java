@@ -4,7 +4,7 @@ public class DataBaseInfos extends BasicCollection<com.FileManagerX.BasicModels.
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public static com.FileManagerX.Interfaces.ICollection.IKey KeyForIndex =
+	public final static com.FileManagerX.Interfaces.ICollection.IKey KeyForIndex =
 		new com.FileManagerX.Interfaces.ICollection.IKey() {
 			public Object getKey(Object item) {
 				if(item instanceof com.FileManagerX.BasicModels.DataBaseInfo) {

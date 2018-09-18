@@ -34,7 +34,13 @@ public class Deliver {
 		
 		// SMP
 		if(rpp.getSourMountServer() < 0) {
-			;
+			long m = com.FileManagerX.Globals.Configurations.This_MachineIndex;
+			long sour = t.getBasicMessagePackage().getDestMachineIndex();
+			if(m == sour) {
+				String pathStr = com.FileManagerX.Globals.Datas.ThisMachine.getPath();
+				java.util.List<Long> path = com.FileManagerX.Tools.StringUtil.split2long(pathStr, " ");
+				rpp.setSourMountPath(path);
+			}
 		}
 		
 		// DMP
@@ -100,7 +106,18 @@ public class Deliver {
 			return false;
 		}
 		
+		// REP
 		com.FileManagerX.Interfaces.IRoutePathPackage rpp = t.getBasicMessagePackage().getRoutePathPackage();
+		
+		// Source
+		java.util.ArrayList<Long> spath = new java.util.ArrayList<>();
+		spath.addAll(rpp.getDestMountPath());
+		rpp.reverse(spath);
+		long[] spathArray = com.FileManagerX.Tools.List2Array.toLongArray(spath);
+		String spathStr = com.FileManagerX.Tools.StringUtil.link(spathArray, " ");
+		com.FileManagerX.Globals.Datas.ThisMachine.setPath(spathStr);
+		
+		// Destination
 		boolean existU = false;
 		boolean existM = false;
 		
@@ -225,7 +242,8 @@ public class Deliver {
 			if((tg.equals(com.FileManagerX.BasicEnums.MachineType.ANY) || tg.equals(target)) && !rpp.visited(m)) {
 				com.FileManagerX.Interfaces.ITransport clone = (com.FileManagerX.Interfaces.ITransport)
 						com.FileManagerX.Tools.Reflect.clone(t);
-				clone.getBasicMessagePackage().getRoutePathPackage().addAsNext();
+				clone.getBasicMessagePackage().getRoutePathPackage().addAsNext(
+						clone.getBasicMessagePackage().getSourMachineIndex());
 				clone.setDestConnection(con);
 				con.send(clone);
 			}

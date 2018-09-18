@@ -56,7 +56,7 @@ public interface IRoutePathPackage extends IPublic {
 	public <T> void reverse(java.util.List<T> path);
 	public boolean visited(long machine);
 	
-	public boolean addAsNext();
+	public boolean addAsNext(long sour);
 	public boolean delToBack();
 	
 	public void updateExecutePart(long dest);

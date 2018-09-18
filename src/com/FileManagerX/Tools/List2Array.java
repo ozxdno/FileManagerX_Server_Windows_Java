@@ -24,6 +24,16 @@ public class List2Array {
 		}
 		return res;
 	}
+	public final static byte[] toByteArray(List<Byte> list) {
+		if(list == null || list.size() == 0) {
+			return new byte[0];
+		}
+		byte[] res = new byte[list.size()];
+		for(int i=0; i<list.size(); i++) {
+			res[i] = list.get(i);
+		}
+		return res;
+	}
 	public final static int[] toIntArray(List<Integer> list) {
 		if(list == null || list.size() == 0) {
 			return new int[0];

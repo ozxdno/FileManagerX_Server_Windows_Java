@@ -66,7 +66,9 @@ public class Sender extends com.FileManagerX.Processes.BasicProcess {
 					com.FileManagerX.Deliver.Deliver.completeRPP(t);
 					com.FileManagerX.Deliver.Deliver.completeBroadcast(t);
 					t.getBasicMessagePackage().getBroadcast().broadcast();
-					t.getBasicMessagePackage().getRoutePathPackage().addAsNext();
+					t.getBasicMessagePackage().getRoutePathPackage().addAsNext(
+							t.getBasicMessagePackage().getSourMachineIndex()
+						);
 					com.FileManagerX.Deliver.Deliver.refreshRPP(t);
 					
 					com.FileManagerX.Deliver.Deliver.record(t);
