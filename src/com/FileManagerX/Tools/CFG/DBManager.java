@@ -30,7 +30,7 @@ public class DBManager {
 		if(database.getType().equals(com.FileManagerX.BasicEnums.DataBaseType.TXT)) {
 			java.io.File dbFolder = new java.io.File(database.getUrl());
 			if(!dbFolder.exists() || !dbFolder.isDirectory()) {
-				com.FileManagerX.Tools.Pathes.URL dbs = com.FileManagerX.Tools.Pathes.getTMP_I(0);
+				com.FileManagerX.Tools.Pathes.URL dbs = com.FileManagerX.Tools.Pathes.getDBS_I(0);
 				boolean ok = dbs.createAsFolder();
 				if(!ok) {
 					com.FileManagerX.BasicEnums.ErrorType.COMMON_FILE_OPERATE_FAILED.register(

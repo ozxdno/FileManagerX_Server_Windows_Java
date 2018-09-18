@@ -15,8 +15,6 @@ public class Pathes {
 	public final static URL TMP_0_SCREEN = new URL("", "tmp\\0\\Screen");
 	public final static URL TMP_0_PHOTO = new URL("", "tmp\\0\\Photo");
 	
-	public final static java.util.LinkedHashMap<Long, URL> TMP_I = new java.util.LinkedHashMap<>(16, 0.75f, true);
-	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public final static boolean createAll() {
@@ -32,16 +30,10 @@ public class Pathes {
 		ok &= TMP_0_PHOTO.createAsFolder();
 		return ok;
 	}
-	public final static URL getTMP_I(long i) {
-		URL tmp = TMP_I.get(i);
-		if(tmp != null) { return tmp; }
-		tmp = new URL(TMP.directory, TMP.name);
-		TMP_I.put(i, tmp);
-		if(TMP_I.size() > 100) { 
-			java.util.Iterator<java.util.Map.Entry<Long, URL>> it = TMP_I.entrySet().iterator();
-			if(it.hasNext()) { it.next(); it.remove(); }
-		}
-		return tmp;
+	
+	public final static URL getDBS_I(long i) {
+		URL dbs = new URL(DBS.directory, DBS.name + "\\" + i);
+		return dbs;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

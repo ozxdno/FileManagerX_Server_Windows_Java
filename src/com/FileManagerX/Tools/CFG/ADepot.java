@@ -107,7 +107,7 @@ public class ADepot {
 		
 		if(dbInfo.getType().equals(com.FileManagerX.BasicEnums.DataBaseType.TXT) &&
 				dbInfo.getUrl().length() == 0) {
-			com.FileManagerX.Tools.Pathes.URL dbs = com.FileManagerX.Tools.Pathes.getTMP_I(dbInfo.getIndex());
+			com.FileManagerX.Tools.Pathes.URL dbs = com.FileManagerX.Tools.Pathes.getDBS_I(dbInfo.getIndex());
 			boolean ok = dbs.createAsFolder();
 			if(!ok) {
 				com.FileManagerX.BasicEnums.ErrorType.COMMON_FILE_OPERATE_FAILED.register
