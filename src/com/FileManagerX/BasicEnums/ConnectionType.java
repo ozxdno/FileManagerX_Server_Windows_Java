@@ -126,10 +126,10 @@ public enum ConnectionType {
 	public ConnectionType exchange() {
 		ConnectionType.Content c = new ConnectionType.Content();
 		
-		c.c2x = this.content.s2x;
-		c.s2x = this.content.c2x;
-		c.x2c = this.content.x2s;
-		c.x2s = this.content.x2c;
+		c.c2x = this.content.x2c;
+		c.s2x = this.content.x2s;
+		c.x2c = this.content.c2x;
+		c.x2s = this.content.s2x;
 		
 		c.tCmd = this.content.tCmd;
 		c.tFile = this.content.tFile;
