@@ -3,6 +3,7 @@ package com.FileManagerX.BasicEnums;
 public enum DataType {
 	
 	STATIC(""),
+	NULL(""),
 	BOOLEAN("BOOLEAN"),
 	BYTE("INT"),
 	CHAR("INT"),

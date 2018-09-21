@@ -31,7 +31,7 @@ public class ASCII {
 		if('a' <= code && code <= 'z') {
 			return code - 'a' + PERMIT_CODE_N.length;
 		}
-		if('a' <= code && code <= 'z') {
+		if('A' <= code && code <= 'Z') {
 			return code - 'A' + PERMIT_CODE_N.length + PERMIT_CODE_L.length;
 		}
 		

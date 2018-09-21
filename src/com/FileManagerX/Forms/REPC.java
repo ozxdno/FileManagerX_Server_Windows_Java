@@ -5,7 +5,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class CMDC extends javax.swing.JFrame {
+public class REPC extends javax.swing.JFrame {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -15,16 +15,39 @@ public class CMDC extends javax.swing.JFrame {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public java.util.List<String> list = new java.util.ArrayList<>();
-	public String initTitle;
-	public Object source;
-	public Object result;
-	public Object upper;
-	public int index;
+	private java.util.List<String> list = new java.util.ArrayList<>();
+	private String initTitle;
+	private Object source;
+	private Object result;
+	private Object upper;
+	private int index;
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public void setSource(com.FileManagerX.Interfaces.IReply source) {
+		if(source == null) {
+			this.source = null;
+			this.result = null;
+			this.upper = null;
+			this.index = 0;
+			jResult.setText("NULL");
+			jField.setText("No Fields");
+			jValue.setText("NULL");
+			return;
+		}
+		
+		this.source = source;
+		this.result = source;
+		this.upper = null;
+		this.index = 0;
+		jResult.setText(this.source.toString());
+		jField.setText(this.source.getClass().getSimpleName());
+		jValue.setText(this.source.toString());
+	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public CMDC() {
+	public REPC() {
 		this.initThis();
 		this.initResult();
 		this.initField();
@@ -38,7 +61,7 @@ public class CMDC extends javax.swing.JFrame {
 		this.initTitle = "FileManagerX" + " [" + com.FileManagerX.Globals.Configurations.This_MachineIndex + "]" +
 				" - " + 
 				com.FileManagerX.Globals.Configurations.MachineType.toString() + " : " + 
-				"CMDC";
+				"REPC";
 		
 		this.setLayout(null);
 		this.setTitle(this.initTitle);
@@ -103,7 +126,7 @@ public class CMDC extends javax.swing.JFrame {
 
 	private ComponentAdapter listenFrameResize = new ComponentAdapter() {
 		public void componentResized(ComponentEvent e){
-			CMDC.this.resizeForm();
+			REPC.this.resizeForm();
 		}
 	};
 	
@@ -128,16 +151,16 @@ public class CMDC extends javax.swing.JFrame {
 			jValue.setText("");
 			
 			if(event.getKeyCode() == KeyEvent.VK_UP) {
-				CMDC.this.previous();
+				REPC.this.previous();
 			}
 			if(event.getKeyCode() == KeyEvent.VK_DOWN) {
-				CMDC.this.next();
+				REPC.this.next();
 			}
 			if(event.getKeyCode() == KeyEvent.VK_ENTER) {
-				CMDC.this.print();
+				REPC.this.print();
 			}
 			if(event.getKeyCode() == 46) {
-				CMDC.this.hint();
+				REPC.this.hint();
 			}
 		}
 		public void keyTyped(KeyEvent event) {
@@ -153,8 +176,8 @@ public class CMDC extends javax.swing.JFrame {
 	private KeyListener listenValue = new KeyListener() {
 		public void keyReleased(KeyEvent event) {
 			if(event.getKeyCode() == KeyEvent.VK_ENTER) {
-				CMDC.this.resetValue(jValue.getText());
-				CMDC.this.result();
+				REPC.this.resetValue(jValue.getText());
+				REPC.this.result();
 			}
 		}
 		public void keyTyped(KeyEvent event) {
@@ -171,7 +194,7 @@ public class CMDC extends javax.swing.JFrame {
 		source = null;
 		list.clear();
 		index = 0;
-		for(String s : com.FileManagerX.Globals.Datas.Commands.keySet()) { list.add(s); }
+		for(String s : com.FileManagerX.Globals.Datas.Replies.keySet()) { list.add(s); }
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -251,6 +274,7 @@ public class CMDC extends javax.swing.JFrame {
 		if(source == null) { return null; }
 		java.util.List<String> ps = com.FileManagerX.Tools.StringUtil.split2string(field, ".");
 		if(ps.isEmpty()) { return null; }
+		if(!ps.get(0).equals(this.source.getClass().getSimpleName())) { return null; }
 		ps.remove(0);
 		if(ps.isEmpty()) { return source; }
 		
@@ -331,7 +355,7 @@ public class CMDC extends javax.swing.JFrame {
 		
 		if(value.equals("new")) {
 			try {
-				this.source = com.FileManagerX.Globals.Datas.Commands.get(jField.getText()).newInstance();
+				this.source = com.FileManagerX.Globals.Datas.Replies.get(jField.getText()).newInstance();
 				jValue.setText(this.source.toString());
 				return;
 			} catch(Exception e) {
@@ -376,3 +400,4 @@ public class CMDC extends javax.swing.JFrame {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
+

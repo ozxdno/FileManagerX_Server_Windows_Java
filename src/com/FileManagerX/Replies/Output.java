@@ -2,7 +2,7 @@ package com.FileManagerX.Replies;
 
 import com.FileManagerX.Interfaces.*;
 
-public class Output extends Operator {
+public class Output extends BaseReply {
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

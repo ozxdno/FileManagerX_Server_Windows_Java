@@ -17,7 +17,7 @@ public class Operators extends com.FileManagerX.Processes.Manager<Operator> {
 		public Object getKey(Object item) {
 			if(item instanceof Operator) {
 				Operator i = (Operator)item;
-				return i.getIndex();
+				return i.getOperatorPackage().getIndex();
 			}
 			return null;
 		}

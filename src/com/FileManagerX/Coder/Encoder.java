@@ -14,15 +14,15 @@ public class Encoder {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public final static byte[] Encode_Byte2Byte(byte[] bytes) {
-		byte[] spc = new byte[] {
-				com.FileManagerX.BasicEnums.EOF.N.getSpecial()
-			};
-		byte[] rep = new byte[] {
-				com.FileManagerX.BasicEnums.EOF.N.getReplce()
-			};
-		
-		return ENCODE.encode(bytes, spc, rep);
+		byte[] result = new byte[bytes.length << 1];
+		for(int i=0; i<bytes.length; i++) {
+			int bit = bytes[i] + 128;
+			result[i<<1] = (byte)((bit & 0x0F) + 'A');
+			result[(i<<1) + 1] = (byte)((bit >>> 4) + 'A');
+		}
+		return result;
 	}
+	
 	public final static byte[] Encode_String2Byte(String str) {
 		byte[] spc = new byte[] {
 				com.FileManagerX.BasicEnums.EOF.S.getSpecial()
@@ -50,9 +50,20 @@ public class Encoder {
 	}
 	
 	public final static byte[] Encode_Transport2Byte(com.FileManagerX.Interfaces.ITransport t) {
-		String s = ((t instanceof com.FileManagerX.Interfaces.ICommand) ? 'C' : 'R') +
-				t.output() + '\n';
-		return s.getBytes();
+		byte[] spc = new byte[] {
+				com.FileManagerX.BasicEnums.EOF.N.getSpecial()
+			};
+		byte[] rep = new byte[] {
+				com.FileManagerX.BasicEnums.EOF.N.getReplce()
+			};
+		
+		byte[] content = ENCODE.encode(t.output().getBytes(), spc, rep);
+		byte[] bytes = new byte[content.length+2];
+		for(int i=0; i<content.length; i++) { bytes[i+1] = content[i]; }
+		
+		bytes[0] = (t instanceof com.FileManagerX.Interfaces.ICommand) ? (byte)'C' : (byte)'R';
+		bytes[bytes.length-1] = (byte)'\n';
+		return bytes;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

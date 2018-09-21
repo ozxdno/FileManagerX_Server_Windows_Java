@@ -4,6 +4,11 @@ public class PrintScreen extends BaseCommand {
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	public final static String FAILED_SAVE = "Save to Local Failed";
+	public final static String FAILED_READ = "Read from Local Failed";
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	private byte[] content;
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -30,7 +35,7 @@ public class PrintScreen extends BaseCommand {
 		this.initThis();
 	}
 	private void initThis() {
-		this.content = null;
+		this.content = new byte[0];
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -43,14 +48,14 @@ public class PrintScreen extends BaseCommand {
 		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config();
 		c.setField(this.getClass().getSimpleName());
 		c.addToBottom(super.toConfig());
-		c.addToBottom_Encode(new String(this.content));
+		c.addToBottom(this.content);
 		return c;
 	}
 	public String toString() {
 		return this.toConfig().output();
 	}
 	public com.FileManagerX.BasicModels.Config input(String in) {
-		return this.input(in);
+		return this.input(new com.FileManagerX.BasicModels.Config(in));
 	}
 	public com.FileManagerX.BasicModels.Config input(com.FileManagerX.BasicModels.Config c) {
 		if(c == null) { return null; }
@@ -58,7 +63,7 @@ public class PrintScreen extends BaseCommand {
 		if(!c.getIsOK()) { return c; }
 		c = super.input(c);
 		if(!c.getIsOK()) { return c; }
-		this.content = c.fetchFirstString_Decode().getBytes();
+		this.content = c.fetchFirstBytes();
 		if(!c.getIsOK()) { return c; }
 		return c;
 	}
@@ -92,37 +97,13 @@ public class PrintScreen extends BaseCommand {
 			this.getReply().send();
 			return false;
 		}
-		if(!this.isLoginUser()) {
-			this.getReply().send();
-			return false;
-		}
-		if(!this.isLoginMachine()) {
-			this.getReply().send();
-			return false;
-		}
-		if(!this.isUserIndexRight()) {
-			this.getReply().send();
-			return false;
-		}
-		if(!this.isPasswordRight()) {
-			this.getReply().send();
-			return false;
-		}
-		if(!this.isPriorityEnough(com.FileManagerX.BasicEnums.UserPriority.Member)) {
-			this.getReply().send();
-			return false;
-		}
-		if(!this.isDestMachineIndexExist()) {
-			this.getReply().send();
-			return false;
-		}
 		
 		boolean ok = this.executeInLocal();
 		this.getReply().send();
 		return ok;
 	}
 	public boolean executeInLocal() {
-		java.util.List<Byte> bytes = new java.util.LinkedList<>();
+		java.util.List<Byte> bytes = new java.util.ArrayList<>();
 		byte[] buffer = new byte[1024];
 		String url = "";
 		
@@ -132,12 +113,15 @@ public class PrintScreen extends BaseCommand {
 			java.awt.Robot robot = new java.awt.Robot();
 			java.awt.image.BufferedImage image = robot.createScreenCapture(cutRect);
 			
-			String path = com.FileManagerX.Tools.Pathes.TMP_0_SCREEN.getAbsolute();
+			long machine = com.FileManagerX.Globals.Configurations.This_MachineIndex;
+			String path = com.FileManagerX.Tools.Pathes.getTMP_ScreenI(machine).getAbsolute();
 			String name = com.FileManagerX.Globals.Configurations.This_MachineIndex + ".png";
 			url = path + "\\" + name;
 			javax.imageio.ImageIO.write(image, "png", new java.io.File(url));
 		} catch(Exception e) {
 			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
+			this.getReply().setFailedReason(FAILED_SAVE);
+			this.getReply().setOK(false);
 			return false;
 		}
 		
@@ -155,6 +139,8 @@ public class PrintScreen extends BaseCommand {
 			fis.close();
 		} catch(Exception e) {
 			com.FileManagerX.BasicEnums.ErrorType.OTHERS.register(e.toString());
+			this.getReply().setFailedReason(FAILED_READ);
+			this.getReply().setOK(false);
 			return false;
 		}
 		

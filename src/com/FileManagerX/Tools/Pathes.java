@@ -33,7 +33,24 @@ public class Pathes {
 	
 	public final static URL getDBS_I(long i) {
 		URL dbs = new URL(DBS.directory, DBS.name + "\\" + i);
+		dbs.createAsFolder();
 		return dbs;
+	}
+	
+	public final static URL getTMP_I(long i) {
+		URL tmp = new URL(TMP.directory, TMP.name + "\\" + i);
+		tmp.createAsFolder();
+		return tmp;
+	}
+	public final static URL getTMP_ScreenI(long i) {
+		URL tmp = new URL(TMP.directory, TMP.name + "\\" + i + "\\Screen");
+		tmp.createAsFolder();
+		return tmp;
+	}
+	public final static URL getTMP_PhotoI(long i) {
+		URL tmp = new URL(TMP.directory, TMP.name + "\\" + i + "\\Photo");
+		tmp.createAsFolder();
+		return tmp;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -76,6 +93,12 @@ public class Pathes {
 			com.FileManagerX.Interfaces.IDepotManager dm = com.FileManagerX.Factories.DepotFactory.createManager();
 			dm.setUncheck(true);
 			return dm.createFile(this.getAbsolute());
+		}
+		public boolean clear() {
+			return true;
+		}
+		public boolean delete() {
+			return true;
 		}
 	}
 	

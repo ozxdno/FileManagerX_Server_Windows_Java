@@ -72,4 +72,33 @@ public class Parse {
 		}
 	}
 	
+	public final static Object parseAny(String value, com.FileManagerX.BasicEnums.DataType type,
+			Class<?> targetClass) {
+		if(com.FileManagerX.BasicEnums.DataType.BOOLEAN.equals(type)) {
+			return parseBoolean(value);
+		}
+		if(com.FileManagerX.BasicEnums.DataType.BYTE.equals(type)) {
+			return parseByte(value);
+		}
+		if(com.FileManagerX.BasicEnums.DataType.CHAR.equals(type)) {
+			return parseChar(value);
+		}
+		if(com.FileManagerX.BasicEnums.DataType.INTEGER.equals(type)) {
+			return parseInt(value);
+		}
+		if(com.FileManagerX.BasicEnums.DataType.LONG.equals(type)) {
+			return parseLong(value);
+		}
+		if(com.FileManagerX.BasicEnums.DataType.DOUBLE.equals(type)) {
+			return parseDouble(value);
+		}
+		if(com.FileManagerX.BasicEnums.DataType.STRING.equals(type)) {
+			return value;
+		}
+		if(com.FileManagerX.BasicEnums.DataType.ENUM.equals(type)) {
+			return parseEnum(value, targetClass);
+		}
+		return null;
+	}
+	
 }

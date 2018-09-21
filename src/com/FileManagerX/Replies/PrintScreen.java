@@ -26,7 +26,7 @@ public class PrintScreen extends BaseReply {
 		this.initThis();
 	}
 	private void initThis() {
-		this.content = null;
+		this.content = new byte[0];
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -39,14 +39,14 @@ public class PrintScreen extends BaseReply {
 		com.FileManagerX.BasicModels.Config c = new com.FileManagerX.BasicModels.Config();
 		c.setField(this.getClass().getSimpleName());
 		c.addToBottom(super.toConfig());
-		c.addToBottom_Encode(new String(this.content));
+		c.addToBottom(this.content);
 		return c;
 	}
 	public String toString() {
 		return this.toConfig().output();
 	}
 	public com.FileManagerX.BasicModels.Config input(String in) {
-		return this.input(in);
+		return this.input(new com.FileManagerX.BasicModels.Config(in));
 	}
 	public com.FileManagerX.BasicModels.Config input(com.FileManagerX.BasicModels.Config c) {
 		if(c == null) { return null; }
@@ -54,7 +54,7 @@ public class PrintScreen extends BaseReply {
 		if(!c.getIsOK()) { return c; }
 		c = super.input(c);
 		if(!c.getIsOK()) { return c; }
-		this.content = c.fetchFirstString_Decode().getBytes();
+		this.content = c.fetchFirstBytes();
 		if(!c.getIsOK()) { return c; }
 		return c;
 	}
@@ -84,13 +84,15 @@ public class PrintScreen extends BaseReply {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean executeInLocal() {
-		String url = "";
 		try {
-			String path = com.FileManagerX.Tools.Pathes.TMP_0_SCREEN.getAbsolute();
-			String name = com.FileManagerX.Globals.Configurations.This_MachineIndex + ".png";
-			url = path + "\\" + name;
+			long machine = com.FileManagerX.Globals.Configurations.This_MachineIndex;
+			com.FileManagerX.Tools.Pathes.URL url = com.FileManagerX.Tools.Pathes.getTMP_ScreenI(machine);
 			
-			java.io.FileOutputStream fos = new java.io.FileOutputStream(new java.io.File(url));
+			String path = url.getAbsolute();
+			String name = this.getBasicMessagePackage().getSourMachineIndex() + ".png";
+			String file = path + "\\" + name;
+			
+			java.io.FileOutputStream fos = new java.io.FileOutputStream(new java.io.File(file));
 			fos.write(this.content);
 			fos.close();
 			return true;

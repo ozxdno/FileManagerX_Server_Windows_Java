@@ -34,7 +34,7 @@ public class Output extends BaseCommand {
 	}
 	
 	public com.FileManagerX.Replies.Output getReply() {
-		
+		if(super.getReply() == null) { this.setReply(new com.FileManagerX.Replies.Output()); }
 		return (com.FileManagerX.Replies.Output)super.getReply();
 	}
 

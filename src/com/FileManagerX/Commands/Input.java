@@ -136,7 +136,8 @@ public class Input extends BaseCommand {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public boolean executeInLocal() {
-		
+		return true;
+		/*
 		com.FileManagerX.Operator.Operator op = com.FileManagerX.Globals.Datas.Operators.searchByKey(index);
 		
 		if(op == null) {
@@ -156,6 +157,7 @@ public class Input extends BaseCommand {
 			this.getReply().setIndex(op.getIndex());
 			return op.restartProcess();
 		}
+		*/
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

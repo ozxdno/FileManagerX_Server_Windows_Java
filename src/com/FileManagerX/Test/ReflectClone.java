@@ -4,16 +4,19 @@ public class ReflectClone {
 
 	public static void main(String[] args) {
 		
-		com.FileManagerX.BasicModels.Folder f = new com.FileManagerX.BasicModels.Folder();
-		f.setUrl("D:\\Space_For_Soft\\TagLibs");
-		f.loadBasicInfo();
-		Object res = com.FileManagerX.Tools.Reflect.clone(f);
-		System.out.println(res);
+		java.util.List<Integer> list = new java.util.ArrayList<>();
+		list.add(1);
+		list.add(1);
+		list.add(1);
+		list.add(1);
+		list.add(1);
+		list.add(1);
+		list.add(1);
+		list.add(1);
 		
-		
-		com.FileManagerX.Commands.LoginMachine lm = new com.FileManagerX.Commands.LoginMachine();
-		res = com.FileManagerX.Tools.Reflect.clone(lm);
-		System.out.println(res);
+		java.lang.reflect.Method m = com.FileManagerX.Tools.Reflect.getMethod("add", list, Object.class);
+		com.FileManagerX.Tools.Reflect.executeMethod(m, list, 2);
+		System.out.println(list);
 	}
 
 }

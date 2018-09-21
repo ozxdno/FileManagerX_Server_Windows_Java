@@ -8,4 +8,8 @@ public final class Random {
 		int rand = (int) (com.FileManagerX.Tools.Time.getTicks() % amount);
 		return bg + rand;
 	}
+	
+	public final static int RandomNumber(int bg, int ed) {
+		return 0;
+	}
 }

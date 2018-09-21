@@ -419,6 +419,17 @@ public class Config implements com.FileManagerX.Interfaces.IPublic {
 		}
 		this.setValue(c.value + "|" + value);
 	}
+	public void addToTop(byte[] item) {
+		if(item == null) {
+			ok = false;
+			return;
+		}
+		
+		String str = new String(com.FileManagerX.Coder.Encoder.Encode_Byte2Byte(item));
+		value = value.length() == 0 ? str : str + "|" + value;
+		ok = true;
+		setValue( value );
+	}
 	
 	public void addToTop_Encode(String item) {
 		if(item == null) {
@@ -498,6 +509,16 @@ public class Config implements com.FileManagerX.Interfaces.IPublic {
 		}
 		item = com.FileManagerX.Coder.Decoder.Decode_String2String(item);
 		value = value.length() == 0 ? item : value + "|" + item;
+		ok = true;
+		setValue( value );
+	}
+	public void addToBottom(byte[] item) {
+		if(item == null) {
+			ok = false;
+			return;
+		}
+		String str = new String(com.FileManagerX.Coder.Encoder.Encode_Byte2Byte(item));
+		value = value.length() == 0 ? str : value + "|" + str;
 		ok = true;
 		setValue( value );
 	}
@@ -618,6 +639,21 @@ public class Config implements com.FileManagerX.Interfaces.IPublic {
 			return res;
 		}
 	}
+	public byte[] fetchFirstBytes() {
+		if(value != null && value.length() == 0) {
+			ok = true;
+			return new byte[0];
+		}
+		try {
+			byte[] bytes = items[0].getBytes();
+			ok = true;
+			setValue(com.FileManagerX.Tools.StringUtil.link(items, "|", 1, items.length-1));
+			return com.FileManagerX.Coder.Decoder.Decode_Byte2Byte(bytes);
+		} catch(Exception e) {
+			ok = false;
+			return new byte[0];
+		}
+	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -733,6 +769,21 @@ public class Config implements com.FileManagerX.Interfaces.IPublic {
 		} catch(Exception e) {
 			ok = false;
 			return res;
+		}
+	}
+	public byte[] fetchLastBytes() {
+		if(value != null && value.length() == 0) {
+			ok = true;
+			return new byte[0];
+		}
+		try {
+			byte[] bytes = items[items.length-1].getBytes();
+			ok = true;
+			setValue(com.FileManagerX.Tools.StringUtil.link(items, "|", 0, items.length-2));
+			return com.FileManagerX.Coder.Decoder.Decode_Byte2Byte(bytes);
+		} catch(Exception e) {
+			ok = false;
+			return new byte[0];
 		}
 	}
 	

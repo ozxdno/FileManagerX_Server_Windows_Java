@@ -16,8 +16,15 @@ public class Decoder {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public final static byte[] Decode_Byte2Byte(byte[] bytes) {
-		return DECODE.decode(bytes);
+		byte[] result = new byte[bytes.length >> 1];
+		for(int i=0; i<bytes.length; i+=2) {
+			int l = bytes[i] - 'A';
+			int h = bytes[i+1] - 'A';
+			result[i>>1] = (byte)( (h<<4) + l - 128);
+		}
+		return result;
 	}
+	
 	public final static String Decode_Byte2String(byte[] bytes) {
 		return new String(DECODE.decode(bytes));
 	}
@@ -34,7 +41,9 @@ public class Decoder {
 		try {
 			String s = new String(bytes);
 			int type = s.charAt(0);
+			
 			s = s.substring(1);
+			s = new String(DECODE.decode(s.getBytes()));
 			
 			String name = com.FileManagerX.Tools.StringUtil.getField_FV(s);
 			com.FileManagerX.Interfaces.ITransport t = null;

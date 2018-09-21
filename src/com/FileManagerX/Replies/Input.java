@@ -110,7 +110,7 @@ public class Input extends BaseReply {
 		if(!this.isOK()) {
 			return false;
 		}
-		
+		/*
 		com.FileManagerX.Operator.Operator op = com.FileManagerX.Globals.Datas.Operators.searchByKey(index);
 		if(op == null) {
 			op = new com.FileManagerX.Operator.Operator();
@@ -124,6 +124,8 @@ public class Input extends BaseReply {
 			op.restartProcess();
 			return true;
 		}
+		*/
+		return true;
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

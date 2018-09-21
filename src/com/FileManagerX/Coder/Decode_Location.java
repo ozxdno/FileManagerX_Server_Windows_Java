@@ -29,6 +29,7 @@ public class Decode_Location implements IDecode {
 			int loc = this.decodeLocation(bytes, bg, ed);
 			com.FileManagerX.BasicEnums.EOF eof = 
 					com.FileManagerX.BasicEnums.EOF.getEofByReplace(newBytes[loc]);
+			
 			newBytes[loc] = eof.getSpecial();
 			bg = ed + 1;
 		}

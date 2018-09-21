@@ -57,7 +57,7 @@ public class Reflect {
 		Class<?> clazz = target.getClass();
 		while(clazz != null) {
 			try {
-				java.lang.reflect.Method m = target.getClass().getMethod(name, types);
+				java.lang.reflect.Method m = target.getClass().getDeclaredMethod(name, types);
 				m.setAccessible(true);
 				return m.invoke(target, args);
 			} catch(Exception e) {
@@ -66,13 +66,21 @@ public class Reflect {
 		}
 		return null;
 	}
+	public final static Object executeMethod(java.lang.reflect.Method m, Object target, Object... args) {
+		try {
+			m.setAccessible(true);
+			return m.invoke(target, args);
+		} catch(Exception e) {
+			return null;
+		}
+	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public final static java.lang.reflect.Field[] getFields(Object target) {
 		if(target == null) { return new java.lang.reflect.Field[0]; }
 		
-		java.util.ArrayList<java.lang.reflect.Field> fields = new java.util.ArrayList<>();
+		java.util.List<java.lang.reflect.Field> fields = new java.util.LinkedList<>();
 		Class<?> clazz = target.getClass();
 		while(clazz != null  && clazz.getName().contains("com.FileManagerX")) {
 			java.lang.reflect.Field[] fs = clazz.getDeclaredFields();
@@ -80,6 +88,15 @@ public class Reflect {
 				fields.add(fs[i]);
 			}
 			clazz = clazz.getSuperclass();
+		}
+		
+		java.util.Iterator<java.lang.reflect.Field> it = fields.iterator();
+		while(it.hasNext()) {
+			java.lang.reflect.Field f = it.next();
+			f.setAccessible(true);
+			if(java.lang.reflect.Modifier.isStatic(f.getModifiers())) {
+				it.remove();
+			}
 		}
 		
 		java.lang.reflect.Field[] results = new java.lang.reflect.Field[fields.size()];
@@ -152,6 +169,69 @@ public class Reflect {
 		}
 	}
 
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	public final static com.FileManagerX.BasicEnums.DataType getType(Object o) {
+		if(o == null) { 
+			return com.FileManagerX.BasicEnums.DataType.NULL;
+		}
+		if(o instanceof Boolean) {
+			return com.FileManagerX.BasicEnums.DataType.BOOLEAN;
+		}
+		if(o instanceof Byte) {
+			return com.FileManagerX.BasicEnums.DataType.BYTE;
+		}
+		if(o instanceof Character) {
+			return com.FileManagerX.BasicEnums.DataType.CHAR;
+		}
+		if(o instanceof Integer) {
+			return com.FileManagerX.BasicEnums.DataType.INTEGER;
+		}
+		if(o instanceof Long) {
+			return com.FileManagerX.BasicEnums.DataType.LONG;
+		}
+		if(o instanceof Double) {
+			return com.FileManagerX.BasicEnums.DataType.DOUBLE;
+		}
+		if(o instanceof String) {
+			return com.FileManagerX.BasicEnums.DataType.STRING;
+		}
+		if(o instanceof Enum) {
+			return com.FileManagerX.BasicEnums.DataType.ENUM;
+		}
+		return com.FileManagerX.BasicEnums.DataType.OTHERS;
+	}
+	public final static com.FileManagerX.BasicEnums.DataType getType(Class<?> c) {
+		if(c == null) { 
+			return com.FileManagerX.BasicEnums.DataType.NULL;
+		}
+		if(c.equals(boolean.class) || c.equals(Boolean.class)) {
+			return com.FileManagerX.BasicEnums.DataType.BOOLEAN;
+		}
+		if(c.equals(byte.class) || c.equals(Byte.class)) {
+			return com.FileManagerX.BasicEnums.DataType.BYTE;
+		}
+		if(c.equals(char.class) || c.equals(Character.class)) {
+			return com.FileManagerX.BasicEnums.DataType.CHAR;
+		}
+		if(c.equals(int.class) || c.equals(Integer.class)) {
+			return com.FileManagerX.BasicEnums.DataType.INTEGER;
+		}
+		if(c.equals(long.class) || c.equals(Long.class)) {
+			return com.FileManagerX.BasicEnums.DataType.LONG;
+		}
+		if(c.equals(double.class) || c.equals(Double.class)) {
+			return com.FileManagerX.BasicEnums.DataType.DOUBLE;
+		}
+		if(c.equals(String.class)) {
+			return com.FileManagerX.BasicEnums.DataType.STRING;
+		}
+		if(Enum.class.equals(c.getSuperclass())) {
+			return com.FileManagerX.BasicEnums.DataType.ENUM;
+		}
+		return com.FileManagerX.BasicEnums.DataType.OTHERS;
+	}
+	
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	public final static Object clone(Object target) {
